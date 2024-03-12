@@ -1,0 +1,7 @@
+keys:
+  - &dell-laptop age1jl9s4vp78wuwymjxaje6fg4ax0gg5aq8pn8khfmtn5rvap0d83tqfr05dv
+creation_rules:
+  - path_regex: hosts/dell-laptop/secrets.yaml$
+    key_groups:
+    - age:
+      - *dell-laptop
