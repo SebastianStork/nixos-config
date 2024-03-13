@@ -12,6 +12,7 @@
     theming.enable = true;
     ssh-client.enable = true;
     git.enable = true;
+    neovim.enable = true;
   };
 
   programs.kitty = {
@@ -24,14 +25,6 @@
       enable_audio_bell = false;
       update_check_interval = 0;
     };
-  };
-
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
   };
 
   services.clipmenu = {
