@@ -42,7 +42,6 @@ in {
         nu = "sudo nix flake update";
       };
       commandAliases = lib.mkIf cfg.improvedCommands.enable {
-        ".." = "cd ..";
         cat = "bat -p";
       };
     in
