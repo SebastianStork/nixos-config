@@ -21,10 +21,11 @@
     launcher = "rofi";
   };
 
+  programs.btop.enable = true;
+
   home.packages = with pkgs; [
     # CLI
     fastfetch
-    btop
 
     # GUI
     notepadqq
