@@ -13,18 +13,7 @@
     ssh-client.enable = true;
     git.enable = true;
     neovim.enable = true;
-  };
-
-  programs.kitty = {
-    enable = true;
-    settings = {
-      font_family = "JetBrainsMono Nerd Font";
-      confirm_os_window_close = 0;
-      background_opacity = "0.7";
-      scrollback_lines = 10000;
-      enable_audio_bell = false;
-      update_check_interval = 0;
-    };
+    kitty.enable = true;
   };
 
   services.clipmenu = {

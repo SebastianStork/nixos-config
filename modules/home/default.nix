@@ -7,5 +7,6 @@
     ./ssh-client.nix
     ./git.nix
     ./neovim.nix
+    ./kitty.nix
   ];
 }
