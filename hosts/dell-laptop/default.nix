@@ -7,7 +7,7 @@
   networking.hostName = "dell-laptop";
 
   myConfig = {
-    boot.systemd.enable = true;
+    boot-loader.systemd-boot.enable = true;
 
     dm.lightdm.enable = true;
     de.qtile.enable = true;
@@ -22,7 +22,7 @@
     vpn.lgs.enable = true;
     comma.enable = true;
     sops.enable = true;
-    powersave.enable = true;
+    auto-cpufreq.enable = true;
     doas.enable = false;
   };
 

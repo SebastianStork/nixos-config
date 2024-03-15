@@ -9,11 +9,11 @@
     ./auto-gc.nix
     ./sops.nix
     ./bluetooth.nix
-    ./powersave.nix
+    ./auto-cpufreq.nix
     ./x-input.nix
     ./de.nix
     ./dm.nix
     ./sound.nix
-    ./boot.nix
+    ./boot-loader.nix
   ];
 }

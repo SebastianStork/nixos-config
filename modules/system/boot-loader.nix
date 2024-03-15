@@ -3,9 +3,9 @@
   lib,
   ...
 }: {
-  options.myConfig.boot.systemd.enable = lib.mkEnableOption "";
+  options.myConfig.boot-loader.systemd-boot.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.boot.systemd.enable {
+  config = lib.mkIf config.myConfig.boot-loader.systemd-boot.enable {
     boot.tmp.cleanOnBoot = true;
     boot.loader = {
       systemd-boot = {
