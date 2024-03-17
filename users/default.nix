@@ -1,26 +1,26 @@
 {inputs, ...}: {
-  imports = [inputs.home-manager.nixosModules.home-manager];
+    imports = [inputs.home-manager.nixosModules.home-manager];
 
-  users.mutableUsers = false;
+    users.mutableUsers = false;
 
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
+    home-manager.useGlobalPkgs = true;
+    home-manager.useUserPackages = true;
 
-  home-manager.sharedModules = [
-    ../modules/home
-    {
-      programs.home-manager.enable = true;
-      home.stateVersion = "23.11";
-      systemd.user.startServices = "sd-switch";
+    home-manager.sharedModules = [
+        ../modules/home
+        {
+            programs.home-manager.enable = true;
+            home.stateVersion = "23.11";
+            systemd.user.startServices = "sd-switch";
 
-      xdg = {
-        enable = true;
+            xdg = {
+                enable = true;
 
-        userDirs = {
-          enable = true;
-          createDirectories = true;
-        };
-      };
-    }
-  ];
+                userDirs = {
+                    enable = true;
+                    createDirectories = true;
+                };
+            };
+        }
+    ];
 }

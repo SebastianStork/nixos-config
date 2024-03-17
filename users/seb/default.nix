@@ -1,14 +1,14 @@
 {config, ...}: {
-  imports = [../default.nix];
+    imports = [../default.nix];
 
-  sops.secrets."password/seb".neededForUsers = true;
+    sops.secrets."password/seb".neededForUsers = true;
 
-  users.users.seb = {
-    isNormalUser = true;
-    description = "Sebastian Stork";
-    hashedPasswordFile = config.sops.secrets."password/seb".path;
-    extraGroups = ["wheel" "networkmanager" "libvirtd"];
-  };
+    users.users.seb = {
+        isNormalUser = true;
+        description = "Sebastian Stork";
+        hashedPasswordFile = config.sops.secrets."password/seb".path;
+        extraGroups = ["wheel" "networkmanager" "libvirtd"];
+    };
 
-  home-manager.users.seb = import ./home.nix;
+    home-manager.users.seb = import ./home.nix;
 }
