@@ -6,6 +6,8 @@
 
     networking.hostName = "dell-laptop";
 
+    environment.sessionVariables.FLAKE = "/home/seb/Projects/nixos/my-config";
+
     myConfig = {
         boot-loader.systemd-boot.enable = true;
 
@@ -24,6 +26,7 @@
         sops.enable = true;
         auto-cpufreq.enable = true;
         doas.enable = false;
+        nix-helper.enable = true;
     };
 
     boot.kernelPackages = pkgs.linuxPackages_latest;

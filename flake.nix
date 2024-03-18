@@ -16,6 +16,11 @@
             url = "github:Mic92/sops-nix";
             inputs.nixpkgs.follows = "nixpkgs";
         };
+
+        nh = {
+            url = "github:viperML/nh";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
     };
 
     outputs = {nixpkgs, ...} @ inputs: let

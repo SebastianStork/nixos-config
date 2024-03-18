@@ -15,5 +15,6 @@
         ./dm.nix
         ./sound.nix
         ./boot-loader.nix
+        ./nix-helper.nix
     ];
 }
