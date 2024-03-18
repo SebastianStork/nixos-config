@@ -1,5 +1,6 @@
 {
     config,
+    pkgs,
     lib,
     ...
 }: {
@@ -7,6 +8,8 @@
 
     config = lib.mkIf config.myConfig.doas.enable {
         security.sudo.enable = false;
+
+        environment.systemPackages = [pkgs.git];
 
         security.doas = {
             enable = true;
@@ -20,6 +23,6 @@
         };
 
         environment.shellAliases.sudo = "doas";
-        programs.bash.interactiveShellInit = lib.mkIf config.myConfig.shell.bash.enable "complete -F _command doas";
+        programs.bash.interactiveShellInit = "complete -F _command doas";
     };
 }
