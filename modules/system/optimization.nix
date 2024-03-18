@@ -3,9 +3,12 @@
     lib,
     ...
 }: {
-    options.myConfig.auto-cpufreq.enable = lib.mkEnableOption "";
+    options.myConfig.optimization.mode = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+    };
 
-    config = lib.mkIf config.myConfig.auto-cpufreq.enable {
+    config = lib.mkIf (config.myConfig.optimization.mode == "powersave") {
         services.auto-cpufreq = {
             enable = true;
             settings = {

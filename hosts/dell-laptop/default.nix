@@ -24,7 +24,7 @@
         vpn.lgs.enable = true;
         comma.enable = true;
         sops.enable = true;
-        auto-cpufreq.enable = true;
+        optimization.mode = "powersave";
         doas.enable = false;
         nix-helper.enable = true;
     };

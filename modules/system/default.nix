@@ -9,7 +9,7 @@
         ./auto-gc.nix
         ./sops.nix
         ./bluetooth.nix
-        ./auto-cpufreq.nix
+        ./optimization.nix
         ./x-input.nix
         ./de.nix
         ./dm.nix
