@@ -1,19 +1,37 @@
 {
     config,
+    pkgs,
     lib,
     ...
-}: {
-    options.myConfig.dm.lightdm.enable = lib.mkEnableOption "";
+}: let
+    cfg = config.myConfig.dm;
+in {
+    options.myConfig.dm = {
+        lightdm.enable = lib.mkEnableOption "";
+        gdm.enable = lib.mkEnableOption "";
+        sddm.enable = lib.mkEnableOption "";
+    };
 
-    config = lib.mkIf config.myConfig.dm.lightdm.enable {
+    config = {
         services.xserver = {
             enable = true;
 
-            displayManager.lightdm = {
-                enable = true;
-                greeters.slick.enable = true;
+            displayManager = {
+                lightdm = lib.mkIf cfg.lightdm.enable {
+                    enable = true;
+                    greeters.slick.enable = true;
+                };
+
+                gdm.enable = cfg.gdm.enable;
+
+                sddm = lib.mkIf cfg.sddm.enable {
+                    enable = true;
+                    theme = "chili";
+                };
             };
         };
+
+        environment.systemPackages = lib.mkIf cfg.sddm.enable [pkgs.sddm-chili-theme];
 
         myConfig.x-input.enable = true;
     };
