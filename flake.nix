@@ -7,6 +7,11 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        disko = {
+            url = "github:nix-community/disko";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
         nix-index-database = {
             url = "github:Mic92/nix-index-database";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -33,6 +38,14 @@
                 specialArgs = {inherit inputs;};
                 modules = [
                     ./hosts/dell-laptop
+                    ./users/seb
+                ];
+            };
+            seb-desktop = nixpkgs.lib.nixosSystem {
+                inherit system;
+                specialArgs = {inherit inputs;};
+                modules = [
+                    ./hosts/seb-desktop
                     ./users/seb
                 ];
             };
