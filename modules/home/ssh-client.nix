@@ -9,7 +9,7 @@
         programs.ssh = {
             enable = true;
 
-            matchBlocks.kluebero-vm1 = {
+            matchBlocks.klue-server1 = {
                 hostname = "10.5.251.175";
                 user = "seb";
                 identitiesOnly = true;
