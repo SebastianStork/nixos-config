@@ -22,7 +22,10 @@
                     disableWhileTyping = true;
                 };
 
-                mouse.accelProfile = "flat";
+                mouse = {
+                    accelProfile = "flat";
+                    middleEmulation = false;
+                };
             };
         };
     };
