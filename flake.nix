@@ -29,7 +29,6 @@
     in {
         nixosConfigurations = {
             dell-laptop = nixpkgs.lib.nixosSystem {
-                inherit system;
                 specialArgs = {inherit inputs;};
                 modules = [
                     ./hosts/dell-laptop
@@ -37,7 +36,6 @@
                 ];
             };
             seb-desktop = nixpkgs.lib.nixosSystem {
-                inherit system;
                 specialArgs = {inherit inputs;};
                 modules = [
                     ./hosts/seb-desktop
