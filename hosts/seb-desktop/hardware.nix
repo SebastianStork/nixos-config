@@ -19,4 +19,25 @@
     hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
     services.xserver.videoDrivers = ["nvidia"];
+
+    services.autorandr = {
+        enable = true;
+        profiles = {
+            "primary" = {
+                fingerprint = {
+                    "DP-2" = "00ffffffffffff0005e30227262602001a1e0104a53c22783bdad5ad5048a625125054bfef00d1c081803168317c4568457c6168617c565e00a0a0a029503020350055502100001e40e7006aa0a067500820980455502100001a000000fc0051323747325747340a20202020000000fd003090e6e63c010a20202020202001e702031ff14c0103051404131f120211903f230907078301000065030c0010006fc200a0a0a055503020350055502100001e5aa000a0a0a046503020350055502100001e023a801871382d40582c450055502100001eab22a0a050841a303020360055502100001af03c00d051a0355060883a0055502100001c00000000000080";
+                };
+                config = {
+                    "DP-2" = {
+                        enable = true;
+                        primary = true;
+                        position = "0x0";
+                        mode = "2560x1440";
+                        rate = "144";
+                    };
+                };
+            };
+        };
+    };
+    services.xserver.displayManager.sessionCommands = "autorandr -c";
 }
