@@ -1,7 +1,6 @@
 {
     config,
     lib,
-    osConfig,
     ...
 }: let
     cfg = config.myConfig.shell;
