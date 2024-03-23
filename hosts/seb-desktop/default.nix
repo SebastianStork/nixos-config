@@ -18,7 +18,7 @@
     myConfig = {
         boot-loader.systemd-boot.enable = true;
 
-        dm.lightdm.enable = true;
+        dm.sddm.enable = true;
         de.qtile.enable = true;
 
         sound.pipewire.enable = true;
