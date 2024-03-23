@@ -7,21 +7,7 @@
     options.myConfig.vscode.enable = lib.mkEnableOption "";
 
     config = lib.mkIf config.myConfig.vscode.enable {
-        home.packages = let
-            alejandra4 = pkgs.alejandra.overrideAttrs {
-                passthru.tests.version = lib.mkForce {};
-                postPatch = ''
-                    substituteInPlace src/alejandra/src/builder.rs \
-                    --replace '2 * build_ctx.indentation' '4 * build_ctx.indentation'
-                    substituteInPlace src/alejandra/src/rules/string.rs \
-                    --replace 'format!("  {}", line)' 'format!("    {}", line)'
-                    rm -r src/alejandra/tests
-                '';
-            };
-        in [
-            pkgs.nil
-            alejandra4
-        ];
+        home.packages = [pkgs.nil];
 
         programs.vscode = {
             enable = true;
