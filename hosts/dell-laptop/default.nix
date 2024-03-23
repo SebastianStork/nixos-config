@@ -26,7 +26,6 @@
         sops.enable = true;
         optimization.mode = "powersave";
         doas.enable = false;
-        nix-helper.enable = true;
         printing.enable = true;
     };
 

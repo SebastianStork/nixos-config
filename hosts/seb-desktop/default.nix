@@ -28,7 +28,6 @@
         vpn.lgs.enable = true;
         comma.enable = true;
         sops.enable = true;
-        nix-helper.enable = true;
         printing.enable = true;
     };
 

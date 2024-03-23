@@ -10,25 +10,12 @@ in {
         bash.enable = lib.mkEnableOption "";
         zsh.enable = lib.mkEnableOption "";
         starship.enable = lib.mkEnableOption "";
-        nixAliases = {
-            enable = lib.mkEnableOption "";
-            nix-helper.enable = lib.mkEnableOption "";
-        };
+        nixAliases.enable = lib.mkEnableOption "";
         improvedCommands.enable = lib.mkEnableOption "";
         direnv.enable = lib.mkEnableOption "";
     };
 
     config = {
-        assertions = [
-            {
-                assertion =
-                    if cfg.nixAliases.nix-helper.enable
-                    then osConfig.myConfig.nix-helper.enable
-                    else true;
-                message = "The nix-helper has to be enabled on the OS level.";
-            }
-        ];
-
         programs.bash.enable = cfg.bash.enable;
 
         programs.zsh.enable = cfg.zsh.enable;
@@ -49,10 +36,7 @@ in {
 
         home.shellAliases = let
             nixAliases = lib.mkIf cfg.nixAliases.enable {
-                nr =
-                    if cfg.nixAliases.nix-helper.enable
-                    then "nh os"
-                    else "sudo nixos-rebuild --flake $FLAKE";
+                nr = "sudo nixos-rebuild --flake $FLAKE";
                 nrs = "nr switch";
                 nrt = "nr test";
                 nrb = "nr boot";

@@ -5,10 +5,7 @@
         shell = {
             bash.enable = true;
             starship.enable = true;
-            nixAliases = {
-                enable = true;
-                nix-helper.enable = true;
-            };
+            nixAliases.enable = true;
             improvedCommands.enable = true;
             direnv.enable = true;
         };
