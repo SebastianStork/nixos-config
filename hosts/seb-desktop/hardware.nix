@@ -10,7 +10,7 @@
 
     boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod"];
     boot.initrd.kernelModules = [];
-    boot.kernelModules = ["kvm-amd"];
+    boot.kernelModules = ["kvm-amd" "adm1021" "nct6775"];
     boot.extraModulePackages = [];
 
     networking.useDHCP = lib.mkDefault true;
@@ -40,4 +40,19 @@
         };
     };
     services.xserver.displayManager.sessionCommands = "autorandr -c";
+
+    hardware.fancontrol = {
+        enable = true;
+        config = ''
+            INTERVAL=5
+            DEVPATH=hwmon0=devices/platform/nct6775.656 hwmon1=devices/pci0000:00/0000:00:18.3
+            DEVNAME=hwmon0=nct6798 hwmon1=k10temp
+            FCTEMPS=hwmon0/pwm2=hwmon1/temp1_input hwmon0/pwm1=hwmon0/temp1_input hwmon0/pwm3=hwmon0/temp1_input hwmon0/pwm4=hwmon0/temp1_input hwmon0/pwm5=hwmon0/temp1_input
+            FCFANS=hwmon0/pwm2=hwmon0/fan7_input+hwmon0/fan2_input hwmon0/pwm1=hwmon0/fan1_input hwmon0/pwm3=hwmon0/fan3_input hwmon0/pwm4=hwmon0/fan4_input hwmon0/pwm5=hwmon0/fan5_input
+            MINTEMP=hwmon0/pwm2=30 hwmon0/pwm1=30 hwmon0/pwm3=30 hwmon0/pwm4=30 hwmon0/pwm5=30
+            MAXTEMP=hwmon0/pwm2=100 hwmon0/pwm1=80 hwmon0/pwm3=80 hwmon0/pwm4=80 hwmon0/pwm5=80
+            MINSTART=hwmon0/pwm2=15 hwmon0/pwm1=15 hwmon0/pwm3=15 hwmon0/pwm4=15 hwmon0/pwm5=15
+            MINSTOP=hwmon0/pwm2=10 hwmon0/pwm1=10 hwmon0/pwm3=10 hwmon0/pwm4=10 hwmon0/pwm5=10
+        '';
+    };
 }
