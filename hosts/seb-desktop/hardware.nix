@@ -41,13 +41,28 @@
     };
     services.xserver.displayManager.sessionCommands = "autorandr -c";
 
+    systemd.services.gpu-temp-reader = {
+        wantedBy = ["multi-user.target"];
+        requires = ["fancontrol.service"];
+        before = ["fancontrol.service"];
+
+        script = ''
+            /run/current-system/sw/bin/touch /tmp/nvidia-gpu-temp
+            while :; do
+                temp="$(/run/current-system/sw/bin/nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits)"
+                /run/current-system/sw/bin/echo "$((temp * 1000))" > /tmp/nvidia-gpu-temp
+                /run/current-system/sw/bin/sleep 2
+            done
+        '';
+    };
+
     hardware.fancontrol = {
         enable = true;
         config = ''
             INTERVAL=5
             DEVPATH=hwmon0=devices/platform/nct6775.656 hwmon1=devices/pci0000:00/0000:00:18.3
             DEVNAME=hwmon0=nct6798 hwmon1=k10temp
-            FCTEMPS=hwmon0/pwm2=hwmon1/temp1_input hwmon0/pwm1=hwmon0/temp1_input hwmon0/pwm3=hwmon0/temp1_input hwmon0/pwm4=hwmon0/temp1_input hwmon0/pwm5=hwmon0/temp1_input
+            FCTEMPS=hwmon0/pwm2=hwmon1/temp1_input hwmon0/pwm1=hwmon0/temp1_input hwmon0/pwm3=hwmon0/temp1_input hwmon0/pwm4=/tmp/nvidia-gpu-temp hwmon0/pwm5=hwmon0/temp1_input
             FCFANS=hwmon0/pwm2=hwmon0/fan7_input+hwmon0/fan2_input hwmon0/pwm1=hwmon0/fan1_input hwmon0/pwm3=hwmon0/fan3_input hwmon0/pwm4=hwmon0/fan4_input hwmon0/pwm5=hwmon0/fan5_input
             MINTEMP=hwmon0/pwm2=30 hwmon0/pwm1=30 hwmon0/pwm3=30 hwmon0/pwm4=30 hwmon0/pwm5=30
             MAXTEMP=hwmon0/pwm2=100 hwmon0/pwm1=80 hwmon0/pwm3=80 hwmon0/pwm4=80 hwmon0/pwm5=80
