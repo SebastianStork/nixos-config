@@ -27,6 +27,7 @@
         optimization.mode = "powersave";
         doas.enable = false;
         printing.enable = true;
+        syncthing.enable = true;
     };
 
     boot.kernelPackages = pkgs.linuxPackages_latest;

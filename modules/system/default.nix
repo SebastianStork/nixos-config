@@ -16,5 +16,6 @@
         ./sound.nix
         ./boot-loader.nix
         ./printing.nix
+        ./syncthing.nix
     ];
 }

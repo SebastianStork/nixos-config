@@ -29,6 +29,7 @@
         comma.enable = true;
         sops.enable = true;
         printing.enable = true;
+        syncthing.enable = true;
     };
 
     boot.kernelPackages = pkgs.linuxPackages_latest;
