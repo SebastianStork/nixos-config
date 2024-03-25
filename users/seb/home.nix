@@ -1,6 +1,6 @@
 {pkgs, ...}: {
     myConfig = {
-        qtile.enable = true;
+        dm.qtile.enable = true;
         vscode.enable = true;
         shell = {
             bash.enable = true;

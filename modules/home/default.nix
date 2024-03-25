@@ -1,6 +1,6 @@
 {
     imports = [
-        ./qtile
+        ./dm
         ./vscode.nix
         ./shell.nix
         ./theming.nix
