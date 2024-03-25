@@ -8,5 +8,6 @@
         ./git.nix
         ./neovim.nix
         ./kitty.nix
+        ./rofi
     ];
 }

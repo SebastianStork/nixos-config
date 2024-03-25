@@ -29,10 +29,7 @@
             pkgs.brightnessctl
         ];
 
-        programs.rofi = {
-            enable = true;
-            theme = ./files/rofi-theme.rasi;
-        };
+        myConfig.rofi.enable = true;
 
         services.picom = {
             enable = true;
