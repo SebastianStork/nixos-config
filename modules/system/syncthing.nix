@@ -23,35 +23,45 @@
                 };
 
                 folders = let
-                    devices = ["seb-desktop" "dell-laptop"];
-                    versioning = {
+                    allDevices = ["seb-desktop" "dell-laptop"];
+                    staggeredVersioning = {
                         type = "staggered";
                         params = {
                             cleanInterval = "3600"; # 1 hour in seconds
                             maxAge = "15552000"; # 180 days in seconds
                         };
                     };
-                    ignorePerms = false;
                 in {
                     Documents = {
                         path = "/home/seb/Documents";
-                        inherit devices versioning ignorePerms;
+                        devices = allDevices;
+                        versioning = staggeredVersioning;
+                        ignorePerms = false;
                     };
                     Downloads = {
                         path = "/home/seb/Downloads";
-                        inherit devices versioning ignorePerms;
+                        devices = allDevices;
+                        versioning = staggeredVersioning;
+                        ignorePerms = false;
                     };
                     Pictures = {
                         path = "/home/seb/Pictures";
-                        inherit devices versioning ignorePerms;
+                        devices = allDevices;
+                        versioning = staggeredVersioning;
+                        ignorePerms = false;
                     };
                     Music = {
                         path = "/home/seb/Music";
-                        inherit devices versioning ignorePerms;
+                        devices = allDevices;
+                        versioning = staggeredVersioning;
+                        ignorePerms = false;
                     };
                     Videos = {
                         path = "/home/seb/Videos";
-                        inherit devices versioning ignorePerms;
+                        devices = allDevices;
+                        versioning = staggeredVersioning;
+                        ignorePerms = false;
+                    };
                     };
                 };
             };
