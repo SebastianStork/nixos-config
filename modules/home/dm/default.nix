@@ -9,9 +9,14 @@
 in {
     imports = [./qtile];
 
-    options.myConfig.dm.tray = {
-        syncthing.enable = lib.mkEnableOption "";
-        networkmanager.enable = lib.mkEnableOption "";
+    options.myConfig.dm = {
+        wallpaper = lib.mkOption {
+            type = lib.types.path;
+        };
+        tray = {
+            syncthing.enable = lib.mkEnableOption "";
+            networkmanager.enable = lib.mkEnableOption "";
+        };
     };
 
     config = lib.mkMerge [

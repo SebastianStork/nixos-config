@@ -16,7 +16,7 @@
         ];
 
         home.file.".config/qtile/config.py".source = ./qtile.py;
-        home.file.".background-image".source = ./background-image;
+        home.file.".background-image".source = config.myConfig.dm.wallpaper;
 
         home.packages = [
             # Widget dependencies

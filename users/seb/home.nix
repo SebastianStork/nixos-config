@@ -2,6 +2,7 @@
     myConfig = {
         dm = {
             qtile.enable = true;
+            wallpaper = ./wallpaper;
             tray.syncthing.enable = true;
         };
         vscode.enable = true;
