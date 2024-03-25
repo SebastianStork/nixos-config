@@ -5,9 +5,9 @@
     osConfig,
     ...
 }: {
-    options.myConfig.dm.qtile.enable = lib.mkEnableOption "";
+    options.myConfig.de.qtile.enable = lib.mkEnableOption "";
 
-    config = lib.mkIf config.myConfig.dm.qtile.enable {
+    config = lib.mkIf config.myConfig.de.qtile.enable {
         assertions = [
             {
                 assertion = osConfig.services.xserver.windowManager.qtile.enable;
@@ -16,7 +16,7 @@
         ];
 
         home.file.".config/qtile/config.py".source = ./qtile.py;
-        home.file.".background-image".source = config.myConfig.dm.wallpaper;
+        home.file.".background-image".source = config.myConfig.de.wallpaper;
 
         home.packages = [
             # Widget dependencies

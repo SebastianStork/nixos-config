@@ -1,6 +1,6 @@
 {
     imports = [
-        ./dm
+        ./de
         ./vscode.nix
         ./shell.nix
         ./theming.nix

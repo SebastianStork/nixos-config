@@ -5,11 +5,11 @@
     osConfig,
     ...
 }: let
-    cfg = config.myConfig.dm;
+    cfg = config.myConfig.de;
 in {
     imports = [./qtile];
 
-    options.myConfig.dm = {
+    options.myConfig.de = {
         wallpaper = lib.mkOption {
             type = lib.types.path;
         };
