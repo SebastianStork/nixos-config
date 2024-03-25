@@ -1,6 +1,9 @@
 {pkgs, ...}: {
     myConfig = {
-        dm.qtile.enable = true;
+        dm = {
+            qtile.enable = true;
+            tray.syncthing.enable = true;
+        };
         vscode.enable = true;
         shell = {
             bash.enable = true;
@@ -45,7 +48,6 @@
         hunspellDicts.de_DE
         hunspellDicts.en_US
         steam
-        networkmanagerapplet
 
         # Fonts
         (nerdfonts.override {fonts = ["JetBrainsMono"];})
