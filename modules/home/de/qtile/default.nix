@@ -29,7 +29,10 @@
             pkgs.brightnessctl
         ];
 
-        myConfig.rofi.enable = true;
+        myConfig.rofi = {
+            enable = true;
+            clipboard.enable = true;
+        };
 
         services.picom = {
             enable = true;

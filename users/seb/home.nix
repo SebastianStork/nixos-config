@@ -20,11 +20,6 @@
         kitty.enable = true;
     };
 
-    services.clipmenu = {
-        enable = true;
-        launcher = "rofi";
-    };
-
     programs.btop.enable = true;
 
     home.packages = with pkgs; [
