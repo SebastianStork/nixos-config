@@ -62,9 +62,19 @@
                         versioning = staggeredVersioning;
                         ignorePerms = false;
                     };
+                    Projects = {
+                        path = "/home/seb/Projects";
+                        devices = allDevices;
+                        ignorePerms = false;
                     };
                 };
             };
         };
+
+        home-manager.sharedModules = [
+            {
+                home.file."Projects/.stignore".text = ".git/";
+            }
+        ];
     };
 }
