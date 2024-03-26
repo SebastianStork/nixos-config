@@ -10,5 +10,5 @@
         extraGroups = ["wheel" "networkmanager" "libvirtd"];
     };
 
-    home-manager.users.seb = import ./home.nix;
+    home-manager.users.seb = ./home.nix;
 }
