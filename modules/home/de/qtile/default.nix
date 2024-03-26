@@ -15,7 +15,7 @@
             }
         ];
 
-        home.file.".config/qtile/config.py".source = ./qtile.py;
+        home.file.".config/qtile/config.py".source = ./config.py;
         home.file.".background-image".source = config.myConfig.de.wallpaper;
 
         home.packages = [

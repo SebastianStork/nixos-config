@@ -3,9 +3,9 @@
     pkgs,
     lib,
     ...
-}: let 
+}: let
     cfg = config.myConfig.rofi;
-in  {
+in {
     options.myConfig.rofi = {
         enable = lib.mkEnableOption "";
         clipboard.enable = lib.mkEnableOption "";
@@ -15,7 +15,7 @@ in  {
         programs.rofi = {
             enable = true;
             package = pkgs.rofi-wayland;
-            theme = ./rofi-theme.rasi;
+            theme = ./theme.rasi;
         };
 
         services.clipmenu = lib.mkIf cfg.clipboard.enable {
