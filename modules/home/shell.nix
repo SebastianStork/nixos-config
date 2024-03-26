@@ -43,12 +43,12 @@ in {
 
         (lib.mkIf cfg.nixAliases.enable {
             home.shellAliases = {
-                nr = "sudo nixos-rebuild --flake $FLAKE";
+                nr = "nixos-rebuild --flake $FLAKE --use-remote-sudo";
                 nrs = "nr switch";
                 nrt = "nr test";
                 nrb = "nr boot";
                 nrrb = "nrb && reboot";
-                nu = "sudo nix flake update";
+                nu = "nix flake update";
             };
         })
 
