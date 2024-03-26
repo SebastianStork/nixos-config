@@ -39,10 +39,8 @@ in {
                 nix-direnv.enable = true;
                 config.global.hide_env_diff = true;
             };
-        }
 
-        (lib.mkIf cfg.nixAliases.enable {
-            home.shellAliases = {
+            home.shellAliases = lib.mkIf cfg.nixAliases.enable {
                 nr = "nixos-rebuild --flake $FLAKE --use-remote-sudo";
                 nrs = "nr switch";
                 nrt = "nr test";
@@ -50,7 +48,7 @@ in {
                 nrrb = "nrb && reboot";
                 nu = "nix flake update";
             };
-        })
+        }
 
         (lib.mkIf cfg.improvedCommands.enable {
             programs.lsd = {
