@@ -31,7 +31,7 @@ in {
             xsession.enable = osConfig.services.xserver.enable;
 
             systemd.user.services = {
-                syncthingtray = lib.mkIf cfg.tray.syncthing.enable {
+                syncthingtray = {
                     Unit = {
                         Description = "Syncthingtray";
                         Requires = ["tray.target"];
@@ -59,7 +59,7 @@ in {
             xsession.enable = osConfig.services.xserver.enable;
 
             systemd.user.services = {
-                nm-applet = lib.mkIf cfg.tray.networkmanager.enable {
+                nm-applet = {
                     Unit = {
                         Description = "Networkmanager-applet";
                         Requires = ["tray.target"];
