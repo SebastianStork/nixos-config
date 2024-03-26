@@ -10,8 +10,6 @@
         trusted-users = ["root" "@wheel"];
     };
 
-    nixpkgs.config.allowUnfree = true;
-
     console.keyMap = "de-latin1-nodeadkeys";
     time.timeZone = "Europe/Berlin";
     i18n.defaultLocale = "en_US.UTF-8";
@@ -31,4 +29,16 @@
         pkgs.git
         pkgs.neovim
     ];
+
+    nixpkgs.config.allowUnfreePredicate = pkg:
+        builtins.elem (pkgs.lib.getName pkg) [
+            "spotify"
+            "discord"
+            "steam"
+            "steam-original"
+            "steam-run"
+            "corefonts"
+            "nvidia-x11"
+            "nvidia-settings"
+        ];
 }
