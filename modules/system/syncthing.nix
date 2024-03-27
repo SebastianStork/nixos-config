@@ -70,11 +70,5 @@
                 };
             };
         };
-
-        home-manager.sharedModules = [
-            {
-                home.file."Projects/.stignore".text = ".git/";
-            }
-        ];
     };
 }
