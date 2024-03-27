@@ -41,7 +41,7 @@ in {
             };
 
             home.shellAliases = lib.mkIf cfg.nixAliases.enable {
-                nr = "nixos-rebuild --flake $FLAKE --use-remote-sudo";
+                nr = "sudo -v && nixos-rebuild --flake $FLAKE --use-remote-sudo";
                 nrs = "nr switch";
                 nrt = "nr test";
                 nrb = "nr boot";
