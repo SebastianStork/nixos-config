@@ -49,6 +49,5 @@
         corefonts
         roboto
         open-sans
-        ubuntu_font_family
     ];
 }
