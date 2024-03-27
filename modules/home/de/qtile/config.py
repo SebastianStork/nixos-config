@@ -125,10 +125,6 @@ screens = [
 					widget.Systray()
 				]),
 				widget.Sep(),
-				widget.Wlan(format="󰖩  {essid}", interface="wlp2s0", update_interval=5, max_chars=4),
-				widget.Sep(),
-				widget.ThermalSensor(format="  {temp:.1f}{unit}", tag_sensor="CPU", threshold=90, update_interval=5),
-				widget.Sep(),
 				widget.PulseVolume(fmt="󰕾 {}"),
 				widget.Sep(),
 				widget.Backlight(fmt="󰃠 {}", backlight_name='amdgpu_bl0'),
