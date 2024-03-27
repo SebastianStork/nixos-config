@@ -43,7 +43,6 @@
         hunspell
         hunspellDicts.de_DE
         hunspellDicts.en_US
-        steam
 
         # Fonts
         (nerdfonts.override {fonts = ["JetBrainsMono"];})
