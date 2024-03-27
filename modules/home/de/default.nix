@@ -30,6 +30,8 @@ in {
 
             xsession.enable = osConfig.services.xserver.enable;
 
+            home.packages = [pkgs.syncthingtray-minimal];
+
             systemd.user.services = {
                 syncthingtray = {
                     Unit = {
@@ -57,6 +59,8 @@ in {
             ];
 
             xsession.enable = osConfig.services.xserver.enable;
+
+            home.packages = [pkgs.networkmanagerapplet];
 
             systemd.user.services = {
                 nm-applet = {
