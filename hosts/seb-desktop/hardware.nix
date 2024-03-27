@@ -59,16 +59,17 @@
     hardware.fancontrol = {
         enable = true;
         config = ''
+            # pwm1=rear pwm2=cpu pwm3=front+top pwm4=gpu pwm=motherboard?
             INTERVAL=2
             AVERAGE=5
             DEVPATH=hwmon0=devices/platform/nct6775.656 hwmon1=devices/pci0000:00/0000:00:18.3
             DEVNAME=hwmon0=nct6798 hwmon1=k10temp
-            FCTEMPS=hwmon0/pwm2=hwmon1/temp1_input hwmon0/pwm1=hwmon0/temp1_input hwmon0/pwm3=hwmon0/temp1_input hwmon0/pwm4=/tmp/nvidia-gpu-temp hwmon0/pwm5=hwmon0/temp1_input
-            FCFANS=hwmon0/pwm2=hwmon0/fan2_input hwmon0/pwm1=hwmon0/fan1_input hwmon0/pwm3=hwmon0/fan3_input hwmon0/pwm4=hwmon0/fan4_input hwmon0/pwm5=hwmon0/fan5_input
-            MINTEMP=hwmon0/pwm2=30 hwmon0/pwm1=30 hwmon0/pwm3=30 hwmon0/pwm4=30 hwmon0/pwm5=30
-            MAXTEMP=hwmon0/pwm2=100 hwmon0/pwm1=100 hwmon0/pwm3=100 hwmon0/pwm4=100 hwmon0/pwm5=80
-            MINSTART=hwmon0/pwm2=20 hwmon0/pwm1=20 hwmon0/pwm3=20 hwmon0/pwm4=20 hwmon0/pwm5=20
-            MINSTOP=hwmon0/pwm2=10 hwmon0/pwm1=10 hwmon0/pwm3=10 hwmon0/pwm4=10 hwmon0/pwm5=20
+            FCTEMPS=hwmon0/pwm1=hwmon0/temp1_input hwmon0/pwm2=hwmon1/temp1_input hwmon0/pwm3=hwmon0/temp1_input hwmon0/pwm4=/tmp/nvidia-gpu-temp hwmon0/pwm5=hwmon0/temp1_input
+            FCFANS=hwmon0/pwm1=hwmon0/fan1_input hwmon0/pwm2=hwmon0/fan7_input+hwmon0/fan2_input hwmon0/pwm3=hwmon0/fan3_input hwmon0/pwm4=hwmon0/fan4_input hwmon0/pwm5=hwmon0/fan5_input
+            MINTEMP=hwmon0/pwm1=30  hwmon0/pwm2=40 hwmon0/pwm3=30 hwmon0/pwm4=40 hwmon0/pwm5=30
+            MAXTEMP=hwmon0/pwm1=100 hwmon0/pwm2=100 hwmon0/pwm3=100 hwmon0/pwm4=100 hwmon0/pwm5=100
+            MINSTART=hwmon0/pwm1=46 hwmon0/pwm2=46 hwmon0/pwm3=46 hwmon0/pwm4=60 hwmon0/pwm5=46
+            MINSTOP=hwmon0/pwm1=16 hwmon0/pwm2=16 hwmon0/pwm3=16 hwmon0/pwm4=30 hwmon0/pwm5=16
         '';
     };
 }
