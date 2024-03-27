@@ -127,7 +127,7 @@ screens = [
 				widget.Sep(),
 				widget.PulseVolume(fmt="󰕾 {}"),
 				widget.Sep(),
-				widget.Backlight(fmt="󰃠 {}", backlight_name='amdgpu_bl0'),
+				widget.Backlight(fmt="󰃠 {}", backlight_name='amdgpu_bl1'),
 				widget.Sep(),
 				widget.Battery(format="󰁹 {percent:2.0%}"),
 			],
