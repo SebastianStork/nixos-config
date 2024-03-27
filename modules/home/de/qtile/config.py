@@ -104,7 +104,7 @@ mouse = [
 
 ### WIDGETS ###
 widget_defaults = dict(
-	font="sans, JetBrainsMono Nerd Font",
+	font="sans, Symbols Nerd Font Mono",
 	fontsize=15,
 	padding=3,
 )
