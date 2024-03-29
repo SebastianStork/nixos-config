@@ -1,6 +1,5 @@
 {
     config,
-    pkgs,
     lib,
     ...
 }: {
@@ -8,12 +7,6 @@
 
     config = lib.mkIf config.myConfig.flatpak.enable {
         services.flatpak.enable = true;
-
-        xdg.portal = {
-            enable = true;
-            extraPortals = [pkgs.xdg-desktop-portal-gtk];
-            config.common.default = "*";
-        };
 
         home-manager.sharedModules = [
             {
