@@ -7,7 +7,7 @@
 }: let
     cfg = config.myConfig.de;
 in {
-    imports = [./qtile];
+    imports = [./qtile.nix];
 
     options.myConfig.de = {
         wallpaper = lib.mkOption {
