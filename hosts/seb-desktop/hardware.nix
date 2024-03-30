@@ -1,12 +1,9 @@
 {
     config,
     lib,
-    modulesPath,
     ...
 }: {
-    imports = [
-        (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+    hardware.enableRedistributableFirmware = true;
 
     boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod"];
     boot.initrd.kernelModules = [];
