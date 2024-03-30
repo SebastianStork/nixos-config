@@ -1,8 +1,14 @@
 {
+    inputs,
     config,
     lib,
     ...
 }: {
+    imports = [
+        inputs.disko.nixosModules.default
+        ./disko.nix
+    ];
+
     hardware.enableRedistributableFirmware = true;
 
     boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod"];
@@ -63,9 +69,9 @@
             DEVNAME=hwmon0=nct6798 hwmon1=k10temp
             FCTEMPS=hwmon0/pwm1=hwmon0/temp1_input hwmon0/pwm2=hwmon1/temp1_input hwmon0/pwm3=hwmon0/temp1_input hwmon0/pwm4=/tmp/nvidia-gpu-temp hwmon0/pwm5=hwmon0/temp1_input
             FCFANS=hwmon0/pwm1=hwmon0/fan1_input hwmon0/pwm2=hwmon0/fan7_input+hwmon0/fan2_input hwmon0/pwm3=hwmon0/fan3_input hwmon0/pwm4=hwmon0/fan4_input hwmon0/pwm5=hwmon0/fan5_input
-            MINTEMP=hwmon0/pwm1=30  hwmon0/pwm2=40 hwmon0/pwm3=30 hwmon0/pwm4=40 hwmon0/pwm5=30
+            MINTEMP=hwmon0/pwm1=35 hwmon0/pwm2=40 hwmon0/pwm3=35 hwmon0/pwm4=40 hwmon0/pwm5=35
             MAXTEMP=hwmon0/pwm1=100 hwmon0/pwm2=100 hwmon0/pwm3=100 hwmon0/pwm4=100 hwmon0/pwm5=100
-            MINSTART=hwmon0/pwm1=46 hwmon0/pwm2=46 hwmon0/pwm3=46 hwmon0/pwm4=60 hwmon0/pwm5=46
+            MINSTART=hwmon0/pwm1=21 hwmon0/pwm2=21 hwmon0/pwm3=21 hwmon0/pwm4=35 hwmon0/pwm5=21
             MINSTOP=hwmon0/pwm1=16 hwmon0/pwm2=16 hwmon0/pwm3=16 hwmon0/pwm4=30 hwmon0/pwm5=16
         '';
     };

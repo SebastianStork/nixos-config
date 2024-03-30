@@ -1,14 +1,7 @@
-{
-    inputs,
-    pkgs,
-    ...
-}: {
+{pkgs, ...}: {
     imports = [
         ../default.nix
         ./hardware.nix
-
-        inputs.disko.nixosModules.default
-        ./disko.nix
     ];
 
     networking.hostName = "seb-desktop";
