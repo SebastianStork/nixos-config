@@ -35,9 +35,5 @@
         libsForQt5.kdenlive
         gimp
         onlyoffice-bin_latest
-        libreoffice
-        hunspell
-        hunspellDicts.de_DE
-        hunspellDicts.en_US
     ];
 }
