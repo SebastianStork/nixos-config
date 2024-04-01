@@ -43,11 +43,5 @@
         hunspell
         hunspellDicts.de_DE
         hunspellDicts.en_US
-
-        # Fonts
-        (nerdfonts.override {fonts = ["JetBrainsMono" "NerdFontsSymbolsOnly"];})
-        corefonts
-        roboto
-        open-sans
     ];
 }
