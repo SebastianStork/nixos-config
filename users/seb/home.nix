@@ -23,10 +23,6 @@
     programs.btop.enable = true;
 
     home.packages = with pkgs; [
-        # CLI
-        fastfetch
-
-        # GUI
         notepadqq
         brave
         spotify
