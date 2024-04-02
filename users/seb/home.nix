@@ -1,12 +1,18 @@
-{pkgs, ...}: {
+{
+    pkgs,
+    osConfig,
+    ...
+}: {
     myConfig = {
         de = {
             qtile.enable = true;
             wallpaper = ./wallpaper;
             theming.enable = true;
-            tray.syncthing.enable = true;
+            tray = {
+                syncthing.enable = osConfig.myConfig.syncthing.enable;
+                networkmanager.enable = osConfig.networking.networkmanager.enable;
+            };
         };
-        vscode.enable = true;
         shell = {
             bash.enable = true;
             starship.enable = true;
@@ -17,6 +23,7 @@
         ssh-client.enable = true;
         git.enable = true;
         neovim.enable = true;
+        vscode.enable = true;
         kitty.enable = true;
     };
 
