@@ -3,6 +3,7 @@
         de = {
             qtile.enable = true;
             wallpaper = ./wallpaper;
+            theming.enable = true;
             tray.syncthing.enable = true;
         };
         vscode.enable = true;
@@ -13,7 +14,6 @@
             improvedCommands.enable = true;
             direnv.enable = true;
         };
-        theming.enable = true;
         ssh-client.enable = true;
         git.enable = true;
         neovim.enable = true;
