@@ -7,7 +7,6 @@
 
     config = lib.mkIf config.myConfig.x-input.enable {
         services.xserver = {
-            enable = true;
             xkb = {
                 layout = "de";
                 variant = "nodeadkeys";
