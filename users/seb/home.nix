@@ -29,18 +29,15 @@
 
     programs.btop.enable = true;
 
-    home.packages = with pkgs; [
-        notepadqq
-        brave
-        spotify
-        cinnamon.nemo-with-extensions
-        discord
-        flameshot
-        jetbrains.idea-community
-        vlc
-        obs-studio
-        libsForQt5.kdenlive
-        gimp
-        onlyoffice-bin_latest
+    home.packages = [
+        pkgs.notepadqq
+        pkgs.brave
+        pkgs.spotify
+        pkgs.cinnamon.nemo-with-extensions
+        pkgs.discord
+        pkgs.flameshot
+        pkgs.jetbrains.idea-community
+        pkgs.vlc
+        pkgs.onlyoffice-bin_latest
     ];
 }

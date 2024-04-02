@@ -32,7 +32,7 @@
                 specialArgs = {inherit inputs;};
                 modules = [
                     ./hosts/seb-desktop
-                    ./users/seb
+                    "${./.}/users/seb/@seb-desktop.nix"
                 ];
             };
             seb-laptop = nixpkgs.lib.nixosSystem {
