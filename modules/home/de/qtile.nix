@@ -17,7 +17,6 @@ in {
 
             # Hotkey dependencies
             pkgs.playerctl
-            pkgs.brightnessctl
         ];
 
         home.file.".background-image".source = cfg.wallpaper;
@@ -37,6 +36,13 @@ in {
         services.dunst.enable = true;
 
         xdg.configFile."qtile/config.py".text = let
+            backlightKeys =
+                if cfg.widget.backlight.enable
+                then ''
+                    Key([], "XF86MonBrightnessUp", lazy.spawn("brillo -q -s ${cfg.widget.backlight.device} -u 50000 -A 4"), desc="Raise brightness"),
+                    Key([], "XF86MonBrightnessDown", lazy.spawn("brillo -q -s ${cfg.widget.backlight.device} -u 50000 -U 4"), desc="Lower brightness"),
+                ''
+                else "";
             backlightWidget =
                 if cfg.widget.backlight.enable
                 then ''
@@ -47,7 +53,7 @@ in {
             batteryWidget =
                 if cfg.widget.battery.enable
                 then ''
-                          widget.Sep(),
+                    widget.Sep(),
                     widget.Battery(format="󰁹 {percent:2.0%}"),
                 ''
                 else "";
@@ -100,8 +106,7 @@ in {
             	Key([], "XF86AudioRaiseVolume", lazy.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), desc="Raise volume"),
 
             	# Brightness controls
-            	Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +5%"), desc="Raise brightness"),
-            	Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 5%-"), desc="Lower brightness"),
+            	${backlightKeys}
 
             	# Move window focus
             	Key([mod], left, lazy.layout.left(), desc="Move focus to left"),

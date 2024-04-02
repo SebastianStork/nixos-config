@@ -7,7 +7,7 @@
         isNormalUser = true;
         description = "Sebastian Stork";
         hashedPasswordFile = config.sops.secrets."password/seb".path;
-        extraGroups = ["wheel" "networkmanager" "libvirtd"];
+        extraGroups = ["wheel" "networkmanager" "libvirtd" "video"];
     };
 
     home-manager.users.seb = ./home.nix;
