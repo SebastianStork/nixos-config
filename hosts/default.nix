@@ -48,4 +48,6 @@
             "nvidia-x11"
             "nvidia-settings"
         ];
+
+    users.mutableUsers = false;
 }

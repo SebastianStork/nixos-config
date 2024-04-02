@@ -1,8 +1,6 @@
 {inputs, ...}: {
     imports = [inputs.home-manager.nixosModules.home-manager];
 
-    users.mutableUsers = false;
-
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
 
