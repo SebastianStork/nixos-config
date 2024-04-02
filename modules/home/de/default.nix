@@ -20,7 +20,7 @@ in {
     };
 
     config = lib.mkMerge [
-        (lib.mkIf config.myConfig.theming.enable {
+        (lib.mkIf cfg.theming.enable {
             dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
 
             gtk = {
