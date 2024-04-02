@@ -14,7 +14,7 @@
         dm.sddm.enable = true;
         de.qtile.enable = true;
 
-        sound.pipewire.enable = true;
+        sound.enable = true;
         auto-gc.enable = true;
         vm.qemu.enable = true;
         flatpak.enable = true;

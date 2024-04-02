@@ -17,7 +17,7 @@
         wlan.enable = true;
         bluetooth.enable = true;
 
-        sound.pipewire.enable = true;
+        sound.enable = true;
         auto-gc.enable = true;
         vm.qemu.enable = true;
         flatpak.enable = true;
@@ -31,6 +31,6 @@
 
     boot.kernelPackages = pkgs.linuxPackages_latest;
     services.gvfs.enable = true;
-    
+
     hardware.brillo.enable = true;
 }
