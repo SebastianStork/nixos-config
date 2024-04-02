@@ -24,7 +24,6 @@
         vpn.lgs.enable = true;
         comma.enable = true;
         sops.enable = true;
-        doas.enable = false;
         printing.enable = true;
         syncthing.enable = true;
     };

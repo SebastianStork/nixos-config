@@ -1,15 +1,4 @@
-{
-    config,
-    lib,
-    ...
-}: {
-    hardware.enableRedistributableFirmware = true;
-
-    boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usb_storage" "sd_mod"];
-    boot.initrd.kernelModules = [];
-    boot.kernelModules = ["kvm-amd"];
-    boot.extraModulePackages = [];
-
+{...}: {
     fileSystems."/" = {
         device = "/dev/disk/by-uuid/92437114-de06-4a78-9ee3-c7d0ffcabf95";
         fsType = "ext4";
@@ -24,10 +13,11 @@
         {device = "/dev/disk/by-uuid/1eba93d1-4853-4534-8cfd-5c14e29c6ff6";}
     ];
 
-    networking.useDHCP = lib.mkDefault true;
-
-    nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-    hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    hardware.enableRedistributableFirmware = true;
+    boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usb_storage" "sd_mod"];
+    boot.kernelModules = ["kvm-amd"];
+    nixpkgs.hostPlatform = "x86_64-linux";
+    hardware.cpu.amd.updateMicrocode = true;
 
     services.autorandr = {
         enable = true;

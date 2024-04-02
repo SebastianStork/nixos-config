@@ -1,26 +1,14 @@
-{
-    inputs,
-    config,
-    lib,
-    ...
-}: {
+{inputs, ...}: {
     imports = [
         inputs.disko.nixosModules.default
         ./disko.nix
     ];
 
     hardware.enableRedistributableFirmware = true;
-
     boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod"];
-    boot.initrd.kernelModules = [];
     boot.kernelModules = ["kvm-amd" "adm1021" "nct6775"];
-    boot.extraModulePackages = [];
-
-    networking.useDHCP = lib.mkDefault true;
-
-    nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-    hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
+    nixpkgs.hostPlatform = "x86_64-linux";
+    hardware.cpu.amd.updateMicrocode = true;
     services.xserver.videoDrivers = ["nvidia"];
 
     services.autorandr = {
