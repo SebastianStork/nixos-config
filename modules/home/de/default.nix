@@ -2,7 +2,6 @@
     config,
     pkgs,
     lib,
-    osConfig,
     ...
 }: let
     cfg = config.myConfig.de;
@@ -57,15 +56,6 @@ in {
         })
 
         (lib.mkIf cfg.tray.syncthing.enable {
-            assertions = [
-                {
-                    assertion = osConfig.services.syncthing.enable;
-                    message = "Syncthing has to be enabled on the system level.";
-                }
-            ];
-
-            xsession.enable = osConfig.services.xserver.enable;
-
             home.packages = [pkgs.syncthingtray-minimal];
 
             systemd.user.services = {
@@ -87,15 +77,6 @@ in {
         })
 
         (lib.mkIf cfg.tray.networkmanager.enable {
-            assertions = [
-                {
-                    assertion = osConfig.networking.networkmanager.enable;
-                    message = "Networkmanager has to be enabled on the system level.";
-                }
-            ];
-
-            xsession.enable = osConfig.services.xserver.enable;
-
             home.packages = [pkgs.networkmanagerapplet];
 
             systemd.user.services = {

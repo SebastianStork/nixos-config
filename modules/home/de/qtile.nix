@@ -2,19 +2,11 @@
     config,
     pkgs,
     lib,
-    osConfig,
     ...
 }: {
     options.myConfig.de.qtile.enable = lib.mkEnableOption "";
 
     config = lib.mkIf config.myConfig.de.qtile.enable {
-        assertions = [
-            {
-                assertion = osConfig.services.xserver.windowManager.qtile.enable;
-                message = "Qtile has to be enabled on the system level";
-            }
-        ];
-
         home.packages = [
             # Widget dependencies
             pkgs.python311Packages.iwlib
@@ -27,6 +19,8 @@
         ];
 
         home.file.".background-image".source = config.myConfig.de.wallpaper;
+
+        xsession.enable = true;
 
         myConfig.rofi = {
             enable = true;
