@@ -19,11 +19,11 @@
             settings = {
                 devices = {
                     seb-desktop.id = "DIPH5BN-N2XV57S-23W63KD-UZOZ3UI-RB24QRJ-VVPD4YM-ZMFZIXN-GPX4YA4";
-                    dell-laptop.id = "GUXHL6J-J2HWYNN-7JZJ5CN-6LPYGJD-H7GYRLQ-ORZ4PJJ-5K4WT7I-MELMIQO";
+                    seb-laptop.id = "GUXHL6J-J2HWYNN-7JZJ5CN-6LPYGJD-H7GYRLQ-ORZ4PJJ-5K4WT7I-MELMIQO";
                 };
 
                 folders = let
-                    allDevices = ["seb-desktop" "dell-laptop"];
+                    allDevices = ["seb-desktop" "seb-laptop"];
                     staggeredVersioning = {
                         type = "staggered";
                         params = {

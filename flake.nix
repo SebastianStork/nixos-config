@@ -35,11 +35,11 @@
                     ./users/seb
                 ];
             };
-            dell-laptop = nixpkgs.lib.nixosSystem {
+            seb-laptop = nixpkgs.lib.nixosSystem {
                 specialArgs = {inherit inputs;};
                 modules = [
-                    ./hosts/dell-laptop
-                    "${./.}/users/seb/@dell-laptop.nix"
+                    ./hosts/seb-laptop
+                    "${./.}/users/seb/@seb-laptop.nix"
                 ];
             };
         };

@@ -4,7 +4,7 @@
         ./hardware.nix
     ];
 
-    networking.hostName = "dell-laptop";
+    networking.hostName = "seb-laptop";
 
     environment.sessionVariables.FLAKE = "/home/seb/Projects/nixos/my-config";
 
