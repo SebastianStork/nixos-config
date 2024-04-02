@@ -1,6 +1,6 @@
 {pkgs, ...}: {
     imports = [
-        ../default.nix
+        ../common.nix
         ./hardware.nix
     ];
 

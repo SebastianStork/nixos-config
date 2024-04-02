@@ -1,5 +1,5 @@
 {config, ...}: {
-    imports = [../default.nix];
+    imports = [../common.nix];
 
     sops.secrets."password/seb".neededForUsers = true;
 

@@ -10,7 +10,6 @@
         trusted-users = ["root" "@wheel"];
     };
 
-    console.keyMap = "de-latin1-nodeadkeys";
     time.timeZone = "Europe/Berlin";
     i18n.defaultLocale = "en_US.UTF-8";
     i18n.extraLocaleSettings = {
@@ -24,6 +23,8 @@
         LC_TELEPHONE = "de_DE.UTF-8";
         LC_TIME = "de_DE.UTF-8";
     };
+
+    console.keyMap = "de-latin1-nodeadkeys";
 
     environment.systemPackages = [
         pkgs.git

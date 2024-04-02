@@ -6,6 +6,7 @@
 
     home-manager.sharedModules = [
         ../modules/home
+
         {
             programs.home-manager.enable = true;
             home.stateVersion = "23.11";
@@ -13,7 +14,6 @@
 
             xdg = {
                 enable = true;
-
                 userDirs = {
                     enable = true;
                     createDirectories = true;
