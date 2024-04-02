@@ -28,18 +28,18 @@
         pkgs = nixpkgs.legacyPackages.${system};
     in {
         nixosConfigurations = {
-            dell-laptop = nixpkgs.lib.nixosSystem {
-                specialArgs = {inherit inputs;};
-                modules = [
-                    ./hosts/dell-laptop
-                    ./users/seb
-                ];
-            };
             seb-desktop = nixpkgs.lib.nixosSystem {
                 specialArgs = {inherit inputs;};
                 modules = [
                     ./hosts/seb-desktop
                     ./users/seb
+                ];
+            };
+            dell-laptop = nixpkgs.lib.nixosSystem {
+                specialArgs = {inherit inputs;};
+                modules = [
+                    ./hosts/dell-laptop
+                    "${./.}/users/seb/@dell-laptop.nix"
                 ];
             };
         };

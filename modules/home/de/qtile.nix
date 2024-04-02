@@ -3,10 +3,12 @@
     pkgs,
     lib,
     ...
-}: {
+}: let
+    cfg = config.myConfig.de;
+in {
     options.myConfig.de.qtile.enable = lib.mkEnableOption "";
 
-    config = lib.mkIf config.myConfig.de.qtile.enable {
+    config = lib.mkIf cfg.qtile.enable {
         home.packages = [
             # Widget dependencies
             pkgs.python311Packages.iwlib
@@ -18,7 +20,7 @@
             pkgs.brightnessctl
         ];
 
-        home.file.".background-image".source = config.myConfig.de.wallpaper;
+        home.file.".background-image".source = cfg.wallpaper;
 
         xsession.enable = true;
 
@@ -34,7 +36,22 @@
 
         services.dunst.enable = true;
 
-        xdg.configFile."qtile/config.py".text = ''
+        xdg.configFile."qtile/config.py".text = let
+            backlightWidget =
+                if cfg.widget.backlight.enable
+                then ''
+                    widget.Sep(),
+                    widget.Backlight(fmt="󰃠 {}", backlight_name='${cfg.widget.backlight.device}'),
+                ''
+                else "";
+            batteryWidget =
+                if cfg.widget.battery.enable
+                then ''
+                          widget.Sep(),
+                    widget.Battery(format="󰁹 {percent:2.0%}"),
+                ''
+                else "";
+        in ''
             import os
             import subprocess
 
@@ -160,10 +177,8 @@
             				]),
             				widget.Sep(),
             				widget.PulseVolume(fmt="󰕾 {}"),
-                            widget.Sep(),
-                            widget.Backlight(fmt="󰃠 {}", backlight_name='amdgpu_bl1'),
-            				widget.Sep(),
-            				widget.Battery(format="󰁹 {percent:2.0%}"),
+                            ${backlightWidget}
+            				${batteryWidget}
             			],
             			26,
             		),

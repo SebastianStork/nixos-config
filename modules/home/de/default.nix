@@ -9,10 +9,22 @@ in {
     imports = [./qtile.nix];
 
     options.myConfig.de = {
+        theming.enable = lib.mkEnableOption "";
+
         wallpaper = lib.mkOption {
             type = lib.types.path;
         };
-        theming.enable = lib.mkEnableOption "";
+
+        widget = {
+            backlight = {
+                enable = lib.mkEnableOption "";
+                device = lib.mkOption {
+                    type = lib.types.str;
+                };
+            };
+            battery.enable = lib.mkEnableOption "";
+        };
+
         tray = {
             syncthing.enable = lib.mkEnableOption "";
             networkmanager.enable = lib.mkEnableOption "";
