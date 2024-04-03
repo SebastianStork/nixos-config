@@ -31,13 +31,6 @@
         pkgs.neovim
     ];
 
-    fonts.packages = [
-        (pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "NerdFontsSymbolsOnly"];})
-        pkgs.corefonts
-        pkgs.roboto
-        pkgs.open-sans
-    ];
-
     nixpkgs.config.allowUnfreePredicate = pkg:
         builtins.elem (pkgs.lib.getName pkg) [
             "spotify"
