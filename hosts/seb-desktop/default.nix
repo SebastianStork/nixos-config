@@ -17,7 +17,6 @@
         sound.enable = true;
         auto-gc.enable = true;
         vm.qemu.enable = true;
-        flatpak.enable = true;
         vpn.lgs.enable = true;
         comma.enable = true;
         sops.enable = true;
