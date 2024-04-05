@@ -9,7 +9,9 @@
     boot.kernelModules = ["kvm-amd" "adm1021" "nct6775"];
     nixpkgs.hostPlatform = "x86_64-linux";
     hardware.cpu.amd.updateMicrocode = true;
+
     services.xserver.videoDrivers = ["nvidia"];
+    hardware.nvidia.modesetting.enable = true;
 
     services.autorandr = {
         enable = true;
