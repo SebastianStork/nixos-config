@@ -9,7 +9,10 @@
     environment.sessionVariables.FLAKE = "/home/seb/Projects/nixos/my-config";
 
     myConfig = {
-        boot-loader.systemd-boot.enable = true;
+        boot-loader = {
+            systemd-boot.enable = true;
+            silent = true;
+        };
 
         dm.sddm.enable = true;
         de.qtile.enable = true;
