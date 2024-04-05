@@ -12,12 +12,14 @@ in {
     };
 
     config = {
-        services.xserver.displayManager.gdm.enable = cfg.gdm.enable;
+        services.xserver = lib.mkIf cfg.gdm.enable {
+            enable = true;
+            displayManager.gdm.enable = true;
+        };
 
         services.greetd = lib.mkIf cfg.tuigreet.enable {
             enable = true;
             settings = {
-                terminal.vt = "next";
                 default_session = let
                     base = config.services.xserver.displayManager.sessionData.desktops;
                 in {
