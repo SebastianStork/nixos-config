@@ -17,10 +17,5 @@ in {
             package = pkgs.rofi-wayland;
             theme = ./theme.rasi;
         };
-
-        services.clipmenu = lib.mkIf cfg.clipboard.enable {
-            enable = true;
-            launcher = "rofi";
-        };
     };
 }

@@ -23,9 +23,10 @@ in {
 
         xsession.enable = true;
 
-        myConfig.rofi = {
+        myConfig.rofi.enable = true;
+        services.clipmenu = {
             enable = true;
-            clipboard.enable = true;
+            launcher = "rofi";
         };
 
         services.picom = {
