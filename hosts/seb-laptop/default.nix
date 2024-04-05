@@ -15,6 +15,7 @@
         };
 
         dm.gdm.enable = true;
+        de.hyprland.enable = true;
 
         wlan.enable = true;
         bluetooth.enable = true;
