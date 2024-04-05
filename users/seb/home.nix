@@ -5,14 +5,18 @@
 }: {
     myConfig = {
         de = {
-            qtile.enable = true;
+            qtile.enable = osConfig.myConfig.de.qtile.enable;
+            hyprland.enable = osConfig.myConfig.de.hyprland.enable;
+
             wallpaper = ./wallpaper;
             theming.enable = true;
+
             tray = {
                 syncthing.enable = osConfig.myConfig.syncthing.enable;
                 networkmanager.enable = osConfig.networking.networkmanager.enable;
             };
         };
+
         shell = {
             bash.enable = true;
             starship.enable = true;
@@ -20,10 +24,13 @@
             improvedCommands.enable = true;
             direnv.enable = true;
         };
+
         ssh-client.enable = true;
         git.enable = true;
+
         neovim.enable = true;
         vscode.enable = true;
+
         kitty.enable = true;
     };
 

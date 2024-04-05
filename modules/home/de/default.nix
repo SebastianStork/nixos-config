@@ -6,7 +6,10 @@
 }: let
     cfg = config.myConfig.de;
 in {
-    imports = [./qtile.nix];
+    imports = [
+        ./qtile.nix
+        ./hyprland.nix
+    ];
 
     options.myConfig.de = {
         theming.enable = lib.mkEnableOption "";
