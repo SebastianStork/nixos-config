@@ -14,8 +14,7 @@
             silent = true;
         };
 
-        dm.lightdm.enable = true;
-        de.qtile.enable = true;
+        dm.gdm.enable = true;
 
         wlan.enable = true;
         bluetooth.enable = true;

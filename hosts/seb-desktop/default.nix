@@ -14,7 +14,7 @@
             silent = true;
         };
 
-        dm.sddm.enable = true;
+        dm.gdm.enable = true;
         de.qtile.enable = true;
 
         sound.enable = true;
