@@ -100,6 +100,12 @@ in {
                         "$mod SHIFT, right, movewindow, r"
                         "$mod SHIFT, up, movewindow, u"
                         "$mod SHIFT, down, movewindow, d"
+
+                        # Resize window
+                        "$mod CONTROL, left, resizeactive, -10% 0"
+                        "$mod CONTROL, right, resizeactive, 10% 0"
+                        "$mod CONTROL, up, resizeactive, 0 -10%"
+                        "$mod CONTROL, down, resizeactive, 0 10%"
                     ]
                     # Switch workspace
                     ++ (
