@@ -102,10 +102,10 @@ in {
                         "$mod SHIFT, down, movewindow, d"
 
                         # Resize window
-                        "$mod CONTROL, left, resizeactive, -10% 0"
-                        "$mod CONTROL, right, resizeactive, 10% 0"
-                        "$mod CONTROL, up, resizeactive, 0 -10%"
-                        "$mod CONTROL, down, resizeactive, 0 10%"
+                        "$mod CONTROL, left, resizeactive, -100 0"
+                        "$mod CONTROL, right, resizeactive, 100 0"
+                        "$mod CONTROL, up, resizeactive, 0 -100"
+                        "$mod CONTROL, down, resizeactive, 0 100"
 
                         # Scroll through workspaces
                         "$mod, mouse_down, workspace, e-1"
