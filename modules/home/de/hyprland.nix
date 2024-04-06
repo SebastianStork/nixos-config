@@ -58,7 +58,11 @@ in {
                     no_gaps_when_only = 1;
                 };
 
-                decoration.drop_shadow = false;
+                decoration = {
+                    rounding = 6;
+                    drop_shadow = false;
+                };
+
                 animations.enabled = false;
 
                 bind =
