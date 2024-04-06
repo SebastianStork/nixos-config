@@ -83,7 +83,7 @@ in {
                         # Launch programs
                         "$mod, RETURN, exec, $terminal"
                         "$mod, R, exec, $menu"
-                        "$mod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+                        "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | rofi -dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
                         "$mod, B, exec, $browser"
                         "$mod, F, exec, $fileManager"
                         "$mod, C, exec, $editor"
