@@ -106,6 +106,10 @@ in {
                         "$mod CONTROL, right, resizeactive, 10% 0"
                         "$mod CONTROL, up, resizeactive, 0 -10%"
                         "$mod CONTROL, down, resizeactive, 0 10%"
+
+                        # Scroll through workspaces
+                        "$mod, mouse_down, workspace, e-1"
+                        "$mod, mouse_up, workspace, e+1"
                     ]
                     # Switch workspace
                     ++ (
