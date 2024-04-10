@@ -14,7 +14,7 @@
             silent = true;
         };
 
-        dm.tuigreet.enable = true;
+        dm.gdm.enable = true;
         de.hyprland.enable = true;
 
         sound.enable = true;
