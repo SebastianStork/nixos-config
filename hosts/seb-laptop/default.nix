@@ -29,6 +29,7 @@
         sops.enable = true;
         printing.enable = true;
         syncthing.enable = true;
+        nix-helper.enable = true;
     };
 
     boot.kernelPackages = pkgs.linuxPackages_latest;

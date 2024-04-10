@@ -22,6 +22,11 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        nh = {
+            url = "github:viperML/nh";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
         hyprland.url = "github:hyprwm/Hyprland";
     };
 
