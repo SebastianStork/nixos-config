@@ -75,6 +75,8 @@ in {
                     [
                         # Essentials
                         "$mod CONTROL, Q, exit,"
+                        "$mod CONTROL, S, exec, systemctl suspend"
+                        "$mod CONTROL, L, exec, loginctl lock-session"
                         "$mod SHIFT, C, killactive,"
                         "$mod, TAB, cyclenext,"
                         "$mod SHIFT, V, togglefloating,"
