@@ -44,7 +44,6 @@ in {
             xdg.portal = {
                 enable = true;
                 extraPortals = [pkgs.xdg-desktop-portal-gtk];
-                config.common.default = "*";
             };
 
             services.gvfs.enable = true;
@@ -59,6 +58,11 @@ in {
             environment.sessionVariables = {
                 WLR_NO_HARDWARE_CURSORS = "1";
                 NIXOS_OZONE_WL = "1";
+            };
+
+            xdg.portal = {
+                enable = true;
+                extraPortals = [pkgs.xdg-desktop-portal-gtk];
             };
 
             services.gvfs.enable = true;
