@@ -46,6 +46,8 @@ in {
                 extraPortals = [pkgs.xdg-desktop-portal-gtk];
                 config.common.default = "*";
             };
+
+            services.gvfs.enable = true;
         })
 
         (lib.mkIf cfg.hyprland.enable {
@@ -58,6 +60,8 @@ in {
                 WLR_NO_HARDWARE_CURSORS = "1";
                 NIXOS_OZONE_WL = "1";
             };
+
+            services.gvfs.enable = true;
         })
     ];
 }

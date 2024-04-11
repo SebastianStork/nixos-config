@@ -29,7 +29,6 @@
     };
 
     boot.kernelPackages = pkgs.linuxPackages_latest;
-    services.gvfs.enable = true;
 
     programs.steam.enable = true;
 }

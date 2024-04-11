@@ -33,7 +33,6 @@
     };
 
     boot.kernelPackages = pkgs.linuxPackages_latest;
-    services.gvfs.enable = true;
 
     hardware.brillo.enable = true;
 }
