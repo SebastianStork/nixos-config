@@ -1,4 +1,5 @@
 {
+    inputs,
     config,
     pkgs,
     lib,
@@ -6,6 +7,11 @@
 }: let
     cfg = config.myConfig.de;
 in {
+    imports = [
+        inputs.hyprlock.homeManagerModules.hyprlock
+        inputs.hypridle.homeManagerModules.hypridle
+    ];
+
     options.myConfig.de.hyprland.enable = lib.mkEnableOption "";
 
     config = lib.mkIf cfg.hyprland.enable {
@@ -15,6 +21,34 @@ in {
             wallpaper=,${cfg.wallpaper}
             splash=false
         '';
+
+        programs.hyprlock = {
+            enable = true;
+        };
+
+        services.hypridle = let
+            hyprlockExe = "${lib.getExe inputs.hyprlock.packages.${pkgs.system}.default}";
+        in {
+            enable = true;
+            lockCmd = "pidof ${hyprlockExe} || ${hyprlockExe}";
+            beforeSleepCmd = "loginctl lock-session";
+            afterSleepCmd = "hyprctl dispatch dpms on";
+            listeners = [
+                {
+                    timeout = 300;
+                    onTimeout = "hyprctl dispatch dpms off";
+                    onResume = "hyprctl dispatch dpms on";
+                }
+                {
+                    timeout = 600;
+                    onTimeout = "loginctl lock-session";
+                }
+                {
+                    timeout = 1200;
+                    onTimeout = "systemctl suspend";
+                }
+            ];
+        };
 
         myConfig.rofi.enable = true;
         services.cliphist.enable = true;

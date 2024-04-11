@@ -28,6 +28,16 @@
         };
 
         hyprland.url = "github:hyprwm/Hyprland";
+
+        hyprlock = {
+            url = "github:hyprwm/Hyprlock";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
+        hypridle = {
+            url = "github:hyprwm/Hypridle";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
     };
 
     outputs = {nixpkgs, ...} @ inputs: let
