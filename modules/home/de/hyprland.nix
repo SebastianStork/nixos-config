@@ -42,17 +42,13 @@ in {
             afterSleepCmd = "hyprctl dispatch dpms on";
             listeners = [
                 {
-                    timeout = 300;
+                    timeout = 600;
                     onTimeout = "hyprctl dispatch dpms off";
                     onResume = "hyprctl dispatch dpms on";
                 }
                 {
-                    timeout = 600;
-                    onTimeout = "loginctl lock-session";
-                }
-                {
                     timeout = 1200;
-                    onTimeout = "systemctl suspend";
+                    onTimeout = "loginctl lock-session";
                 }
             ];
         };
