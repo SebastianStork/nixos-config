@@ -24,6 +24,13 @@ in {
 
         programs.hyprlock = {
             enable = true;
+            backgrounds = [
+                {
+                    path = "screenshot";
+                    blur_passes = 1;
+                    blur_size = 6;
+                }
+            ];
         };
 
         services.hypridle = let
