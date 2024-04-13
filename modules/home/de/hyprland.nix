@@ -60,13 +60,6 @@ in {
             enable = true;
 
             settings = {
-                "$mod" = "SUPER";
-                "$terminal" = "kitty";
-                "$menu" = "rofi -show drun";
-                "$browser" = "brave";
-                "$fileManager" = "nemo";
-                "$editor" = "codium";
-
                 exec-once = ["hyprpaper"];
 
                 input = {
@@ -109,6 +102,12 @@ in {
                     force_default_wallpaper = 0;
                 };
 
+                "$mod" = "SUPER";
+                "$terminal" = "kitty";
+                "$browser" = "brave";
+                "$fileManager" = "nemo";
+                "$editor" = "codium";
+
                 bind =
                     [
                         # Essentials
@@ -122,7 +121,6 @@ in {
 
                         # Launch programs
                         "$mod, RETURN, exec, $terminal"
-                        "$mod, R, exec, $menu"
                         "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | rofi -dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
                         "$mod, B, exec, $browser"
                         "$mod, F, exec, $fileManager"
@@ -141,12 +139,6 @@ in {
                         "$mod SHIFT, up, movewindow, u"
                         "$mod SHIFT, down, movewindow, d"
 
-                        # Resize window
-                        "$mod CONTROL, left, resizeactive, -100 0"
-                        "$mod CONTROL, right, resizeactive, 100 0"
-                        "$mod CONTROL, up, resizeactive, 0 -100"
-                        "$mod CONTROL, down, resizeactive, 0 100"
-
                         # Scroll through workspaces
                         "$mod, mouse_down, workspace, e-1"
                         "$mod, mouse_up, workspace, e+1"
@@ -161,8 +153,45 @@ in {
                         )
                         9)
                     );
-                # Move/resize windows
+
+                # Release
+                bindr = [
+                    # Launcher
+                    "$mod, R, exec, pkill rofi || rofi -show drun"
+                ];
+
+                # Repeat
+                binde = [
+                    # Resize window
+                    "$mod CONTROL, left, resizeactive, -100 0"
+                    "$mod CONTROL, right, resizeactive, 100 0"
+                    "$mod CONTROL, up, resizeactive, 0 -100"
+                    "$mod CONTROL, down, resizeactive, 0 100"
+                ];
+
+                # Locked
+                bindl = [
+                    ", switch:on:Lid Switch, exec, systemctl suspend"
+
+                    # Media
+                    ", XF86AudioPlay, exec, playerctl --player=spotify play-pause"
+                    ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+                ];
+
+                # Repeat + Locked
+                bindel = [
+                    # Adjust volume
+                    ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+                    ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+
+                    # Adjust brightness
+                    ", XF86MonBrightnessUp, exec, brillo -q -u 20000 -A 4"
+                    ", XF86MonBrightnessDown, exec, brillo -q -u 20000 -U 4"
+                ];
+
+                # Mouse
                 bindm = [
+                    # Move/resize windows
                     "$mod, mouse:272, movewindow"
                     "$mod, mouse:273, resizewindow"
                 ];
