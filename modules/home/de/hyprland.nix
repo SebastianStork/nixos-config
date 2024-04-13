@@ -93,6 +93,7 @@ in {
                 master = {
                     new_is_master = false;
                     no_gaps_when_only = 1;
+                    mfact = "0.5";
                 };
 
                 decoration = {
