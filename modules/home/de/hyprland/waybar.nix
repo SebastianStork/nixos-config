@@ -4,7 +4,6 @@
     ...
 }: {
     config = lib.mkIf config.myConfig.de.hyprland.enable {
-
         programs.waybar = {
             enable = true;
             systemd.enable = true;
@@ -13,7 +12,7 @@
                 mainBar = {
                     layer = "top";
                     position = "top";
-                    spacing = 3;
+                    spacing = 10;
 
                     modules-left = ["clock"];
                     modules-center = ["hyprland/workspaces"];
@@ -24,8 +23,36 @@
                         all-outputs = true;
                     };
 
+                    clock = {
+                        format = " {:%H.%M}";
+                        tooltip-format = "{:%d.%m.%Y}";
+                    };
+
+                    wireplumber = {
+                        format = "{icon} {volume}%";
+                        format-muted = "󰝟";
+                        format-icons = ["󰕿" "󰖀" "󰕾"];
+                        scroll-step = "5";
+                    };
+
+                    tray = {
+                        icon-size = 20;
+                        spacing = 6;
+                    };
+
                     backlight = {
                         device = "amdgpu_bl1";
+                        format = "{icon} {percent}%";
+                        format-icons = ["󰃞" "󰃟" "󰃠"];
+                    };
+
+                    battery = {
+                        states = {
+                            warning = 15;
+                            critical = 5;
+                        };
+                        format = "{icon} {capacity}%";
+                        format-icons = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
                     };
                 };
             };
@@ -34,8 +61,8 @@
                 * {
                     border: none;
                     border-radius: 0px;
-                    font-family: "JetBrainsMono Nerd Font";
-                    font-size: 14px;
+                    font-family: "Open Sans, Symbols Nerd Font Mono";
+                    font-size: 15px;
                 }
 
                 window#waybar {
