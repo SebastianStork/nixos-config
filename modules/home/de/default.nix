@@ -8,7 +8,7 @@
 in {
     imports = [
         ./qtile.nix
-        ./hyprland.nix
+        ./hyprland
     ];
 
     options.myConfig.de = {

@@ -1,5 +1,4 @@
 {
-    inputs,
     config,
     pkgs,
     lib,
@@ -8,8 +7,8 @@
     cfg = config.myConfig.de;
 in {
     imports = [
-        inputs.hyprlock.homeManagerModules.hyprlock
-        inputs.hypridle.homeManagerModules.hypridle
+        ./waybar.nix
+        ./hypridlelock.nix
     ];
 
     options.myConfig.de.hyprland.enable = lib.mkEnableOption "";
@@ -21,77 +20,6 @@ in {
             wallpaper=,${cfg.wallpaper}
             splash=false
         '';
-
-        programs.hyprlock = {
-            enable = true;
-            backgrounds = [
-                {
-                    path = "screenshot";
-                    blur_passes = 1;
-                    blur_size = 6;
-                }
-            ];
-        };
-
-        services.hypridle = let
-            hyprlockExe = "${lib.getExe inputs.hyprlock.packages.${pkgs.system}.default}";
-        in {
-            enable = true;
-            lockCmd = "pidof ${hyprlockExe} || ${hyprlockExe}";
-            # beforeSleepCmd = "loginctl lock-session";
-            afterSleepCmd = "hyprctl dispatch dpms on";
-            listeners = [
-                {
-                    timeout = 600;
-                    onTimeout = "hyprctl dispatch dpms off";
-                    onResume = "hyprctl dispatch dpms on";
-                }
-                {
-                    timeout = 1200;
-                    onTimeout = "loginctl lock-session";
-                }
-            ];
-        };
-
-        programs.waybar = {
-            enable = true;
-            systemd.enable = true;
-
-            settings = {
-                mainBar = {
-                    layer = "top";
-                    position = "top";
-                    spacing = 3;
-
-                    modules-left = ["clock"];
-                    modules-center = ["hyprland/workspaces"];
-                    modules-right = ["tray" "wireplumber" "backlight" "battery"];
-
-                    "hyprland/workspaces" = {
-                        active-only = false;
-                        all-outputs = true;
-                    };
-
-                    backlight = {
-                        device = "amdgpu_bl1";
-                    };
-                };
-            };
-
-            style = ''
-                * {
-                    border: none;
-                    border-radius: 0px;
-                    font-family: "JetBrainsMono Nerd Font";
-                    font-size: 14px;
-                }
-
-                window#waybar {
-                    background-color: rgba(43, 48, 59, 0.5);
-                    color: #ffffff;
-                }
-            '';
-        };
 
         myConfig.rofi.enable = true;
         services.cliphist.enable = true;
