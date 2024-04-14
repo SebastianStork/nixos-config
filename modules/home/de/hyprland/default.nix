@@ -144,7 +144,7 @@ in {
                     ", switch:on:Lid Switch, exec, systemctl suspend"
 
                     # Media
-                    ", XF86AudioPlay, exec, playerctl --player=spotify play-pause"
+                    ", XF86AudioPlay, exec, ${lib.getExe pkgs.playerctl} --player=spotify play-pause"
                     ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
                 ];
 
