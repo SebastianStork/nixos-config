@@ -16,7 +16,12 @@
             beforeSleepCmd = "loginctl lock-session";
             listeners = [
                 {
-                    timeout = 1800;
+                    timeout = 300;
+                    onTimeout = "brillo -q -O && brillo -q -S 10";
+                    onResume = "brillo -q -I";
+                }
+                {
+                    timeout = 1200;
                     onTimeout = "systemctl suspend";
                 }
             ];
