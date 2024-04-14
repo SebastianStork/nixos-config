@@ -96,6 +96,8 @@ in {
         myConfig.rofi.enable = true;
         services.cliphist.enable = true;
 
+        services.dunst.enable = true;
+
         wayland.windowManager.hyprland = {
             enable = true;
 
