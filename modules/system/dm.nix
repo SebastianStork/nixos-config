@@ -23,7 +23,7 @@ in {
                 default_session = let
                     base = config.services.xserver.displayManager.sessionData.desktops;
                 in {
-                    command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --asterisks --remember --remember-user-session --sessions ${base}/share/wayland-sessions:${base}/share/xsessions";
+                    command = "${lib.getExe pkgs.greetd.tuigreet} --time --asterisks --remember --remember-user-session --sessions ${base}/share/wayland-sessions:${base}/share/xsessions";
                     user = "greeter";
                 };
             };

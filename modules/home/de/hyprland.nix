@@ -161,7 +161,7 @@ in {
 
                         # Launch programs
                         "$mod, RETURN, exec, $terminal"
-                        "$mod, V, exec, ${pkgs.cliphist}/bin/cliphist list | rofi -dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
+                        "$mod, V, exec, ${lib.getExe pkgs.cliphist} list | rofi -dmenu | ${lib.getExe pkgs.cliphist} decode | ${lib.getExe' pkgs.wl-clipboard "wl-copy"}"
                         "$mod, B, exec, $browser"
                         "$mod, F, exec, $fileManager"
                         "$mod, C, exec, $editor"

@@ -2,6 +2,7 @@
     inputs,
     config,
     pkgs,
+    lib,
     ...
 }: {
     imports = [
@@ -70,11 +71,11 @@
         before = ["fancontrol.service"];
 
         script = ''
-            /run/current-system/sw/bin/touch /tmp/nvidia-gpu-temp
+            ${lib.getExe' pkgs.coreutils "touch"} /tmp/nvidia-gpu-temp
             while :; do
-                temp="$(/run/current-system/sw/bin/nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits)"
-                /run/current-system/sw/bin/echo "$((temp * 1000))" > /tmp/nvidia-gpu-temp
-                /run/current-system/sw/bin/sleep 2
+                temp="$(${lib.getExe' config.hardware.nvidia.package "nvidia-smi"} --query-gpu=temperature.gpu --format=csv,noheader,nounits)"
+                ${lib.getExe' pkgs.coreutils "echo"} "$((temp * 1000))" > /tmp/nvidia-gpu-temp
+                ${lib.getExe' pkgs.coreutils "sleep"} 2
             done
         '';
     };

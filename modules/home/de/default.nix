@@ -82,7 +82,7 @@ in {
                         PartOf = ["graphical-session.target"];
                     };
                     Service = {
-                        ExecStart = "${pkgs.syncthingtray-minimal}/bin/syncthingtray --wait";
+                        ExecStart = "${lib.getExe' pkgs.syncthingtray-minimal "syncthingtray"} --wait";
                     };
                     Install = {
                         WantedBy = ["graphical-session.target"];
@@ -103,7 +103,7 @@ in {
                         PartOf = ["graphical-session.target"];
                     };
                     Service = {
-                        ExecStart = "${pkgs.networkmanagerapplet}/bin/nm-applet";
+                        ExecStart = "${lib.getExe pkgs.networkmanagerapplet}";
                     };
                     Install = {
                         WantedBy = ["graphical-session.target"];
