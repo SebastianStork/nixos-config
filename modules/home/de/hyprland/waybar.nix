@@ -1,5 +1,6 @@
 {
     config,
+    pkgs,
     lib,
     ...
 }: {
@@ -71,5 +72,8 @@
                 }
             '';
         };
+
+        xdg.configFile."waybar/config".onChange = lib.mkForce "${lib.getExe' pkgs.systemd "systemctl"} restart --user waybar";
+        xdg.configFile."waybar/style.css".onChange = lib.mkForce "${lib.getExe' pkgs.systemd "systemctl"} restart --user waybar";
     };
 }
