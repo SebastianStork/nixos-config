@@ -64,8 +64,6 @@ in {
                 name = "Bibata-Original-Classic";
                 package = pkgs.bibata-cursors;
                 size = 24;
-                x11.enable = true;
-                x11.defaultCursor = "X_cursor";
                 gtk.enable = true;
             };
         })
