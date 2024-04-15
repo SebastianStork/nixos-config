@@ -12,7 +12,7 @@
             settings = {
                 mainBar = {
                     layer = "top";
-                    position = "top";
+                    position = "bottom";
                     spacing = 10;
 
                     modules-left = ["clock"];
