@@ -23,7 +23,7 @@ in {
 
         xsession.enable = true;
 
-        myConfig.rofi.enable = true;
+        myConfig.de.rofi.enable = true;
         services.clipmenu = {
             enable = true;
             launcher = "rofi";

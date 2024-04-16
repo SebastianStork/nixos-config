@@ -10,9 +10,12 @@
         inputs.hypridle.homeManagerModules.hypridle
     ];
 
-    config = lib.mkIf config.myConfig.de.hyprland.enable {
+    options.myConfig.de.hypridlelock.enable = lib.mkEnableOption "";
+
+    config = lib.mkIf config.myConfig.de.hypridlelock.enable {
         programs.hyprlock = {
             enable = true;
+
             backgrounds = [
                 {
                     path = "screenshot";
@@ -26,9 +29,11 @@
             hyprlockExe = "${lib.getExe inputs.hyprlock.packages.${pkgs.system}.default}";
         in {
             enable = true;
+
             lockCmd = "pidof ${hyprlockExe} || ${hyprlockExe}";
             # beforeSleepCmd = "loginctl lock-session";
             afterSleepCmd = "hyprctl dispatch dpms on";
+
             listeners = [
                 {
                     timeout = 600;

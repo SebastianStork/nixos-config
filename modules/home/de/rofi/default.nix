@@ -4,11 +4,10 @@
     lib,
     ...
 }: let
-    cfg = config.myConfig.rofi;
+    cfg = config.myConfig.de.rofi;
 in {
-    options.myConfig.rofi = {
+    options.myConfig.de.rofi = {
         enable = lib.mkEnableOption "";
-        clipboard.enable = lib.mkEnableOption "";
     };
 
     config = lib.mkIf cfg.enable {
