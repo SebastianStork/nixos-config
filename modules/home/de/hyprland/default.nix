@@ -37,12 +37,16 @@ in {
                     kb_variant = "nodeadkeys";
 
                     accel_profile = "flat";
+                };
 
-                    touchpad = {
-                        disable_while_typing = true;
-                        natural_scroll = true;
-                        middle_button_emulation = true;
-                    };
+                input.touchpad = {
+                    disable_while_typing = true;
+                    natural_scroll = true;
+                    middle_button_emulation = true;
+                };
+                device = {
+                    name = "dell0b9f:00-27c6:0d43-touchpad";
+                    accel_profile = "adaptive";
                 };
 
                 general = {
