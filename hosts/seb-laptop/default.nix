@@ -29,11 +29,11 @@
         sops.enable = true;
         printing.enable = true;
         syncthing.enable = true;
-        nix-helper.enable = true;
     };
 
     boot.kernelPackages = pkgs.linuxPackages_latest;
 
+    programs.nh.enable = true;
     services.auto-cpufreq.enable = true;
     hardware.brillo.enable = true;
 }

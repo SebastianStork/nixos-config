@@ -22,7 +22,7 @@
             starship.enable = true;
             nixAliases = {
                 enable = true;
-                nh.enable = osConfig.nh.enable;
+                nh.enable = osConfig.programs.nh.enable;
             };
             enhancedCommands.enable = true;
             direnv.enable = true;
