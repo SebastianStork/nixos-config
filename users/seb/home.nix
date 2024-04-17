@@ -20,7 +20,10 @@
         shell = {
             bash.enable = true;
             starship.enable = true;
-            nixAliases.enable = true;
+            nixAliases = {
+                enable = true;
+                nh.enable = osConfig.nh.enable;
+            };
             enhancedCommands.enable = true;
             direnv.enable = true;
         };
