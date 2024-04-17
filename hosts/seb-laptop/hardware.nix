@@ -18,6 +18,4 @@
     boot.kernelModules = ["kvm-amd"];
     nixpkgs.hostPlatform = "x86_64-linux";
     hardware.cpu.amd.updateMicrocode = true;
-
-    services.auto-cpufreq.enable = true;
 }

@@ -2,7 +2,7 @@
     imports = [
         ./de
         ./vscode.nix
-        ./shell.nix
+        ./shell
         ./ssh-client.nix
         ./git.nix
         ./neovim.nix

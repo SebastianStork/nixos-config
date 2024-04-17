@@ -21,7 +21,7 @@
             bash.enable = true;
             starship.enable = true;
             nixAliases.enable = true;
-            improvedCommands.enable = true;
+            enhancedCommands.enable = true;
             direnv.enable = true;
         };
 
