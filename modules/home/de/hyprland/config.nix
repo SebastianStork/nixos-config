@@ -95,6 +95,10 @@
                         # Scroll through workspaces
                         "$mod, mouse_down, workspace, e-1"
                         "$mod, mouse_up, workspace, e+1"
+
+                        # Screenshot
+                        ", Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave output"
+                        "SHIFT, Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave area"
                     ]
                     # Switch workspace
                     ++ (

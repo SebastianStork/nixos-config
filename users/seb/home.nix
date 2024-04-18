@@ -39,6 +39,8 @@
 
     programs.btop.enable = true;
 
+    xdg.userDirs.extraConfig.XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
+
     home.packages = [
         pkgs.notepadqq
         pkgs.brave
