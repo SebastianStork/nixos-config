@@ -1,7 +1,6 @@
 {
     inputs,
     config,
-    pkgs,
     lib,
     ...
 }: {
@@ -26,7 +25,7 @@
         };
 
         services.hypridle = let
-            hyprlockExe = "${lib.getExe inputs.hyprlock.packages.${pkgs.system}.default}";
+            hyprlockExe = "${lib.getExe config.programs.hyprlock.package}";
         in {
             enable = true;
 
