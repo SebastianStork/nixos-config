@@ -19,7 +19,7 @@
 
                     modules-left = ["clock"];
                     modules-center = ["hyprland/workspaces"];
-                    modules-right = ["tray" "wireplumber" "backlight" "battery"];
+                    modules-right = ["tray" "network" "wireplumber" "backlight" "battery"];
 
                     "hyprland/workspaces" = {
                         active-only = false;
@@ -29,6 +29,21 @@
                     clock = {
                         format = " {:%H.%M}";
                         tooltip-format = "{:%d.%m.%Y}";
+                    };
+
+                    network = {
+                        interval = 10;
+                        format = "";
+
+                        format-wifi = "{icon}";
+                        format-icons = ["󰤟" "󰤢" "󰤥" "󰤨"];
+                        tooltip-format-wifi = "{essid}  󰇚 {bandwidthDownBits} 󰕒 {bandwidthUpBits}";
+
+                        format-ethernet = "󰌗";
+                        tooltip-format-ethernet = "󰇚 {bandwidthDownBits} 󰕒 {bandwidthUpBits}";
+
+                        format-disconnected = "󰪎";
+                        tooltip-format-disconnected = "Disconnected";
                     };
 
                     wireplumber = {
