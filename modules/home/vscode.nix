@@ -21,7 +21,7 @@
         };
 
         systemd.user.tmpfiles.rules = let
-            settings = builtins.toJSON {
+            settings = builtins.replaceStrings [","] [",\\n"] (builtins.toJSON {
                 "editor.fontFamily" = "JetBrainsMono Nerd Font";
                 "explorer.confirmDelete" = false;
                 "explorer.confirmDragAndDrop" = false;
@@ -37,7 +37,7 @@
                 "editor.renderWhitespace" = "none";
                 "workbench.iconTheme" = "material-icon-theme";
                 "editor.minimap.enabled" = false;
-            };
+            });
         in [
             "f+ %h/.config/VSCodium/User/settings.json - - - - ${settings}"
             "f+ %h/.config/VSCodium/User/settings-default.json - - - - ${settings}"
