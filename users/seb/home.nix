@@ -53,7 +53,12 @@
         pkgs.vlc
         pkgs.onlyoffice-bin_latest
 
-        (pkgs.nerdfonts.override {fonts = ["JetBrainsMono" "NerdFontsSymbolsOnly"];})
+        (pkgs.nerdfonts.override {
+            fonts = [
+                "JetBrainsMono"
+                "NerdFontsSymbolsOnly"
+            ];
+        })
         pkgs.corefonts
         pkgs.roboto
         pkgs.open-sans

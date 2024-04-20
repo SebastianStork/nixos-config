@@ -11,8 +11,18 @@
     ];
 
     hardware.enableRedistributableFirmware = true;
-    boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod"];
-    boot.kernelModules = ["kvm-amd" "adm1021" "nct6775"];
+    boot.initrd.availableKernelModules = [
+        "xhci_pci"
+        "ahci"
+        "usb_storage"
+        "usbhid"
+        "sd_mod"
+    ];
+    boot.kernelModules = [
+        "kvm-amd"
+        "adm1021"
+        "nct6775"
+    ];
     nixpkgs.hostPlatform = "x86_64-linux";
     hardware.cpu.amd.updateMicrocode = true;
 
@@ -40,7 +50,10 @@
                 settingsSha256 = "sha256-QKN/gLGlT+/hAdYKlkIjZTgvubzQTt4/ki5Y+2Zj3pk=";
                 persistencedSha256 = "sha256-FRMqY5uAJzq3o+YdM2Mdjj8Df6/cuUUAnh52Ne4koME=";
 
-                patches = [rcu_patch linux_6_8_patch];
+                patches = [
+                    rcu_patch
+                    linux_6_8_patch
+                ];
             };
     };
 

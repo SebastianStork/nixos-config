@@ -22,15 +22,14 @@ in {
                     Unit = {
                         Description = "Syncthingtray";
                         Requires = ["tray.target"];
-                        After = ["graphical-session-pre.target" "tray.target"];
+                        After = [
+                            "graphical-session-pre.target"
+                            "tray.target"
+                        ];
                         PartOf = ["graphical-session.target"];
                     };
-                    Service = {
-                        ExecStart = "${lib.getExe' pkgs.syncthingtray-minimal "syncthingtray"} --wait";
-                    };
-                    Install = {
-                        WantedBy = ["graphical-session.target"];
-                    };
+                    Service.ExecStart = "${lib.getExe' pkgs.syncthingtray-minimal "syncthingtray"} --wait";
+                    Install.WantedBy = ["graphical-session.target"];
                 };
             };
         })
@@ -43,15 +42,14 @@ in {
                     Unit = {
                         Description = "Networkmanager-applet";
                         Requires = ["tray.target"];
-                        After = ["graphical-session-pre.target" "tray.target"];
+                        After = [
+                            "graphical-session-pre.target"
+                            "tray.target"
+                        ];
                         PartOf = ["graphical-session.target"];
                     };
-                    Service = {
-                        ExecStart = "${lib.getExe pkgs.networkmanagerapplet}";
-                    };
-                    Install = {
-                        WantedBy = ["graphical-session.target"];
-                    };
+                    Service.ExecStart = "${lib.getExe pkgs.networkmanagerapplet}";
+                    Install.WantedBy = ["graphical-session.target"];
                 };
             };
         })

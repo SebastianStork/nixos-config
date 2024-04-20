@@ -31,7 +31,7 @@
                             key-mgmt = "wpa-psk";
                             psk = "$HOME_PSK";
                         };
-                        ipv4 = {method = "auto";};
+                        ipv4.method = "auto";
                         ipv6 = {
                             addr-gen-mode = "default";
                             method = "auto";
@@ -54,7 +54,7 @@
                             key-mgmt = "wpa-psk";
                             psk = "$MOBILE_PSK";
                         };
-                        ipv4 = {method = "auto";};
+                        ipv4.method = "auto";
                         ipv6 = {
                             addr-gen-mode = "default";
                             method = "auto";
@@ -83,7 +83,7 @@
                             password = "$SCHOOL_PSK";
                             phase2-auth = "pap";
                         };
-                        ipv4 = {method = "auto";};
+                        ipv4.method = "auto";
                         ipv6 = {
                             addr-gen-mode = "default";
                             method = "auto";

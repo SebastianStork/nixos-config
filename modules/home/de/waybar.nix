@@ -19,7 +19,13 @@
 
                     modules-left = ["clock"];
                     modules-center = ["hyprland/workspaces"];
-                    modules-right = ["tray" "network" "wireplumber" "backlight" "battery"];
+                    modules-right = [
+                        "tray"
+                        "network"
+                        "wireplumber"
+                        "backlight"
+                        "battery"
+                    ];
 
                     "hyprland/workspaces" = {
                         active-only = false;
@@ -36,7 +42,12 @@
                         format = "";
 
                         format-wifi = "{icon}";
-                        format-icons = ["󰤟" "󰤢" "󰤥" "󰤨"];
+                        format-icons = [
+                            "󰤟"
+                            "󰤢"
+                            "󰤥"
+                            "󰤨"
+                        ];
                         tooltip-format-wifi = "{essid}  󰇚 {bandwidthDownBits} 󰕒 {bandwidthUpBits}";
 
                         format-ethernet = "󰌗";
@@ -49,7 +60,11 @@
                     wireplumber = {
                         format = "{icon} {volume}%";
                         format-muted = "󰝟";
-                        format-icons = ["󰕿" "󰖀" "󰕾"];
+                        format-icons = [
+                            "󰕿"
+                            "󰖀"
+                            "󰕾"
+                        ];
                         scroll-step = "5";
                     };
 
@@ -61,7 +76,11 @@
                     backlight = {
                         device = "amdgpu_bl1";
                         format = "{icon} {percent}%";
-                        format-icons = ["󰃞" "󰃟" "󰃠"];
+                        format-icons = [
+                            "󰃞"
+                            "󰃟"
+                            "󰃠"
+                        ];
                     };
 
                     battery = {
@@ -70,7 +89,19 @@
                             critical = 5;
                         };
                         format = "{icon} {capacity}%";
-                        format-icons = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
+                        format-icons = [
+                            "󰂎"
+                            "󰁺"
+                            "󰁻"
+                            "󰁼"
+                            "󰁽"
+                            "󰁾"
+                            "󰁿"
+                            "󰂀"
+                            "󰂁"
+                            "󰂂"
+                            "󰁹"
+                        ];
                     };
                 };
             };

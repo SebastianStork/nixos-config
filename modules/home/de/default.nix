@@ -2,7 +2,6 @@
     imports = [
         ./qtile.nix
         ./hyprland
-
         ./theming.nix
         ./rofi
         ./tray.nix

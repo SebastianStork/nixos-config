@@ -23,7 +23,10 @@
                 };
 
                 folders = let
-                    allDevices = ["seb-desktop" "seb-laptop"];
+                    allDevices = [
+                        "seb-desktop"
+                        "seb-laptop"
+                    ];
                     staggeredVersioning = {
                         type = "staggered";
                         params = {

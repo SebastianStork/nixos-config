@@ -12,9 +12,7 @@
             userName = "SebastianStork";
             userEmail = "sebastian.stork@pm.me";
 
-            extraConfig = {
-                init.defaultBranch = "main";
-            };
+            extraConfig.init.defaultBranch = "main";
         };
 
         programs.lazygit.enable = true;

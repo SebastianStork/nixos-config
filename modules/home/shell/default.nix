@@ -19,7 +19,6 @@ in {
 
     config = {
         programs.bash.enable = cfg.bash.enable;
-
         programs.zsh.enable = cfg.zsh.enable;
     };
 }

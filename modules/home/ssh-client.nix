@@ -16,6 +16,7 @@
                 identityFile = ["~/.ssh/kluebero/id_ed25519"];
             };
         };
+
         services.ssh-agent.enable = true;
     };
 }
