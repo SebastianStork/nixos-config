@@ -8,7 +8,7 @@ in {
     imports = [
         ./starship.nix
         ./direnv.nix
-        ./enhancedCommands.nix
+        ./enhancement.nix
         ./nixAliases.nix
     ];
 

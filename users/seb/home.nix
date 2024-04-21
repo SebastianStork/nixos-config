@@ -25,7 +25,7 @@
                 enable = true;
                 nh.enable = osConfig.programs.nh.enable;
             };
-            enhancedCommands.enable = true;
+            enhancement.enable = true;
             direnv.enable = true;
         };
 

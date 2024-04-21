@@ -3,9 +3,9 @@
     lib,
     ...
 }: {
-    options.myConfig.shell.enhancedCommands.enable = lib.mkEnableOption "";
+    options.myConfig.shell.enhancement.enable = lib.mkEnableOption "";
 
-    config = lib.mkIf config.myConfig.shell.enhancedCommands.enable {
+    config = lib.mkIf config.myConfig.shell.enhancement.enable {
         programs.lsd = {
             enable = true;
             enableAliases = true;
