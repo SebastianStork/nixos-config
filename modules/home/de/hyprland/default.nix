@@ -6,7 +6,10 @@
 }: let
     cfg = config.myConfig.de;
 in {
-    imports = [./config.nix];
+    imports = [
+        ./config.nix
+        ./keybinds.nix
+    ];
 
     options.myConfig.de.hyprland.enable = lib.mkEnableOption "";
 
