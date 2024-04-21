@@ -1,12 +1,12 @@
 keys:
-  - &seb-desktop age18x6herevmcuhcmeh47ll6p9ck9zk4ga6gfxwlc8yl49rwjxm7qusylwfgc
-  - &seb-laptop age1jl9s4vp78wuwymjxaje6fg4ax0gg5aq8pn8khfmtn5rvap0d83tqfr05dv
+  - &north age18x6herevmcuhcmeh47ll6p9ck9zk4ga6gfxwlc8yl49rwjxm7qusylwfgc
+  - &inspiron age1jl9s4vp78wuwymjxaje6fg4ax0gg5aq8pn8khfmtn5rvap0d83tqfr05dv
 creation_rules:
-  - path_regex: hosts/seb-desktop/secrets.yaml$
+  - path_regex: hosts/north/secrets.yaml$
     key_groups:
     - age:
-      - *seb-desktop
-  - path_regex: hosts/seb-laptop/secrets.yaml$
+      - *north
+  - path_regex: hosts/inspiron/secrets.yaml$
     key_groups:
     - age:
-      - *seb-laptop
+      - *inspiron

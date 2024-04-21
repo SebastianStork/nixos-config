@@ -40,18 +40,18 @@
         pkgs = nixpkgs.legacyPackages.${system};
     in {
         nixosConfigurations = {
-            seb-desktop = nixpkgs.lib.nixosSystem {
+            north = nixpkgs.lib.nixosSystem {
                 specialArgs = {inherit inputs;};
                 modules = [
-                    ./hosts/seb-desktop
-                    "${./.}/users/seb/@seb-desktop.nix"
+                    ./hosts/north
+                    "${./.}/users/seb/@north.nix"
                 ];
             };
-            seb-laptop = nixpkgs.lib.nixosSystem {
+            inspiron = nixpkgs.lib.nixosSystem {
                 specialArgs = {inherit inputs;};
                 modules = [
-                    ./hosts/seb-laptop
-                    "${./.}/users/seb/@seb-laptop.nix"
+                    ./hosts/inspiron
+                    "${./.}/users/seb/@inspiron.nix"
                 ];
             };
         };
