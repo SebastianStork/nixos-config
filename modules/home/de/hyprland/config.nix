@@ -135,6 +135,8 @@
                 # Release + Locked
                 brindrl = [
                     # Manage session
+                    "$mod CONTROL, P, exec, poweroff"
+                    "$mod CONTROL, R, exec, reboot"
                     "$mod CONTROL, Q, exit,"
                     "$mod CONTROL, S, exec, systemctl suspend"
                     "$mod CONTROL, L, exec, loginctl lock-session"
