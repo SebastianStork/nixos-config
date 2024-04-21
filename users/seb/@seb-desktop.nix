@@ -1,6 +1,7 @@
 {
     inputs,
     pkgs,
+    lib,
     ...
 }: {
     imports = [./default.nix];
@@ -20,5 +21,7 @@
                 --replace "5000" "16"
             '';
         };
+
+        services.hypridle.beforeSleepCmd = lib.mkForce "";
     };
 }
