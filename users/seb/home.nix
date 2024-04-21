@@ -6,7 +6,6 @@
 }: {
     myConfig = {
         de = {
-            qtile.enable = osConfig.myConfig.de.qtile.enable;
             hyprland.enable = osConfig.myConfig.de.hyprland.enable;
 
             wallpaper = ./wallpaper;

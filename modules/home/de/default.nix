@@ -1,6 +1,5 @@
 {
     imports = [
-        ./qtile.nix
         ./hyprland
         ./theming.nix
         ./rofi
