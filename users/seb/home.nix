@@ -11,10 +11,7 @@
             wallpaper = ./wallpaper;
             theming.enable = true;
 
-            tray = {
-                syncthing.enable = osConfig.myConfig.syncthing.enable;
-                networkmanager.enable = osConfig.networking.networkmanager.enable;
-            };
+            tray.syncthing.enable = osConfig.myConfig.syncthing.enable;
         };
 
         shell = {
