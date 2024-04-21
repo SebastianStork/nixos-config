@@ -64,9 +64,6 @@
                 bind =
                     [
                         # Essentials
-                        "$mod CONTROL, Q, exit,"
-                        "$mod CONTROL, S, exec, systemctl suspend"
-                        "$mod CONTROL, L, exec, loginctl lock-session"
                         "$mod SHIFT, C, killactive,"
                         "$mod, TAB, cyclenext,"
                         "$mod SHIFT, V, togglefloating,"
@@ -133,6 +130,14 @@
                     # Media
                     ", XF86AudioPlay, exec, ${lib.getExe pkgs.playerctl} --player=spotify play-pause"
                     ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+                ];
+
+                # Release + Locked
+                brindrl = [
+                    # Manage session
+                    "$mod CONTROL, Q, exit,"
+                    "$mod CONTROL, S, exec, systemctl suspend"
+                    "$mod CONTROL, L, exec, loginctl lock-session"
                 ];
 
                 # Repeat + Locked
