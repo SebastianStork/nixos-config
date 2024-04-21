@@ -53,6 +53,8 @@
                     disable_hyprland_logo = true;
                     disable_splash_rendering = true;
                     force_default_wallpaper = 0;
+
+                    key_press_enables_dpms = true;
                 };
 
                 "$mod" = "SUPER";
@@ -140,6 +142,7 @@
                     "$mod CONTROL, Q, exit,"
                     "$mod CONTROL, S, exec, systemctl suspend"
                     "$mod CONTROL, L, exec, loginctl lock-session"
+                    "$mod CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off"
                 ];
 
                 # Repeat + Locked
