@@ -3,7 +3,6 @@
         ./flatpak.nix
         ./vm.nix
         ./wlan.nix
-        ./doas.nix
         ./vpn.nix
         ./comma.nix
         ./auto-gc.nix
