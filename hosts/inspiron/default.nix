@@ -35,5 +35,4 @@
 
     programs.nh.enable = true;
     services.auto-cpufreq.enable = true;
-    hardware.brillo.enable = true;
 }
