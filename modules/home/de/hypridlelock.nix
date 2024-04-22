@@ -30,7 +30,7 @@
             enable = true;
 
             lockCmd = "pidof ${hyprlockExe} || ${hyprlockExe}";
-            beforeSleepCmd = "loginctl lock-session & sleep1";
+            beforeSleepCmd = "loginctl lock-session";
             afterSleepCmd = "hyprctl dispatch dpms on";
 
             listeners = [
