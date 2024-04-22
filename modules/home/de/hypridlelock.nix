@@ -19,7 +19,7 @@
                 {
                     path = "screenshot";
                     blur_passes = 1;
-                    blur_size = 6;
+                    blur_size = 4;
                 }
             ];
         };
