@@ -43,7 +43,6 @@
         pkgs.spotify
         pkgs.cinnamon.nemo-with-extensions
         pkgs.discord
-        pkgs.flameshot
         pkgs.jetbrains.idea-community
         pkgs.vlc
         pkgs.onlyoffice-bin_latest
