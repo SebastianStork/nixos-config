@@ -23,5 +23,7 @@
         };
 
         services.hypridle.beforeSleepCmd = lib.mkForce "";
+
+        services.easyeffects.preset = "95X";
     };
 }

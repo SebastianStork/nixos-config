@@ -4,6 +4,8 @@
     osConfig,
     ...
 }: {
+    xdg.userDirs.extraConfig.XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
+
     myConfig = {
         de = {
             hyprland.enable = osConfig.myConfig.de.hyprland.enable;
@@ -27,16 +29,13 @@
 
         ssh-client.enable = true;
         git.enable = true;
-
         neovim.enable = true;
         vscode.enable = true;
-
         kitty.enable = true;
+        equalizer.enable = true;
     };
 
     programs.btop.enable = true;
-
-    xdg.userDirs.extraConfig.XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
 
     home.packages = [
         pkgs.notepadqq

@@ -7,5 +7,6 @@
         ./git.nix
         ./neovim.nix
         ./kitty.nix
+        ./equalizer
     ];
 }

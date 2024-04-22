@@ -1,4 +1,8 @@
-{pkgs, lib, ...}: {
+{
+    pkgs,
+    lib,
+    ...
+}: {
     imports = [./default.nix];
 
     home-manager.users.seb = {
