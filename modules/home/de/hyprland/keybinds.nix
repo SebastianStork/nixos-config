@@ -101,8 +101,8 @@
                 ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
 
                 # Adjust brightness
-                ", XF86MonBrightnessUp, exec, brillo -q -u 20000 -A 4"
-                ", XF86MonBrightnessDown, exec, brillo -q -u 20000 -U 4"
+                ", XF86MonBrightnessUp, exec, ${lib.getExe pkgs.brightnessctl} -e set +2%"
+                ", XF86MonBrightnessDown, exec, ${lib.getExe pkgs.brightnessctl} -e set 2%-"
             ];
 
             # Mouse

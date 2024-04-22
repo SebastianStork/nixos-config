@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, lib, ...}: {
     imports = [./default.nix];
 
     home-manager.users.seb = {
@@ -7,8 +7,8 @@
         services.hypridle.listeners = [
             {
                 timeout = 300;
-                onTimeout = "brillo -q -O && brillo -q -S 10";
-                onResume = "brillo -q -I";
+                onTimeout = "${lib.getExe pkgs.brightnessctl} -s && ${lib.getExe pkgs.brightnessctl} -e set 10%";
+                onResume = "${lib.getExe pkgs.brightnessctl} -r";
             }
             {
                 timeout = 1200;
