@@ -46,6 +46,10 @@
         pkgs.jetbrains.idea-community
         pkgs.vlc
         pkgs.onlyoffice-bin_latest
+        pkgs.libreoffice
+        pkgs.hunspell
+        pkgs.hunspellDicts.de_DE
+        pkgs.hunspellDicts.en_US
 
         (pkgs.nerdfonts.override {
             fonts = [
