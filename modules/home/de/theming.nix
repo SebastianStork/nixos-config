@@ -24,8 +24,8 @@ in {
             theme.name = "Adwaita-dark";
             theme.package = pkgs.gnome.gnome-themes-extra;
 
-            iconTheme.name = "Adwaita";
-            iconTheme.package = pkgs.gnome.adwaita-icon-theme;
+            iconTheme.name = "Papirus-Dark";
+            iconTheme.package = pkgs.papirus-icon-theme;
 
             font.name = "Open Sans";
             font.package = pkgs.open-sans;
