@@ -10,7 +10,6 @@
             "$terminal" = "kitty";
             "$browser" = "brave";
             "$fileManager" = "nemo";
-            "$editor" = "codium";
 
             bind =
                 [
@@ -25,9 +24,10 @@
                     "$mod, V, exec, ${lib.getExe pkgs.cliphist} list | rofi -dmenu | ${lib.getExe pkgs.cliphist} decode | ${lib.getExe' pkgs.wl-clipboard "wl-copy"}"
                     "$mod, B, exec, $browser"
                     "$mod, F, exec, $fileManager"
-                    "$mod, C, exec, $editor"
+                    "$mod, C, exec, codium"
                     "$mod, S, exec, spotify"
                     "$mod, D, exec, webcord"
+                    "$mod, N, exec, notepadqq --new-window"
 
                     # Move focus
                     "$mod, left, movefocus, l"
