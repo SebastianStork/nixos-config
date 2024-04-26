@@ -42,7 +42,7 @@
         pkgs.brave
         pkgs.spotify
         pkgs.cinnamon.nemo-with-extensions
-        pkgs.discord
+        pkgs.webcord
         pkgs.jetbrains.idea-community
         pkgs.vlc
         pkgs.onlyoffice-bin_latest

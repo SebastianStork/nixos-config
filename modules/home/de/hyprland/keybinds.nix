@@ -27,7 +27,7 @@
                     "$mod, F, exec, $fileManager"
                     "$mod, C, exec, $editor"
                     "$mod, S, exec, spotify"
-                    "$mod, D, exec, discord"
+                    "$mod, D, exec, webcord"
 
                     # Move focus
                     "$mod, left, movefocus, l"
