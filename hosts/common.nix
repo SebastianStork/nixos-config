@@ -40,6 +40,8 @@
         pkgs.neovim
     ];
 
+    environment.variables.EDITOR = "nvim";
+
     nixpkgs.config.allowUnfreePredicate = pkg:
         builtins.elem (pkgs.lib.getName pkg) [
             "steam"
