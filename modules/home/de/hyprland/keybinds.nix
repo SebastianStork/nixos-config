@@ -5,113 +5,86 @@
     ...
 }: {
     config = lib.mkIf config.myConfig.de.hyprland.enable {
-        wayland.windowManager.hyprland.settings = {
-            "$mod" = "SUPER";
-            "$terminal" = "kitty";
-            "$browser" = "brave";
-            "$fileManager" = "nemo";
+        wayland.windowManager.hyprland.extraConfig = ''
+            $mod = SUPER
 
-            bind =
-                [
-                    # Essentials
-                    "$mod SHIFT, C, killactive,"
-                    "$mod, TAB, cyclenext,"
-                    "$mod SHIFT, V, togglefloating,"
-                    "$mod SHIFT, F, fullscreen, 0"
+            # Bindflags:
+            # r = release
+            # e = repeat
+            # l = locked
 
-                    # Launch programs
-                    "$mod, RETURN, exec, $terminal"
-                    "$mod, V, exec, ${lib.getExe pkgs.cliphist} list | rofi -dmenu | ${lib.getExe pkgs.cliphist} decode | ${lib.getExe' pkgs.wl-clipboard "wl-copy"}"
-                    "$mod, B, exec, $browser"
-                    "$mod, F, exec, $fileManager"
-                    "$mod, C, exec, codium"
-                    "$mod, S, exec, spotify"
-                    "$mod, D, exec, webcord"
-                    "$mod, N, exec, notepadqq --new-window"
+            # Essentials
+            bind = $mod SHIFT, C, killactive,
+            bind = $mod, TAB, cyclenext,
+            bind = $mod SHIFT, V, togglefloating,
+            bind = $mod SHIFT, F, fullscreen, 0
 
-                    # Move focus
-                    "$mod, left, movefocus, l"
-                    "$mod, right, movefocus, r"
-                    "$mod, up, movefocus, u"
-                    "$mod, down, movefocus, d"
+            # Launch programs
+            bind = $mod, RETURN, exec, kitty
+            bindr = $mod, R, exec, pkill rofi || rofi -show drun
+            bind = $mod, V, exec, ${lib.getExe pkgs.cliphist} list | rofi -dmenu | ${lib.getExe pkgs.cliphist} decode | ${lib.getExe' pkgs.wl-clipboard "wl-copy"}
+            bind = $mod, B, exec, brave
+            bind = $mod, F, exec, nemo
+            bind = $mod, C, exec, codium
+            bind = $mod, S, exec, spotify
+            bind = $mod, D, exec, webcord
+            bind = $mod, N, exec, notepadqq --new-window
 
-                    # Move window
-                    "$mod SHIFT, left, movewindow, l"
-                    "$mod SHIFT, right, movewindow, r"
-                    "$mod SHIFT, up, movewindow, u"
-                    "$mod SHIFT, down, movewindow, d"
+            # Move focus
+            bind = $mod, left, movefocus, l
+            bind = $mod, right, movefocus, r
+            bind = $mod, up, movefocus, u
+            bind = $mod, down, movefocus, d
 
-                    # Scroll through workspaces
-                    "$mod, mouse_down, workspace, e-1"
-                    "$mod, mouse_up, workspace, e+1"
+            # Move window
+            bind = $mod SHIFT, left, movewindow, l
+            bind = $mod SHIFT, right, movewindow, r
+            bind = $mod SHIFT, up, movewindow, u
+            bind = $mod SHIFT, down, movewindow, d
+            bindm = $mod, mouse:272, movewindow
 
-                    # Screenshot
-                    ", Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave output"
-                    "SHIFT, Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave area"
+            # Resize window
+            binde = $mod CONTROL, left, resizeactive, -100 0
+            binde = $mod CONTROL, right, resizeactive, 100 0
+            binde = $mod CONTROL, up, resizeactive, 0 -100
+            binde = $mod CONTROL, down, resizeactive, 0 100
+            bindm = $mod, mouse:273, resizewindow
+
+            # Switch workspace
+            ${lib.concatLines (builtins.concatLists (builtins.genList (
+                x: [
+                    "bind = $mod, ${toString (x + 1)}, workspace, ${toString (x + 1)}"
+                    "bind = $mod SHIFT, ${toString (x + 1)}, movetoworkspacesilent, ${toString (x + 1)}"
                 ]
-                # Switch workspace
-                ++ (
-                    builtins.concatLists (builtins.genList (
-                        x: [
-                            "$mod, ${toString (x + 1)}, workspace, ${toString (x + 1)}"
-                            "$mod SHIFT, ${toString (x + 1)}, movetoworkspacesilent, ${toString (x + 1)}"
-                        ]
-                    )
-                    9)
-                );
+            )
+            9))}
 
-            # Release
-            bindr = [
-                # Launcher
-                "$mod, R, exec, pkill rofi || rofi -show drun"
-            ];
+            # Scroll through workspaces
+            bind = $mod, mouse_down, workspace, e-1
+            bind = $mod, mouse_up, workspace, e+1
 
-            # Repeat
-            binde = [
-                # Resize window
-                "$mod CONTROL, left, resizeactive, -100 0"
-                "$mod CONTROL, right, resizeactive, 100 0"
-                "$mod CONTROL, up, resizeactive, 0 -100"
-                "$mod CONTROL, down, resizeactive, 0 100"
-            ];
+            # Manage session
+            bindrl = $mod CONTROL, P, exec, poweroff
+            bindrl = $mod CONTROL, R, exec, reboot
+            bindrl = $mod CONTROL, Q, exit,
+            bindrl = $mod CONTROL, S, exec, systemctl suspend
+            bindrl = $mod CONTROL, L, exec, loginctl lock-session
+            bindrl = $mod CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
+            bindl = , switch:on:Lid Switch, exec, systemctl suspend
 
-            # Locked
-            bindl = [
-                ", switch:on:Lid Switch, exec, systemctl suspend"
+            # Control media
+            bindl = , XF86AudioPlay, exec, ${lib.getExe pkgs.playerctl} --ignore-player=brave play-pause
+            bindl = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+            bindel = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+            bindel = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 
-                # Media
-                ", XF86AudioPlay, exec, ${lib.getExe pkgs.playerctl} --player=spotify play-pause"
-                ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-            ];
+            # Adjust brightness
+            bindel = , XF86MonBrightnessUp, exec, ${lib.getExe pkgs.brightnessctl} -e set +2%
+            bindel = , XF86MonBrightnessDown, exec, ${lib.getExe pkgs.brightnessctl} -e set 2%-
 
-            # Release + Locked
-            bindrl = [
-                # Manage session
-                "$mod CONTROL, P, exec, poweroff"
-                "$mod CONTROL, R, exec, reboot"
-                "$mod CONTROL, Q, exit,"
-                "$mod CONTROL, S, exec, systemctl suspend"
-                "$mod CONTROL, L, exec, loginctl lock-session"
-                "$mod CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off"
-            ];
-
-            # Repeat + Locked
-            bindel = [
-                # Adjust volume
-                ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-                ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-
-                # Adjust brightness
-                ", XF86MonBrightnessUp, exec, ${lib.getExe pkgs.brightnessctl} -e set +2%"
-                ", XF86MonBrightnessDown, exec, ${lib.getExe pkgs.brightnessctl} -e set 2%-"
-            ];
-
-            # Mouse
-            bindm = [
-                # Move/resize windows
-                "$mod, mouse:272, movewindow"
-                "$mod, mouse:273, resizewindow"
-            ];
-        };
+            # Screenshot
+            bind = , Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave output
+            bind = SHIFT, Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave area
+        '';
     };
 }
