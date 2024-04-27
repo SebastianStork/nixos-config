@@ -37,9 +37,10 @@
         spotifyd.enable = true;
     };
 
-    programs.btop.enable = true;
-
     home.packages = [
+        pkgs.btop
+        pkgs.fastfetch
+
         pkgs.notepadqq
         pkgs.brave
         pkgs.cinnamon.nemo-with-extensions
