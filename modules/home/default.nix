@@ -9,5 +9,6 @@
         ./kitty.nix
         ./equalizer
         ./sops.nix
+        ./spotifyd.nix
     ];
 }

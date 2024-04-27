@@ -11,7 +11,7 @@
     config = lib.mkIf config.myConfig.sops.enable {
         sops = {
             age.sshKeyPaths = ["${config.home.homeDirectory}/.ssh/id_ed25519"];
-            defaultSopsFile = "${inputs.self}/home/${config.home.username}/secrets.yaml";
+            defaultSopsFile = "${inputs.self}/users/${config.home.username}/secrets.yaml";
         };
     };
 }

@@ -42,8 +42,6 @@
 
     nixpkgs.config.allowUnfreePredicate = pkg:
         builtins.elem (pkgs.lib.getName pkg) [
-            "spotify"
-            "discord"
             "steam"
             "steam-original"
             "steam-run"
