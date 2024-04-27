@@ -20,7 +20,7 @@
     ];
     boot.kernelModules = [
         "kvm-amd"
-        "adm1021"
+        "k10temp"
         "nct6775"
     ];
     nixpkgs.hostPlatform = "x86_64-linux";
@@ -77,15 +77,15 @@
         config = ''
             # pwm1=rear pwm2=cpu pwm3=front+top pwm4=gpu pwm=motherboard?
             INTERVAL=2
-            AVERAGE=5
-            DEVPATH=hwmon0=devices/platform/nct6775.656 hwmon1=devices/pci0000:00/0000:00:18.3
-            DEVNAME=hwmon0=nct6798 hwmon1=k10temp
-            FCTEMPS=hwmon0/pwm1=hwmon0/temp1_input hwmon0/pwm2=hwmon1/temp1_input hwmon0/pwm3=hwmon0/temp1_input hwmon0/pwm4=/tmp/nvidia-gpu-temp hwmon0/pwm5=hwmon0/temp1_input
-            FCFANS=hwmon0/pwm1=hwmon0/fan1_input hwmon0/pwm2=hwmon0/fan7_input+hwmon0/fan2_input hwmon0/pwm3=hwmon0/fan3_input hwmon0/pwm4=hwmon0/fan4_input hwmon0/pwm5=hwmon0/fan5_input
-            MINTEMP=hwmon0/pwm1=35 hwmon0/pwm2=45 hwmon0/pwm3=35 hwmon0/pwm4=40 hwmon0/pwm5=35
-            MAXTEMP=hwmon0/pwm1=100 hwmon0/pwm2=100 hwmon0/pwm3=100 hwmon0/pwm4=100 hwmon0/pwm5=100
-            MINSTART=hwmon0/pwm1=16 hwmon0/pwm2=16 hwmon0/pwm3=16 hwmon0/pwm4=30 hwmon0/pwm5=16
-            MINSTOP=hwmon0/pwm1=16 hwmon0/pwm2=16 hwmon0/pwm3=16 hwmon0/pwm4=30 hwmon0/pwm5=16
+            DEVPATH=hwmon0=devices/pci0000:00/0000:00:18.3 hwmon1=devices/platform/nct6775.656
+            DEVNAME=hwmon0=k10temp hwmon1=nct6798
+            FCTEMPS=hwmon1/pwm1=hwmon1/temp1_input hwmon1/pwm2=hwmon0/temp1_input hwmon1/pwm3=hwmon1/temp1_input hwmon1/pwm4=/tmp/nvidia-gpu-temp
+            FCFANS=hwmon1/pwm1=hwmon1/fan1_input hwmon1/pwm2=hwmon1/fan7_input+hwmon1/fan2_input hwmon1/pwm3=hwmon1/fan3_input hwmon1/pwm4=hwmon1/fan4_input
+            MINTEMP=hwmon1/pwm1=35 hwmon1/pwm2=45 hwmon1/pwm3=35 hwmon1/pwm4=40
+            MAXTEMP=hwmon1/pwm1=100 hwmon1/pwm2=100 hwmon1/pwm3=100 hwmon1/pwm4=100
+            MINSTART=hwmon1/pwm1=16 hwmon1/pwm2=16 hwmon1/pwm3=16 hwmon1/pwm4=30
+            MINSTOP=hwmon1/pwm1=16 hwmon1/pwm2=16 hwmon1/pwm3=16 hwmon1/pwm4=30
+            AVERAGE=
         '';
     };
 }
