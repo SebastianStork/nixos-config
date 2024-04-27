@@ -18,14 +18,14 @@
 
             settings = {
                 devices = {
-                    seb-desktop.id = "DIPH5BN-N2XV57S-23W63KD-UZOZ3UI-RB24QRJ-VVPD4YM-ZMFZIXN-GPX4YA4";
-                    seb-laptop.id = "GUXHL6J-J2HWYNN-7JZJ5CN-6LPYGJD-H7GYRLQ-ORZ4PJJ-5K4WT7I-MELMIQO";
+                    north.id = "DIPH5BN-N2XV57S-23W63KD-UZOZ3UI-RB24QRJ-VVPD4YM-ZMFZIXN-GPX4YA4";
+                    inspiron.id = "GUXHL6J-J2HWYNN-7JZJ5CN-6LPYGJD-H7GYRLQ-ORZ4PJJ-5K4WT7I-MELMIQO";
                 };
 
                 folders = let
                     allDevices = [
-                        "seb-desktop"
-                        "seb-laptop"
+                        "north"
+                        "inspiron"
                     ];
                     staggeredVersioning = {
                         type = "staggered";
