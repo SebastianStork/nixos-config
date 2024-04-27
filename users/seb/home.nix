@@ -51,6 +51,7 @@
         pkgs.hunspell
         pkgs.hunspellDicts.de_DE
         pkgs.hunspellDicts.en_US
+        pkgs.marktext
 
         (pkgs.nerdfonts.override {
             fonts = [
