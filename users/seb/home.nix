@@ -33,6 +33,7 @@
         vscode.enable = true;
         kitty.enable = true;
         equalizer.enable = true;
+        sops.enable = true;
     };
 
     programs.btop.enable = true;

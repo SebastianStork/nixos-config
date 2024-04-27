@@ -8,5 +8,6 @@
         ./neovim.nix
         ./kitty.nix
         ./equalizer
+        ./sops.nix
     ];
 }

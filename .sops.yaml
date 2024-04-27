@@ -1,12 +1,23 @@
 keys:
+  - &admin age1mpq8m4p7dnxh5ze3fh7etd2k6sp85zdnmp9te3e9chcw4pw07pcq960zh5
   - &north age18x6herevmcuhcmeh47ll6p9ck9zk4ga6gfxwlc8yl49rwjxm7qusylwfgc
   - &inspiron age1jl9s4vp78wuwymjxaje6fg4ax0gg5aq8pn8khfmtn5rvap0d83tqfr05dv
+  - &seb-north age1p32cyzakxtcx346ej82ftln4r2aw2pcuazq3583s85nzsan4ygqsj32hjf
+  - &seb-inspiron age1s9h9hh8f0vudwn4awr90mj0ka2xh9gppwus0jmvmaz3j3uckz94s36gzkz
 creation_rules:
   - path_regex: hosts/north/secrets.yaml$
     key_groups:
     - age:
+      - *admin
       - *north
   - path_regex: hosts/inspiron/secrets.yaml$
     key_groups:
     - age:
+      - *admin
       - *inspiron
+  - path_regex: users/seb/secrets.yaml$
+    key_groups:
+    - age:
+      - *admin
+      - *seb-north
+      - *seb-inspiron
