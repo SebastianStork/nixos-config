@@ -73,10 +73,28 @@
             bindl = , switch:on:Lid Switch, exec, systemctl suspend
 
             # Control media
-            bindl = , XF86AudioPlay, exec, ${lib.getExe pkgs.playerctl} --ignore-player=brave play-pause
-            bindl = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-            bindel = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
-            bindel = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+            ${let
+                play-pause = "${lib.getExe pkgs.playerctl} --ignore-player=brave play-pause";
+                play-next = "${lib.getExe pkgs.playerctl} --ignore-player=brave next";
+                play-previous = "${lib.getExe pkgs.playerctl} --ignore-player=brave previous";
+                mute = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+                volume-up = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+";
+                volume-down = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
+            in ''
+                bindl = , XF86AudioPlay, exec, ${play-pause}
+                bindel = SHIFT, XF86AudioRaiseVolume, exec, ${play-next}
+                bindel = SHIFT, XF86AudioLowerVolume, exec, ${play-previous}
+                bindl = , XF86AudioMute, exec, ${mute}
+                bindel = , XF86AudioRaiseVolume, exec, ${volume-up}
+                bindel = , XF86AudioLowerVolume, exec, ${volume-down}
+
+                bindl = $mod ALT, RETURN, exec, ${play-pause}
+                bindel = $mod ALT, right, exec, ${play-next}
+                bindel = $mod ALT, left, exec, ${play-previous}
+                bindl = $mod ALT, BACKSPACE, exec, ${mute}
+                bindel = $mod ALT, up, exec, ${volume-up}
+                bindel = $mod ALT, down, exec, ${volume-down}
+            ''}
 
             # Adjust brightness
             bindel = , XF86MonBrightnessUp, exec, ${lib.getExe pkgs.brightnessctl} -e set +2%
