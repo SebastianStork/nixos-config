@@ -78,14 +78,14 @@
         config = ''
             # pwm1=rear pwm2=cpu pwm3=front+top pwm4=gpu pwm=motherboard?
             INTERVAL=2
-            DEVPATH=hwmon0=devices/pci0000:00/0000:00:18.3 hwmon1=devices/platform/nct6775.656
-            DEVNAME=hwmon0=k10temp hwmon1=nct6798
-            FCTEMPS=hwmon1/pwm1=hwmon1/temp1_input hwmon1/pwm2=hwmon0/temp1_input hwmon1/pwm3=hwmon1/temp1_input hwmon1/pwm4=/tmp/nvidia-gpu-temp
-            FCFANS=hwmon1/pwm1=hwmon1/fan1_input hwmon1/pwm2=hwmon1/fan7_input+hwmon1/fan2_input hwmon1/pwm3=hwmon1/fan3_input hwmon1/pwm4=hwmon1/fan4_input
-            MINTEMP=hwmon1/pwm1=35 hwmon1/pwm2=45 hwmon1/pwm3=35 hwmon1/pwm4=40
-            MAXTEMP=hwmon1/pwm1=100 hwmon1/pwm2=100 hwmon1/pwm3=100 hwmon1/pwm4=100
-            MINSTART=hwmon1/pwm1=16 hwmon1/pwm2=16 hwmon1/pwm3=16 hwmon1/pwm4=30
-            MINSTOP=hwmon1/pwm1=16 hwmon1/pwm2=16 hwmon1/pwm3=16 hwmon1/pwm4=30
+            DEVPATH=hwmon1=devices/pci0000:00/0000:00:18.3 hwmon2=devices/platform/nct6775.656
+            DEVNAME=hwmon1=k10temp hwmon2=nct6798
+            FCTEMPS=hwmon2/pwm1=hwmon2/temp1_input hwmon2/pwm2=hwmon1/temp1_input hwmon2/pwm3=hwmon2/temp1_input hwmon2/pwm4=/tmp/nvidia-gpu-temp
+            FCFANS=hwmon2/pwm1=hwmon2/fan1_input hwmon2/pwm2=hwmon2/fan7_input+hwmon2/fan2_input hwmon2/pwm3=hwmon2/fan3_input hwmon2/pwm4=hwmon2/fan4_input
+            MINTEMP=hwmon2/pwm1=35 hwmon2/pwm2=45 hwmon2/pwm3=35 hwmon2/pwm4=40
+            MAXTEMP=hwmon2/pwm1=100 hwmon2/pwm2=100 hwmon2/pwm3=100 hwmon2/pwm4=100
+            MINSTART=hwmon2/pwm1=16 hwmon2/pwm2=16 hwmon2/pwm3=16 hwmon2/pwm4=30
+            MINSTOP=hwmon2/pwm1=16 hwmon2/pwm2=16 hwmon2/pwm3=16 hwmon2/pwm4=30
         '';
     };
 }
