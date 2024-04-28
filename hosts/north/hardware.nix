@@ -14,6 +14,7 @@
     boot.initrd.availableKernelModules = [
         "xhci_pci"
         "ahci"
+        "nvme"
         "usb_storage"
         "usbhid"
         "sd_mod"
@@ -85,7 +86,6 @@
             MAXTEMP=hwmon1/pwm1=100 hwmon1/pwm2=100 hwmon1/pwm3=100 hwmon1/pwm4=100
             MINSTART=hwmon1/pwm1=16 hwmon1/pwm2=16 hwmon1/pwm3=16 hwmon1/pwm4=30
             MINSTOP=hwmon1/pwm1=16 hwmon1/pwm2=16 hwmon1/pwm3=16 hwmon1/pwm4=30
-            AVERAGE=
         '';
     };
 }
