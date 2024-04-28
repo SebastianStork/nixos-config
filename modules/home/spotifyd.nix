@@ -18,9 +18,9 @@
             settings.global = {
                 username_cmd = "cat ${config.sops.secrets."spotify/username".path}";
                 password_cmd = "cat ${config.sops.secrets."spotify/password".path}";
-                backend = "pulseaudio";
                 device_name = "${osConfig.networking.hostName}";
-                device_type = "computer";
+                initial_volume = "40";
+                volume_normalisation = true;
             };
         };
     };
