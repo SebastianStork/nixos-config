@@ -16,11 +16,14 @@
             package = pkgs.vscode-with-extensions.override {
                 vscode = pkgs.vscodium;
                 vscodeExtensions = let
-                    ext = inputs.nix-vscode-extensions.extensions.${pkgs.system};
+                    open-ext = inputs.nix-vscode-extensions.extensions.${pkgs.system}.open-vsx;
                 in [
-                    ext.open-vsx.jnoortheen.nix-ide
-                    ext.open-vsx.pkief.material-icon-theme
-                    ext.open-vsx.yzhang.markdown-all-in-one
+                    open-ext.jnoortheen.nix-ide
+                    open-ext.yzhang.markdown-all-in-one
+
+                    open-ext.github.github-vscode-theme
+                    open-ext.zhuangtongfa.material-theme
+                    open-ext.pkief.material-icon-theme
                 ];
             };
         };
@@ -29,8 +32,8 @@
             settings = builtins.replaceStrings [","] [",\\n"] (builtins.toJSON {
                 "workbench.colorTheme" =
                     {
-                        dark = "Default Dark Modern";
-                        light = "Default Light Modern";
+                        dark = "GitHub Dark";
+                        light = "GitHub Light Default";
                     }
                     ."${config.myConfig.de.theme}";
                 "workbench.iconTheme" = "material-icon-theme";
