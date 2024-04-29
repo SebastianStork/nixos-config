@@ -44,6 +44,18 @@
 
     environment.systemPackages = [pkgs.git];
 
+    fonts.packages = [
+        pkgs.corefonts
+        pkgs.roboto
+        pkgs.open-sans
+        (pkgs.nerdfonts.override {
+            fonts = [
+                "JetBrainsMono"
+                "NerdFontsSymbolsOnly"
+            ];
+        })
+    ];
+
     nixpkgs.config.allowUnfreePredicate = pkg:
         builtins.elem (pkgs.lib.getName pkg) [
             "steam"

@@ -45,17 +45,5 @@
         pkgs.hunspellDicts.de_DE
         pkgs.hunspellDicts.en_US
         pkgs.marktext
-
-        (pkgs.nerdfonts.override {
-            fonts = [
-                "JetBrainsMono"
-                "NerdFontsSymbolsOnly"
-            ];
-        })
-        pkgs.corefonts
-        pkgs.roboto
-        pkgs.open-sans
     ];
-
-    fonts.fontconfig.enable = true;
 }
