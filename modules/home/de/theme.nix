@@ -8,7 +8,7 @@
 in {
     options.myConfig.de = {
         theme = lib.mkOption {
-            type = lib.types.string;
+            type = lib.types.str;
         };
         wallpaper = lib.mkOption {
             type = lib.types.path;
