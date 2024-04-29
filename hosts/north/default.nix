@@ -18,14 +18,16 @@
         de.hyprland.enable = true;
 
         sound.enable = true;
-        auto-gc.enable = true;
         vm.qemu.enable = true;
         vpn.lgs.enable = true;
         comma.enable = true;
         sops.enable = true;
         printing.enable = true;
         syncthing.enable = true;
-        nix-helper.enable = true;
+        nix-helper = {
+            enable = true;
+            auto-gc.enable = true;
+        };
     };
 
     boot.kernelPackages = pkgs.linuxPackages_latest;

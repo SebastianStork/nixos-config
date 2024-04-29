@@ -5,7 +5,6 @@
         ./wlan.nix
         ./vpn.nix
         ./comma.nix
-        ./auto-gc.nix
         ./sops.nix
         ./bluetooth.nix
         ./de.nix

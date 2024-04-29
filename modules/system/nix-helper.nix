@@ -2,10 +2,15 @@
     config,
     lib,
     ...
-}: {
-    options.myConfig.nix-helper.enable = lib.mkEnableOption "";
+}: let
+    cfg = config.myConfig.nix-helper;
+in {
+    options.myConfig.nix-helper = {
+        enable = lib.mkEnableOption "";
+        auto-gc.enable = lib.mkEnableOption "";
+    };
 
-    config = lib.mkIf config.myConfig.nix-helper.enable {
+    config = lib.mkIf cfg.enable {
         programs.nh.enable = true;
 
         environment.shellAliases = let
@@ -15,6 +20,12 @@
             nrt = "${rebuild} test";
             nrb = "${rebuild} boot";
             nrrb = "nrb && reboot";
+        };
+
+        programs.nh.clean = lib.mkIf cfg.auto-gc.enable {
+            enable = true;
+            dates = "daily";
+            extraArgs = "--keep 10 --keep-since 7d";
         };
     };
 }
