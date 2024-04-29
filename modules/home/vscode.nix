@@ -22,7 +22,6 @@
                     open-ext.yzhang.markdown-all-in-one
 
                     open-ext.github.github-vscode-theme
-                    open-ext.zhuangtongfa.material-theme
                     open-ext.pkief.material-icon-theme
                 ];
             };
