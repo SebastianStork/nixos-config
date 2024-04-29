@@ -113,11 +113,6 @@
                     font-family: "Open Sans, Symbols Nerd Font Mono";
                     font-size: 15px;
                 }
-
-                window#waybar {
-                    background-color: rgba(43, 48, 59, 0.5);
-                    color: #ffffff;
-                }
             '';
         };
 

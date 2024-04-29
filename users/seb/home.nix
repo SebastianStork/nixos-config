@@ -9,10 +9,7 @@
     myConfig = {
         de = {
             hyprland.enable = osConfig.myConfig.de.hyprland.enable;
-
             wallpaper = ./wallpaper;
-            theming.enable = true;
-
             tray.syncthing.enable = osConfig.myConfig.syncthing.enable;
         };
 

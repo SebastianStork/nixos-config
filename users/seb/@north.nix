@@ -13,6 +13,8 @@
             pkgs.gimp
         ];
 
+        myConfig.de.theme = "dark";
+
         wayland.windowManager.hyprland.settings.monitor = "DP-2,2560x1440@144,0x0,1";
 
         programs.hyprlock.package = inputs.hyprlock.packages.${pkgs.system}.default.overrideAttrs {

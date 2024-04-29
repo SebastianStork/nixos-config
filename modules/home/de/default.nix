@@ -1,7 +1,7 @@
 {
     imports = [
         ./hyprland
-        ./theming.nix
+        ./theme.nix
         ./rofi
         ./tray.nix
         ./waybar.nix
