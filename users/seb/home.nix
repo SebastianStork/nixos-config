@@ -16,10 +16,6 @@
         shell = {
             bash.enable = true;
             starship.enable = true;
-            nixAliases = {
-                enable = true;
-                nh.enable = osConfig.programs.nh.enable;
-            };
             enhancement.enable = true;
             direnv.enable = true;
         };

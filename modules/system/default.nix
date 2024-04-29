@@ -14,5 +14,6 @@
         ./boot-loader.nix
         ./printing.nix
         ./syncthing.nix
+        ./nix-helper.nix
     ];
 }

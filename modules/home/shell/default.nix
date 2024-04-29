@@ -9,7 +9,6 @@ in {
         ./starship.nix
         ./direnv.nix
         ./enhancement.nix
-        ./nixAliases.nix
     ];
 
     options.myConfig.shell = {
