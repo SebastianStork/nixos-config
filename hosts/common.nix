@@ -35,12 +35,14 @@
 
     console.keyMap = "de-latin1-nodeadkeys";
 
-    environment.systemPackages = [
-        pkgs.git
-        pkgs.neovim
-    ];
+    programs.neovim = {
+        enable = true;
+        defaultEditor = true;
+        viAlias = true;
+        vimAlias = true;
+    };
 
-    environment.variables.EDITOR = "nvim";
+    environment.systemPackages = [pkgs.git];
 
     nixpkgs.config.allowUnfreePredicate = pkg:
         builtins.elem (pkgs.lib.getName pkg) [

@@ -22,7 +22,6 @@
 
         ssh-client.enable = true;
         git.enable = true;
-        neovim.enable = true;
         vscode.enable = true;
         kitty.enable = true;
         equalizer.enable = true;
