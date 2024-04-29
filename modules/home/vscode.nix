@@ -48,6 +48,7 @@
                 "workbench.sideBar.location" = "right";
                 "editor.renderWhitespace" = "none";
                 "editor.minimap.enabled" = false;
+                "window.menuBarVisibility" = "toggle";
             });
         in [
             "f+ %h/.config/VSCodium/User/settings.json - - - - ${settings}"
