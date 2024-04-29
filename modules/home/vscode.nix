@@ -1,4 +1,5 @@
 {
+    inputs,
     config,
     pkgs,
     lib,
@@ -11,22 +12,27 @@
 
         programs.vscode = {
             enable = true;
-            package = pkgs.vscodium;
 
-            mutableExtensionsDir = false;
-            extensions = [
-                pkgs.vscode-extensions.jnoortheen.nix-ide
-                pkgs.vscode-extensions.pkief.material-icon-theme
-                pkgs.vscode-extensions.yzhang.markdown-all-in-one
-            ];
+            package = pkgs.vscode-with-extensions.override {
+                vscode = pkgs.vscodium;
+                vscodeExtensions = let
+                    ext = inputs.nix-vscode-extensions.extensions.${pkgs.system};
+                in [
+                    ext.open-vsx.jnoortheen.nix-ide
+                    ext.open-vsx.pkief.material-icon-theme
+                    ext.open-vsx.yzhang.markdown-all-in-one
+                ];
+            };
         };
 
         systemd.user.tmpfiles.rules = let
             settings = builtins.replaceStrings [","] [",\\n"] (builtins.toJSON {
-                "workbench.colorTheme" = {
-                    dark = "Default Dark Modern";
-                    light = "Default Light Modern";
-                }."${config.myConfig.de.theme}";
+                "workbench.colorTheme" =
+                    {
+                        dark = "Default Dark Modern";
+                        light = "Default Light Modern";
+                    }
+                    ."${config.myConfig.de.theme}";
                 "workbench.iconTheme" = "material-icon-theme";
                 "editor.fontFamily" = "JetBrainsMono Nerd Font";
                 "explorer.confirmDelete" = false;
