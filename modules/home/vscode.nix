@@ -32,7 +32,7 @@
                 "workbench.colorTheme" =
                     {
                         dark = "GitHub Dark";
-                        light = "GitHub Light Default";
+                        light = "GitHub Light";
                     }
                     ."${config.myConfig.de.theme}";
                 "workbench.iconTheme" = "material-icon-theme";

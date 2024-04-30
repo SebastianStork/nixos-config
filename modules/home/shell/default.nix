@@ -7,7 +7,6 @@
 in {
     imports = [
         ./starship.nix
-        ./direnv.nix
         ./enhancement.nix
     ];
 

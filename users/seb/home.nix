@@ -17,7 +17,6 @@
             bash.enable = true;
             starship.enable = true;
             enhancement.enable = true;
-            direnv.enable = true;
         };
 
         ssh-client.enable = true;
