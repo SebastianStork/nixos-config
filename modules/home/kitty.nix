@@ -20,7 +20,7 @@
             theme =
                 {
                     dark = "Default";
-                    light = "Adwaita light";
+                    light = "GitHub Light";
                 }
                 ."${config.myConfig.de.theme}";
         };
