@@ -22,6 +22,11 @@ in {
             nrrb = "nrb && reboot";
         };
 
+        programs.direnv = {
+            enable = true;
+            silent = true;
+        };
+
         programs.nh.clean = lib.mkIf cfg.auto-gc.enable {
             enable = true;
             dates = "daily";

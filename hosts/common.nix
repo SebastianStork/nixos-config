@@ -42,11 +42,6 @@
         vimAlias = true;
     };
 
-    programs.direnv = {
-        enable = true;
-        silent = true;
-    };
-
     environment.systemPackages = [pkgs.git];
 
     fonts.packages = [
