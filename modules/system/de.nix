@@ -1,5 +1,4 @@
 {
-    inputs,
     config,
     pkgs,
     lib,
@@ -8,10 +7,7 @@
     options.myConfig.de.hyprland.enable = lib.mkEnableOption "";
 
     config = lib.mkIf config.myConfig.de.hyprland.enable {
-        programs.hyprland = {
-            enable = true;
-            package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-        };
+        programs.hyprland.enable = true;
 
         environment.sessionVariables = {
             WLR_NO_HARDWARE_CURSORS = "1";
