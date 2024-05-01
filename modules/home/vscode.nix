@@ -8,8 +8,6 @@
     options.myConfig.vscode.enable = lib.mkEnableOption "";
 
     config = lib.mkIf config.myConfig.vscode.enable {
-        home.packages = [pkgs.nil];
-
         programs.vscode = {
             enable = true;
 
@@ -44,7 +42,7 @@
                 "git.autofetch" = true;
                 "git.confirmSync" = false;
                 "nix.enableLanguageServer" = true;
-                "nix.serverPath" = "nil";
+                "nix.serverPath" = "${lib.getExe pkgs.nixd}";
                 "update.mode" = "none";
                 "git.suggestSmartCommit" = false;
                 "workbench.sideBar.location" = "right";
