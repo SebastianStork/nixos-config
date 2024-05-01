@@ -1,5 +1,6 @@
 {
     config,
+    pkgs,
     lib,
     ...
 }: {
@@ -11,8 +12,14 @@
             enableAliases = true;
         };
 
-        programs.bat.enable = true;
-        home.shellAliases.cat = "bat -p";
+        home.shellAliases.cat = let
+            theme =
+                {
+                    dark = "";
+                    light = "GitHub";
+                }
+                ."${config.myConfig.de.theme}";
+        in "${lib.getExe pkgs.bat} --plain --theme=${theme}";
 
         programs.fzf.enable = true;
 
