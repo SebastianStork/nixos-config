@@ -49,6 +49,7 @@
                 "editor.renderWhitespace" = "none";
                 "editor.minimap.enabled" = false;
                 "window.menuBarVisibility" = "toggle";
+                "workbench.editor.decorations.colors" = false;
             });
         in [
             "f+ %h/.config/VSCodium/User/settings.json - - - - ${settings}"
