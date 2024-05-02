@@ -25,7 +25,6 @@
         kitty.enable = true;
         equalizer.enable = true;
         sops.enable = true;
-        spotifyd.enable = true;
     };
 
     home.packages = [
@@ -34,6 +33,7 @@
 
         pkgs.notepadqq
         pkgs.brave
+        pkgs.spotify
         pkgs.cinnamon.nemo-with-extensions
         pkgs.webcord
         pkgs.jetbrains.idea-community

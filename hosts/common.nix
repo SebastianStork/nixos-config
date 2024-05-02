@@ -61,6 +61,7 @@
             "corefonts"
             "nvidia-x11"
             "nvidia-settings"
+            "spotify"
         ];
 
     users.mutableUsers = false;
