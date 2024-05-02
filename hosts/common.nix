@@ -62,6 +62,7 @@
             "nvidia-x11"
             "nvidia-settings"
             "spotify"
+            "obsidian"
         ];
 
     users.mutableUsers = false;
