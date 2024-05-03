@@ -16,26 +16,12 @@
 
         home.shellAliases = let
             lsAliases = let
-                list = "${lib.getExe pkgs.eza} --header --group --time-style=long-iso --group-directories-first --sort=name --icons=auto --git --git-repos-no-status --binary";
-
-                convertFlagAliasToFlag = char:
-                    {
-                        a = "--all";
-                        d = "--only-dirs";
-                        f = "--only-files";
-                    }
-                    .${char};
-                convertFlagAliasesToFlags = str: "${lib.concatStringsSep " " (lib.forEach (lib.stringToCharacters str) convertFlagAliasToFlag)}";
-                flagAliasCombos = lib.crossLists (a: b: "${a}${b}") [["" "a"] ["" "d" "f"]];
-                flagAttrs = lib.genAttrs flagAliasCombos convertFlagAliasesToFlags;
-                aliasTemplate = name: value: {
-                    "l${name}" = "${list} --oneline --dereference ${value}";
-                    "ll${name}" = "${list} --long ${value}";
-                    "lt${name}" = "${list} --tree ${value}";
-                };
-                flaggedAliases = lib.concatMapAttrs aliasTemplate flagAttrs;
+                listCmd = "${lib.getExe pkgs.eza} --header --group --time-style=long-iso --group-directories-first --sort=name --icons=auto --git --git-repos-no-status --binary";
+                aliasList = lib.crossLists (a: b: c: "${a}${b}${c}") [["ll" "lt" "l"] ["" "a"] ["" "d" "f"]];
+                convertAliasToCmd = str: "${listCmd} " + (builtins.replaceStrings ["ll" "lt" "l" "a" "d" "f"] ["--long " "--tree " "--oneline --dereference " "--all " "--only-dirs " "--only-files "] str);
+                aliasAttrs = lib.genAttrs aliasList convertAliasToCmd;
             in
-                flaggedAliases // {ls = "l";};
+                aliasAttrs // {ls = "l";};
 
             catAlias = let
                 theme =
