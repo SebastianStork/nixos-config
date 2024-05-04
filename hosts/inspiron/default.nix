@@ -36,6 +36,5 @@
 
     boot.kernelPackages = pkgs.linuxPackages_latest;
 
-    programs.nh.enable = true;
     services.auto-cpufreq.enable = true;
 }

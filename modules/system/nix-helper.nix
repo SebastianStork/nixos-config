@@ -30,7 +30,7 @@ in {
         programs.nh.clean = lib.mkIf cfg.auto-gc.enable {
             enable = true;
             dates = "daily";
-            extraArgs = "--keep 10 --keep-since 7d";
+            extraArgs = "--keep 10 --keep-since 3d";
         };
     };
 }
