@@ -12,13 +12,13 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
-        nix-index-database = {
-            url = "github:Mic92/nix-index-database";
+        sops-nix = {
+            url = "github:Mic92/sops-nix";
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
-        sops-nix = {
-            url = "github:Mic92/sops-nix";
+        nix-index-database = {
+            url = "github:Mic92/nix-index-database";
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
@@ -29,11 +29,6 @@
 
         hyprlock = {
             url = "github:hyprwm/Hyprlock";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
-
-        hypridle = {
-            url = "github:hyprwm/Hypridle";
             inputs.nixpkgs.follows = "nixpkgs";
         };
     };

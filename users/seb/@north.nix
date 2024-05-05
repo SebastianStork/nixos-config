@@ -24,6 +24,6 @@
             '';
         };
 
-        services.hypridle.beforeSleepCmd = lib.mkForce "";
+        services.hypridle.settings.general.before_sleep_cmd = lib.mkForce "";
     };
 }

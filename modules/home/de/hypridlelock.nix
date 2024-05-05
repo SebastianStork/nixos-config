@@ -4,10 +4,7 @@
     lib,
     ...
 }: {
-    imports = [
-        inputs.hyprlock.homeManagerModules.hyprlock
-        inputs.hypridle.homeManagerModules.hypridle
-    ];
+    imports = [inputs.hyprlock.homeManagerModules.hyprlock];
 
     options.myConfig.de.hypridlelock.enable = lib.mkEnableOption "";
 
@@ -24,21 +21,25 @@
             ];
         };
 
-        services.hypridle = let
-            hyprlockExe = "${lib.getExe config.programs.hyprlock.package}";
-        in {
+        services.hypridle = {
             enable = true;
 
-            lockCmd = "pidof ${hyprlockExe} || ${hyprlockExe}";
-            beforeSleepCmd = "loginctl lock-session";
-            afterSleepCmd = "hyprctl dispatch dpms on";
+            settings = {
+                general = {
+                    lock_cmd = let
+                        hyprlockExe = "${lib.getExe config.programs.hyprlock.package}";
+                    in "pidof ${hyprlockExe} || ${hyprlockExe}";
+                    before_sleep_cmd = "loginctl lock-session";
+                    after_sleep_cmd = "hyprctl dispatch dpms on";
+                };
 
-            listeners = [
-                {
-                    timeout = 600;
-                    onTimeout = "loginctl lock-session";
-                }
-            ];
+                listener = [
+                    {
+                        timeout = 600;
+                        on-timeout = "loginctl lock-session";
+                    }
+                ];
+            };
         };
     };
 }
