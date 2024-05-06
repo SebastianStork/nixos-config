@@ -33,20 +33,30 @@
         };
     };
 
-    outputs = {nixpkgs, ...} @ inputs: let
+    outputs = {
+        self,
+        nixpkgs,
+        ...
+    } @ inputs: let
         system = "x86_64-linux";
         pkgs = nixpkgs.legacyPackages.${system};
     in {
         nixosConfigurations = {
             north = nixpkgs.lib.nixosSystem {
-                specialArgs = {inherit inputs;};
+                specialArgs = {
+                    inherit self;
+                    inherit inputs;
+                };
                 modules = [
                     ./hosts/north
                     "${./.}/users/seb/@north.nix"
                 ];
             };
             inspiron = nixpkgs.lib.nixosSystem {
-                specialArgs = {inherit inputs;};
+                specialArgs = {
+                    inherit self;
+                    inherit inputs;
+                };
                 modules = [
                     ./hosts/inspiron
                     "${./.}/users/seb/@inspiron.nix"
