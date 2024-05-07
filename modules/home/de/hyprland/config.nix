@@ -17,14 +17,12 @@
                     accel_profile = "flat";
                 };
 
-                input.touchpad = {
-                    disable_while_typing = true;
-                    natural_scroll = true;
-                    middle_button_emulation = true;
-                };
                 device = {
                     name = "dell0b9f:00-27c6:0d43-touchpad";
                     accel_profile = "adaptive";
+                    disable_while_typing = true;
+                    natural_scroll = true;
+                    middle_button_emulation = true;
                 };
 
                 general = {
