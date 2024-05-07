@@ -32,7 +32,7 @@
                         dark = "GitHub Dark";
                         light = "GitHub Light";
                     }
-                    ."${config.myConfig.de.theme}";
+                    .${config.myConfig.de.theme};
                 "workbench.iconTheme" = "material-icon-theme";
                 "editor.fontFamily" = "JetBrainsMono Nerd Font";
                 "explorer.confirmDelete" = false;

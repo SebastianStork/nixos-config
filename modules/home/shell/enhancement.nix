@@ -38,7 +38,7 @@
                         dark = "";
                         light = "GitHub";
                     }
-                    ."${config.myConfig.de.theme}";
+                    .${config.myConfig.de.theme};
             in {cat = "${lib.getExe pkgs.bat} --plain --theme=${theme}";};
         in
             lib.mkMerge [

@@ -22,7 +22,7 @@
                     dark = "Default";
                     light = "GitHub Light";
                 }
-                ."${config.myConfig.de.theme}";
+                .${config.myConfig.de.theme};
         };
     };
 }
