@@ -24,7 +24,7 @@
         vscode.enable = true;
         kitty.enable = true;
         equalizer.enable = true;
-        sops.enable = true;
+        sops.enable = false;
     };
 
     home.packages = [
