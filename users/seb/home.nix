@@ -28,7 +28,7 @@
     };
 
     home.packages = [
-        pkgs.btop
+        pkgs.bottom
         pkgs.fastfetch
 
         pkgs.notepadqq
