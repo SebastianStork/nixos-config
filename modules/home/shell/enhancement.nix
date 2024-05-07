@@ -17,7 +17,16 @@
         home.shellAliases = let
             lsAliases = let
                 listCmd = "${lib.getExe pkgs.eza} --header --group --time-style=long-iso --group-directories-first --sort=name --icons=auto --git --git-repos-no-status --binary";
-                aliasList = lib.crossLists (a: b: c: "${a}${b}${c}") [["ll" "lt" "l"] ["" "a"] ["" "d" "f"]];
+                aliasList = lib.mapCartesianProduct ({
+                    a,
+                    b,
+                    c,
+                }:
+                    a + b + c) {
+                    a = ["ll" "lt" "l"];
+                    b = ["" "a"];
+                    c = ["" "d" "f"];
+                };
                 convertAliasToCmd = str: "${listCmd} " + (builtins.replaceStrings ["ll" "lt" "l" "a" "d" "f"] ["--long " "--tree " "--oneline --dereference " "--all " "--only-dirs " "--only-files "] str);
                 aliasAttrs = lib.genAttrs aliasList convertAliasToCmd;
             in
