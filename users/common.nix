@@ -16,6 +16,7 @@
 
     home-manager.sharedModules = [
         ../modules/home
+        ../wrappers
 
         {
             programs.home-manager.enable = true;

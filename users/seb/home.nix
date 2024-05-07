@@ -2,6 +2,7 @@
     config,
     pkgs,
     osConfig,
+    myWrappers,
     ...
 }: {
     xdg.userDirs.extraConfig.XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
@@ -32,7 +33,6 @@
 
         pkgs.notepadqq
         pkgs.brave
-        pkgs.spotify
         pkgs.cinnamon.nemo-with-extensions
         pkgs.webcord
         pkgs.jetbrains.idea-community
@@ -42,7 +42,9 @@
         pkgs.hunspell
         pkgs.hunspellDicts.de_DE
         pkgs.hunspellDicts.en_US
-        pkgs.marktext
-        pkgs.obsidian
+
+        (myWrappers.spotify {disableGPU = true;})
+        (myWrappers.obsidian {disableGPU = true;})
+        (myWrappers.marktext {disableGPU = true;})
     ];
 }

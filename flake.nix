@@ -7,6 +7,11 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        wrapper-manager = {
+            url = "github:viperML/wrapper-manager";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
         disko = {
             url = "github:nix-community/disko";
             inputs.nixpkgs.follows = "nixpkgs";
