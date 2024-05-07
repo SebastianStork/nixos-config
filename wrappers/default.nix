@@ -14,9 +14,9 @@
         .${wrapperName}
         .wrapped;
 in {
-    _module.args.myWrappers = {
-        spotify = import ./spotify.nix {inherit assembleWrapper pkgs lib;};
-        obsidian = import ./obsidian.nix {inherit assembleWrapper pkgs lib;};
-        marktext = import ./marktext.nix {inherit assembleWrapper pkgs lib;};
-    };
+    _module.args.myWrappers = lib.pipe (builtins.readDir ./.) [
+        (lib.filterAttrs (name: value: value == "regular"))
+        (lib.filterAttrs (name: value: name != "default.nix"))
+        (lib.concatMapAttrs (name: _: {${lib.removeSuffix ".nix" name} = import ./${name} {inherit assembleWrapper pkgs lib;};}))
+    ];
 }
