@@ -22,7 +22,6 @@
         ssh-client.enable = true;
         git.enable = true;
         vscode.enable = true;
-        kitty.enable = true;
         equalizer.enable = true;
         sops.enable = false;
     };
@@ -46,5 +45,6 @@
         (myWrappers.spotify {disableGPU = true;})
         (myWrappers.obsidian {disableGPU = true;})
         (myWrappers.marktext {disableGPU = true;})
+        (myWrappers.kitty {inherit (config.myConfig.de) theme;})
     ];
 }
