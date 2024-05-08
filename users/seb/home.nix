@@ -42,9 +42,9 @@
         pkgs.hunspellDicts.de_DE
         pkgs.hunspellDicts.en_US
 
-        (myWrappers.spotify {disableGPU = true;})
-        (myWrappers.obsidian {disableGPU = true;})
-        (myWrappers.marktext {disableGPU = true;})
+        myWrappers.spotify
+        myWrappers.obsidian
+        myWrappers.marktext
         (myWrappers.kitty {inherit (config.myConfig.de) theme;})
     ];
 }
