@@ -26,7 +26,6 @@ in {
         services.dunst.enable = true;
 
         myConfig.de = {
-            rofi.enable = true;
             hypridlelock.enable = true;
             waybar.enable = true;
         };

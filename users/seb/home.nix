@@ -46,5 +46,6 @@
         myWrappers.marktext
         myWrappers.webcord
         (myWrappers.kitty {inherit (config.myConfig.de) theme;})
+        (myWrappers.rofi {inherit (config.myConfig.de) theme;})
     ];
 }

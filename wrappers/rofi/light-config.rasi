@@ -1,18 +1,18 @@
-/**
- *
- * Author : Aditya Shakya (adi1090x)
- * Github : @adi1090x
- * 
- * Rofi Theme File
- * Rofi Version: 1.7.3
- **/
+* {
+    background:     #F1F1F1FF;
+    background-alt: #E0E0E0FF;
+    foreground:     #252525FF;
+    selected:       #008EC4FF;
+    active:         #10A778FF;
+    urgent:         #C30771FF;
+}
 
 /*****----- Configuration -----*****/
 configuration {
 	modi:                       "drun,run,filebrowser,window";
     show-icons:                 true;
-    display-drun:               "";
-    display-run:                "";
+    display-drun:               "󰀻";
+    display-run:                "";
     display-filebrowser:        "";
     display-window:             "";
 	drun-display-format:        "{name}";
@@ -21,16 +21,7 @@ configuration {
 
 /*****----- Global Properties -----*****/
 * {
-    background:     #1E2127FF;
-    background-alt: #282B31FF;
-    foreground:     #FFFFFFFF;
-    selected:       #61AFEFFF;
-    active:         #98C379FF;
-    urgent:         #E06C75FF;
-}
-
-* {
-    font: "Open Sans 12, Symbols Nerd Font 12";
+    font: "Open Sans 12, Symbols Nerd Font Mono 12";
 }
 
 * {
