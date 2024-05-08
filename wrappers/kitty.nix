@@ -7,7 +7,7 @@
 assembleWrapper {
     basePackage = pkgs.kitty;
 
-    appendFlags = let
+    flags = let
         toKittyConfig = lib.generators.toKeyValue {
             mkKeyValue = key: value: let
                 value' = (
@@ -32,8 +32,8 @@ assembleWrapper {
         .${theme}}";
     in [
         "--config"
-        "${kitty-config}"
+        kitty-config
         "--config"
-        "${kitty-theme}"
+        kitty-theme
     ];
 }
