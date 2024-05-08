@@ -4,7 +4,7 @@
     lib,
     ...
 }: {disableGPU ? false}:
-assembleWrapper "spotify" {
+assembleWrapper {
     basePackage = pkgs.spotify;
     flags = [(lib.mkIf disableGPU "--disable-gpu")];
 }

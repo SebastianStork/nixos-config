@@ -4,7 +4,7 @@
     lib,
     ...
 }: {disableGPU ? false}:
-assembleWrapper "marktext" {
+assembleWrapper {
     basePackage = pkgs.marktext;
     flags = [(lib.mkIf disableGPU "--disable-gpu")];
 }

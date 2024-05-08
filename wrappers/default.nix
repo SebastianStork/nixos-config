@@ -4,14 +4,14 @@
     lib,
     ...
 }: let
-    assembleWrapper = wrapperName: wrapperConfig:
+    assembleWrapper = wrapperConfig:
         (inputs.wrapper-manager.lib {
             inherit pkgs;
-            modules = [{wrappers.${wrapperName} = wrapperConfig;}];
+            modules = [{wrappers.wrappedPackage = wrapperConfig;}];
         })
         .config
         .wrappers
-        .${wrapperName}
+        .wrappedPackage
         .wrapped;
 in {
     _module.args.myWrappers = lib.pipe (builtins.readDir ./.) [

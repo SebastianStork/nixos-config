@@ -4,7 +4,7 @@
     lib,
     ...
 }: {disableGPU ? false}:
-assembleWrapper "obsidian" {
+assembleWrapper {
     basePackage = pkgs.obsidian;
     flags = [(lib.mkIf disableGPU "--disable-gpu")];
 }
