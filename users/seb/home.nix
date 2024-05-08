@@ -32,7 +32,6 @@
         pkgs.notepadqq
         pkgs.brave
         pkgs.cinnamon.nemo-with-extensions
-        pkgs.webcord
         pkgs.jetbrains.idea-community
         pkgs.vlc
         pkgs.onlyoffice-bin_latest
@@ -41,10 +40,11 @@
         pkgs.hunspellDicts.de_DE
         pkgs.hunspellDicts.en_US
 
+        myWrappers.bottom
         myWrappers.spotify
         myWrappers.obsidian
         myWrappers.marktext
+        myWrappers.webcord
         (myWrappers.kitty {inherit (config.myConfig.de) theme;})
-        myWrappers.bottom
     ];
 }
