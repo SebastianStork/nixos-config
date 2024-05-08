@@ -27,7 +27,6 @@
     };
 
     home.packages = [
-        pkgs.bottom
         pkgs.fastfetch
 
         pkgs.notepadqq
@@ -46,5 +45,6 @@
         myWrappers.obsidian
         myWrappers.marktext
         (myWrappers.kitty {inherit (config.myConfig.de) theme;})
+        myWrappers.bottom
     ];
 }
