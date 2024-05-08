@@ -12,11 +12,10 @@
         enableZshIntegration = true;
 
         settings = {
-            cmd_duration.disabled = true;
             directory = {
                 truncation_length = 0;
                 truncation_symbol = "…/";
-                truncate_to_repo = false;
+                truncate_to_repo = true;
             };
         };
     };
