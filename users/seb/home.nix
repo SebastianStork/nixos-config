@@ -2,7 +2,7 @@
     config,
     pkgs,
     osConfig,
-    myWrappers,
+    wrappers,
     ...
 }: {
     xdg.userDirs.extraConfig.XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
@@ -40,12 +40,12 @@
         pkgs.hunspellDicts.de_DE
         pkgs.hunspellDicts.en_US
 
-        myWrappers.bottom
-        myWrappers.spotify
-        myWrappers.obsidian
-        myWrappers.marktext
-        myWrappers.webcord
-        (myWrappers.kitty {inherit (config.myConfig.de) theme;})
-        (myWrappers.rofi {inherit (config.myConfig.de) theme;})
+        wrappers.bottom
+        wrappers.spotify
+        wrappers.obsidian
+        wrappers.marktext
+        wrappers.webcord
+        (wrappers.kitty {inherit (config.myConfig.de) theme;})
+        (wrappers.rofi {inherit (config.myConfig.de) theme;})
     ];
 }

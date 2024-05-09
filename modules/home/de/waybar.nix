@@ -1,7 +1,7 @@
 {
     config,
     lib,
-    myWrappers,
+    wrappers,
     ...
 }: {
     options.myConfig.de.waybar.enable = lib.mkEnableOption "";
@@ -9,7 +9,7 @@
     config = lib.mkIf config.myConfig.de.waybar.enable {
         programs.waybar = {
             enable = true;
-            package = myWrappers.waybar;
+            package = wrappers.waybar;
             systemd.enable = true;
         };
 
