@@ -8,7 +8,7 @@ assembleWrapper {
     basePackage = pkgs.rofi-wayland;
 
     flags = let
-        kitty-config =
+        rofi-config =
             {
                 dark = ./dark-config.rasi;
                 light = ./light-config.rasi;
@@ -16,6 +16,6 @@ assembleWrapper {
             .${theme};
     in [
         "-config"
-        kitty-config
+        rofi-config
     ];
 }
