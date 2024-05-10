@@ -24,6 +24,7 @@
         vscode.enable = true;
         equalizer.enable = true;
         sops.enable = false;
+        clipboard.enable = true;
     };
 
     home.packages = [

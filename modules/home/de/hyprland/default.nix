@@ -21,8 +21,6 @@ in {
             splash=false
         '';
 
-        services.cliphist.enable = true;
-
         services.dunst.enable = true;
 
         myConfig.de = {
