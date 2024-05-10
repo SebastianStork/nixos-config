@@ -22,7 +22,7 @@
             # Launch programs
             bind = $mod, RETURN, exec, kitty
             bindr = $mod, R, exec, pkill rofi || rofi -show drun
-            bind = $mod, V, exec, ${lib.getExe pkgs.cliphist} list | rofi -dmenu | ${lib.getExe pkgs.cliphist} decode | ${lib.getExe' pkgs.wl-clipboard "wl-copy"}
+            bind = $mod, V, exec, ${lib.getExe pkgs.cliphist} list | rofi -dmenu -display-columns 2 | ${lib.getExe pkgs.cliphist} decode | ${lib.getExe' pkgs.wl-clipboard "wl-copy"}
             bind = $mod, B, exec, brave
             bind = $mod, F, exec, nemo
             bind = $mod, C, exec, codium
