@@ -31,11 +31,6 @@
             url = "github:nix-community/nix-vscode-extensions";
             inputs.nixpkgs.follows = "nixpkgs";
         };
-
-        hyprlock = {
-            url = "github:hyprwm/Hyprlock";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
     };
 
     outputs = {
