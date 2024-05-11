@@ -1,6 +1,5 @@
 {
     config,
-    pkgs,
     lib,
     ...
 }: let
@@ -13,16 +12,7 @@ in {
 
     options.myConfig.de.hyprland.enable = lib.mkEnableOption "";
 
-    config = lib.mkIf cfg.hyprland.enable {
-        home.packages = [pkgs.hyprpaper];
-        xdg.configFile."hypr/hyprpaper.conf".text = ''
-            preload=${cfg.wallpaper}
-            wallpaper=,${cfg.wallpaper}
-            splash=false
-        '';
-
-        services.dunst.enable = true;
-
+    config = lib.mkIf config.myConfig.de.hyprland.enable {
         myConfig.de = {
             hypridlelock.enable = true;
             waybar.enable = true;

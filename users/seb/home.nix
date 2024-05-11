@@ -8,10 +8,7 @@
     xdg.userDirs.extraConfig.XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
 
     myConfig = {
-        de = {
-            hyprland.enable = osConfig.myConfig.de.hyprland.enable;
-            wallpaper = ./wallpaper;
-        };
+        de.hyprland.enable = osConfig.myConfig.de.hyprland.enable;
 
         shell = {
             bash.enable = true;

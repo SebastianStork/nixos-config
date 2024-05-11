@@ -6,14 +6,7 @@
 }: let
     cfg = config.myConfig.de;
 in {
-    options.myConfig.de = {
-        theme = lib.mkOption {
-            type = lib.types.str;
-        };
-        wallpaper = lib.mkOption {
-            type = lib.types.path;
-        };
-    };
+    options.myConfig.de.theme = lib.mkOption {type = lib.types.str;};
 
     config = lib.mkMerge [
         (lib.mkIf (cfg.theme == "dark") {
