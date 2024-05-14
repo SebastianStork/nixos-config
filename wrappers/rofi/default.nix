@@ -8,12 +8,13 @@ assembleWrapper {
     basePackage = pkgs.rofi-wayland;
 
     flags = let
-        rofi-config =
+        color-file =
             {
-                dark = ./dark-config.rasi;
-                light = ./light-config.rasi;
+                dark = ./dark.rasi;
+                light = ./light.rasi;
             }
             .${theme};
+        rofi-config = pkgs.concatText "rofi-config" [./config.rasi color-file];
     in [
         "-config"
         rofi-config
