@@ -27,7 +27,6 @@
     home.packages = [
         pkgs.fastfetch
 
-        pkgs.notepadqq
         pkgs.brave
         pkgs.cinnamon.nemo-with-extensions
         pkgs.jetbrains.idea-community

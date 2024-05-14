@@ -28,7 +28,6 @@
             bind = $mod, C, exec, codium
             bind = $mod, S, exec, spotify
             bind = $mod, D, exec, webcord
-            bind = $mod, N, exec, notepadqq --new-window
 
             # Move focus
             bind = $mod, left, movefocus, l
