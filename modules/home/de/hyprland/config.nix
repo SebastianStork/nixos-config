@@ -1,6 +1,7 @@
 {
     config,
     lib,
+    wrappers,
     ...
 }: {
     config = lib.mkIf config.myConfig.de.hyprland.enable {
@@ -8,7 +9,7 @@
             enable = true;
 
             settings = {
-                exec-once = ["hyprpaper"];
+                exec-once = ["${lib.getExe wrappers.hyprpaper}"];
 
                 input = {
                     kb_layout = "de";
