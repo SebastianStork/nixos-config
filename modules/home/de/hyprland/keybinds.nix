@@ -24,7 +24,7 @@
             bind = SUPER, B, exec, brave
             bind = SUPER, F, exec, nemo
             bind = SUPER, C, exec, codium
-            bind = SUPER, D, exec, webcord
+            
 
             # Move focus
             bind = SUPER, left, movefocus, l
@@ -110,6 +110,11 @@
             exec-once = [workspace special:music silent] spotify
             workspace = special:music, border:false, gapsout:20, on-created-empty:spotify
             bind = SUPER, S, togglespecialworkspace, music
+
+            # Chat workspace
+            exec-once = [workspace special:chat silent] webcord
+            workspace = special:chat, border:false, gapsout:20, on-created-empty:webcord
+            bind = SUPER, D, togglespecialworkspace, chat
         '';
     };
 }
