@@ -47,6 +47,13 @@
             binde = SUPER CONTROL, down, resizeactive, 0 100
             bindm = SUPER, mouse:273, resizewindow
 
+            # Minimize window
+            bind = SUPER SHIFT, M, togglespecialworkspace, minimize
+            bind = SUPER SHIFT, M, movetoworkspace, +0
+            bind = SUPER SHIFT, M, togglespecialworkspace, minimize
+            bind = SUPER SHIFT, M, movetoworkspace, special:minimize
+            bind = SUPER SHIFT, M, togglespecialworkspace, minimize
+
             # Switch workspace
             ${lib.concatMapStringsSep "\n" (n: "bind=SUPER, ${toString n}, workspace, ${toString n}") (lib.range 1 9)}
             ${lib.concatMapStringsSep "\n" (n: "bind=SUPER:SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}") (lib.range 1 9)}
