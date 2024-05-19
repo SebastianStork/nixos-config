@@ -115,6 +115,11 @@
             exec-once = [workspace special:chat silent] webcord
             workspace = special:chat, border:false, gapsout:20, on-created-empty:webcord
             bind = SUPER, D, togglespecialworkspace, chat
+
+            # Flake workspace
+            workspace = special:flake, border:false, gapsout:40, on-created-empty:kitty --directory $FLAKE --override background_opacity=0.6
+            windowrulev2 = noblur, class:(kitty), onworkspace:special:flake
+            bind = SUPER, Q, togglespecialworkspace, flake
         '';
     };
 }
