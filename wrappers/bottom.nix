@@ -1,9 +1,5 @@
-{
-    assembleWrapper,
-    pkgs,
-    ...
-}:
+{ assembleWrapper, pkgs, ... }:
 assembleWrapper {
-    basePackage = pkgs.bottom;
-    flags = ["--group"];
+  basePackage = pkgs.bottom;
+  flags = [ "--group" ];
 }

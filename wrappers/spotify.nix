@@ -1,9 +1,5 @@
-{
-    assembleWrapper,
-    pkgs,
-    ...
-}:
+{ assembleWrapper, pkgs, ... }:
 assembleWrapper {
-    basePackage = pkgs.spotify;
-    flags = ["--disable-gpu"];
+  basePackage = pkgs.spotify;
+  flags = [ "--disable-gpu" ];
 }

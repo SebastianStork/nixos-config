@@ -1,9 +1,5 @@
-{
-    assembleWrapper,
-    pkgs,
-    ...
-}:
+{ assembleWrapper, pkgs, ... }:
 assembleWrapper {
-    basePackage = pkgs.webcord;
-    flags = ["--disable-gpu"];
+  basePackage = pkgs.webcord;
+  flags = [ "--disable-gpu" ];
 }

@@ -1,9 +1,5 @@
-{
-    assembleWrapper,
-    pkgs,
-    ...
-}:
+{ assembleWrapper, pkgs, ... }:
 assembleWrapper {
-    basePackage = pkgs.obsidian;
-    flags = ["--disable-gpu"];
+  basePackage = pkgs.obsidian;
+  flags = [ "--disable-gpu" ];
 }

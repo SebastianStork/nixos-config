@@ -1,28 +1,29 @@
 {
-    config,
-    pkgs,
-    lib,
-    ...
-}: {
-    options.myConfig.vm.qemu.enable = lib.mkEnableOption "";
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  options.myConfig.vm.qemu.enable = lib.mkEnableOption "";
 
-    config = lib.mkIf config.myConfig.vm.qemu.enable {
-        virtualisation.libvirtd.enable = true;
+  config = lib.mkIf config.myConfig.vm.qemu.enable {
+    virtualisation.libvirtd.enable = true;
 
-        programs.virt-manager.enable = true;
+    programs.virt-manager.enable = true;
 
-        environment.systemPackages = [
-            pkgs.quickemu
-            pkgs.quickgui
-        ];
+    environment.systemPackages = [
+      pkgs.quickemu
+      pkgs.quickgui
+    ];
 
-        home-manager.sharedModules = [
-            {
-                dconf.settings."org/virt-manager/virt-manager/connections" = {
-                    autoconnect = ["qemu:///system"];
-                    uris = ["qemu:///system"];
-                };
-            }
-        ];
-    };
+    home-manager.sharedModules = [
+      {
+        dconf.settings."org/virt-manager/virt-manager/connections" = {
+          autoconnect = [ "qemu:///system" ];
+          uris = [ "qemu:///system" ];
+        };
+      }
+    ];
+  };
 }

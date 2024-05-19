@@ -1,9 +1,5 @@
-{
-    assembleWrapper,
-    pkgs,
-    ...
-}:
+{ assembleWrapper, pkgs, ... }:
 assembleWrapper {
-    basePackage = pkgs.marktext;
-    flags = ["--disable-gpu"];
+  basePackage = pkgs.marktext;
+  flags = [ "--disable-gpu" ];
 }
