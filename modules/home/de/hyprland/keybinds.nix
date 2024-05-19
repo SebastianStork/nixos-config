@@ -26,7 +26,6 @@
       bind = SUPER, F, exec, nemo
       bind = SUPER, C, exec, codium
 
-
       # Move focus
       bind = SUPER, left, movefocus, l
       bind = SUPER, right, movefocus, r
@@ -114,18 +113,22 @@
       bind = SUPER, ESCAPE, togglespecialworkspace, blank
       bind = SUPER, ESCAPE, togglespecialworkspace, blank
 
+      # Scratchpad workspace
+      workspace = special:scratchpad, gapsout:30
+      bind = SUPER , X, togglespecialworkspace, scratchpad
+
       # Music workspace
+      workspace = special:music, border:false, gapsout:30, on-created-empty:spotify
       exec-once = [workspace special:music silent] spotify
-      workspace = special:music, border:false, gapsout:20, on-created-empty:spotify
       bind = SUPER, S, togglespecialworkspace, music
 
       # Chat workspace
+      workspace = special:chat, border:false, gapsout:30, on-created-empty:webcord
       exec-once = [workspace special:chat silent] webcord
-      workspace = special:chat, border:false, gapsout:20, on-created-empty:webcord
       bind = SUPER, D, togglespecialworkspace, chat
 
       # Flake workspace
-      workspace = special:flake, border:false, gapsout:40, on-created-empty:kitty --directory $FLAKE --override background_opacity=0.6
+      workspace = special:flake, border:false, gapsout:30, on-created-empty:kitty --directory $FLAKE --override background_opacity=0.7
       windowrulev2 = noblur, class:(kitty), onworkspace:special:flake
       bind = SUPER, Q, togglespecialworkspace, flake
     '';
