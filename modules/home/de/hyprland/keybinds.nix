@@ -24,7 +24,6 @@
             bind = SUPER, B, exec, brave
             bind = SUPER, F, exec, nemo
             bind = SUPER, C, exec, codium
-            bind = SUPER, S, exec, spotify
             bind = SUPER, D, exec, webcord
 
             # Move focus
@@ -102,6 +101,15 @@
             # Screenshot
             bind = , Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave output
             bind = SHIFT, Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave area
+
+            # Escape special workspace
+            bind = SUPER, ESCAPE, togglespecialworkspace, blank
+            bind = SUPER, ESCAPE, togglespecialworkspace, blank
+
+            # Music workspace
+            exec-once = [workspace special:music silent] spotify
+            workspace = special:music, border:false, gapsout:20, on-created-empty:spotify
+            bind = SUPER, S, togglespecialworkspace, music
         '';
     };
 }
