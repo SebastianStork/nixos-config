@@ -6,69 +6,62 @@
 }: {
     config = lib.mkIf config.myConfig.de.hyprland.enable {
         wayland.windowManager.hyprland.extraConfig = ''
-            $mod = SUPER
-
             # Bindflags:
             # r = release
             # e = repeat
             # l = locked
 
             # Essentials
-            bind = $mod SHIFT, C, killactive,
-            bind = $mod, TAB, cyclenext,
-            bind = $mod SHIFT, V, togglefloating,
-            bind = $mod SHIFT, F, fullscreen, 0
+            bind = SUPER SHIFT, C, killactive,
+            bind = SUPER SHIFT, V, togglefloating,
+            bind = SUPER SHIFT, F, fullscreen, 0
+            bind = SUPER, TAB, cyclenext,
 
             # Launch programs
-            bind = $mod, RETURN, exec, kitty
-            bindr = $mod, R, exec, pkill rofi || rofi -show drun
-            bind = $mod, V, exec, clipboard
-            bind = $mod, B, exec, brave
-            bind = $mod, F, exec, nemo
-            bind = $mod, C, exec, codium
-            bind = $mod, S, exec, spotify
-            bind = $mod, D, exec, webcord
+            bind = SUPER, R, exec, rofi -show drun
+            bind = SUPER, RETURN, exec, kitty
+            bind = SUPER, V, exec, clipboard
+            bind = SUPER, B, exec, brave
+            bind = SUPER, F, exec, nemo
+            bind = SUPER, C, exec, codium
+            bind = SUPER, S, exec, spotify
+            bind = SUPER, D, exec, webcord
 
             # Move focus
-            bind = $mod, left, movefocus, l
-            bind = $mod, right, movefocus, r
-            bind = $mod, up, movefocus, u
-            bind = $mod, down, movefocus, d
+            bind = SUPER, left, movefocus, l
+            bind = SUPER, right, movefocus, r
+            bind = SUPER, up, movefocus, u
+            bind = SUPER, down, movefocus, d
 
             # Move window
-            bind = $mod SHIFT, left, movewindow, l
-            bind = $mod SHIFT, right, movewindow, r
-            bind = $mod SHIFT, up, movewindow, u
-            bind = $mod SHIFT, down, movewindow, d
-            bindm = $mod, mouse:272, movewindow
+            bind = SUPER SHIFT, left, movewindow, l
+            bind = SUPER SHIFT, right, movewindow, r
+            bind = SUPER SHIFT, up, movewindow, u
+            bind = SUPER SHIFT, down, movewindow, d
+            bindm = SUPER, mouse:272, movewindow
 
             # Resize window
-            binde = $mod CONTROL, left, resizeactive, -100 0
-            binde = $mod CONTROL, right, resizeactive, 100 0
-            binde = $mod CONTROL, up, resizeactive, 0 -100
-            binde = $mod CONTROL, down, resizeactive, 0 100
-            bindm = $mod, mouse:273, resizewindow
+            binde = SUPER CONTROL, left, resizeactive, -100 0
+            binde = SUPER CONTROL, right, resizeactive, 100 0
+            binde = SUPER CONTROL, up, resizeactive, 0 -100
+            binde = SUPER CONTROL, down, resizeactive, 0 100
+            bindm = SUPER, mouse:273, resizewindow
 
             # Switch workspace
-            ${lib.concatLines (builtins.concatLists (builtins.genList (
-                x: [
-                    "bind = $mod, ${toString (x + 1)}, workspace, ${toString (x + 1)}"
-                    "bind = $mod SHIFT, ${toString (x + 1)}, movetoworkspacesilent, ${toString (x + 1)}"
-                ]
-            )
-            9))}
+            ${lib.concatMapStringsSep "\n" (n: "bind=SUPER, ${toString n}, workspace, ${toString n}") (lib.range 1 9)}
+            ${lib.concatMapStringsSep "\n" (n: "bind=SUPER:SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}") (lib.range 1 9)}
 
             # Scroll through workspaces
-            bind = $mod, mouse_down, workspace, e-1
-            bind = $mod, mouse_up, workspace, e+1
+            bind = SUPER, mouse_down, workspace, e-1
+            bind = SUPER, mouse_up, workspace, e+1
 
             # Manage session
-            bindrl = $mod CONTROL, P, exec, poweroff
-            bindrl = $mod CONTROL, R, exec, reboot
-            bindrl = $mod CONTROL, Q, exit,
-            bindrl = $mod CONTROL, S, exec, systemctl suspend
-            bindrl = $mod CONTROL, L, exec, loginctl lock-session
-            bindrl = $mod CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
+            bindrl = SUPER CONTROL, Q, exit,
+            bindrl = SUPER CONTROL, P, exec, poweroff
+            bindrl = SUPER CONTROL, R, exec, reboot
+            bindrl = SUPER CONTROL, S, exec, systemctl suspend
+            bindrl = SUPER CONTROL, L, exec, loginctl lock-session
+            bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
             bindl = , switch:on:Lid Switch, exec, systemctl suspend
 
             # Control media
@@ -87,12 +80,12 @@
                 bindel = , XF86AudioRaiseVolume, exec, ${volume-up}
                 bindel = , XF86AudioLowerVolume, exec, ${volume-down}
 
-                bindl = $mod ALT, RETURN, exec, ${play-pause}
-                bindel = $mod ALT, right, exec, ${play-next}
-                bindel = $mod ALT, left, exec, ${play-previous}
-                bindl = $mod ALT, BACKSPACE, exec, ${mute}
-                bindel = $mod ALT, up, exec, ${volume-up}
-                bindel = $mod ALT, down, exec, ${volume-down}
+                bindl = SUPER ALT, RETURN, exec, ${play-pause}
+                bindel = SUPER ALT, right, exec, ${play-next}
+                bindel = SUPER ALT, left, exec, ${play-previous}
+                bindl = SUPER ALT, BACKSPACE, exec, ${mute}
+                bindel = SUPER ALT, up, exec, ${volume-up}
+                bindel = SUPER ALT, down, exec, ${volume-down}
             ''}
 
             # Adjust brightness
