@@ -16,14 +16,15 @@
         vscode = pkgs.vscodium;
         vscodeExtensions =
           let
-            open-ext = inputs.nix-vscode-extensions.extensions.${pkgs.system}.open-vsx;
+            open-vsx = inputs.nix-vscode-extensions.extensions.${pkgs.system}.open-vsx;
           in
           [
-            open-ext.jnoortheen.nix-ide
-            open-ext.yzhang.markdown-all-in-one
+            open-vsx.jnoortheen.nix-ide
+            open-vsx.yzhang.markdown-all-in-one
+            open-vsx.aaron-bond.better-comments
 
-            open-ext.github.github-vscode-theme
-            open-ext.pkief.material-icon-theme
+            open-vsx.github.github-vscode-theme
+            open-vsx.pkief.material-icon-theme
           ];
       };
     };
