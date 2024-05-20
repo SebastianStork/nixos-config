@@ -8,7 +8,7 @@
     };
 
     wrapper-manager = {
-      url = "github:viperML/wrapper-manager";
+      url = "github:nrabulinski/wrapper-manager/wrap-certain-programs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

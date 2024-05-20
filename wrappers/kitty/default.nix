@@ -8,7 +8,7 @@ in
 assembleWrapper {
   basePackage = pkgs.kitty;
 
-  flags =
+  programs.kitty.prependFlags =
     let
       theme-file =
         {
