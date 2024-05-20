@@ -43,8 +43,7 @@
       nixosConfigurations = {
         north = nixpkgs.lib.nixosSystem {
           specialArgs = {
-            inherit self;
-            inherit inputs;
+            inherit self inputs;
           };
           modules = [
             ./hosts/north
@@ -53,8 +52,7 @@
         };
         inspiron = nixpkgs.lib.nixosSystem {
           specialArgs = {
-            inherit self;
-            inherit inputs;
+            inherit self inputs;
           };
           modules = [
             ./hosts/inspiron
