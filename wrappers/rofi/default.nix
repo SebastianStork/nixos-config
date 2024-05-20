@@ -1,9 +1,7 @@
-{
-  assembleWrapper,
-  pkgs,
-  lib,
-  ...
-}:
+{ assembleWrapper, moduleArgs, ... }:
+let
+  inherit (moduleArgs) pkgs;
+in
 {
   theme ? "dark",
 }:

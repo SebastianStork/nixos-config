@@ -3,6 +3,9 @@ let
   inherit (moduleArgs) pkgs;
 in
 assembleWrapper {
-  basePackage = pkgs.obsidian;
-  flags = [ "--disable-gpu" ];
+  basePackage = pkgs.hyprlock;
+  flags = [
+    "--config"
+    ./hyprlock.conf
+  ];
 }

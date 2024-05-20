@@ -3,7 +3,7 @@
   pkgs,
   lib,
   ...
-}:
+}@moduleArgs:
 let
   assembleWrapper =
     wrapperConfig:
@@ -17,7 +17,7 @@ in
     (lib.filterAttrs (name: value: name != "default.nix"))
     (lib.concatMapAttrs (
       name: _: {
-        ${lib.removeSuffix ".nix" name} = import ./${name} { inherit assembleWrapper pkgs lib; };
+        ${lib.removeSuffix ".nix" name} = import ./${name} { inherit assembleWrapper moduleArgs; };
       }
     ))
   ];
