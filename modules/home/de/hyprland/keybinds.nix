@@ -54,11 +54,11 @@
       bind = SUPER SHIFT, M, togglespecialworkspace, minimize
 
       # Switch workspace
-      ${lib.concatMapStringsSep "\n" (n: "bind=SUPER, ${toString n}, workspace, ${toString n}") (
+      ${lib.concatMapStringsSep "\n" (n: "bind = SUPER, ${toString n}, workspace, ${toString n}") (
         lib.range 1 9
       )}
       ${lib.concatMapStringsSep "\n" (
-        n: "bind=SUPER:SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}"
+        n: "bind = SUPER SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}"
       ) (lib.range 1 9)}
 
       # Scroll through workspaces
@@ -110,8 +110,12 @@
       bind = SHIFT, Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave area
 
       # Escape special workspace
-      bind = SUPER, ESCAPE, togglespecialworkspace, blank
-      bind = SUPER, ESCAPE, togglespecialworkspace, blank
+      ${lib.concatMapStringsSep "\n" (n: "bind = SUPER, ${toString n}, togglespecialworkspace, blank") (
+        lib.range 1 9
+      )}
+      ${lib.concatMapStringsSep "\n" (n: "bind = SUPER, ${toString n}, togglespecialworkspace, blank") (
+        lib.range 1 9
+      )}
 
       # Scratchpad workspace
       workspace = special:scratchpad, gapsout:30
