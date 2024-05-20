@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   lib,
   wrappers,
   ...
@@ -24,8 +25,18 @@
 
         listener = [
           {
+            timeout = 300;
+            on-timeout = "${lib.getExe pkgs.brightnessctl} -s && ${lib.getExe pkgs.brightnessctl} -e set 10%";
+            on-resume = "${lib.getExe pkgs.brightnessctl} -r";
+          }
+          {
             timeout = 600;
             on-timeout = "loginctl lock-session";
+          }
+          {
+            timeout = 610;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
           }
         ];
       };
