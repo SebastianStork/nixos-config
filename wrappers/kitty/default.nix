@@ -16,12 +16,12 @@ assembleWrapper {
           light = "GitHub_Light.conf";
         }
         .${theme};
-      kitty-theme = pkgs.writeText "kitty-theme" "include ${pkgs.kitty-themes}/share/kitty-themes/themes/${theme-file}}";
+      kitty-theme = "include=${pkgs.kitty-themes}/share/kitty-themes/themes/${theme-file}";
     in
     [
       "--config"
       ./kitty.conf
-      "--config"
+      "--override"
       kitty-theme
     ];
 }
