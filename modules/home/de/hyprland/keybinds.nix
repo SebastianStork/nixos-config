@@ -67,7 +67,7 @@
       bindrl = SUPER CONTROL, S, exec, systemctl suspend
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
-      bind = SUPER CONTROL, R, exec, pkill waybar && hyprctl dispatch exec waybar
+      bind = SUPER CONTROL, W, exec, pkill waybar && hyprctl dispatch exec waybar
       bindl = , switch:on:Lid Switch, exec, systemctl suspend
 
       # Control media
