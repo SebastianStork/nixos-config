@@ -5,21 +5,22 @@
   ...
 }:
 {
-  options.myConfig.shell.enhancement.enable = lib.mkEnableOption "";
-
-  config = lib.mkIf config.myConfig.shell.enhancement.enable {
-    programs.fzf.enable = true;
-
-    programs.zoxide = {
-      enable = true;
-      options = [ "--cmd cd" ];
-    };
-
+  config = lib.mkIf config.myConfig.shell.enable {
     home.shellAliases =
       let
+        nixAliases =
+          let
+            rebuild = "sudo -v && nh os";
+          in
+          {
+            nrs = "${rebuild} switch";
+            nrt = "${rebuild} test";
+            nrb = "${rebuild} boot";
+            nrrb = "nrb && reboot";
+          };
+
         lsAliases =
           let
-            listCmd = "${lib.getExe pkgs.eza} --header --group --time-style=long-iso --group-directories-first --sort=name --icons=auto --git --git-repos-no-status --binary";
             aliasList =
               lib.mapCartesianProduct
                 (
@@ -48,7 +49,7 @@
                 };
             convertAliasToCmd =
               str:
-              "${listCmd} "
+              "${lib.getExe pkgs.eza} --header --group --time-style=long-iso --group-directories-first --sort=name --icons=auto --git --git-repos-no-status --binary "
               + (builtins.replaceStrings
                 [
                   "ll"
@@ -68,9 +69,8 @@
                 ]
                 str
               );
-            aliasAttrs = lib.genAttrs aliasList convertAliasToCmd;
           in
-          aliasAttrs // { ls = "l"; };
+          (lib.genAttrs aliasList convertAliasToCmd) // { ls = "l"; };
 
         catAlias =
           let
@@ -86,6 +86,7 @@
           };
       in
       lib.mkMerge [
+        nixAliases
         lsAliases
         catAlias
       ];

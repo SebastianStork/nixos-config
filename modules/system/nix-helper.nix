@@ -11,22 +11,6 @@ in
   config = lib.mkIf cfg.enable {
     programs.nh.enable = true;
 
-    environment.shellAliases =
-      let
-        rebuild = "sudo -v && nh os";
-      in
-      {
-        nrs = "${rebuild} switch";
-        nrt = "${rebuild} test";
-        nrb = "${rebuild} boot";
-        nrrb = "nrb && reboot";
-      };
-
-    programs.direnv = {
-      enable = true;
-      silent = true;
-    };
-
     programs.nh.clean = lib.mkIf cfg.auto-gc.enable {
       enable = true;
       dates = "daily";

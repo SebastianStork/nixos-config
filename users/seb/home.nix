@@ -11,11 +11,7 @@
   myConfig = {
     de.hyprland.enable = osConfig.myConfig.de.hyprland.enable;
 
-    shell = {
-      bash.enable = true;
-      starship.enable = true;
-      enhancement.enable = true;
-    };
+    shell.enable = true;
 
     ssh-client.enable = true;
     git.enable = true;

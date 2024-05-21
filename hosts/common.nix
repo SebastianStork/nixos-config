@@ -33,6 +33,13 @@
 
   console.keyMap = "de-latin1-nodeadkeys";
 
+  programs.zsh = {
+    enable = true;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+  };
+  users.defaultUserShell = pkgs.zsh;
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
