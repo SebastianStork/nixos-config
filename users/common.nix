@@ -6,8 +6,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit self;
-      inherit inputs;
+      inherit self inputs;
     };
   };
 

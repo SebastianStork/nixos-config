@@ -18,7 +18,6 @@
     vscode.enable = true;
     equalizer.enable = true;
     sops.enable = false;
-    clipboard.enable = true;
   };
 
   home.packages = [
@@ -40,6 +39,5 @@
     wrappers.marktext
     wrappers.webcord
     (wrappers.kitty { inherit (config.myConfig.de) theme; })
-    (wrappers.rofi { inherit (config.myConfig.de) theme; })
   ];
 }

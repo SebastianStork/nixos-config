@@ -1,4 +1,9 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  wrappers,
+  ...
+}:
 {
   imports = [ ./default.nix ];
 
@@ -7,6 +12,8 @@
       pkgs.obs-studio
       pkgs.libsForQt5.kdenlive
       pkgs.gimp
+
+      (wrappers.hypridle { lockOnSleep = false; })
     ];
 
     myConfig.de.theme = "dark";

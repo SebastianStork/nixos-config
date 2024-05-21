@@ -7,6 +7,5 @@
     ./git.nix
     ./equalizer
     ./sops.nix
-    ./clipboard.nix
   ];
 }

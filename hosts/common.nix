@@ -1,6 +1,9 @@
 { pkgs, ... }:
 {
-  imports = [ ../modules/system ];
+  imports = [
+    ../modules/system
+    ../wrappers
+  ];
 
   system.stateVersion = "23.11";
 

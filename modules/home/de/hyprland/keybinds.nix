@@ -16,7 +16,6 @@
       bind = SUPER SHIFT, C, killactive,
       bind = SUPER SHIFT, V, togglefloating,
       bind = SUPER SHIFT, F, fullscreen, 0
-      bind = SUPER, TAB, cyclenext,
 
       # Launch programs
       bind = SUPER, R, exec, rofi -show drun
@@ -31,6 +30,7 @@
       bind = SUPER, right, movefocus, r
       bind = SUPER, up, movefocus, u
       bind = SUPER, down, movefocus, d
+      bind = SUPER, TAB, cyclenext,
 
       # Move window
       bind = SUPER SHIFT, left, movewindow, l
@@ -72,6 +72,7 @@
       bindrl = SUPER CONTROL, S, exec, systemctl suspend
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
+      bind = SUPER CONTROL, R, exec, pkill waybar && hyprctl dispatch exec waybar
       bindl = , switch:on:Lid Switch, exec, systemctl suspend
 
       # Control media
