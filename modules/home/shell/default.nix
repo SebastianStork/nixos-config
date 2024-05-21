@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   imports = [
     ./p10k
@@ -22,6 +27,14 @@
         path = "${config.xdg.dataHome}/zsh/zsh_history";
       };
 
+      plugins = [
+        {
+          name = "fzf-tab";
+          src = pkgs.zsh-fzf-tab;
+          file = "share/fzf-tab/fzf-tab.plugin.zsh";
+        }
+      ];
+
       initExtraFirst = ''
         (( ''${+commands[direnv]} )) && emulate zsh -c "$(direnv export zsh)"
 
@@ -30,6 +43,13 @@
         fi
 
         (( ''${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
+      '';
+
+      initExtra = ''
+        zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-Z}'
+        zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+        zstyle ':completion:*' menu no
+        zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls $realpath'
       '';
     };
 
