@@ -6,6 +6,11 @@
 }:
 {
   config = lib.mkIf config.myConfig.shell.enable {
+    home.packages = [
+      pkgs.eza
+      pkgs.bat
+    ];
+
     home.shellAliases =
       let
         nixAliases =
@@ -49,7 +54,7 @@
                 };
             convertAliasToCmd =
               str:
-              "${lib.getExe pkgs.eza} --header --group --time-style=long-iso --group-directories-first --sort=name --icons=auto --git --git-repos-no-status --binary "
+              "eza --header --group --time-style=long-iso --group-directories-first --sort=name --icons=auto --git --git-repos-no-status --binary "
               + (builtins.replaceStrings
                 [
                   "ll"
@@ -82,7 +87,7 @@
               .${config.myConfig.de.theme};
           in
           {
-            cat = "${lib.getExe pkgs.bat} --plain --theme=${theme}";
+            cat = "bat --plain --theme=${theme}";
           };
       in
       lib.mkMerge [

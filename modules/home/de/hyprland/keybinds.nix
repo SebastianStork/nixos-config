@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 {
   config = lib.mkIf config.myConfig.de.hyprland.enable {
     wayland.windowManager.hyprland.extraConfig = ''
@@ -78,9 +73,9 @@
       # Control media
       ${
         let
-          play-pause = "${lib.getExe pkgs.playerctl} --ignore-player=brave play-pause";
-          play-next = "${lib.getExe pkgs.playerctl} --ignore-player=brave next";
-          play-previous = "${lib.getExe pkgs.playerctl} --ignore-player=brave previous";
+          play-pause = "playerctl --ignore-player=brave play-pause";
+          play-next = "playerctl --ignore-player=brave next";
+          play-previous = "playerctl --ignore-player=brave previous";
           mute = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
           volume-up = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+";
           volume-down = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
@@ -103,12 +98,12 @@
       }
 
       # Adjust brightness
-      bindel = , XF86MonBrightnessUp, exec, ${lib.getExe pkgs.brightnessctl} -e set +2%
-      bindel = , XF86MonBrightnessDown, exec, ${lib.getExe pkgs.brightnessctl} -e set 2%-
+      bindel = , XF86MonBrightnessUp, exec, brightnessctl -e set +2%
+      bindel = , XF86MonBrightnessDown, exec, brightnessctl -e set 2%-
 
       # Screenshot
-      bind = , Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave output
-      bind = SHIFT, Print, exec, ${lib.getExe pkgs.grimblast} --notify --freeze copysave area
+      bind = , Print, exec, grimblast --notify --freeze copysave output
+      bind = SHIFT, Print, exec, grimblast --notify --freeze copysave area
 
       # Escape special workspace
       ${lib.concatMapStringsSep "\n" (n: "bind = SUPER, ${toString n}, togglespecialworkspace, blank") (

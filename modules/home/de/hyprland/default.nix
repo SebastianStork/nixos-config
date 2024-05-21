@@ -20,6 +20,10 @@
       pkgs.cliphist
       pkgs.wl-clipboard
       (pkgs.writeScriptBin "clipboard" "cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy")
+
+      pkgs.playerctl
+      pkgs.brightnessctl
+      pkgs.grimblast
     ];
 
     wayland.windowManager.hyprland = {
