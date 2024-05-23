@@ -8,7 +8,7 @@
     "modules-right": ["tray", "network", "wireplumber", "backlight", "battery"],
 
     "clock": {
-        "format": " {:%H.%M}",
+        "format": " {:%H:%M}",
         "tooltip-format": "{:%d.%m.%Y}"
     },
 
