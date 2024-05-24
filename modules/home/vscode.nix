@@ -24,6 +24,7 @@
             open-vsx.aaron-bond.better-comments
 
             open-vsx.github.github-vscode-theme
+            open-vsx.jdinhlife.gruvbox
             open-vsx.pkief.material-icon-theme
           ];
       };
@@ -35,7 +36,7 @@
           builtins.toJSON {
             "workbench.colorTheme" =
               {
-                dark = "GitHub Dark";
+                dark = "Gruvbox Dark Hard";
                 light = "GitHub Light";
               }
               .${config.myConfig.de.theme};
