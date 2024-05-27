@@ -37,6 +37,11 @@
           "cliphist wipe && wl-paste --watch cliphist store"
         ];
 
+        monitor = [
+          "eDP-1,1920x1080@60,0x0,1"
+          "DP-2,2560x1440@144,0x0,1"
+        ];
+
         input = {
           kb_layout = "de";
           kb_variant = "nodeadkeys";
