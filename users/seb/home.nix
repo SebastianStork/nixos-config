@@ -6,8 +6,6 @@
   ...
 }:
 {
-  xdg.userDirs.extraConfig.XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
-
   myConfig = {
     de.hyprland.enable = osConfig.myConfig.de.hyprland.enable;
 

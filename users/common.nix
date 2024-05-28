@@ -24,6 +24,7 @@
         userDirs = {
           enable = true;
           createDirectories = true;
+          extraConfig.XDG_SCREENSHOTS_DIR = "$$XDG_PICTURES_DIR/Screenshots";
         };
       };
     }
