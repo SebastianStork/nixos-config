@@ -27,6 +27,7 @@
     pkgs.cinnamon.nemo-with-extensions
     pkgs.jetbrains.idea-community
     pkgs.vlc
+    pkgs.gnome.gnome-calculator
     pkgs.onlyoffice-bin_latest
     pkgs.libreoffice
     pkgs.hunspell
