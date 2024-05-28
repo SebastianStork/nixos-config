@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  wrappers,
-  ...
-}:
+{ pkgs, wrappers, ... }:
 {
   imports = [ ./default.nix ];
 
