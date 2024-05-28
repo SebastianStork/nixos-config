@@ -8,9 +8,7 @@
 {
   myConfig = {
     de.hyprland.enable = osConfig.myConfig.de.hyprland.enable;
-
     shell.enable = true;
-
     ssh-client.enable = true;
     git.enable = true;
     vscode.enable = true;
@@ -37,6 +35,6 @@
     wrappers.obsidian
     wrappers.marktext
     wrappers.webcord
-    (wrappers.kitty { inherit (config.myConfig.de) theme; })
+    (wrappers.kitty { inherit (config.myConfig) theme; })
   ];
 }

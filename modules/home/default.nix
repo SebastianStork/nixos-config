@@ -1,6 +1,7 @@
 {
   imports = [
-    ./de
+    ./hyprland
+    ./theme.nix
     ./vscode.nix
     ./shell
     ./ssh-client.nix

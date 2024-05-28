@@ -11,6 +11,6 @@
       (wrappers.hypridle { lockOnSleep = false; })
     ];
 
-    myConfig.de.theme = "dark";
+    myConfig.theme = "dark";
   };
 }

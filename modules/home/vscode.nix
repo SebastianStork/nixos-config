@@ -41,7 +41,7 @@
                 dark = "Gruvbox Dark Hard";
                 light = "GitHub Light";
               }
-              .${config.myConfig.de.theme};
+              .${config.myConfig.theme};
             "workbench.iconTheme" = "material-icon-theme";
             "editor.fontFamily" = "JetBrainsMono Nerd Font";
             "explorer.confirmDelete" = false;

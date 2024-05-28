@@ -84,7 +84,7 @@
                 dark = "";
                 light = "GitHub";
               }
-              .${config.myConfig.de.theme};
+              .${config.myConfig.theme};
           in
           {
             cat = "bat --plain --theme=${theme}";

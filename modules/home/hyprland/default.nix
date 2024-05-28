@@ -16,7 +16,7 @@
       wrappers.waybar
       wrappers.hyprlock
 
-      (wrappers.rofi { inherit (config.myConfig.de) theme; })
+      (wrappers.rofi { inherit (config.myConfig) theme; })
       pkgs.cliphist
       pkgs.wl-clipboard
       (pkgs.writeScriptBin "clipboard" "cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy")
