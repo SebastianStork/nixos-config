@@ -16,7 +16,7 @@
         vscode = pkgs.vscodium;
         vscodeExtensions =
           let
-            open-vsx = inputs.nix-vscode-extensions.extensions.${pkgs.system}.open-vsx;
+            inherit (inputs.nix-vscode-extensions.extensions.${pkgs.system}) open-vsx;
           in
           [
             open-vsx.jnoortheen.nix-ide
