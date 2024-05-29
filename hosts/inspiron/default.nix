@@ -7,8 +7,6 @@
 
   networking.hostName = "inspiron";
 
-  environment.sessionVariables.FLAKE = "/home/seb/Projects/nixos/my-config";
-
   myConfig = {
     boot-loader = {
       systemd-boot.enable = true;

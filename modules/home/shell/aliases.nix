@@ -13,17 +13,6 @@
 
     home.shellAliases =
       let
-        nixAliases =
-          let
-            rebuild = "sudo -v && nh os";
-          in
-          {
-            nrs = "${rebuild} switch";
-            nrt = "${rebuild} test";
-            nrb = "${rebuild} boot";
-            nrrb = "nrb && reboot";
-          };
-
         lsAliases =
           let
             aliasList =
@@ -91,7 +80,6 @@
           };
       in
       lib.mkMerge [
-        nixAliases
         lsAliases
         catAlias
       ];

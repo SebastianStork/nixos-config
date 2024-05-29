@@ -9,7 +9,19 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    environment.sessionVariables.FLAKE = "/home/seb/Projects/nixos/my-config";
     programs.nh.enable = true;
+
+    environment.shellAliases =
+      let
+        rebuild = "sudo -v && nh os";
+      in
+      {
+        nrs = "${rebuild} switch";
+        nrt = "${rebuild} test";
+        nrb = "${rebuild} boot";
+        nrrb = "nrb && reboot";
+      };
 
     programs.nh.clean = lib.mkIf cfg.auto-gc.enable {
       enable = true;
