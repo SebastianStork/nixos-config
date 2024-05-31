@@ -16,7 +16,7 @@
       bind = SUPER, R, exec, rofi -show drun
       bind = SUPER, RETURN, exec, kitty
       bind = SUPER, V, exec, clipboard
-      bind = SUPER, B, exec, brave
+      bind = SUPER, B, exec, firefox
       bind = SUPER, F, exec, nemo
       bind = SUPER, C, exec, codium
 
@@ -73,9 +73,9 @@
       # Control media
       ${
         let
-          play-pause = "playerctl --ignore-player=brave play-pause";
-          play-next = "playerctl --ignore-player=brave next";
-          play-previous = "playerctl --ignore-player=brave previous";
+          play-pause = "playerctl --ignore-player=firefox play-pause";
+          play-next = "playerctl --ignore-player=firefox next";
+          play-previous = "playerctl --ignore-player=firefox previous";
           mute = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
           volume-up = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+";
           volume-down = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";

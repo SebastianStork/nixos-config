@@ -19,7 +19,6 @@
   home.packages = [
     pkgs.fastfetch
 
-    pkgs.brave
     pkgs.cinnamon.nemo-with-extensions
     pkgs.jetbrains.idea-community
     pkgs.vlc
@@ -36,5 +35,6 @@
     wrappers.marktext
     wrappers.webcord
     (wrappers.kitty { inherit (config.myConfig) theme; })
+    wrappers.firefox
   ];
 }
