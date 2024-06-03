@@ -28,12 +28,12 @@
     pkgs.hunspell
     pkgs.hunspellDicts.de_DE
     pkgs.hunspellDicts.en_US
+    pkgs.webcord
+    pkgs.spotify
+    pkgs.obsidian
+    pkgs.marktext
 
     wrappers.bottom
-    wrappers.spotify
-    wrappers.obsidian
-    wrappers.marktext
-    wrappers.webcord
     (wrappers.kitty { inherit (config.myConfig) theme; })
     wrappers.firefox
   ];
