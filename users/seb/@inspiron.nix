@@ -3,7 +3,7 @@
   imports = [ ./default.nix ];
 
   home-manager.users.seb = {
-    home.packages = [ (wrappers.hypridle { lockOnSleep = true; }) ];
+    home.packages = [ wrappers.hyprlock ];
 
     myConfig.theme = "light";
   };

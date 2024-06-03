@@ -2,9 +2,6 @@
 let
   inherit (moduleArgs) pkgs;
 in
-{
-  lockOnSleep ? false,
-}:
 assembleWrapper {
   basePackage = pkgs.hypridle;
 
@@ -13,7 +10,7 @@ assembleWrapper {
       hypridle-config = pkgs.writeText "hypridle-config" ''
         general {
           lock_cmd = pidof hyprlock || hyprlock
-          ${if lockOnSleep then "before_sleep_cmd = loginctl lock-session" else ""}
+          before_sleep_cmd = loginctl lock-session
           after_sleep_cmd = hyprctl dispatch dpms on
         }
 
