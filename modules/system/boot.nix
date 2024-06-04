@@ -31,6 +31,7 @@
         consoleLogLevel = 3;
         initrd.verbose = false;
         initrd.systemd.enable = true;
+        plymouth.enable = true;
       };
     })
   ];
