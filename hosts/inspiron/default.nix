@@ -8,8 +8,8 @@
   networking.hostName = "inspiron";
 
   myConfig = {
-    boot-loader = {
-      systemd-boot.enable = true;
+    boot = {
+      loader.systemd-boot.enable = true;
       silent = true;
     };
 

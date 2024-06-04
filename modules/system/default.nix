@@ -10,7 +10,7 @@
     ./de.nix
     ./dm.nix
     ./sound.nix
-    ./boot-loader.nix
+    ./boot.nix
     ./printing.nix
     ./syncthing.nix
     ./nix-helper.nix

@@ -1,12 +1,12 @@
 { config, lib, ... }:
 {
-  options.myConfig.boot-loader = {
-    systemd-boot.enable = lib.mkEnableOption "";
+  options.myConfig.boot = {
+    loader.systemd-boot.enable = lib.mkEnableOption "";
     silent = lib.mkEnableOption "";
   };
 
   config = lib.mkMerge [
-    (lib.mkIf config.myConfig.boot-loader.systemd-boot.enable {
+    (lib.mkIf config.myConfig.boot.loader.systemd-boot.enable {
       boot.tmp.cleanOnBoot = true;
       boot.loader = {
         systemd-boot = {
@@ -20,7 +20,7 @@
       systemd.watchdog.rebootTime = "10";
     })
 
-    (lib.mkIf config.myConfig.boot-loader.silent {
+    (lib.mkIf config.myConfig.boot.silent {
       boot = {
         kernelParams = [
           "quiet"
