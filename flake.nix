@@ -8,6 +8,7 @@
     };
 
     wrapper-manager = {
+      #! Wrapper-manager fork with selective binary wrapping
       url = "github:nrabulinski/wrapper-manager/wrap-certain-programs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -57,7 +58,7 @@
           };
           modules = [
             ./hosts/north
-            "${./.}/users/seb/@north.nix"
+            "${self}/users/seb/@north.nix"
           ];
         };
         inspiron = nixpkgs.lib.nixosSystem {
@@ -66,7 +67,7 @@
           };
           modules = [
             ./hosts/inspiron
-            "${./.}/users/seb/@inspiron.nix"
+            "${self}/users/seb/@inspiron.nix"
           ];
         };
       };
