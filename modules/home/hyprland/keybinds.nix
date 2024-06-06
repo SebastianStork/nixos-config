@@ -82,6 +82,7 @@
           mute = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
           volume-up = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+";
           volume-down = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
+          mute-mic = "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
         in
         ''
           bindl = , XF86AudioPlay, exec, ${play-pause}
@@ -90,6 +91,7 @@
           bindl = , XF86AudioMute, exec, ${mute}
           bindel = , XF86AudioRaiseVolume, exec, ${volume-up}
           bindel = , XF86AudioLowerVolume, exec, ${volume-down}
+          bindl = SHIFT, XF86AudioMute, exec, ${mute-mic}
 
           bindl = SUPER ALT, RETURN, exec, ${play-pause}
           bindel = SUPER ALT, right, exec, ${play-next}
@@ -97,6 +99,7 @@
           bindl = SUPER ALT, BACKSPACE, exec, ${mute}
           bindel = SUPER ALT, up, exec, ${volume-up}
           bindel = SUPER ALT, down, exec, ${volume-down}
+          bindl = SUPER ALT, M, exec, ${mute-mic}
         ''
       }
 
