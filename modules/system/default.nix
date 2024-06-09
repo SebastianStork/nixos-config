@@ -14,5 +14,6 @@
     ./printing.nix
     ./syncthing.nix
     ./nix-helper.nix
+    ./night-light.nix
   ];
 }

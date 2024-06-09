@@ -31,6 +31,7 @@
       enable = true;
       auto-gc.enable = true;
     };
+    night-light.enable = true;
   };
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
