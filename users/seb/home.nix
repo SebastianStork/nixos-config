@@ -21,7 +21,7 @@
 
     pkgs.cinnamon.nemo-with-extensions
     pkgs.jetbrains.idea-community
-    pkgs.vlc
+    pkgs.celluloid
     pkgs.onlyoffice-bin_latest
 
     wrappers.bottom
