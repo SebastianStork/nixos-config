@@ -41,11 +41,13 @@
           "Unknown-1,disable"
           # North
           "DP-1,2560x1440@144,0x0,1"
-          ",preferred,auto,1,mirror,DP-1"
+          "HDMI-A-1,2560x1440@60,-1440x-617,1,transform,1"
           # Inspiron
           "eDP-1,1920x1080@60,0x0,1"
           ",preferred,auto,1,mirror,eDP-1"
         ];
+
+        workspace = [ "m[HDMI-A-1],layoutopt:orientation:top" ];
 
         input = {
           kb_layout = "de";

@@ -49,15 +49,10 @@
       bind = SUPER SHIFT, M, togglespecialworkspace, minimize
 
       # Switch workspace
-      ${lib.concatMapStringsSep "\n" (n: "bind = SUPER, ${toString n}, workspace, ${toString n}") (
-        lib.range 1 9
-      )}
-      ${lib.concatMapStringsSep "\n" (
-        n: "bind = SUPER SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}"
-      ) (lib.range 1 9)}
-      ${lib.concatMapStringsSep "\n" (
-        n: "bind = SUPER CONTROL, ${toString n}, movetoworkspace, ${toString n}"
-      ) (lib.range 1 9)}
+      ${lib.concatMapStringsSep "\n" (n: ''
+        bind = SUPER, ${toString n}, focusworkspaceoncurrentmonitor, ${toString n}
+        bind = SUPER SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}
+      '') (lib.range 1 9)}
 
       # Scroll through workspaces
       bind = SUPER, mouse_down, workspace, e-1
