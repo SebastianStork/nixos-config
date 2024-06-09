@@ -22,17 +22,11 @@
     pkgs.cinnamon.nemo-with-extensions
     pkgs.jetbrains.idea-community
     pkgs.vlc
-    pkgs.gnome.gnome-calculator
     pkgs.onlyoffice-bin_latest
-    pkgs.libreoffice
-    pkgs.hunspell
-    pkgs.hunspellDicts.de_DE
-    pkgs.hunspellDicts.en_US
 
     wrappers.bottom
     wrappers.spotify
     wrappers.obsidian
-    wrappers.marktext
     wrappers.webcord
     (wrappers.kitty { inherit (config.myConfig) theme; })
     wrappers.firefox
