@@ -48,10 +48,14 @@
       bind = SUPER SHIFT, M, movetoworkspace, special:minimize
       bind = SUPER SHIFT, M, togglespecialworkspace, minimize
 
-      # Switch workspace
       ${lib.concatMapStringsSep "\n" (n: ''
+        # Switch workspace
         bind = SUPER, ${toString n}, focusworkspaceoncurrentmonitor, ${toString n}
         bind = SUPER SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}
+
+        # Escape special workspace
+        bind = SUPER, ${toString n}, togglespecialworkspace, blank
+        bind = SUPER, ${toString n}, togglespecialworkspace, blank
       '') (lib.range 1 9)}
 
       # Scroll through workspaces
@@ -105,14 +109,6 @@
       # Screenshot
       bind = , Print, exec, grimblast --notify --freeze copysave output
       bind = SHIFT, Print, exec, grimblast --notify --freeze copysave area
-
-      # Escape special workspace
-      ${lib.concatMapStringsSep "\n" (n: "bind = SUPER, ${toString n}, togglespecialworkspace, blank") (
-        lib.range 1 9
-      )}
-      ${lib.concatMapStringsSep "\n" (n: "bind = SUPER, ${toString n}, togglespecialworkspace, blank") (
-        lib.range 1 9
-      )}
 
       # Scratchpad workspace
       workspace = special:scratchpad, gapsout:30
