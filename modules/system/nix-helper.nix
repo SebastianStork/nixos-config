@@ -1,14 +1,8 @@
 { config, lib, ... }:
-let
-  cfg = config.myConfig.nix-helper;
-in
 {
-  options.myConfig.nix-helper = {
-    enable = lib.mkEnableOption "";
-    auto-gc.enable = lib.mkEnableOption "";
-  };
+  options.myConfig.nix-helper.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf config.myConfig.nix-helper.enable {
     environment.sessionVariables.FLAKE = "/home/seb/Projects/nixos/my-config";
     programs.nh.enable = true;
 
@@ -22,11 +16,5 @@ in
         nrb = "${rebuild} boot";
         nrrb = "nrb && reboot";
       };
-
-    programs.nh.clean = lib.mkIf cfg.auto-gc.enable {
-      enable = true;
-      dates = "daily";
-      extraArgs = "--keep 10 --keep-since 3d";
-    };
   };
 }

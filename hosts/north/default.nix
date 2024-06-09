@@ -23,10 +23,8 @@
     sops.enable = true;
     printing.enable = true;
     syncthing.enable = true;
-    nix-helper = {
-      enable = true;
+    nix-helper.enable = true;
       auto-gc.enable = true;
-    };
     night-light.enable = true;
   };
 
