@@ -77,6 +77,7 @@
       "corefonts"
       "nvidia-x11"
       "nvidia-settings"
+      "libXNVCtrl"
       "spotify"
       "obsidian"
     ];
