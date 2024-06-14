@@ -28,7 +28,7 @@
     printing.enable = true;
     syncthing.enable = true;
     nix-helper.enable = true;
-      auto-gc.enable = true;
+    auto-gc.enable = true;
     night-light.enable = true;
   };
 

@@ -19,7 +19,7 @@
           file = "p10k.zsh";
         }
       ];
-      
+
       initExtraFirst = ''
         (( ''${+commands[direnv]} )) && emulate zsh -c "$(direnv export zsh)"
 
