@@ -1,14 +1,13 @@
 {
   config,
   pkgs,
-  osConfig,
   wrappers,
   ...
 }:
 {
   myConfig = {
-    de.hyprland.enable = osConfig.myConfig.de.hyprland.enable;
-    shell.enable = true;
+    de.hyprland.enable = true;
+    shell.zsh.enable = true;
     ssh-client.enable = true;
     git.enable = true;
     vscode.enable = true;

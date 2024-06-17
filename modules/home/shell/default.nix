@@ -10,11 +10,9 @@
     ./aliases.nix
   ];
 
-  options.myConfig.shell = {
-    enable = lib.mkEnableOption "";
-  };
+  options.myConfig.shell.zsh.enable = lib.mkEnableOption "";
 
-  config = {
+  config = lib.mkIf config.myConfig.shell.zsh.enable {
     programs.zsh = {
       enable = true;
       dotDir = ".config/zsh";

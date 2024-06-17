@@ -163,9 +163,7 @@
       (( $#branch > 32 )) && branch[13,-13]="…"  # <-- this line
       res+="${clean}${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}${branch//\%/%%}"
     fi
-    if [[ -n $VCS_STATUS_TAG
-          
-          
+    if [[ -n $VCS_STATUS_TAG 
           && -z $VCS_STATUS_LOCAL_BRANCH  
         ]]; then
       local tag=${(V)VCS_STATUS_TAG}
