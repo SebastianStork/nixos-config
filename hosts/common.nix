@@ -79,6 +79,7 @@
       "nvidia-settings"
       "spotify"
       "obsidian"
+      "davinci-resolve"
     ];
 
   users.mutableUsers = false;

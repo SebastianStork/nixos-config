@@ -4,8 +4,9 @@
 
   home-manager.users.seb = {
     home.packages = [
+      pkgs.ffmpeg
       pkgs.obs-studio
-      pkgs.libsForQt5.kdenlive
+      pkgs.davinci-resolve
       pkgs.gimp
     ];
 
