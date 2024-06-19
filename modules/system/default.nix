@@ -15,5 +15,6 @@
     ./nix-helper.nix
     ./auto-gc.nix
     ./night-light.nix
+    ./tailscale.nix
   ];
 }

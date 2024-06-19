@@ -29,6 +29,7 @@
     nix-helper.enable = true;
     auto-gc.enable = true;
     night-light.enable = true;
+    tailscale.enable = true;
   };
 
   boot.kernelPackages = pkgs.linuxPackages_latest;

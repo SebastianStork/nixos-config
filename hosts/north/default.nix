@@ -25,6 +25,10 @@
     nix-helper.enable = true;
     auto-gc.enable = true;
     night-light.enable = true;
+    tailscale = {
+      enable = true;
+      ssh.enable = true;
+    };
   };
 
   boot.kernelPackages = pkgs.linuxPackages_6_8;
