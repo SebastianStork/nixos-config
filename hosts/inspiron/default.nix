@@ -22,7 +22,6 @@
     sound.enable = true;
     vm.qemu.enable = true;
     flatpak.enable = true;
-    vpn.lgs.enable = true;
     comma.enable = true;
     sops.enable = true;
     printing.enable = true;

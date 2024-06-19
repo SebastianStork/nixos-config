@@ -3,7 +3,6 @@
     ./flatpak.nix
     ./vm.nix
     ./wlan.nix
-    ./vpn.nix
     ./comma.nix
     ./sops.nix
     ./bluetooth.nix
