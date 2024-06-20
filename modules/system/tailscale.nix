@@ -10,14 +10,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets.tailscale-auth-key = { };
+    sops.secrets.tailscale-auth-key.restartUnits = [ "tailscaled-autoconnect.service" ];
 
     services.tailscale = {
       enable = true;
 
       authKeyFile = config.sops.secrets.tailscale-auth-key.path;
       openFirewall = true;
-      permitCertUid = "root";
 
       useRoutingFeatures = if cfg.exitNode.enable then "server" else "client";
       extraUpFlags = [
