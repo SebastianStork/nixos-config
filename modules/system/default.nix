@@ -14,7 +14,7 @@
     ./syncthing.nix
     ./nix-helper.nix
     ./auto-gc.nix
-    ./night-light.nix
+    ./geoclue.nix
     ./tailscale.nix
   ];
 }

@@ -8,5 +8,6 @@
     ./git.nix
     ./equalizer
     ./sops.nix
+    ./night-light.nix
   ];
 }

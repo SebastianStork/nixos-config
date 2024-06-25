@@ -28,7 +28,7 @@
     syncthing.enable = true;
     nix-helper.enable = true;
     auto-gc.enable = true;
-    night-light.enable = true;
+    geoclue.enable = true;
     tailscale.enable = true;
   };
 

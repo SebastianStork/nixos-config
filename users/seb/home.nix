@@ -13,6 +13,7 @@
     vscode.enable = true;
     equalizer.enable = true;
     sops.enable = false;
+    night-light.enable = true;
   };
 
   home.packages = [
