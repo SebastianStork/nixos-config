@@ -12,10 +12,7 @@
 
     programs.virt-manager.enable = true;
 
-    environment.systemPackages = [
-      pkgs.quickemu
-      pkgs.quickgui
-    ];
+    environment.systemPackages = [ pkgs.quickemu ];
 
     home-manager.sharedModules = [
       {
