@@ -8,7 +8,6 @@
   myConfig = {
     de.hyprland.enable = true;
     shell.zsh.enable = true;
-    ssh-client.enable = true;
     git.enable = true;
     vscode.enable = true;
     equalizer.enable = true;
