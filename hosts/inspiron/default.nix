@@ -20,7 +20,7 @@
     bluetooth.enable = true;
 
     sound.enable = true;
-    vm.qemu.enable = true;
+    virtualisation.enable = true;
     flatpak.enable = true;
     comma.enable = true;
     sops.enable = true;

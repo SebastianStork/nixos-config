@@ -1,7 +1,7 @@
 {
   imports = [
     ./flatpak.nix
-    ./vm.nix
+    ./virtualisation.nix
     ./wlan.nix
     ./comma.nix
     ./sops.nix

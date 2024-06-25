@@ -17,7 +17,7 @@
     de.hyprland.enable = true;
 
     sound.enable = true;
-    vm.qemu.enable = true;
+    virtualisation.enable = true;
     comma.enable = true;
     sops.enable = true;
     printing.enable = true;
