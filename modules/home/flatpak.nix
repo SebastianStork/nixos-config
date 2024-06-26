@@ -1,6 +1,8 @@
-{ config, lib, ... }:
+{ config, lib, ... }@moduleArgs:
 {
-  options.myConfig.flatpak.enable = lib.mkEnableOption "";
+  options.myConfig.flatpak.enable = lib.mkEnableOption "" // {
+    default = moduleArgs.osConfig.myConfig.flatpak.enable or false;
+  };
 
   config = lib.mkIf config.myConfig.flatpak.enable {
     xdg = {
