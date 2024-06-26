@@ -8,5 +8,7 @@
     ./equalizer
     ./sops.nix
     ./night-light.nix
+    ./virtualisation.nix
+    ./flatpak.nix
   ];
 }

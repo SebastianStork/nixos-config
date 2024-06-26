@@ -12,14 +12,5 @@
     programs.virt-manager.enable = true;
 
     environment.systemPackages = [ pkgs.quickemu ];
-
-    home-manager.sharedModules = [
-      {
-        dconf.settings."org/virt-manager/virt-manager/connections" = {
-          autoconnect = [ "qemu:///system" ];
-          uris = [ "qemu:///system" ];
-        };
-      }
-    ];
   };
 }

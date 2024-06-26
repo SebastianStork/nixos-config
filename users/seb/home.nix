@@ -13,6 +13,8 @@
     equalizer.enable = true;
     sops.enable = false;
     night-light.enable = true;
+    flatpak.enable = true;
+    virtualisation.enable = true;
   };
 
   home.packages = [
