@@ -6,6 +6,8 @@
   ];
 
   networking.hostName = "north";
+  system.stateVersion = "23.11";
+  boot.kernelPackages = pkgs.linuxPackages_6_8;
 
   myConfig = {
     boot = {
@@ -30,8 +32,6 @@
       ssh.enable = true;
     };
   };
-
-  boot.kernelPackages = pkgs.linuxPackages_6_8;
 
   programs.steam.enable = true;
 }

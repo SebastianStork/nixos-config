@@ -3,8 +3,8 @@
   imports = [ ./default.nix ];
 
   home-manager.users.seb = {
-    home.packages = [ wrappers.hyprlock ];
-
+    home.stateVersion = "23.11";
     myConfig.theme = "light";
+    home.packages = [ wrappers.hyprlock ];
   };
 }

@@ -6,6 +6,8 @@
   ];
 
   networking.hostName = "inspiron";
+  system.stateVersion = "23.11";
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   myConfig = {
     boot = {
@@ -31,8 +33,6 @@
     geoclue.enable = true;
     tailscale.enable = true;
   };
-
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   services.auto-cpufreq.enable = true;
 }
