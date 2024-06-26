@@ -16,14 +16,14 @@
 
       templates =
         let
-          mkPskFile = key: ''
+          makePskFile = name: ''
             [Security]
-            Passphrase=${key}
+            Passphrase=${config.sops.placeholder."wlan/${name}/key"}
           '';
         in
         {
-          "iwd/WLAN-233151.psk".content = mkPskFile "${config.sops.placeholder."wlan/WLAN-233151/key"}";
-          "iwd/Fairphone4.psk".content = mkPskFile "${config.sops.placeholder."wlan/Fairphone4/key"}";
+          "iwd/WLAN-233151.psk".content = makePskFile "WLAN-233151";
+          "iwd/Fairphone4.psk".content = makePskFile "Fairphone4";
         };
     };
 
@@ -38,7 +38,9 @@
     };
 
     systemd.tmpfiles.rules = [
-      "C /var/lib/iwd/WLAN-233151.psk 0600 root root - ${config.sops.templates."iwd/WLAN-233151.psk".path}"
+      "C /var/lib/iwd/WLAN-233151.psk 0600 root root - ${
+        config.sops.templates."iwd/WLAN-233151.psk".path
+      }"
       "C /var/lib/iwd/Fairphone4.psk 0600 root root - ${config.sops.templates."iwd/Fairphone4.psk".path}"
     ];
 
