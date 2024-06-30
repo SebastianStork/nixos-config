@@ -41,7 +41,6 @@
     wantedBy = [ "multi-user.target" ];
     requires = [ "fancontrol.service" ];
     before = [ "fancontrol.service" ];
-
     script = ''
       ${lib.getExe' pkgs.coreutils "touch"} /tmp/nvidia-gpu-temp
       while :; do

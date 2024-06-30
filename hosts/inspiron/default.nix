@@ -10,10 +10,8 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   myConfig = {
-    boot = {
-      loader.systemd-boot.enable = true;
-      silent = true;
-    };
+    boot.loader.systemd-boot.enable = true;
+    boot.silent = true;
 
     dm.gdm.enable = true;
     de.hyprland.enable = true;
