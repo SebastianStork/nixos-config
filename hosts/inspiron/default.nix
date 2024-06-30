@@ -23,7 +23,6 @@
 
     sound.enable = true;
     virtualisation.enable = true;
-    flatpak.enable = true;
     comma.enable = true;
     sops.enable = true;
     printing.enable = true;
