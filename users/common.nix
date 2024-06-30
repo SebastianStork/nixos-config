@@ -11,7 +11,7 @@
   };
 
   home-manager.sharedModules = [
-    ../modules/home
+    ../modules/home-manager
     ../wrappers
 
     {

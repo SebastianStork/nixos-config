@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   imports = [
-    ../modules/system
+    ../modules/nixos
     ../wrappers
   ];
 
