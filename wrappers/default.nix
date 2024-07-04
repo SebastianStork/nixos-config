@@ -14,7 +14,7 @@ let
 in
 {
   _module.args.wrappers = lib.pipe (builtins.readDir ./.) [
-    (lib.filterAttrs (name: value: name != "default.nix"))
+    (lib.filterAttrs (name: _: name != "default.nix"))
     (lib.concatMapAttrs (
       name: _: {
         ${lib.removeSuffix ".nix" name} = import ./${name} { inherit assembleWrapper moduleArgs; };
