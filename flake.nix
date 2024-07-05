@@ -58,7 +58,7 @@
           };
           modules = [
             ./hosts/north
-            "${self}/users/seb/@north.nix"
+            "${self}/users/seb/@north"
           ];
         };
         inspiron = nixpkgs.lib.nixosSystem {
@@ -67,7 +67,7 @@
           };
           modules = [
             ./hosts/inspiron
-            "${self}/users/seb/@inspiron.nix"
+            "${self}/users/seb/@inspiron"
           ];
         };
       };

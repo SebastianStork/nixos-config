@@ -1,10 +1,14 @@
 { wrappers, ... }:
 {
-  imports = [ ./default.nix ];
+  imports = [ ../default.nix ];
 
   home-manager.users.seb = {
     home.stateVersion = "23.11";
-    myConfig.theme = "light";
+
+    myConfig = {
+      theme = "light";
+      sops.enable = true;
+    };
 
     home.packages = [ wrappers.hyprlock ];
 

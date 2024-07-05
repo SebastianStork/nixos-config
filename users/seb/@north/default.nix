@@ -1,10 +1,14 @@
 { pkgs, ... }:
 {
-  imports = [ ./default.nix ];
+  imports = [ ../default.nix ];
 
   home-manager.users.seb = {
     home.stateVersion = "23.11";
-    myConfig.theme = "dark";
+
+    myConfig = {
+      theme = "dark";
+      sops.enable = true;
+    };
 
     home.packages = [
       pkgs.ffmpeg

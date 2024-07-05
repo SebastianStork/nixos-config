@@ -9,7 +9,12 @@
       userEmail = "sebastian.stork@pm.me";
       extraConfig.init.defaultBranch = "main";
     };
-
     programs.lazygit.enable = true;
+
+    sops.secrets.github-ssh-key.path = "${config.home.homeDirectory}/.ssh/github";
+    programs.ssh = {
+      enable = true;
+      matchBlocks."github.com".identityFile = "~/.ssh/github";
+    };
   };
 }

@@ -15,9 +15,13 @@ creation_rules:
     - age:
       - *admin
       - *inspiron
-  - path_regex: users/seb/secrets.yaml$
+  - path_regex: users/seb/@north/secrets.yaml$
     key_groups:
     - age:
       - *admin
       - *seb-north
+  - path_regex: users/seb/@inspiron/secrets.yaml$
+    key_groups:
+    - age:
+      - *admin
       - *seb-inspiron
