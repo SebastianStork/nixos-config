@@ -15,7 +15,7 @@ in
       gtk = {
         enable = true;
         gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
-        theme.package = pkgs.gnome.gnome-themes-extra;
+        theme.package = pkgs.gnome-themes-extra;
         iconTheme.package = pkgs.papirus-icon-theme;
         font.name = "Open Sans";
         font.package = pkgs.open-sans;
