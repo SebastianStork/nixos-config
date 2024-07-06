@@ -48,17 +48,13 @@
       bind = SUPER SHIFT, M, movetoworkspace, special:minimize
       bind = SUPER SHIFT, M, togglespecialworkspace, minimize
 
+      # Switch workspace
       ${lib.concatMapStringsSep "\n" (n: ''
-        # Switch workspace
         bind = SUPER, ${toString n}, focusworkspaceoncurrentmonitor, ${toString n}
+        bind = SUPER, ${toString n}, togglespecialworkspace, blank
+        bind = SUPER, ${toString n}, togglespecialworkspace, blank
         bind = SUPER SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}
-
-        # Escape special workspace
-        bind = SUPER, ${toString n}, togglespecialworkspace, blank
-        bind = SUPER, ${toString n}, togglespecialworkspace, blank
       '') (lib.range 1 9)}
-
-      # Scroll through workspaces
       bind = SUPER, mouse_down, workspace, e-1
       bind = SUPER, mouse_up, workspace, e+1
 
@@ -67,10 +63,10 @@
       bindrl = SUPER CONTROL, P, exec, poweroff
       bindrl = SUPER CONTROL, R, exec, reboot
       bindrl = SUPER CONTROL, S, exec, systemctl suspend
+      bindl = , switch:on:Lid Switch, exec, systemctl suspend
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
       bind = SUPER CONTROL, W, exec, pkill waybar && hyprctl dispatch exec waybar
-      bindl = , switch:on:Lid Switch, exec, systemctl suspend
 
       # Control media
       ${
