@@ -110,10 +110,6 @@
       bind = , Print, exec, grimblast --notify --freeze copysave output
       bind = SHIFT, Print, exec, grimblast --notify --freeze copysave area
 
-      # Scratchpad workspace
-      workspace = special:scratchpad, gapsout:30
-      bind = SUPER , X, togglespecialworkspace, scratchpad
-
       # Music workspace
       workspace = special:music, border:false, gapsout:30, on-created-empty:spotify
       exec-once = [workspace special:music silent] spotify
