@@ -38,7 +38,7 @@
           builtins.toJSON {
             "workbench.colorTheme" =
               {
-                dark = "Gruvbox Dark Hard";
+                dark = "GitHub Dark";
                 light = "GitHub Light";
               }
               .${config.myConfig.theme};
