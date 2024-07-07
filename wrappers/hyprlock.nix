@@ -4,7 +4,6 @@ let
 in
 assembleWrapper {
   basePackage = pkgs.hyprlock;
-
   flags =
     let
       hyprlock-config = pkgs.writeText "hyprlock-config" ''

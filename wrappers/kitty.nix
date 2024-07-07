@@ -7,7 +7,6 @@ in
 }:
 assembleWrapper {
   basePackage = pkgs.kitty;
-
   programs.kitty.prependFlags =
     let
       kitty-config = pkgs.writeText "kitty-config" ''
@@ -18,7 +17,6 @@ assembleWrapper {
         enable_audio_bell no
         update_check_interval 0
       '';
-
       theme-file =
         {
           dark = "default.conf";

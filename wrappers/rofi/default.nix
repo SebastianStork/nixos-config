@@ -7,7 +7,6 @@ in
 }:
 assembleWrapper {
   basePackage = pkgs.rofi-wayland;
-
   flags =
     let
       theming =

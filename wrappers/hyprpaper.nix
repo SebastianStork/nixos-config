@@ -4,7 +4,6 @@ let
 in
 assembleWrapper {
   basePackage = pkgs.hyprpaper;
-
   flags =
     let
       hyprpaper-config = pkgs.writeText "hyprpaper-config" ''

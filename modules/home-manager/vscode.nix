@@ -11,7 +11,6 @@
   config = lib.mkIf config.myConfig.vscode.enable {
     programs.vscode = {
       enable = true;
-
       package = pkgs.vscode-with-extensions.override {
         vscode = pkgs.vscodium;
         vscodeExtensions =

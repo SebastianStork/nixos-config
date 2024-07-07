@@ -42,7 +42,6 @@
         input = {
           kb_layout = "de";
           kb_variant = "nodeadkeys";
-
           accel_profile = "flat";
         };
 
@@ -60,7 +59,6 @@
           gaps_in = 5;
           gaps_out = 10;
           border_size = 1;
-
           layout = "master";
         };
 
@@ -80,7 +78,6 @@
           disable_hyprland_logo = true;
           disable_splash_rendering = true;
           force_default_wallpaper = 0;
-
           key_press_enables_dpms = true;
         };
       };
