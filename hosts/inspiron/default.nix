@@ -28,7 +28,10 @@
     nix-helper.enable = true;
     auto-gc.enable = true;
     geoclue.enable = true;
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      ssh.enable = true;
+    };
   };
 
   services.auto-cpufreq.enable = true;
