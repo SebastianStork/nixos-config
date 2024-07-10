@@ -28,6 +28,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -74,6 +79,10 @@
 
       devShells.${system}.default = pkgs.mkShell { packages = [ pkgs.sops ]; };
 
-      formatter.${system} = pkgs.nixfmt-rfc-style;
+      formatter.${system} =
+        (inputs.treefmt-nix.lib.evalModule pkgs {
+          projectRootFile = "flake.nix";
+          programs.nixfmt-rfc-style.enable = true;
+        }).config.build.wrapper;
     };
 }
