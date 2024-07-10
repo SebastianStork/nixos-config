@@ -7,21 +7,21 @@ keys:
 creation_rules:
   - path_regex: hosts/north/secrets.yaml$
     key_groups:
-    - age:
-      - *admin
-      - *north
+      - age:
+          - *admin
+          - *north
   - path_regex: hosts/inspiron/secrets.yaml$
     key_groups:
-    - age:
-      - *admin
-      - *inspiron
+      - age:
+          - *admin
+          - *inspiron
   - path_regex: users/seb/@north/secrets.yaml$
     key_groups:
-    - age:
-      - *admin
-      - *seb-north
+      - age:
+          - *admin
+          - *seb-north
   - path_regex: users/seb/@inspiron/secrets.yaml$
     key_groups:
-    - age:
-      - *admin
-      - *seb-inspiron
+      - age:
+          - *admin
+          - *seb-inspiron

@@ -6,7 +6,7 @@ assembleWrapper {
   basePackage = pkgs.waybar;
   flags = [
     "--config"
-    ./config.jsonc
+    ./config.json
     "--style"
     ./style.css
   ];

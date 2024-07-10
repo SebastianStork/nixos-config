@@ -83,6 +83,7 @@
         (inputs.treefmt-nix.lib.evalModule pkgs {
           projectRootFile = "flake.nix";
           programs.nixfmt-rfc-style.enable = true;
+          programs.prettier.enable = true;
         }).config.build.wrapper;
     };
 }
