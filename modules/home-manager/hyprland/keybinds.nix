@@ -62,7 +62,7 @@
       bindrl = SUPER CONTROL, Q, exit,
       bindrl = SUPER CONTROL, P, exec, poweroff
       bindrl = SUPER CONTROL, R, exec, reboot
-      bindrl = SUPER CONTROL, S, exec, systemctl suspend
+      bindrl = SUPER CONTROL, S, exec, sleep 1 && systemctl suspend
       bindl = , switch:on:Lid Switch, exec, systemctl suspend
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
