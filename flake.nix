@@ -8,7 +8,7 @@
     };
 
     wrapper-manager = {
-      #! Wrapper-manager fork with selective binary wrapping
+      # Wrapper-manager fork with selective binary wrapping
       url = "github:nrabulinski/wrapper-manager/wrap-certain-programs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -77,7 +77,13 @@
         };
       };
 
-      devShells.${system}.default = pkgs.mkShell { packages = [ pkgs.sops ]; };
+      devShells.${system}.sops = pkgs.mkShell {
+        packages = [
+          pkgs.sops
+          pkgs.age
+          pkgs.ssh-to-age
+        ];
+      };
 
       formatter.${system} =
         (inputs.treefmt-nix.lib.evalModule pkgs {
