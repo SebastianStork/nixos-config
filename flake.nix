@@ -2,6 +2,8 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -50,46 +52,52 @@
   };
 
   outputs =
-    { self, nixpkgs, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      nixosConfigurations = {
-        north = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit self inputs;
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
+
+      flake = {
+        nixosConfigurations = {
+          north = inputs.nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit (inputs) self;
+              inherit inputs;
+            };
+            modules = [
+              ./hosts/north
+              "${inputs.self}/users/seb/@north"
+            ];
           };
-          modules = [
-            ./hosts/north
-            "${self}/users/seb/@north"
-          ];
-        };
-        inspiron = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit self inputs;
+          inspiron = inputs.nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit (inputs) self;
+              inherit inputs;
+            };
+            modules = [
+              ./hosts/inspiron
+              "${inputs.self}/users/seb/@inspiron"
+            ];
           };
-          modules = [
-            ./hosts/inspiron
-            "${self}/users/seb/@inspiron"
-          ];
         };
       };
 
-      devShells.${system}.sops = pkgs.mkShell {
-        packages = [
-          pkgs.sops
-          pkgs.age
-          pkgs.ssh-to-age
-        ];
-      };
+      perSystem =
+        { pkgs, ... }:
+        {
+          devShells.sops = pkgs.mkShell {
+            packages = [
+              pkgs.sops
+              pkgs.age
+              pkgs.ssh-to-age
+            ];
+          };
 
-      formatter.${system} =
-        (inputs.treefmt-nix.lib.evalModule pkgs {
-          projectRootFile = "flake.nix";
-          programs.nixfmt.enable = true;
-          programs.prettier.enable = true;
-        }).config.build.wrapper;
+          formatter =
+            (inputs.treefmt-nix.lib.evalModule pkgs {
+              projectRootFile = "flake.nix";
+              programs.nixfmt.enable = true;
+              programs.prettier.enable = true;
+            }).config.build.wrapper;
+        };
     };
 }
