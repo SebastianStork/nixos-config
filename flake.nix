@@ -52,52 +52,14 @@
   };
 
   outputs =
-    inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    { flake-parts, ... }@inputs:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
 
-      flake = {
-        nixosConfigurations = {
-          north = inputs.nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              inherit (inputs) self;
-              inherit inputs;
-            };
-            modules = [
-              ./hosts/north
-              "${inputs.self}/users/seb/@north"
-            ];
-          };
-          inspiron = inputs.nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              inherit (inputs) self;
-              inherit inputs;
-            };
-            modules = [
-              ./hosts/inspiron
-              "${inputs.self}/users/seb/@inspiron"
-            ];
-          };
-        };
-      };
-
-      perSystem =
-        { pkgs, ... }:
-        {
-          devShells.sops = pkgs.mkShell {
-            packages = [
-              pkgs.sops
-              pkgs.age
-              pkgs.ssh-to-age
-            ];
-          };
-
-          formatter =
-            (inputs.treefmt-nix.lib.evalModule pkgs {
-              projectRootFile = "flake.nix";
-              programs.nixfmt.enable = true;
-              programs.prettier.enable = true;
-            }).config.build.wrapper;
-        };
+      imports = [
+        ./flake/nixosConfigurations.nix
+        ./flake/devShells.nix
+        ./flake/formatter.nix
+      ];
     };
 }
