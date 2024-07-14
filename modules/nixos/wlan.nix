@@ -12,6 +12,7 @@
       secrets = {
         "wlan/WLAN-233151/key" = { };
         "wlan/Fairphone4/key" = { };
+        "wlan/DSL_EXT/key" = { };
       };
 
       templates =
@@ -24,6 +25,7 @@
         {
           "iwd/WLAN-233151.psk".content = makePskFile "WLAN-233151";
           "iwd/Fairphone4.psk".content = makePskFile "Fairphone4";
+          "iwd/DSL_EXT.psk".content = makePskFile "DSL_EXT";
         };
     };
 
@@ -41,6 +43,7 @@
         config.sops.templates."iwd/WLAN-233151.psk".path
       }"
       "C /var/lib/iwd/Fairphone4.psk 0600 root root - ${config.sops.templates."iwd/Fairphone4.psk".path}"
+      "C /var/lib/iwd/DSL_EXT.psk 0600 root root - ${config.sops.templates."iwd/DSL_EXT.psk".path}"
     ];
 
     environment.systemPackages = [ pkgs.iwgtk ];
