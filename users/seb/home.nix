@@ -15,6 +15,7 @@
 
   home.packages = [
     pkgs.fastfetch
+    pkgs.just
 
     pkgs.cinnamon.nemo-with-extensions
     pkgs.jetbrains.idea-community
