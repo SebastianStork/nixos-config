@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ self, pkgs, ... }:
 {
   imports = [
-    ../modules/nixos
+    self.nixosModules.nixos
     ../wrappers
   ];
 

@@ -58,7 +58,8 @@
 
       imports = [
         ./flake/hosts.nix
-        ./flake/devShells.nix
+        ./flake/modules.nix
+        ./flake/dev-shells.nix
         ./flake/formatter.nix
       ];
     };
