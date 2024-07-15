@@ -28,5 +28,17 @@
     wrappers.webcord
     (wrappers.kitty { inherit (config.myConfig) theme; })
     wrappers.firefox
+
+    pkgs.corefonts
+    pkgs.roboto
+    pkgs.open-sans
+    (pkgs.nerdfonts.override {
+      fonts = [
+        "JetBrainsMono"
+        "NerdFontsSymbolsOnly"
+      ];
+    })
   ];
+
+  fonts.fontconfig.enable = true;
 }
