@@ -11,7 +11,7 @@
   };
 
   home-manager.sharedModules = [
-    self.nixosModules.home-manager
+    self.nixosModules.home
     self.nixosModules.wrappers
 
     {

@@ -4,7 +4,7 @@ let
 in
 {
   flake.nixosModules = {
-    nixos.imports = modulesOf "${self}/modules/nixos";
-    home-manager.imports = modulesOf "${self}/modules/home-manager";
+    system.imports = modulesOf "${self}/modules/system";
+    home.imports = modulesOf "${self}/modules/home";
   };
 }

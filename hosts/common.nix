@@ -1,7 +1,7 @@
 { self, pkgs, ... }:
 {
   imports = [
-    self.nixosModules.nixos
+    self.nixosModules.system
     self.nixosModules.wrappers
   ];
 
