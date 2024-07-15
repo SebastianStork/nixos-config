@@ -21,11 +21,11 @@
     pkgs.jetbrains.idea-community
     pkgs.celluloid
     pkgs.onlyoffice-bin_latest
+    pkgs.spotify
+    pkgs.obsidian
+    pkgs.webcord
 
     wrappers.bottom
-    wrappers.spotify
-    wrappers.obsidian
-    wrappers.webcord
     (wrappers.kitty { inherit (config.myConfig) theme; })
     wrappers.firefox
 
