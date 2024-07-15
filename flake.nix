@@ -57,7 +57,7 @@
       systems = [ "x86_64-linux" ];
 
       imports = [
-        ./flake/nixosConfigurations.nix
+        ./flake/hosts.nix
         ./flake/devShells.nix
         ./flake/formatter.nix
       ];

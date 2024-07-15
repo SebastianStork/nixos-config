@@ -5,7 +5,6 @@
     ./hardware.nix
   ];
 
-  networking.hostName = "north";
   system.stateVersion = "23.11";
   boot.kernelPackages = pkgs.linuxPackages_6_8;
 

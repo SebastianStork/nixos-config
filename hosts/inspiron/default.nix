@@ -5,7 +5,6 @@
     ./hardware.nix
   ];
 
-  networking.hostName = "inspiron";
   system.stateVersion = "23.11";
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
