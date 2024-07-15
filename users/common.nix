@@ -12,7 +12,7 @@
 
   home-manager.sharedModules = [
     self.nixosModules.home-manager
-    ../wrappers
+    self.nixosModules.wrappers
 
     {
       programs.home-manager.enable = true;

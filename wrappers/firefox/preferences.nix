@@ -1,7 +1,5 @@
-{ moduleArgs, ... }:
+{ inputs, ... }:
 let
-  inherit (moduleArgs) inputs;
-
   betterfox = builtins.replaceStrings [ "user_pref" ] [ "pref" ] (
     builtins.readFile "${inputs.betterfox}/user.js"
   );

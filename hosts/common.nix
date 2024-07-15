@@ -2,7 +2,7 @@
 {
   imports = [
     self.nixosModules.nixos
-    ../wrappers
+    self.nixosModules.wrappers
   ];
 
   nix.settings = {

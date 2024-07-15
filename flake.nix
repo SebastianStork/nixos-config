@@ -59,6 +59,7 @@
       imports = [
         ./flake/hosts.nix
         ./flake/modules.nix
+        ./flake/wrappers.nix
         ./flake/dev-shells.nix
         ./flake/formatter.nix
       ];

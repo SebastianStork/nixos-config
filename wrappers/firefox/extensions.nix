@@ -1,7 +1,5 @@
-{ moduleArgs, ... }:
+{ inputs, lib, ... }:
 let
-  inherit (moduleArgs) lib inputs;
-
   extension = shortId: uuid: {
     name = uuid;
     value = {
