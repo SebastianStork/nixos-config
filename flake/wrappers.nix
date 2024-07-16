@@ -1,5 +1,5 @@
 {
-  flake.nixosModules.wrappers =
+  flake.wrappers.default =
     {
       self,
       inputs,

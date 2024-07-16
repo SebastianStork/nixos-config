@@ -1,8 +1,8 @@
 { self, pkgs, ... }:
 {
   imports = [
-    self.nixosModules.system
-    self.nixosModules.wrappers
+    self.nixosModules.default
+    self.wrappers.default
   ];
 
   nix.settings = {
