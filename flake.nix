@@ -62,6 +62,7 @@
         ./flake/wrappers.nix
         ./flake/dev-shells.nix
         ./flake/formatter.nix
+        ./flake/checks.nix
       ];
     };
 }
