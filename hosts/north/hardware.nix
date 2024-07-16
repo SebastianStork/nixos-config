@@ -11,7 +11,14 @@
     ./disko.nix
   ];
 
+  nixpkgs.hostPlatform = "x86_64-linux";
   hardware.enableRedistributableFirmware = true;
+  hardware.cpu.amd.updateMicrocode = true;
+  boot.kernelModules = [
+    "kvm-amd"
+    "k10temp"
+    "nct6775"
+  ];
   boot.initrd.availableKernelModules = [
     "xhci_pci"
     "ahci"
@@ -20,15 +27,9 @@
     "usbhid"
     "sd_mod"
   ];
-  boot.kernelModules = [
-    "kvm-amd"
-    "k10temp"
-    "nct6775"
-  ];
-  nixpkgs.hostPlatform = "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = true;
 
   zramSwap.enable = true;
+  services.fstrim.enable = true;
 
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
