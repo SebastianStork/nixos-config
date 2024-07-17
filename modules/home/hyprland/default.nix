@@ -6,8 +6,6 @@
   ...
 }@moduleArgs:
 {
-  imports = [ ./keybinds.nix ];
-
   options.myConfig.de.hyprland.enable = lib.mkEnableOption "" // {
     default = moduleArgs.osConfig.myConfig.de.hyprland.enable or false;
   };

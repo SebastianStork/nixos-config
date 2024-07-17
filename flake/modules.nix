@@ -1,6 +1,6 @@
-{ self, ... }:
+{ self, lib, ... }:
 let
-  modulesOf = dir: map (name: "${dir}/${name}") (builtins.attrNames (builtins.readDir dir));
+  modulesOf = dir: builtins.filter (lib.hasSuffix ".nix") (lib.filesystem.listFilesRecursive dir);
 in
 {
   flake = {
