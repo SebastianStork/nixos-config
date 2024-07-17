@@ -35,8 +35,6 @@
           "cliphist wipe && wl-paste --watch cliphist store"
         ];
 
-        workspace = [ "m[HDMI-A-1],layoutopt:orientation:top" ];
-
         input = {
           kb_layout = "de";
           kb_variant = "nodeadkeys";
