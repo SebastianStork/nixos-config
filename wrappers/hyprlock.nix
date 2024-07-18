@@ -8,6 +8,9 @@
         flags =
           let
             hyprlock-config = pkgs.writeText "hyprlock-config" ''
+              general {
+                no_fade_in = true
+              }
               background {
                 monitor =
                 path = screenshot
