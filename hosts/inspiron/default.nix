@@ -12,7 +12,7 @@
     boot.loader.systemd-boot.enable = true;
     boot.silent = true;
 
-    dm.gdm.enable = true;
+    dm.tuigreet.enable = true;
     de.hyprland.enable = true;
 
     wlan.enable = true;
