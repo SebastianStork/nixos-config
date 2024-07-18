@@ -28,5 +28,16 @@
           };
       };
     };
+
+    # Prevent systemd messages from covering the TUI
+    systemd.services.greetd.serviceConfig = {
+      Type = "idle";
+      StandardInputs = "tty";
+      StandardOutput = "tty";
+      StandardError = "journal";
+      TTYReset = true;
+      TTYVHangup = true;
+      TTYVTDisallocate = true;
+    };
   };
 }
