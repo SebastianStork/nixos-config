@@ -14,6 +14,7 @@
     home.packages = [
       wrappers.hyprpaper
       wrappers.waybar
+      wrappers.hyprlock
       wrappers.hypridle
       (wrappers.rofi { inherit (config.myConfig) theme; })
       pkgs.cliphist

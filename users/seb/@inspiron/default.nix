@@ -1,4 +1,3 @@
-{ wrappers, ... }:
 {
   imports = [ ../default.nix ];
 
@@ -9,8 +8,6 @@
       theme = "light";
       sops.enable = true;
     };
-
-    home.packages = [ wrappers.hyprlock ];
 
     wayland.windowManager.hyprland.settings.monitor = [
       "eDP-1,1920x1080@60,0x0,1"
