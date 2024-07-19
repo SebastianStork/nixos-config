@@ -13,7 +13,7 @@
               }
               background {
                 monitor =
-                path = screenshot
+                path = ~/Pictures/.wallpaper
                 blur_size = 4
                 blur_passes = 1
               }
