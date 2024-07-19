@@ -26,6 +26,10 @@
     pkgs.obsidian
     pkgs.webcord
     pkgs.onlyoffice-bin_latest
+    pkgs.libreoffice
+    pkgs.hunspell
+    pkgs.hunspellDicts.de_DE
+    pkgs.hunspellDicts.en_US
 
     pkgs.corefonts
     pkgs.roboto
