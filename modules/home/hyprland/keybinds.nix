@@ -1,11 +1,35 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  wrappers,
+  ...
+}:
 {
   config = lib.mkIf config.myConfig.de.hyprland.enable {
+    home.packages = [
+      (wrappers.rofi { inherit (config.myConfig) theme; })
+      pkgs.wl-clipboard
+      pkgs.playerctl
+      pkgs.brightnessctl
+      pkgs.grimblast
+    ];
+
     wayland.windowManager.hyprland.extraConfig = ''
       # Bindflags:
       # r = release
       # e = repeat
       # l = locked
+
+      # Variables
+      $rofi-clipboard = cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy
+      $play-pause = playerctl --ignore-player=firefox play-pause
+      $play-next = playerctl --ignore-player=firefox next
+      $play-previous = playerctl --ignore-player=firefox previous
+      $mute = wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+      $volume-up = wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+      $volume-down = wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+      $mute-mic = wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
       # Essentials
       bind = SUPER SHIFT, C, killactive,
@@ -15,7 +39,7 @@
       # Launch programs
       bind = SUPER, R, exec, rofi -show drun
       bind = SUPER, RETURN, exec, kitty
-      bind = SUPER, V, exec, clipboard
+      bind = SUPER, V, exec, $rofi-clipboard
       bind = SUPER, B, exec, firefox
       bind = SUPER, F, exec, nemo
       bind = SUPER, C, exec, codium
@@ -69,34 +93,21 @@
       bind = SUPER CONTROL, W, exec, pkill waybar && hyprctl dispatch exec waybar
 
       # Control media
-      ${
-        let
-          play-pause = "playerctl --ignore-player=firefox play-pause";
-          play-next = "playerctl --ignore-player=firefox next";
-          play-previous = "playerctl --ignore-player=firefox previous";
-          mute = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-          volume-up = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+";
-          volume-down = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
-          mute-mic = "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
-        in
-        ''
-          bindl = , XF86AudioPlay, exec, ${play-pause}
-          bindel = SHIFT, XF86AudioRaiseVolume, exec, ${play-next}
-          bindel = SHIFT, XF86AudioLowerVolume, exec, ${play-previous}
-          bindl = , XF86AudioMute, exec, ${mute}
-          bindel = , XF86AudioRaiseVolume, exec, ${volume-up}
-          bindel = , XF86AudioLowerVolume, exec, ${volume-down}
-          bindl = SHIFT, XF86AudioMute, exec, ${mute-mic}
+      bindl = , XF86AudioPlay, exec, $play-pause
+      bindel = SHIFT, XF86AudioRaiseVolume, exec, $play-next
+      bindel = SHIFT, XF86AudioLowerVolume, exec, $play-previous
+      bindl = , XF86AudioMute, exec, $mute
+      bindel = , XF86AudioRaiseVolume, exec, $volume-up
+      bindel = , XF86AudioLowerVolume, exec, $volume-down
+      bindl = SHIFT, XF86AudioMute, exec, $mute-mic
 
-          bindl = SUPER ALT, RETURN, exec, ${play-pause}
-          bindel = SUPER ALT, right, exec, ${play-next}
-          bindel = SUPER ALT, left, exec, ${play-previous}
-          bindl = SUPER ALT, BACKSPACE, exec, ${mute}
-          bindel = SUPER ALT, up, exec, ${volume-up}
-          bindel = SUPER ALT, down, exec, ${volume-down}
-          bindl = SUPER ALT, M, exec, ${mute-mic}
-        ''
-      }
+      bindl = SUPER ALT, RETURN, exec, $play-pause
+      bindel = SUPER ALT, right, exec, $play-next
+      bindel = SUPER ALT, left, exec, $play-previous
+      bindl = SUPER ALT, BACKSPACE, exec, $mute
+      bindel = SUPER ALT, up, exec, $volume-up
+      bindel = SUPER ALT, down, exec, $volume-down
+      bindl = SUPER ALT, M, exec, $mute-mic
 
       # Adjust brightness
       bindel = , XF86MonBrightnessUp, exec, brightnessctl -e set +2%

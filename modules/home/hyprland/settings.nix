@@ -13,16 +13,10 @@
   config = lib.mkIf config.myConfig.de.hyprland.enable {
     home.packages = [
       wrappers.hyprpaper
-      wrappers.waybar
       wrappers.hyprlock
       wrappers.hypridle
-      (wrappers.rofi { inherit (config.myConfig) theme; })
+      wrappers.waybar
       pkgs.cliphist
-      pkgs.wl-clipboard
-      (pkgs.writeScriptBin "clipboard" "cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy")
-      pkgs.playerctl
-      pkgs.brightnessctl
-      pkgs.grimblast
     ];
 
     wayland.windowManager.hyprland = {
@@ -31,8 +25,8 @@
       settings = {
         exec-once = [
           "hyprpaper"
-          "sleep 3 && waybar"
           "hypridle"
+          "sleep 3 && waybar"
           "cliphist wipe && wl-paste --watch cliphist store"
         ];
 
