@@ -23,6 +23,7 @@
 
       # Variables
       $rofi-clipboard = cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy
+      $lock-suspend = loginctl lock-session && sleep 0.5 && systemctl suspend
       $play-pause = playerctl --ignore-player=firefox play-pause
       $play-next = playerctl --ignore-player=firefox next
       $play-previous = playerctl --ignore-player=firefox previous
@@ -86,8 +87,8 @@
       bindrl = SUPER CONTROL, Q, exit,
       bindrl = SUPER CONTROL, P, exec, poweroff
       bindrl = SUPER CONTROL, R, exec, reboot
-      bindrl = SUPER CONTROL, S, exec, loginctl lock-session && sleep 1 && systemctl suspend
-      bindl = , switch:on:Lid Switch, exec, loginctl lock-session && sleep 1 && systemctl suspend
+      bindrl = SUPER CONTROL, S, exec, $lock-suspend
+      bindl = , switch:on:Lid Switch, exec, $lock-suspend
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
       bind = SUPER CONTROL, W, exec, pkill waybar && hyprctl dispatch exec waybar
