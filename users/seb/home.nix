@@ -6,6 +6,7 @@
 }:
 {
   myConfig = {
+    sops.enable = true;
     shell.zsh.enable = true;
     git.enable = true;
     vscode.enable = true;

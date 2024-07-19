@@ -5,10 +5,7 @@
   home-manager.users.seb = {
     home.stateVersion = "23.11";
 
-    myConfig = {
-      theme = "dark";
-      sops.enable = true;
-    };
+    myConfig.theme = "dark";
 
     home.packages = [
       pkgs.ffmpeg
