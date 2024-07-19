@@ -9,6 +9,7 @@
     home.packages = [
       pkgs.eza
       pkgs.bat
+      pkgs.bottom
     ];
 
     home.shellAliases =
@@ -78,10 +79,15 @@
           {
             cat = "bat --plain --theme=${theme}";
           };
+
+        bottomAlias = {
+          btm = "btm --group";
+        };
       in
       lib.mkMerge [
         lsAliases
         catAlias
+        bottomAlias
       ];
   };
 }

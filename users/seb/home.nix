@@ -17,17 +17,15 @@
     pkgs.fastfetch
     pkgs.just
 
+    (wrappers.kitty { inherit (config.myConfig) theme; })
+    wrappers.firefox
     pkgs.cinnamon.nemo-with-extensions
     pkgs.jetbrains.idea-community
     pkgs.celluloid
-    pkgs.onlyoffice-bin_latest
     pkgs.spotify
     pkgs.obsidian
     pkgs.webcord
-
-    wrappers.bottom
-    (wrappers.kitty { inherit (config.myConfig) theme; })
-    wrappers.firefox
+    pkgs.onlyoffice-bin_latest
 
     pkgs.corefonts
     pkgs.roboto
