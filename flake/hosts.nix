@@ -16,9 +16,9 @@ in
         inherit inputs self;
       };
       modules = [
+        { networking.hostName = name; }
         "${self}/hosts/${name}"
         "${self}/users/seb/@${name}"
-        { networking.hostName = name; }
       ];
     }
   );

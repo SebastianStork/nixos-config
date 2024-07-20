@@ -1,9 +1,14 @@
+{ self, ... }:
 {
-  imports = [ ../default.nix ];
+  imports = [
+    "${self}/users/home-manager.nix"
+    ../user.nix
+  ];
 
   home-manager.users.seb = {
-    home.stateVersion = "23.11";
+    imports = [ ../home.nix ];
 
+    home.stateVersion = "23.11";
     myConfig.theme = "light";
 
     wayland.windowManager.hyprland.settings.monitor = [

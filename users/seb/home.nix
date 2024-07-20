@@ -5,6 +5,8 @@
   ...
 }:
 {
+  imports = [ ../common.nix ];
+
   myConfig = {
     sops.enable = true;
     shell.zsh.enable = true;

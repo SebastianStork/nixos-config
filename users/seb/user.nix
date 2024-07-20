@@ -1,7 +1,5 @@
 { config, ... }:
 {
-  imports = [ ../common.nix ];
-
   sops.secrets.seb-password.neededForUsers = true;
 
   users.users.seb = {
@@ -15,6 +13,4 @@
       "video"
     ];
   };
-
-  home-manager.users.seb = ./home.nix;
 }
