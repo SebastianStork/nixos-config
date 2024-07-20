@@ -1,4 +1,4 @@
-{ self, inputs, ... }:
+{ inputs, self, ... }:
 {
   perSystem =
     { pkgs, ... }:

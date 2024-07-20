@@ -1,7 +1,7 @@
 {
   config,
-  self,
   inputs,
+  self,
   lib,
   ...
 }@moduleArgs:

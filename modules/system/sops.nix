@@ -1,7 +1,7 @@
 {
-  self,
-  inputs,
   config,
+  inputs,
+  self,
   lib,
   ...
 }:

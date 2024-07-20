@@ -1,8 +1,8 @@
 {
   flake.wrappers.default =
     {
-      self,
       inputs,
+      self,
       pkgs,
       lib,
       ...
