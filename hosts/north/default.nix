@@ -6,7 +6,7 @@
   ];
 
   system.stateVersion = "23.11";
-  boot.kernelPackages = pkgs.linuxPackages_6_8;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   myConfig = {
     boot.loader.systemd-boot.enable = true;
