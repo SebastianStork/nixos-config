@@ -39,11 +39,9 @@
     };
 
     systemd.tmpfiles.rules = [
-      "C /var/lib/iwd/WLAN-233151.psk 0600 root root - ${
-        config.sops.templates."iwd/WLAN-233151.psk".path
-      }"
-      "C /var/lib/iwd/Fairphone4.psk 0600 root root - ${config.sops.templates."iwd/Fairphone4.psk".path}"
-      "C /var/lib/iwd/DSL_EXT.psk 0600 root root - ${config.sops.templates."iwd/DSL_EXT.psk".path}"
+      "C /var/lib/iwd/WLAN-233151.psk - - - - ${config.sops.templates."iwd/WLAN-233151.psk".path}"
+      "C /var/lib/iwd/Fairphone4.psk - - - - ${config.sops.templates."iwd/Fairphone4.psk".path}"
+      "C /var/lib/iwd/DSL_EXT.psk - - - - ${config.sops.templates."iwd/DSL_EXT.psk".path}"
     ];
 
     environment.systemPackages = [ pkgs.iwgtk ];
