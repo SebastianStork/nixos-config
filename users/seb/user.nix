@@ -8,9 +8,7 @@
     hashedPasswordFile = config.sops.secrets.seb-password.path;
     extraGroups = [
       "wheel"
-      "networkmanager"
       "libvirtd"
-      "video"
     ];
   };
 }
