@@ -5,7 +5,7 @@
   ...
 }:
 {
-  imports = [ ../common.nix ];
+  imports = [ ../common-home.nix ];
 
   myConfig = {
     sops.enable = true;
