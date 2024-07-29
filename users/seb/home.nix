@@ -22,7 +22,7 @@
 
     (wrappers.kitty { inherit (config.myConfig) theme; })
     wrappers.firefox
-    pkgs.cinnamon.nemo-with-extensions
+    pkgs.nemo-with-extensions
     pkgs.jetbrains.idea-community
     pkgs.celluloid
     pkgs.spotify
