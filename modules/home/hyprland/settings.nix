@@ -16,6 +16,7 @@
       wrappers.hyprlock
       wrappers.hypridle
       wrappers.waybar
+      pkgs.dunst
       pkgs.cliphist
     ];
 
@@ -27,6 +28,7 @@
           "hyprpaper"
           "hypridle"
           "sleep 3 && waybar"
+          "dunst"
           "cliphist wipe && wl-paste --watch cliphist store"
         ];
 
