@@ -66,6 +66,7 @@
       "spotify"
       "obsidian"
       "davinci-resolve"
+      "ticktick"
     ];
 
   users.mutableUsers = false;

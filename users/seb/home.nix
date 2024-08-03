@@ -27,6 +27,7 @@
     pkgs.celluloid
     pkgs.spotify
     pkgs.obsidian
+    pkgs.ticktick
     pkgs.webcord
     pkgs.onlyoffice-bin_latest
     pkgs.libreoffice
