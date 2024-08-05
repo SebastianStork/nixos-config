@@ -10,7 +10,14 @@
         basePackage = pkgs.kitty;
         programs.kitty.prependFlags =
           let
+            theme-name =
+              {
+                dark = "default";
+                light = "GitHub_Light";
+              }
+              .${theme};
             kitty-config = pkgs.writeText "kitty-config" ''
+              include ${pkgs.kitty-themes}/share/kitty-themes/themes/${theme-name}.conf
               font_family JetBrainsMono Nerd Font
               background_opacity 0.85
               cursor_shape beam
@@ -18,19 +25,10 @@
               enable_audio_bell no
               update_check_interval 0
             '';
-            theme-file =
-              {
-                dark = "default.conf";
-                light = "GitHub_Light.conf";
-              }
-              .${theme};
-            kitty-theme = "include=${pkgs.kitty-themes}/share/kitty-themes/themes/${theme-file}";
           in
           [
             "--config"
             kitty-config
-            "--override"
-            kitty-theme
           ];
       };
     }
