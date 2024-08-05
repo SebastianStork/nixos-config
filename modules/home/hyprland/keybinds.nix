@@ -129,7 +129,7 @@
       bind = SUPER, D, togglespecialworkspace, chat
 
       # Flake workspace
-      workspace = special:flake, border:false, gapsout:30, on-created-empty:kitty --directory $FLAKE --override background_opacity=0.7
+      workspace = special:flake, border:false, gapsout:30, on-created-empty:kitty --directory ~/Projects/nixos/my-config --override background_opacity=0.7
       windowrulev2 = noblur, class:(kitty), onworkspace:special:flake
       bind = SUPER, Q, togglespecialworkspace, flake
     '';

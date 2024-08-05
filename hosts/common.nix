@@ -52,7 +52,10 @@
     vimAlias = true;
   };
 
-  environment.systemPackages = [ pkgs.git ];
+  environment.systemPackages = [
+    pkgs.git
+    pkgs.just
+  ];
 
   nixpkgs.config.allowUnfreePredicate =
     pkg:

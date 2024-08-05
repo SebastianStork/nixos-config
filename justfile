@@ -6,13 +6,13 @@ default:
     just --list --unsorted
 
 switch:
-    {{ rebuild }} switch
+    {{ rebuild }} switch .
 
 test:
-    {{ rebuild }} test
+    {{ rebuild }} test .
 
 boot:
-    {{ rebuild }} boot
+    {{ rebuild }} boot .
 
 reboot: boot
     reboot

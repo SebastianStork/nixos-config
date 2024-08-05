@@ -24,7 +24,6 @@
     sops.enable = true;
     printing.enable = true;
     syncthing.enable = true;
-    nix-helper.enable = true;
     auto-gc.enable = true;
     geoclue.enable = true;
     tailscale = {
@@ -33,5 +32,5 @@
     };
   };
 
-  services.auto-cpufreq.enable = true;
+  programs.nh.enable = true;
 }

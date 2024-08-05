@@ -18,7 +18,6 @@
 
   home.packages = [
     pkgs.fastfetch
-    pkgs.just
 
     (wrappers.kitty { inherit (config.myConfig) theme; })
     wrappers.firefox
