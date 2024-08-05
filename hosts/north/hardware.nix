@@ -30,6 +30,7 @@
 
   zramSwap.enable = true;
   services.fstrim.enable = true;
+  hardware.logitech.lcd.enable = true;
 
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
