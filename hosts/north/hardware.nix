@@ -12,21 +12,27 @@
   ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
-  hardware.enableRedistributableFirmware = true;
-  hardware.cpu.amd.updateMicrocode = true;
-  boot.kernelModules = [
-    "kvm-amd"
-    "k10temp"
-    "nct6775"
-  ];
-  boot.initrd.availableKernelModules = [
-    "xhci_pci"
-    "ahci"
-    "nvme"
-    "usb_storage"
-    "usbhid"
-    "sd_mod"
-  ];
+
+  hardware = {
+    enableRedistributableFirmware = true;
+    cpu.amd.updateMicrocode = true;
+  };
+
+  boot = {
+    kernelModules = [
+      "kvm-amd"
+      "k10temp"
+      "nct6775"
+    ];
+    initrd.availableKernelModules = [
+      "xhci_pci"
+      "ahci"
+      "nvme"
+      "usb_storage"
+      "usbhid"
+      "sd_mod"
+    ];
+  };
 
   zramSwap.enable = true;
   services.fstrim.enable = true;

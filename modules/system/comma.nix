@@ -13,8 +13,10 @@ in
   options.myConfig.comma.enable = lib.mkEnableOption "";
 
   config = {
-    programs.command-not-found.enable = !cfg.enable;
-    programs.nix-index.enable = cfg.enable;
-    programs.nix-index-database.comma.enable = cfg.enable;
+    programs = {
+      command-not-found.enable = !cfg.enable;
+      nix-index.enable = cfg.enable;
+      nix-index-database.comma.enable = cfg.enable;
+    };
   };
 }

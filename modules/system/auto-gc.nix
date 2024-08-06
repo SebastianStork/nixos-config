@@ -3,11 +3,13 @@
   options.myConfig.auto-gc.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.myConfig.auto-gc.enable {
-    programs.nh.enable = true;
-    programs.nh.clean = {
+    programs.nh = {
       enable = true;
-      dates = "daily";
-      extraArgs = "--keep 10 --keep-since 3d";
+      clean = {
+        enable = true;
+        dates = "daily";
+        extraArgs = "--keep 10 --keep-since 3d";
+      };
     };
   };
 }
