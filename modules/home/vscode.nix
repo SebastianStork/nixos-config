@@ -19,13 +19,9 @@
           in
           [
             open-vsx.jnoortheen.nix-ide
-            open-vsx.yzhang.markdown-all-in-one
             open-vsx.aaron-bond.better-comments
-            open-vsx.esbenp.prettier-vscode
-            open-vsx.ritwickdey.liveserver
 
             open-vsx.github.github-vscode-theme
-            open-vsx.jdinhlife.gruvbox
             open-vsx.pkief.material-icon-theme
           ];
       };
