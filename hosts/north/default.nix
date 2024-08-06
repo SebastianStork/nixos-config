@@ -29,6 +29,5 @@
     };
   };
 
-  programs.nh.enable = true;
   programs.steam.enable = true;
 }
