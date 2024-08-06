@@ -7,6 +7,8 @@
 {
   imports = [ ../common-home.nix ];
 
+  home.sessionVariables.FLAKE = "~/Projects/nixos/my-config";
+
   myConfig = {
     sops.enable = true;
     shell.zsh.enable = true;
