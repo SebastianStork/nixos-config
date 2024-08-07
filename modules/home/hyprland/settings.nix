@@ -38,13 +38,19 @@
           accel_profile = "flat";
         };
 
-        device = {
-          name = "dell0b9f:00-27c6:0d43-touchpad";
-          accel_profile = "adaptive";
-          disable_while_typing = true;
-          natural_scroll = true;
-          middle_button_emulation = true;
-        };
+        device = [
+          {
+            name = "logitech-usb-receiver-mouse";
+            sensitivity = "0.2";
+          }
+          {
+            name = "dell0b9f:00-27c6:0d43-touchpad";
+            accel_profile = "adaptive";
+            disable_while_typing = true;
+            natural_scroll = true;
+            middle_button_emulation = true;
+          }
+        ];
 
         gestures.workspace_swipe = true;
 
