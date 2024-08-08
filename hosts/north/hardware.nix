@@ -38,6 +38,11 @@
   services.fstrim.enable = true;
   hardware.logitech.lcd.enable = true;
 
+  # Prevent immediate wake-up from suspend caused by the logi bolt receiver
+  services.udev.extraRules = ''
+    ACTION=="add" SUBSYSTEM=="pci" ATTR{vendor}=="0x1022" ATTR{device}=="0x43ee" ATTR{power/wakeup}="disabled"
+  '';
+
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
     modesetting.enable = true;
