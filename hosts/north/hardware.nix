@@ -1,14 +1,9 @@
-{
-  config,
-  inputs,
-  pkgs,
-  lib,
-  ...
-}:
+{ inputs, ... }:
 {
   imports = [
     inputs.disko.nixosModules.default
     ./disko.nix
+    ./nvidia.nix
   ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
@@ -35,32 +30,13 @@
   };
 
   zramSwap.enable = true;
-  services.fstrim.enable = true;
   hardware.logitech.lcd.enable = true;
+  services = {
+    fstrim.enable = true;
 
-  # Prevent immediate wake-up from suspend caused by the logi bolt receiver
-  services.udev.extraRules = ''
-    ACTION=="add" SUBSYSTEM=="pci" ATTR{vendor}=="0x1022" ATTR{device}=="0x43ee" ATTR{power/wakeup}="disabled"
-  '';
-
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = true;
-    package = config.boot.kernelPackages.nvidiaPackages.latest;
-  };
-
-  systemd.services.gpu-temp-reader = {
-    wantedBy = [ "multi-user.target" ];
-    requires = [ "fancontrol.service" ];
-    before = [ "fancontrol.service" ];
-    script = ''
-      ${lib.getExe' pkgs.coreutils "touch"} /tmp/nvidia-gpu-temp
-      while :; do
-        temp="$(${lib.getExe' config.hardware.nvidia.package "nvidia-smi"} --query-gpu=temperature.gpu --format=csv,noheader,nounits)"
-        ${lib.getExe' pkgs.coreutils "echo"} "$((temp * 1000))" > /tmp/nvidia-gpu-temp
-        ${lib.getExe' pkgs.coreutils "sleep"} 2
-      done
+    # Prevent immediate wake-up from suspend caused by the logi bolt receiver
+    udev.extraRules = ''
+      ACTION=="add" SUBSYSTEM=="pci" ATTR{vendor}=="0x1022" ATTR{device}=="0x43ee" ATTR{power/wakeup}="disabled"
     '';
   };
 
