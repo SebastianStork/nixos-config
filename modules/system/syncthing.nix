@@ -16,7 +16,7 @@
       settings = {
         devices = {
           north.id = "ROS2S76-ULQWVFC-7KNQQ6Q-MNIWNKT-2QOPPHY-FFQZNVM-GUJRTHE-NZBM3QY";
-          inspiron.id = "K7V6PJV-3HLR6FI-VTFRJRN-ECG2ZYI-TNT4F5G-2WVQBDW-S77CHYL-VCAATAV";
+          inspiron.id = "DLFGFCF-MTYXA23-F235RKL-QFZ4GB6-BUHTYMX-DJCTFRA-NVMAE5Y-R63NMQY";
         };
 
         folders =
