@@ -15,14 +15,14 @@
         vscode = pkgs.vscodium;
         vscodeExtensions =
           let
-            inherit (inputs.nix-vscode-extensions.extensions.${pkgs.system}) open-vsx;
+            inherit (inputs.nix-vscode-extensions.extensions.${pkgs.system}) open-vsx vscode-marketplace;
           in
           [
             open-vsx.jnoortheen.nix-ide
             open-vsx.aaron-bond.better-comments
 
             open-vsx.github.github-vscode-theme
-            open-vsx.pkief.material-icon-theme
+            vscode-marketplace.pkief.material-icon-theme
           ];
       };
     };
