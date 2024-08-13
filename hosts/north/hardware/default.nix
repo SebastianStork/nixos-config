@@ -29,7 +29,6 @@
     ];
   };
 
-  zramSwap.enable = true;
   hardware.logitech.lcd.enable = true;
   services = {
     fstrim.enable = true;
