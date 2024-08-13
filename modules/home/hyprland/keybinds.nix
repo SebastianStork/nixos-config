@@ -132,6 +132,11 @@
       workspace = special:flake, border:false, gapsout:30, on-created-empty:kitty --override background_opacity=0.7 --directory ${config.home.sessionVariables.FLAKE}
       windowrulev2 = noblur, class:(kitty), onworkspace:special:flake
       bind = SUPER, Q, togglespecialworkspace, flake
+
+      # System monitor workspace
+      workspace = special:monitor, border:false, gapsout:30, on-created-empty:kitty btm
+      exec-once = [workspace special:monitor silent] kitty btm
+      bind = SUPER, M, togglespecialworkspace, monitor
     '';
   };
 }

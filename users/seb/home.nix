@@ -19,6 +19,7 @@
   };
 
   home.packages = [
+    wrappers.bottom
     pkgs.fastfetch
 
     (wrappers.kitty { inherit (config.myConfig) theme; })
