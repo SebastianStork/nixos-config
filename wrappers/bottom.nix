@@ -5,7 +5,7 @@
     {
       wrappers.bottom = {
         basePackage = pkgs.bottom;
-        flags = [ "--group" ];
+        flags = [ "--group_processes" ];
       };
     }
   ];
