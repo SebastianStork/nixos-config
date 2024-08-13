@@ -1,20 +1,6 @@
-{
-  config,
-  pkgs,
-  lib,
-  wrappers,
-  ...
-}:
+{ config, lib, ... }:
 {
   config = lib.mkIf config.myConfig.de.hyprland.enable {
-    home.packages = [
-      (wrappers.rofi { inherit (config.myConfig) theme; })
-      pkgs.wl-clipboard
-      pkgs.playerctl
-      pkgs.brightnessctl
-      pkgs.grimblast
-    ];
-
     wayland.windowManager.hyprland.extraConfig = ''
       # Bindflags:
       # r = release
@@ -22,8 +8,6 @@
       # l = locked
 
       # Variables
-      $rofi-clipboard = cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy
-      $lock-suspend = loginctl lock-session && sleep 0.5 && systemctl suspend
       $play-pause = playerctl --ignore-player=firefox play-pause
       $play-next = playerctl --ignore-player=firefox next
       $play-previous = playerctl --ignore-player=firefox previous
@@ -40,7 +24,7 @@
       # Launch programs
       bind = SUPER, R, exec, rofi -show drun
       bind = SUPER, RETURN, exec, kitty
-      bind = SUPER, V, exec, $rofi-clipboard
+      bind = SUPER, V, exec, rofi-clipboard
       bind = SUPER, B, exec, firefox
       bind = SUPER, F, exec, nemo
       bind = SUPER, C, exec, codium
@@ -87,8 +71,8 @@
       bindrl = SUPER CONTROL, Q, exit,
       bindrl = SUPER CONTROL, P, exec, poweroff
       bindrl = SUPER CONTROL, R, exec, reboot
-      bindrl = SUPER CONTROL, S, exec, $lock-suspend
-      bindl = , switch:on:Lid Switch, exec, $lock-suspend
+      bindrl = SUPER CONTROL, S, exec, lock-suspend
+      bindl = , switch:on:Lid Switch, exec, lock-suspend
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
       bind = SUPER CONTROL, W, exec, pkill waybar && hyprctl dispatch exec waybar
