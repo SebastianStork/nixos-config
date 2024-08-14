@@ -14,7 +14,7 @@
     wayland.windowManager.hyprland.enable = true;
 
     home.packages = [
-      (wrappers.rofi { inherit (config.myConfig) theme; })
+      (wrappers.rofi { inherit (config.myConfig.de) theme; })
       pkgs.wl-clipboard
       pkgs.playerctl
       pkgs.brightnessctl
@@ -26,6 +26,7 @@
       hypridle.enable = true;
       waybar.enable = true;
       cliphist.enable = true;
+      gammastep.enable = true;
     };
 
     services.dunst.enable = true;

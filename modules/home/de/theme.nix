@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.myConfig;
+  cfg = config.myConfig.de;
 in
 {
-  options.myConfig.theme = lib.mkOption { type = lib.types.str; };
+  options.myConfig.de.theme = lib.mkOption { type = lib.types.str; };
 
   config = lib.mkMerge [
     (lib.mkIf ((cfg.theme == "dark") || (cfg.theme == "light")) {

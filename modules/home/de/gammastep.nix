@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.night-light.enable = lib.mkEnableOption "";
+  options.myConfig.de.gammastep.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.night-light.enable {
+  config = lib.mkIf config.myConfig.de.gammastep.enable {
     services.gammastep = {
       enable = true;
       provider = "geoclue2";

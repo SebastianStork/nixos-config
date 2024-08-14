@@ -15,14 +15,13 @@
     git.enable = true;
     vscode.enable = true;
     equalizer.enable = true;
-    night-light.enable = true;
   };
 
   home.packages = [
     wrappers.bottom
     pkgs.fastfetch
 
-    (wrappers.kitty { inherit (config.myConfig) theme; })
+    (wrappers.kitty { inherit (config.myConfig.de) theme; })
     wrappers.firefox
     pkgs.nemo-with-extensions
     pkgs.jetbrains.idea-community
