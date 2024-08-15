@@ -1,25 +1,23 @@
-{
-  inputs,
-  self,
-  lib,
-  ...
-}:
+{ inputs, self, ... }:
 let
-  subdirsOf =
-    dir: builtins.attrNames (lib.filterAttrs (_: v: v == "directory") (builtins.readDir dir));
+  specialArgs = {
+    inherit inputs self;
+  };
+  modulesOf = hostname: [
+    { networking.hostName = hostname; }
+    "${self}/hosts/${hostname}"
+    "${self}/users/seb/@${hostname}"
+  ];
 in
 {
-  flake.nixosConfigurations = lib.genAttrs (subdirsOf "${self}/hosts") (
-    name:
-    inputs.nixpkgs.lib.nixosSystem {
-      specialArgs = {
-        inherit inputs self;
-      };
-      modules = [
-        { networking.hostName = name; }
-        "${self}/hosts/${name}"
-        "${self}/users/seb/@${name}"
-      ];
-    }
-  );
+  flake.nixosConfigurations = {
+    north = inputs.nixpkgs.lib.nixosSystem {
+      inherit specialArgs;
+      modules = modulesOf "north";
+    };
+    inspiron = inputs.nixpkgs.lib.nixosSystem {
+      inherit specialArgs;
+      modules = modulesOf "inspiron";
+    };
+  };
 }
