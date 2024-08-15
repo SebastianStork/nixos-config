@@ -71,11 +71,11 @@
       bindrl = SUPER CONTROL, Q, exit,
       bindrl = SUPER CONTROL, P, exec, poweroff
       bindrl = SUPER CONTROL, R, exec, reboot
+      bindrl = SUPER CONTROL, H, exec, systemctl hibernate
       bindrl = SUPER CONTROL, S, exec, lock-suspend
       bindl = , switch:on:Lid Switch, exec, lock-suspend
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
-      bind = SUPER CONTROL, W, exec, pkill waybar && hyprctl dispatch exec waybar
 
       # Control media
       bindl = , XF86AudioPlay, exec, $play-pause
