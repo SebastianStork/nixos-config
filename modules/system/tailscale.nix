@@ -18,6 +18,7 @@ in
       openFirewall = true;
       useRoutingFeatures = if cfg.exitNode.enable then "server" else "client";
       extraUpFlags = [
+        "--reset=true"
         (lib.mkIf cfg.ssh.enable "--ssh")
         (lib.mkIf cfg.exitNode.enable "--advertise-exit-node")
       ];
