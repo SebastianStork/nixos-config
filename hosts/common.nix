@@ -5,17 +5,22 @@
     self.wrappers.default
   ];
 
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    auto-optimise-store = true;
-    warn-dirty = false;
-    trusted-users = [
-      "root"
-      "@wheel"
-    ];
+  nix = {
+    channel.enable = false;
+    registry.nixpkgs.flake = self.inputs.nixpkgs;
+    settings = {
+      flake-registry = "";
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      auto-optimise-store = true;
+      warn-dirty = false;
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
+    };
   };
 
   time.timeZone = "Europe/Berlin";
