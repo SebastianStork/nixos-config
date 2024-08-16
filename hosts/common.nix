@@ -40,10 +40,7 @@
 
   console.keyMap = "de-latin1-nodeadkeys";
 
-  users = {
-    mutableUsers = false;
-    defaultUserShell = pkgs.zsh;
-  };
+  users.mutableUsers = false;
 
   programs = {
     zsh = {
