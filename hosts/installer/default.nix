@@ -14,13 +14,18 @@
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
+  networking = {
+    wireless.enable = false;
+    networkmanager.enable = true;
+  };
+
   environment.systemPackages = [ inputs.disko.packages.${pkgs.system}.default ];
 
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGBUORYC3AvTPQmtUEApTa9DvHoJy4mjuQy8abSjCcDd seb@north"
   ];
 
-  installer.cloneConfig = lib.mkForce false;
+  installer.cloneConfig = false;
   isoImage = {
     edition = lib.mkForce "seb-minimal";
     isoName = lib.mkForce "NixOS";
