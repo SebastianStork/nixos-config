@@ -25,3 +25,6 @@ fmt:
 
 check:
     nix flake check
+
+build-iso:
+    nix build .#nixosConfigurations.installer.config.formats.iso -o result

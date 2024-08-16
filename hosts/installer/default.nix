@@ -1,0 +1,28 @@
+{
+  modulesPath,
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  imports = [
+    inputs.nixos-generators.nixosModules.all-formats
+    "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
+    ../common.nix
+  ];
+
+  nixpkgs.hostPlatform = "x86_64-linux";
+
+  environment.systemPackages = [ inputs.disko.packages.${pkgs.system}.default ];
+
+  users.users.root.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGBUORYC3AvTPQmtUEApTa9DvHoJy4mjuQy8abSjCcDd seb@north"
+  ];
+
+  installer.cloneConfig = lib.mkForce false;
+  isoImage = {
+    edition = lib.mkForce "seb-minimal";
+    isoName = lib.mkForce "NixOS";
+  };
+}
