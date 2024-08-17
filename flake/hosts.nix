@@ -19,7 +19,7 @@ in
       inherit specialArgs;
       modules = modulesOf "inspiron";
     };
-    installer = inputs.nixpkgs.lib.nixosSystem {
+    installer = inputs.nixpkgs-stable.lib.nixosSystem {
       inherit specialArgs;
       modules = [
         { networking.hostName = "installer"; }
