@@ -1,30 +1,36 @@
-{ inputs, self, ... }:
+{
+  inputs,
+  self,
+  lib,
+  ...
+}:
 let
-  specialArgs = {
-    inherit inputs self;
+  unstable = inputs.nixpkgs;
+  stable = inputs.nixpkgs-stable;
+
+  mkHost = hostname: nixpkgs: {
+    ${hostname} = nixpkgs.lib.nixosSystem {
+      specialArgs = {
+        inherit inputs self;
+      };
+      modules =
+        [
+          { networking.hostName = hostname; }
+          "${self}/hosts/${hostname}"
+        ]
+        ++ builtins.filter (path: builtins.pathExists path) (
+          map (user: "${self}/users/${user}/@${hostname}") (
+            builtins.attrNames (lib.filterAttrs (_: v: v == "directory") (builtins.readDir "${self}/users"))
+          )
+        );
+    };
   };
-  modulesOf = hostname: [
-    { networking.hostName = hostname; }
-    "${self}/hosts/${hostname}"
-    "${self}/users/seb/@${hostname}"
-  ];
+
 in
 {
-  flake.nixosConfigurations = {
-    north = inputs.nixpkgs.lib.nixosSystem {
-      inherit specialArgs;
-      modules = modulesOf "north";
-    };
-    inspiron = inputs.nixpkgs.lib.nixosSystem {
-      inherit specialArgs;
-      modules = modulesOf "inspiron";
-    };
-    installer = inputs.nixpkgs-stable.lib.nixosSystem {
-      inherit specialArgs;
-      modules = [
-        { networking.hostName = "installer"; }
-        "${self}/hosts/installer"
-      ];
-    };
-  };
+  flake.nixosConfigurations = lib.mkMerge [
+    (mkHost "north" unstable)
+    (mkHost "inspiron" unstable)
+    (mkHost "installer" stable)
+  ];
 }
