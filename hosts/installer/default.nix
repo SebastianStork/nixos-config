@@ -12,6 +12,11 @@
     ../common.nix
   ];
 
+  isoImage = {
+    edition = lib.mkForce "seb-minimal";
+    isoName = lib.mkForce "NixOS";
+  };
+
   nixpkgs.hostPlatform = "x86_64-linux";
 
   networking = {
@@ -21,14 +26,13 @@
 
   environment.systemPackages = [ inputs.disko.packages.${pkgs.system}.default ];
 
-  users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGBUORYC3AvTPQmtUEApTa9DvHoJy4mjuQy8abSjCcDd seb@north"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINtHQDVdFkshpLANxS07Hy+yKoUp8YAPd+WaojJkFVZq seb@inspiron"
-  ];
+  services.openssh.enable = lib.mkForce false;
+  services.tailscale = {
+    enable = true;
+    openFirewall = true;
+    extraUpFlags = [ "--ssh" ];
 
-  installer.cloneConfig = false;
-  isoImage = {
-    edition = lib.mkForce "seb-minimal";
-    isoName = lib.mkForce "NixOS";
+    # Ephemeral + not pre-approved
+    authKeyFile = pkgs.writeText "tailscale-key-file" "tskey-auth-kaDD7BXvDE11CNTRL-9M4pUPEw4bEj7V4YzwFgaEE1MvzumcgM";
   };
 }
