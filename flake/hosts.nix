@@ -31,6 +31,7 @@ in
   flake.nixosConfigurations = lib.mkMerge [
     (mkHost "north" unstable)
     (mkHost "inspiron" unstable)
+    (mkHost "proxima" stable)
     (mkHost "installer" stable)
   ];
 }
