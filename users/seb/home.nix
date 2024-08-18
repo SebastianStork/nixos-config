@@ -14,7 +14,7 @@
     shell.zsh.enable = true;
     git.enable = true;
     vscode.enable = true;
-    equalizer.enable = true;
+    equalizer.enable = false;
   };
 
   home.packages = [
