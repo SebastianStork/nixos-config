@@ -68,18 +68,5 @@
     pkgs.nh
   ];
 
-  nixpkgs.config.allowUnfreePredicate =
-    pkg:
-    builtins.elem (pkgs.lib.getName pkg) [
-      "steam"
-      "steam-original"
-      "steam-run"
-      "corefonts"
-      "nvidia-x11"
-      "nvidia-settings"
-      "spotify"
-      "obsidian"
-      "davinci-resolve"
-      "ticktick"
-    ];
+  nixpkgs.config.allowUnfree = true;
 }
