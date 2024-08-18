@@ -7,9 +7,7 @@
 
   nix = {
     channel.enable = false;
-    registry.nixpkgs.flake = self.inputs.nixpkgs;
     settings = {
-      flake-registry = "";
       experimental-features = [
         "nix-command"
         "flakes"
