@@ -7,6 +7,8 @@
       enable = true;
       provider = "geoclue2";
       settings.general.adjustment-method = "wayland";
+
+      temperature.night = 3000;
     };
   };
 }
