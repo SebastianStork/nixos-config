@@ -5,7 +5,7 @@
         luks-settings = {
           settings = {
             allowDiscards = true;
-            keyFile = "/dev/disk/by-id/usb-SCSI_DISK-0:0";
+            keyFile = "/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
             keyFileSize = 4096;
           };
         };
