@@ -1,10 +1,6 @@
 { inputs, ... }:
 {
-  imports = [
-    inputs.disko.nixosModules.default
-    ./disko.nix
-    ./nvidia.nix
-  ];
+  imports = [ inputs.disko.nixosModules.default ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
 

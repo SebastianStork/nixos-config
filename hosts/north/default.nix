@@ -2,7 +2,9 @@
 {
   imports = [
     ../common.nix
-    ./hardware
+    ./hardware.nix
+    ./disko.nix
+    ./nvidia.nix
   ];
 
   system.stateVersion = "23.11";

@@ -2,7 +2,8 @@
 {
   imports = [
     ../common.nix
-    ./hardware
+    ./hardware.nix
+    ./disko.nix
   ];
 
   system.stateVersion = "23.11";
