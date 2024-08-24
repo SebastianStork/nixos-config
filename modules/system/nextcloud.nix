@@ -26,7 +26,10 @@
         adminpassFile = config.sops.secrets.nextcloud-admin-pass.path;
       };
 
-      settings.log_type = "systemd";
+      settings = {
+        log_type = "systemd";
+        default_phone_region = "DE";
+      };
     };
   };
 }
