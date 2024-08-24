@@ -4,46 +4,47 @@
   lib,
   ...
 }:
+let
+  pskSsids = [
+    "WLAN-233151"
+    "Fairphone4"
+    "DSL_EXT"
+  ];
+in
 {
   options.myConfig.wlan.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.wlan.enable {
-    sops = {
-      secrets = {
-        "wlan/WLAN-233151/key" = { };
-        "wlan/Fairphone4/key" = { };
-        "wlan/DSL_EXT/key" = { };
-      };
-
-      templates =
-        let
-          makePskFile = name: ''
-            [Security]
-            Passphrase=${config.sops.placeholder."wlan/${name}/key"}
-          '';
-        in
-        {
-          "iwd/WLAN-233151.psk".content = makePskFile "WLAN-233151";
-          "iwd/Fairphone4.psk".content = makePskFile "Fairphone4";
-          "iwd/DSL_EXT.psk".content = makePskFile "DSL_EXT";
+  config = lib.mkIf config.myConfig.wlan.enable (
+    lib.mkMerge [
+      {
+        networking.wireless.iwd = {
+          enable = true;
+          settings = {
+            General.EnableNetworkConfiguration = true;
+            Settings.AutoConnect = true;
+            Network.NameResolvingService = "resolvconf";
+          };
         };
-    };
 
-    networking.wireless.iwd = {
-      enable = true;
-      settings = {
-        General.EnableNetworkConfiguration = true;
-        Settings.AutoConnect = true;
-        Network.NameResolvingService = "resolvconf";
-      };
-    };
+        environment.systemPackages = [ pkgs.iwgtk ];
+      }
 
-    systemd.tmpfiles.rules = [
-      "C /var/lib/iwd/WLAN-233151.psk - - - - ${config.sops.templates."iwd/WLAN-233151.psk".path}"
-      "C /var/lib/iwd/Fairphone4.psk - - - - ${config.sops.templates."iwd/Fairphone4.psk".path}"
-      "C /var/lib/iwd/DSL_EXT.psk - - - - ${config.sops.templates."iwd/DSL_EXT.psk".path}"
-    ];
+      (lib.mkMerge (
+        lib.forEach pskSsids (ssid: {
+          sops = {
+            secrets."wlan/${ssid}/key" = { };
 
-    environment.systemPackages = [ pkgs.iwgtk ];
-  };
+            templates."iwd/${ssid}.psk".content = ''
+              [Security]
+              Passphrase=${config.sops.placeholder."wlan/${ssid}/key"}
+            '';
+          };
+
+          systemd.tmpfiles.rules = [
+            "C /var/lib/iwd/${ssid}.psk - - - - ${config.sops.templates."iwd/${ssid}.psk".path}"
+          ];
+        })
+      ))
+    ]
+  );
 }
