@@ -27,7 +27,7 @@
       };
 
       settings = {
-        log_type = "systemd";
+        log_type = "file";
         default_phone_region = "DE";
       };
     };
