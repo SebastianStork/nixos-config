@@ -119,7 +119,6 @@
 
       # System monitor workspace
       workspace = special:monitor, border:false, gapsout:30, on-created-empty:kitty btm
-      exec-once = [workspace special:monitor silent] kitty btm
       bind = SUPER, M, togglespecialworkspace, monitor
     '';
   };
