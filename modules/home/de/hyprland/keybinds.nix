@@ -26,7 +26,6 @@
       bind = SUPER, RETURN, exec, kitty
       bind = SUPER, V, exec, rofi-clipboard
       bind = SUPER, B, exec, firefox
-      bind = SUPER, F, exec, nemo
       bind = SUPER, C, exec, codium
 
       # Move focus
@@ -120,6 +119,10 @@
       # System monitor workspace
       workspace = special:monitor, border:false, gapsout:30, on-created-empty:kitty btm
       bind = SUPER, M, togglespecialworkspace, monitor
+
+      # Files workspace
+      workspace = special:files, border:false, gapsout:30, on-created-empty:nemo
+      bind = SUPER, F, togglespecialworkspace, files
     '';
   };
 }
