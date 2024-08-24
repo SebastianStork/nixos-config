@@ -5,6 +5,8 @@
     self.wrappers.default
   ];
 
+  networking.domain = "stork-atlas.ts.net";
+
   nix = {
     channel.enable = false;
     settings = {
