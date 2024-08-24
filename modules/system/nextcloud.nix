@@ -25,6 +25,8 @@
         adminuser = "admin";
         adminpassFile = config.sops.secrets.nextcloud-admin-pass.path;
       };
+
+      settings.log_type = "systemd";
     };
   };
 }
