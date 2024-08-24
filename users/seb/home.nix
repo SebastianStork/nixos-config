@@ -25,7 +25,6 @@
     wrappers.firefox
     pkgs.nemo-with-extensions
     pkgs.jetbrains.idea-community
-    pkgs.celluloid
     pkgs.spotify
     pkgs.obsidian
     pkgs.ticktick
