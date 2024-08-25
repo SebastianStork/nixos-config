@@ -19,6 +19,12 @@
       home = "/data/nextcloud";
       hostName = config.networking.fqdn;
 
+      autoUpdateApps.enable = true;
+      extraAppsEnable = true;
+      extraApps = {
+        inherit (config.services.nextcloud.package.packages.apps) contacts calendar;
+      };
+
       database.createLocally = true;
       config = {
         dbtype = "pgsql";
