@@ -8,7 +8,7 @@
   options.myConfig.nextcloud.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.myConfig.nextcloud.enable {
-    sops.secrets.nextcloud-admin-pass = {
+    sops.secrets."nextcloud/admin-pass" = {
       owner = config.services.nextcloud.config.dbname;
       group = config.services.nextcloud.config.dbuser;
     };
@@ -23,7 +23,7 @@
       config = {
         dbtype = "pgsql";
         adminuser = "admin";
-        adminpassFile = config.sops.secrets.nextcloud-admin-pass.path;
+        adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
       };
 
       settings = {

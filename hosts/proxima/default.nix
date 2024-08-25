@@ -15,6 +15,9 @@
       ssh.enable = true;
       exitNode.enable = true;
     };
-    nextcloud.enable = true;
+    nextcloud = {
+      enable = true;
+      emailServer.enable = true;
+    };
   };
 }
