@@ -22,7 +22,7 @@
             open-vsx.aaron-bond.better-comments
 
             open-vsx.github.github-vscode-theme
-            vscode-marketplace.pkief.material-icon-theme
+            open-vsx.pkief.material-icon-theme
           ];
       };
     };
