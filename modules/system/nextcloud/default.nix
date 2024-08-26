@@ -19,8 +19,10 @@
       home = "/data/nextcloud";
       hostName = config.networking.fqdn;
 
-      autoUpdateApps.enable = true;
-      extraAppsEnable = true;
+      autoUpdateApps = {
+        enable = true;
+        startAt = "04:00:00";
+      };
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) contacts calendar;
       };
@@ -35,6 +37,7 @@
       settings = {
         log_type = "file";
         default_phone_region = "DE";
+        maintenance_window_start = "2"; # UTC
       };
     };
   };
