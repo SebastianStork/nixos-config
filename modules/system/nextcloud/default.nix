@@ -18,6 +18,7 @@
       package = pkgs.nextcloud29;
       home = "/data/nextcloud";
       hostName = config.networking.fqdn;
+      configureRedis = true;
 
       database.createLocally = true;
       config = {
