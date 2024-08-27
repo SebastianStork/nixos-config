@@ -34,6 +34,8 @@
         maintenance_window_start = "2"; # UTC
       };
 
+      phpOptions."opcache.interned_strings_buffer" = "16";
+
       autoUpdateApps = {
         enable = true;
         startAt = "04:00:00";
