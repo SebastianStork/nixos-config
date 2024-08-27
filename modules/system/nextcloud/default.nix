@@ -20,6 +20,7 @@
         home = "/data/nextcloud";
         hostName = config.networking.fqdn;
         configureRedis = true;
+        maxUploadSize = "4G";
 
         database.createLocally = true;
         config = {
