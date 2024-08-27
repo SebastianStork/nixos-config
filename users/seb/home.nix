@@ -28,7 +28,8 @@
     pkgs.jetbrains.idea-community
     pkgs.spotify
     pkgs.obsidian
-    pkgs.ticktick
+    pkgs.todoist
+    pkgs.morgen
     pkgs.webcord
     pkgs.onlyoffice-bin_latest
     pkgs.libreoffice
