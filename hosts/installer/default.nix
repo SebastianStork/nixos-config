@@ -14,7 +14,7 @@
 
   isoImage = {
     edition = lib.mkForce "seb-minimal";
-    isoName = lib.mkForce "NixOS";
+    isoName = lib.mkForce "NixOS.iso";
   };
 
   nixpkgs.hostPlatform = "x86_64-linux";
