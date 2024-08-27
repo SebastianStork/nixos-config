@@ -19,14 +19,6 @@
       home = "/data/nextcloud";
       hostName = config.networking.fqdn;
 
-      autoUpdateApps = {
-        enable = true;
-        startAt = "04:00:00";
-      };
-      extraApps = {
-        inherit (config.services.nextcloud.package.packages.apps) contacts calendar;
-      };
-
       database.createLocally = true;
       config = {
         dbtype = "pgsql";
@@ -34,11 +26,39 @@
         adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
       };
 
+      https = true;
       settings = {
+        overwriteProtocol = "https";
         log_type = "file";
         default_phone_region = "DE";
         maintenance_window_start = "2"; # UTC
       };
+
+      autoUpdateApps = {
+        enable = true;
+        startAt = "04:00:00";
+      };
+      extraApps = {
+        inherit (config.services.nextcloud.package.packages.apps) contacts calendar;
+      };
+    };
+
+    services.nginx = {
+      enable = true;
+      virtualHosts.${config.services.nextcloud.hostName}.listen = [
+        {
+          addr = "0.0.0.0";
+          port = 8080;
+        }
+      ];
+    };
+
+    services.tailscale.permitCertUid = "caddy";
+    services.caddy = {
+      enable = true;
+      virtualHosts.${config.services.nextcloud.hostName}.extraConfig = ''
+        reverse_proxy localhost:8080
+      '';
     };
   };
 }
