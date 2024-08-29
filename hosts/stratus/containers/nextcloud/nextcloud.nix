@@ -4,7 +4,10 @@
   ...
 }:
 {
-  systemd.tmpfiles.rules = [ "z /run/secrets/nextcloud/admin-password 400 nextcloud nextcloud -" ];
+  systemd.tmpfiles.rules = [
+    "z /run/secrets/nextcloud/admin-password 400 nextcloud nextcloud -"
+    "z /data/postgresql 700 postgres postgres -"
+  ];
 
   services.postgresql.dataDir = "/data/postgresql";
 
@@ -12,7 +15,7 @@
     enable = true;
     package = pkgs.nextcloud29;
     home = "/data/nextcloud";
-    hostName = "localhost";
+    hostName = config.networking.fqdn;
 
     database.createLocally = true;
     config = {
@@ -24,7 +27,6 @@
     https = true;
     settings = {
       overwriteProtocol = "https";
-      trusted_domains = [ config.networking.fqdn ];
       log_type = "file";
       default_phone_region = "DE";
       maintenance_window_start = "2"; # UTC

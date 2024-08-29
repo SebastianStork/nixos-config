@@ -6,6 +6,11 @@
     tailscale-auth-key = { };
   };
 
+  systemd.tmpfiles.rules = [
+    "d /data/nextcloud - - -"
+    "d /data/postgresql - - -"
+  ];
+
   containers.nextcloud = {
     autoStart = true;
     ephemeral = true;
