@@ -3,6 +3,8 @@
     ../common.nix
     ./hardware.nix
     ./disko.nix
+
+    ./containers/nextcloud
   ];
 
   system.stateVersion = "24.05";
@@ -14,10 +16,6 @@
       enable = true;
       ssh.enable = true;
       exitNode.enable = true;
-    };
-    nextcloud = {
-      enable = true;
-      emailServer.enable = true;
     };
   };
 }
