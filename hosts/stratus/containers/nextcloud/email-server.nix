@@ -1,5 +1,5 @@
 {
-  systemd.tmpfiles.rules = [ "d /run/secrets/nextcloud/gmail-password 400 nextcloud nextcloud -" ];
+  systemd.tmpfiles.rules = [ "z /run/secrets/nextcloud/gmail-password 400 nextcloud nextcloud -" ];
 
   services.nextcloud.settings = {
     mail_smtpmode = "sendmail";

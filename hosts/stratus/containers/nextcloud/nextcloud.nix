@@ -4,7 +4,7 @@
   ...
 }:
 {
-  systemd.tmpfiles.rules = [ "d /run/secrets/nextcloud/admin-password 400 nextcloud nextcloud -" ];
+  systemd.tmpfiles.rules = [ "z /run/secrets/nextcloud/admin-password 400 nextcloud nextcloud -" ];
 
   services.postgresql.dataDir = "/data/postgresql";
 

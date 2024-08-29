@@ -10,8 +10,7 @@
     autoStart = true;
     ephemeral = true;
     bindMounts = {
-      "/run/secrets/nextcloud/admin-password" = { };
-      "/run/secrets/nextcloud/gmail-password" = { };
+      "/run/secrets/nextcloud".isReadOnly = false;
       "/run/secrets/tailscale-auth-key" = { };
       "/data/nextcloud".isReadOnly = false;
       "/data/postgresql".isReadOnly = false;
