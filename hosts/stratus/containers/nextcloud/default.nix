@@ -11,9 +11,19 @@
     "d /data/nextcloud - - -"
   ];
 
+  networking.useNetworkd = true;
+  systemd.network = {
+    enable = true;
+    networks."40-eno1" = {
+      matchConfig.Name = "eno1";
+      networkConfig.DHCP = "yes";
+    };
+  };
+
   containers.nextcloud = {
     autoStart = true;
     ephemeral = true;
+    macvlans = [ "eno1" ];
     bindMounts = {
       "/run/secrets/nextcloud".isReadOnly = false;
       "/run/secrets/tailscale-auth-key" = { };
@@ -31,8 +41,20 @@
       { domain, ... }:
       {
         system.stateVersion = "24.05";
+        
         networking = {
           inherit domain;
+          useNetworkd = true;
+          useHostResolvConf = false;
+        };
+        systemd.network = {
+          enable = true;
+          networks."40-mv-eno1" = {
+            matchConfig.Name = "mv-eno1";
+            address = [ "192.168.2.254/24" ];
+            networkConfig.DHCP = "yes";
+            dhcpV4Config.ClientIdentifier = "mac";
+          };
         };
 
         imports = [
