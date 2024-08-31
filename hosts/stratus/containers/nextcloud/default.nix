@@ -7,8 +7,8 @@
   };
 
   systemd.tmpfiles.rules = [
+    "d /var/lib/tailscale-nextcloud - - -"
     "d /data/nextcloud - - -"
-    "d /data/postgresql - - -"
   ];
 
   containers.nextcloud = {
@@ -18,7 +18,6 @@
       "/run/secrets/nextcloud".isReadOnly = false;
       "/run/secrets/tailscale-auth-key" = { };
       "/data/nextcloud".isReadOnly = false;
-      "/data/postgresql".isReadOnly = false;
       "/var/lib/tailscale" = {
         hostPath = "/var/lib/tailscale-nextcloud";
         isReadOnly = false;

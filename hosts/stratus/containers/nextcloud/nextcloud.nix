@@ -6,15 +6,16 @@
 {
   systemd.tmpfiles.rules = [
     "z /run/secrets/nextcloud/admin-password 400 nextcloud nextcloud -"
-    "z /data/postgresql 700 postgres postgres -"
+    "d /data/nextcloud/home 750 nextcloud nextcloud -"
+    "d /data/nextcloud/postgresql 700 postgres postgres -"
   ];
 
-  services.postgresql.dataDir = "/data/postgresql";
+  services.postgresql.dataDir = "/data/nextcloud/postgresql";
 
   services.nextcloud = {
     enable = true;
     package = pkgs.nextcloud29;
-    home = "/data/nextcloud";
+    home = "/data/nextcloud/home";
     hostName = config.networking.fqdn;
 
     database.createLocally = true;
