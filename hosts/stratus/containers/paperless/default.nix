@@ -45,7 +45,6 @@
           enable = true;
           networks."40-mv-eno1" = {
             matchConfig.Name = "mv-eno1";
-            address = [ "192.168.2.253/24" ];
             networkConfig.DHCP = "yes";
             dhcpV4Config.ClientIdentifier = "mac";
           };

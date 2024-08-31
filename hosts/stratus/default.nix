@@ -3,7 +3,9 @@
     ../common.nix
     ./hardware.nix
     ./disko.nix
-    ./containers
+
+    ./containers/nextcloud
+    ./containers/paperless
   ];
 
   system.stateVersion = "24.05";
@@ -15,6 +17,15 @@
       enable = true;
       ssh.enable = true;
       exitNode.enable = true;
+    };
+  };
+
+  networking.useNetworkd = true;
+  systemd.network = {
+    enable = true;
+    networks."10-eno1" = {
+      matchConfig.Name = "eno1";
+      networkConfig.DHCP = "yes";
     };
   };
 }
