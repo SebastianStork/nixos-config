@@ -3,8 +3,7 @@
     ../common.nix
     ./hardware.nix
     ./disko.nix
-
-    ./containers/nextcloud
+    ./containers
   ];
 
   system.stateVersion = "24.05";

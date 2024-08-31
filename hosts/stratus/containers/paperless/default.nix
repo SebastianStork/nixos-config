@@ -1,30 +1,29 @@
 { config, ... }:
 {
   sops.secrets = {
-    "nextcloud/admin-password" = { };
-    "nextcloud/gmail-password" = { };
+    "paperless-admin-password" = { };
     tailscale-auth-key = { };
   };
 
   systemd.tmpfiles.rules = [
-    "d /data/nextcloud - - -"
-    "d /var/lib/tailscale-nextcloud - - -"
+    "d /data/paperless - - -"
+    "d /var/lib/tailscale-paperless - - -"
   ];
 
-  containers.nextcloud = {
+  containers.paperless = {
     autoStart = true;
     ephemeral = true;
     macvlans = [ "eno1" ];
 
     bindMounts = {
       # Secrets
-      "/run/secrets/nextcloud".isReadOnly = false;
+      "/run/secrets/paperless-admin-password" = { };
       "/run/secrets/tailscale-auth-key" = { };
 
       # State
-      "/data/nextcloud".isReadOnly = false;
+      "/data/paperless".isReadOnly = false;
       "/var/lib/tailscale" = {
-        hostPath = "/var/lib/tailscale-nextcloud";
+        hostPath = "/var/lib/tailscale-paperless";
         isReadOnly = false;
       };
     };
@@ -46,15 +45,14 @@
           enable = true;
           networks."40-mv-eno1" = {
             matchConfig.Name = "mv-eno1";
-            address = [ "192.168.2.254/24" ];
+            address = [ "192.168.2.253/24" ];
             networkConfig.DHCP = "yes";
             dhcpV4Config.ClientIdentifier = "mac";
           };
         };
 
         imports = [
-          ./nextcloud.nix
-          ./email-server.nix
+          ./paperless.nix
           ./tailscale.nix
         ];
       };

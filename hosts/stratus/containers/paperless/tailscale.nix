@@ -25,7 +25,7 @@
     script = ''
       ${lib.getExe pkgs.tailscale} cert ${config.networking.fqdn}
       ${lib.getExe pkgs.tailscale} serve reset
-      ${lib.getExe pkgs.tailscale} serve --bg 80
+      ${lib.getExe pkgs.tailscale} serve --bg 28981
     '';
   };
 }
