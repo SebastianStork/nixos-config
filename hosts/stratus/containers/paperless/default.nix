@@ -6,6 +6,8 @@
       ...
     }:
     {
+      imports = [ ./backup.nix ];
+
       sops.secrets."paperless-admin-password" = { };
 
       services.paperless = {
