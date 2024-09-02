@@ -3,9 +3,7 @@
     ../common.nix
     ./hardware.nix
     ./disko.nix
-
-    ./containers/nextcloud
-    ./containers/paperless
+    ./containers
   ];
 
   system.stateVersion = "24.05";

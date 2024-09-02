@@ -1,61 +1,62 @@
-{ config, ... }:
 {
-  sops.secrets = {
-    "nextcloud/admin-password" = { };
-    "nextcloud/gmail-password" = { };
-    tailscale-auth-key = { };
-  };
+  containers.nextcloud.config =
+    {
+      config,
+      pkgs,
+      dataDir,
+      ...
+    }:
+    {
+      imports = [ ./email-server.nix ];
 
-  systemd.tmpfiles.rules = [
-    "d /data/nextcloud - - -"
-    "d /var/lib/tailscale-nextcloud - - -"
-  ];
-
-  containers.nextcloud = {
-    autoStart = true;
-    ephemeral = true;
-    macvlans = [ "eno1" ];
-
-    bindMounts = {
-      # Secrets
-      "/run/secrets/nextcloud".isReadOnly = false;
-      "/run/secrets/tailscale-auth-key" = { };
-
-      # State
-      "/data/nextcloud".isReadOnly = false;
-      "/var/lib/tailscale" = {
-        hostPath = "/var/lib/tailscale-nextcloud";
-        isReadOnly = false;
+      sops.secrets."nextcloud/admin-password" = {
+        owner = config.users.users.nextcloud.name;
+        inherit (config.users.users.nextcloud) group;
       };
-    };
 
-    specialArgs = {
-      inherit (config.networking) domain;
-    };
-    config =
-      { domain, ... }:
-      {
-        system.stateVersion = "24.05";
+      systemd.tmpfiles.rules = [
+        "d ${dataDir}/home 750 nextcloud nextcloud -"
+        "d ${dataDir}/postgresql 700 postgres postgres -"
+      ];
 
-        networking = {
-          inherit domain;
-          useNetworkd = true;
-          useHostResolvConf = false;
+      services.postgresql.dataDir = "${dataDir}/postgresql";
+
+      services.nextcloud = {
+        enable = true;
+        package = pkgs.nextcloud29;
+        home = "${dataDir}/home";
+        hostName = config.networking.fqdn;
+
+        database.createLocally = true;
+        config = {
+          dbtype = "pgsql";
+          adminuser = "admin";
+          adminpassFile = config.sops.secrets."nextcloud/admin-password".path;
         };
-        systemd.network = {
+
+        https = true;
+        settings = {
+          overwriteProtocol = "https";
+          trusted_proxies = [ "127.0.0.1" ];
+          log_type = "file";
+          default_phone_region = "DE";
+          maintenance_window_start = "2"; # UTC
+        };
+
+        configureRedis = true;
+        maxUploadSize = "4G";
+        phpOptions."opcache.interned_strings_buffer" = "16";
+
+        autoUpdateApps = {
           enable = true;
-          networks."40-mv-eno1" = {
-            matchConfig.Name = "mv-eno1";
-            networkConfig.DHCP = "yes";
-            dhcpV4Config.ClientIdentifier = "mac";
-          };
+          startAt = "04:00:00";
         };
-
-        imports = [
-          ./nextcloud.nix
-          ./email-server.nix
-          ./tailscale.nix
-        ];
+        extraApps = {
+          inherit (config.services.nextcloud.package.packages.apps) contacts calendar;
+        };
       };
-  };
+
+      myConfig.tailscale.serve = "80";
+    };
+
 }

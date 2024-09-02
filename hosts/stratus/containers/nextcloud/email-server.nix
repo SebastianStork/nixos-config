@@ -1,5 +1,6 @@
+{ config, ... }:
 {
-  systemd.tmpfiles.rules = [ "z /run/secrets/nextcloud/gmail-password 400 nextcloud nextcloud -" ];
+  sops.secrets."nextcloud/gmail-password" = { };
 
   services.nextcloud.settings = {
     mail_smtpmode = "sendmail";
@@ -15,7 +16,7 @@
       port = "587";
       user = "nextcloud.stork";
       from = "nextcloud.stork@gmail.com";
-      passwordeval = "cat /run/secrets/nextcloud/gmail-password";
+      passwordeval = "cat ${config.sops.secrets."nextcloud/gmail-password".path}";
     };
   };
 }

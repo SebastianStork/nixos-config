@@ -1,59 +1,20 @@
-{ config, ... }:
 {
-  sops.secrets = {
-    "paperless-admin-password" = { };
-    tailscale-auth-key = { };
-  };
+  containers.paperless.config =
+    {
+      config,
+      dataDir,
+      ...
+    }:
+    {
+      sops.secrets."paperless-admin-password" = { };
 
-  systemd.tmpfiles.rules = [
-    "d /data/paperless - - -"
-    "d /var/lib/tailscale-paperless - - -"
-  ];
-
-  containers.paperless = {
-    autoStart = true;
-    ephemeral = true;
-    macvlans = [ "eno1" ];
-
-    bindMounts = {
-      # Secrets
-      "/run/secrets/paperless-admin-password" = { };
-      "/run/secrets/tailscale-auth-key" = { };
-
-      # State
-      "/data/paperless".isReadOnly = false;
-      "/var/lib/tailscale" = {
-        hostPath = "/var/lib/tailscale-paperless";
-        isReadOnly = false;
+      services.paperless = {
+        enable = true;
+        inherit dataDir;
+        passwordFile = config.sops.secrets."paperless-admin-password".path;
+        settings.PAPERLESS_OCR_LANGUAGE = "deu+eng";
       };
+
+      myConfig.tailscale.serve = "28981";
     };
-
-    specialArgs = {
-      inherit (config.networking) domain;
-    };
-    config =
-      { domain, ... }:
-      {
-        system.stateVersion = "24.05";
-
-        networking = {
-          inherit domain;
-          useNetworkd = true;
-          useHostResolvConf = false;
-        };
-        systemd.network = {
-          enable = true;
-          networks."40-mv-eno1" = {
-            matchConfig.Name = "mv-eno1";
-            networkConfig.DHCP = "yes";
-            dhcpV4Config.ClientIdentifier = "mac";
-          };
-        };
-
-        imports = [
-          ./paperless.nix
-          ./tailscale.nix
-        ];
-      };
-  };
 }
