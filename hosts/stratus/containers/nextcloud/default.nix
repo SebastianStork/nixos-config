@@ -7,7 +7,10 @@
       ...
     }:
     {
-      imports = [ ./email-server.nix ];
+      imports = [
+        ./email-server.nix
+        ./backup.nix
+      ];
 
       sops.secrets."nextcloud/admin-password" = {
         owner = config.users.users.nextcloud.name;

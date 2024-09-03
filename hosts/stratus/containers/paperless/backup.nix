@@ -23,8 +23,8 @@
   ];
 
   services.restic.backups.paperless = {
-    inherit (config.services.paperless) user;
     initialize = true;
+    inherit (config.services.paperless) user;
 
     repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/paperless";
     environmentFile = config.sops.secrets."restic/environment".path;
@@ -48,14 +48,13 @@
         ]
       }
     '';
-
     paths = [ "${dataDir}/backup" ];
   };
 
   users.users.paperless.extraGroups = [ "redis-paperless" ];
   environment.systemPackages = [
     (pkgs.writeShellApplication {
-      name = "restore-paperless";
+      name = "paperless-restore";
       text = ''
         sudo -u paperless restic-paperless restore --target / latest
         sudo -u paperless ${dataDir}/paperless-manage document_importer ${dataDir}/backup
