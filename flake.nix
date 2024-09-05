@@ -65,6 +65,10 @@
       url = "https://github.com/nextcloud/news/releases/download/25.0.0-alpha8/news.tar.gz";
       flake = false;
     };
+    nextcloud-side-menu = {
+      url = "https://gitnet.fr/deblan/side_menu/releases/download/v3.13.1/side_menu_v3.13.1.tar.gz";
+      flake = false;
+    };
   };
 
   outputs =

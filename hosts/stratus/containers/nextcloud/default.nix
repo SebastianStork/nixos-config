@@ -45,6 +45,7 @@
           log_type = "file";
           default_phone_region = "DE";
           maintenance_window_start = "2"; # UTC
+          defaultapp = "side_menu";
         };
 
         configureRedis = true;
@@ -56,7 +57,12 @@
           startAt = "04:00:00";
         };
         extraApps = {
-          inherit (config.services.nextcloud.package.packages.apps) calendar contacts onlyoffice;
+          inherit (config.services.nextcloud.package.packages.apps)
+            calendar
+            contacts
+            onlyoffice
+            memories
+            ;
 
           twofactor_totp = pkgs.fetchNextcloudApp {
             url = inputs.nextcloud-twofactor-totp.outPath;
@@ -67,6 +73,12 @@
           news = pkgs.fetchNextcloudApp {
             url = inputs.nextcloud-news.outPath;
             sha256 = inputs.nextcloud-news.narHash;
+            license = "agpl3Plus";
+            unpack = true;
+          };
+          side_menu = pkgs.fetchNextcloudApp {
+            url = inputs.nextcloud-side-menu.outPath;
+            sha256 = inputs.nextcloud-side-menu.narHash;
             license = "agpl3Plus";
             unpack = true;
           };
