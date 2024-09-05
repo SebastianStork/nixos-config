@@ -7,14 +7,10 @@
 }:
 let
   containers = lib.filterAttrs (_: v: v == "directory") (builtins.readDir ./.);
-  interface = "eno1";
   dataDirOf = name: "/data/${name}";
 in
 {
-  imports = [
-    ./nextcloud
-    ./paperless
-  ];
+  imports = lib.mapAttrsToList (name: _: ./${name}) containers;
 
   sops.secrets = lib.mapAttrs' (
     name: _: lib.nameValuePair "container/${name}/ssh-key" { }
@@ -27,10 +23,25 @@ in
     ]) containers
   );
 
+  networking = {
+    useDHCP = false;
+    bridges.br0.interfaces = [ "eno1" ];
+    interfaces."br0".useDHCP = true;
+
+    nat = {
+      enable = true;
+      internalInterfaces = [ "ve-+" ];
+      externalInterface = "br0";
+    };
+  };
+
   containers = lib.mapAttrs (name: _: {
     autoStart = true;
     ephemeral = true;
-    macvlans = [ interface ];
+
+    privateNetwork = true;
+    enableTun = true;
+    hostBridge = "br0";
 
     bindMounts = {
       "/etc/ssh/ssh_host_ed25519_key".hostPath = config.sops.secrets."container/${name}/ssh-key".path;
@@ -66,18 +77,10 @@ in
 
         networking = {
           inherit domain;
-          useNetworkd = true;
           useHostResolvConf = false;
+          interfaces."eth0".useDHCP = true;
         };
-
-        systemd.network = {
-          enable = true;
-          networks."10-mv-${interface}" = {
-            matchConfig.Name = "mv-${interface}";
-            networkConfig.DHCP = "yes";
-            dhcpV4Config.ClientIdentifier = "mac";
-          };
-        };
+        services.resolved.enable = true;
 
         myConfig.sops = {
           enable = true;
@@ -85,7 +88,6 @@ in
         };
 
         sops.secrets."tailscale-auth-key" = { };
-        services.tailscale.interfaceName = "userspace-networking";
         myConfig.tailscale = {
           enable = true;
           ssh.enable = true;

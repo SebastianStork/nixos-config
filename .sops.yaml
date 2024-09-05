@@ -4,6 +4,7 @@ keys:
   - &inspiron age1jl9s4vp78wuwymjxaje6fg4ax0gg5aq8pn8khfmtn5rvap0d83tqfr05dv
   - &stratus age1pryafed9elaea6zk5gnf6drjt4nznc02385y973lwt9t2s7j7vmsfnggkp
   - &nextcloud age1jutruntzdaqs26mpe68pafje23m9n4klm04fva05fcdyvyqnaamsvqf3jr
+  - &onlyoffice age1es9tg5225aum5k5ahu8u9q0jprzzte6d64jmwxr2w33ylctqs4lqykdtx5
   - &paperless age1y82j460w5fh0fpquatqar0zqet0vzzfzjnegrp686na3gejapdtsc37vuh
   - &seb-north age1p32cyzakxtcx346ej82ftln4r2aw2pcuazq3583s85nzsan4ygqsj32hjf
   - &seb-inspiron age1s9h9hh8f0vudwn4awr90mj0ka2xh9gppwus0jmvmaz3j3uckz94s36gzkz
@@ -28,6 +29,11 @@ creation_rules:
       - age:
           - *admin
           - *nextcloud
+  - path_regex: hosts/stratus/containers/onlyoffice/secrets.yaml$
+    key_groups:
+      - age:
+          - *admin
+          - *onlyoffice
   - path_regex: hosts/stratus/containers/paperless/secrets.yaml$
     key_groups:
       - age:
