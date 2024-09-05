@@ -146,6 +146,32 @@
         "type": "github"
       }
     },
+    "nextcloud-news": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1720424186,
+        "narHash": "sha256-AhTZGQCLeNgsRBF5w3+Lf9JtNN4D1QncB5t+odU+XUc=",
+        "type": "tarball",
+        "url": "https://github.com/nextcloud/news/releases/download/25.0.0-alpha8/news.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/nextcloud/news/releases/download/25.0.0-alpha8/news.tar.gz"
+      }
+    },
+    "nextcloud-twofactor-totp": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1665648150,
+        "narHash": "sha256-zAPNugbvngXcpgWJLD78YAg4G1QtGaphx1bhhg7mLKE=",
+        "type": "tarball",
+        "url": "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.1/twofactor_totp-v6.4.1.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.1/twofactor_totp-v6.4.1.tar.gz"
+      }
+    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -291,6 +317,8 @@
         "firefox-addons": "firefox-addons",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
+        "nextcloud-news": "nextcloud-news",
+        "nextcloud-twofactor-totp": "nextcloud-twofactor-totp",
         "nix-index-database": "nix-index-database",
         "nix-vscode-extensions": "nix-vscode-extensions",
         "nixos-generators": "nixos-generators",
