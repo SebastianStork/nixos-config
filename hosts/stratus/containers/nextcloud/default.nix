@@ -47,7 +47,7 @@
         };
 
         configureRedis = true;
-        maxUploadSize = "4G";
+        maxUploadSize = "16G";
         phpOptions."opcache.interned_strings_buffer" = "16";
 
         autoUpdateApps = {
@@ -55,11 +55,10 @@
           startAt = "04:00:00";
         };
         extraApps = {
-          inherit (config.services.nextcloud.package.packages.apps) contacts calendar;
+          inherit (config.services.nextcloud.package.packages.apps) contacts calendar onlyoffice;
         };
       };
 
       myConfig.tailscale.serve = "80";
     };
-
 }
