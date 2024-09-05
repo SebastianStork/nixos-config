@@ -55,7 +55,18 @@
           startAt = "04:00:00";
         };
         extraApps = {
-          inherit (config.services.nextcloud.package.packages.apps) contacts calendar onlyoffice;
+          inherit (config.services.nextcloud.package.packages.apps) calendar contacts onlyoffice;
+
+          twofactor_totp = pkgs.fetchNextcloudApp {
+            url =
+              let
+                name = "twofactor_totp";
+                version = "6.4.1";
+              in
+              "https://github.com/nextcloud-releases/${name}/releases/download/v${version}/${name}-v${version}.tar.gz";
+            sha256 = "sha256-zAPNugbvngXcpgWJLD78YAg4G1QtGaphx1bhhg7mLKE=";
+            license = "gpl3";
+          };
         };
       };
 
