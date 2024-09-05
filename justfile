@@ -26,5 +26,8 @@ fmt:
 check:
     nix flake check
 
+dev-sops:
+    nix develop .#sops --command zsh
+
 build-iso:
     nix build .#nixosConfigurations.installer.config.formats.iso -o result
