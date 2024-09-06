@@ -1,13 +1,13 @@
 {
   containers.onlyoffice.config =
-    { config, ... }:
+    { config, lib, ... }:
     {
       sops.secrets."onlyoffice-secret-key" = {
         owner = config.users.users.onlyoffice.name;
         inherit (config.users.users.onlyoffice) group;
       };
 
-      nixpkgs.config.allowUnfree = true;
+      nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "corefonts" ];
 
       services.onlyoffice = {
         enable = true;
