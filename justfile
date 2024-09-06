@@ -30,4 +30,4 @@ dev shell='default':
     nix develop .#{{ shell }} --command zsh
 
 build-iso:
-    nix build .#nixosConfigurations.installer.config.formats.iso -o result
+    nix run nixpkgs#nixos-generators -- --format iso --flake .#installer -o result

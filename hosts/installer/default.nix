@@ -7,7 +7,6 @@
 }:
 {
   imports = [
-    inputs.nixos-generators.nixosModules.all-formats
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
     ../common.nix
   ];
