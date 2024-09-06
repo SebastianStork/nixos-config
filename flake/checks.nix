@@ -17,4 +17,8 @@
         '';
       };
     };
+
+  flake.checks = builtins.mapAttrs (
+    _: deployLib: deployLib.deployChecks self.deploy
+  ) inputs.deploy-rs.lib;
 }

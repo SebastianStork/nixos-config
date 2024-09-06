@@ -65,7 +65,6 @@
   environment.systemPackages = [
     pkgs.git
     pkgs.just
-    pkgs.nh
   ];
 
   nixpkgs.config.allowUnfree = true;

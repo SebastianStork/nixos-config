@@ -25,13 +25,20 @@ let
         );
     };
   };
-
 in
 {
-  flake.nixosConfigurations = lib.mkMerge [
-    (mkHost "north" unstable)
-    (mkHost "inspiron" unstable)
-    (mkHost "stratus" stable)
-    (mkHost "installer" stable)
-  ];
+  flake = {
+    nixosConfigurations = lib.mkMerge [
+      (mkHost "north" unstable)
+      (mkHost "inspiron" unstable)
+      (mkHost "stratus" stable)
+      (mkHost "installer" stable)
+    ];
+
+    deploy.nodes.stratus = {
+      hostname = "stratus";
+      sshUser = "root";
+      profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.stratus;
+    };
+  };
 }
