@@ -3,7 +3,7 @@
   options.myConfig.git.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.myConfig.git.enable {
-    sops.secrets.github-ssh-key.path = "${config.home.homeDirectory}/.ssh/github";
+    sops.secrets."github-ssh-key".path = "${config.home.homeDirectory}/.ssh/github";
 
     programs = {
       git = {
