@@ -66,10 +66,7 @@ in
         ...
       }:
       {
-        imports = [
-          "${self}/modules/system/sops.nix"
-          "${self}/modules/system/tailscale.nix"
-        ];
+        imports = [ self.nixosModules.default ];
 
         system = {
           inherit stateVersion;
