@@ -33,13 +33,13 @@ in
       name: value: "d /var/cache/restic-backups-${name} 700 ${value.user} ${value.user} -"
     ) cfg;
 
-    users.groups.restic.members = lib.mapAttrsToList (_: value: value.user) cfg;
+    users.groups.backup.members = lib.mapAttrsToList (_: value: value.user) cfg;
 
     sops.secrets =
       let
         resticPermissions = {
           mode = "440";
-          group = config.users.groups.restic.name;
+          group = config.users.groups.backup.name;
         };
       in
       {
@@ -69,21 +69,28 @@ in
       // value.extraConfig
     ) cfg;
 
-    systemd.services = lib.mapAttrs' (
-      name: _:
-      lib.nameValuePair "restic-backups-${name}" (
-        let
-          ping = signal: ''
+    systemd.services = lib.mkMerge [
+      (lib.mapAttrs' (
+        name: _:
+        lib.nameValuePair "restic-backups-${name}" {
+          wants = [ "healthcheck-ping@${name}-backup_start.service" ];
+          onSuccess = [ "healthcheck-ping@${name}-backup.service" ];
+          onFailure = [ "healthcheck-ping@${name}-backup_fail.service" ];
+        }
+      ) (lib.filterAttrs (_: value: value.healthchecks.enable) cfg))
+
+      (lib.mkIf ((lib.filterAttrs (_: value: value.healthchecks.enable) cfg) != { }) {
+        "healthcheck-ping@" = {
+          description = "Pings healthcheck (%i)";
+          serviceConfig.Type = "oneshot";
+          scriptArgs = "%i";
+          script = ''
             ${lib.getExe pkgs.curl} -fsS -m 10 --retry 5  https://hc-ping.com/$(cat ${
               config.sops.secrets."healthchecks-ping-key".path
-            })/${name}-backup/${signal}
+            })/$(echo $1 | tr _ /)
           '';
-        in
-        {
-          preStart = lib.mkBefore (ping "start");
-          postStop = lib.mkAfter (ping "0");
-        }
-      )
-    ) (lib.filterAttrs (_: value: value.healthchecks.enable) cfg);
+        };
+      })
+    ];
   };
 }
