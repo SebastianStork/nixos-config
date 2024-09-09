@@ -11,6 +11,7 @@
   myConfig.resticBackup.nextcloud = {
     enable = true;
     user = config.users.users.nextcloud.name;
+    healthchecks.enable = true;
 
     extraConfig = {
       backupPrepareCommand = ''

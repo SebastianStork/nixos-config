@@ -13,6 +13,7 @@
   myConfig.resticBackup.paperless = {
     enable = true;
     user = config.users.users.paperless.name;
+    healthchecks.enable = true;
 
     extraConfig = {
       backupPrepareCommand = ''

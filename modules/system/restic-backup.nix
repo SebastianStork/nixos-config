@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   cfg = lib.filterAttrs (_: value: value.enable) config.myConfig.resticBackup;
 in
@@ -12,6 +17,7 @@ in
             type = lib.types.str;
             default = config.users.users.root.name;
           };
+          healthchecks.enable = lib.mkEnableOption "";
           extraConfig = lib.mkOption {
             type = lib.types.attrsOf lib.types.anything;
             default = { };
@@ -29,16 +35,21 @@ in
 
     users.groups.restic.members = lib.mapAttrsToList (_: value: value.user) cfg;
 
-    sops.secrets = {
-      "restic/environment" = {
-        mode = "440";
-        group = config.users.groups.restic.name;
+    sops.secrets =
+      let
+        resticPermissions = {
+          mode = "440";
+          group = config.users.groups.restic.name;
+        };
+      in
+      {
+        "restic/environment" = resticPermissions;
+        "restic/password" = resticPermissions;
+
+        "healthchecks-ping-key" = lib.mkIf (
+          (lib.filterAttrs (_: value: value.healthchecks.enable) cfg) != { }
+        ) resticPermissions;
       };
-      "restic/password" = {
-        mode = "440";
-        group = config.users.groups.restic.name;
-      };
-    };
 
     services.restic.backups = lib.mapAttrs (
       name: value:
@@ -57,5 +68,22 @@ in
       }
       // value.extraConfig
     ) cfg;
+
+    systemd.services = lib.mapAttrs' (
+      name: _:
+      lib.nameValuePair "restic-backups-${name}" (
+        let
+          ping = signal: ''
+            ${lib.getExe pkgs.curl} -fsS -m 10 --retry 5  https://hc-ping.com/$(cat ${
+              config.sops.secrets."healthchecks-ping-key".path
+            })/${name}-backup/${signal}
+          '';
+        in
+        {
+          preStart = lib.mkBefore (ping "start");
+          postStop = lib.mkAfter (ping "0");
+        }
+      )
+    ) (lib.filterAttrs (_: value: value.healthchecks.enable) cfg);
   };
 }
