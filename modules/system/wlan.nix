@@ -27,6 +27,23 @@ in
         };
 
         environment.systemPackages = [ pkgs.iwgtk ];
+
+        sops = {
+          secrets."wlan/eduroam/password" = { };
+
+          templates."iwd/eduroam.8021x".content = ''
+            [Security]
+            EAP-Method=PEAP
+            EAP-Identity=anonymous@h-da.de
+            EAP-PEAP-Phase2-Method=MSCHAPV2
+            EAP-PEAP-Phase2-Identity=sebastian.stork@stud.h-da.de
+            EAP-PEAP-Phase2-Password=${config.sops.placeholder."wlan/eduroam/password"}
+          '';
+        };
+
+        systemd.tmpfiles.rules = [
+          "C /var/lib/iwd/eduroam.8021x - - - - ${config.sops.templates."iwd/eduroam.8021x".path}"
+        ];
       }
 
       (lib.mkMerge (
