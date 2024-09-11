@@ -85,6 +85,8 @@
         };
       };
 
+      environment.systemPackages = [ pkgs.ffmpeg ];
+
       myConfig.tailscale.serve = "80";
     };
 }
