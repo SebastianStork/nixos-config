@@ -1,15 +1,27 @@
 {
   containers.forgejo.config =
-    { config, lib, ... }:
+    {
+      config,
+      lib,
+      dataDir,
+      ...
+    }:
     {
       sops.secrets."forgejo-admin-password" = {
         owner = config.users.users.forgejo.name;
         inherit (config.users.users.forgejo) group;
       };
 
+      systemd.tmpfiles.rules = [
+        "d ${dataDir}/home 710 nextcloud nextcloud -"
+        "d ${dataDir}/postgresql 700 postgres postgres -"
+      ];
+
+      services.postgresql.dataDir = "${dataDir}/postgresql";
+
       services.forgejo = {
         enable = true;
-        stateDir = "/data/forgejo";
+        stateDir = "${dataDir}/home";
 
         lfs.enable = true;
         database.type = "postgres";
