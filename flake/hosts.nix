@@ -38,6 +38,7 @@ in
     deploy.nodes.stratus = {
       hostname = "stratus";
       sshUser = "root";
+      remoteBuild = true;
       profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.stratus;
     };
   };
