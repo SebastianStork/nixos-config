@@ -7,6 +7,8 @@
       ...
     }:
     {
+      imports = [ ./backup.nix ];
+
       sops.secrets."forgejo-admin-password" = {
         owner = config.users.users.forgejo.name;
         inherit (config.users.users.forgejo) group;
