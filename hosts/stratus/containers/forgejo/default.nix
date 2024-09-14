@@ -15,7 +15,7 @@
       };
 
       systemd.tmpfiles.rules = [
-        "d ${dataDir}/home 710 nextcloud nextcloud -"
+        "d ${dataDir}/home 750 forgejo forgejo -"
         "d ${dataDir}/postgresql 700 postgres postgres -"
       ];
 
