@@ -44,7 +44,7 @@ in
       wantedBy = [ "multi-user.target" ];
       serviceConfig.Type = "oneshot";
       script = ''
-        ${lib.getExe pkgs.tailscale} cert ${config.networking.fqdn}
+        ${lib.getExe pkgs.tailscale} cert --min-validity=168h ${config.networking.fqdn}
         ${lib.getExe pkgs.tailscale} serve reset
         ${lib.getExe pkgs.tailscale} serve --bg ${cfg.serve}
       '';
