@@ -28,7 +28,7 @@
     pkgs.jetbrains.idea-community
     pkgs.spotify
     pkgs.obsidian
-    pkgs.todoist
+    pkgs.todoist-electron
     pkgs.morgen
     pkgs.webcord
     pkgs.onlyoffice-bin_latest
