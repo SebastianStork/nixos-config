@@ -32,6 +32,6 @@
     extraUpFlags = [ "--ssh" ];
 
     # Ephemeral + not pre-approved
-    authKeyFile = pkgs.writeText "tailscale-key-file" "tskey-auth-kaDD7BXvDE11CNTRL-9M4pUPEw4bEj7V4YzwFgaEE1MvzumcgM";
+    authKeyFile = pkgs.writeText "tailscale-key-file" "tskey-auth-kpQTjZCfoq11CNTRL-5iz9m4oKXxhwiREVgJbAxhC86fzBxVbFg";
   };
 }
