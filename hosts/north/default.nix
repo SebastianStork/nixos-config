@@ -21,7 +21,6 @@
 
     sound.enable = true;
     virtualisation.enable = true;
-    comma.enable = true;
     sops.enable = true;
     printing.enable = true;
     syncthing.enable = true;
