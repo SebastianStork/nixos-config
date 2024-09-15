@@ -16,7 +16,6 @@
       "xhci_pci"
       "ahci"
       "nvme"
-      "usb_storage"
       "sd_mod"
     ];
   };
