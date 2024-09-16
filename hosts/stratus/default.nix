@@ -3,7 +3,8 @@
     ../common.nix
     ./hardware.nix
     ./disko.nix
-    ./containers
+
+    ./containers/nspawn
   ];
 
   system.stateVersion = "24.05";
