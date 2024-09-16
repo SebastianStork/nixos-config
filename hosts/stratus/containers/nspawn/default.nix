@@ -85,10 +85,7 @@ in
         };
 
         sops.secrets."tailscale-auth-key" = { };
-        myConfig.tailscale = {
-          enable = true;
-          ssh.enable = true;
-        };
+        myConfig.tailscale.enable = true;
       };
   }) containers;
 }
