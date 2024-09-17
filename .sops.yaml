@@ -9,7 +9,6 @@ keys:
   # Containers
   - &forgejo age12k607dpdjt5dyq0w3hpgyfdyfrrfuutxgra0tgt8qja30er7cupsfps60n
   - &nextcloud age1jutruntzdaqs26mpe68pafje23m9n4klm04fva05fcdyvyqnaamsvqf3jr
-  - &onlyoffice age1es9tg5225aum5k5ahu8u9q0jprzzte6d64jmwxr2w33ylctqs4lqykdtx5
   - &paperless age1y82j460w5fh0fpquatqar0zqet0vzzfzjnegrp686na3gejapdtsc37vuh
 
   # Users
@@ -45,11 +44,6 @@ creation_rules:
       - age:
           - *admin
           - *nextcloud
-  - path_regex: hosts/stratus/containers/nspawn/onlyoffice/secrets.yaml$
-    key_groups:
-      - age:
-          - *admin
-          - *onlyoffice
   - path_regex: hosts/stratus/containers/nspawn/paperless/secrets.yaml$
     key_groups:
       - age:
