@@ -35,22 +35,22 @@ creation_rules:
           - *stratus
 
   # Containers
-  - path_regex: hosts/stratus/containers/forgejo/secrets.yaml$
+  - path_regex: hosts/stratus/containers/nspawn/forgejo/secrets.yaml$
     key_groups:
       - age:
           - *admin
           - *forgejo
-  - path_regex: hosts/stratus/containers/nextcloud/secrets.yaml$
+  - path_regex: hosts/stratus/containers/nspawn/nextcloud/secrets.yaml$
     key_groups:
       - age:
           - *admin
           - *nextcloud
-  - path_regex: hosts/stratus/containers/onlyoffice/secrets.yaml$
+  - path_regex: hosts/stratus/containers/nspawn/onlyoffice/secrets.yaml$
     key_groups:
       - age:
           - *admin
           - *onlyoffice
-  - path_regex: hosts/stratus/containers/paperless/secrets.yaml$
+  - path_regex: hosts/stratus/containers/nspawn/paperless/secrets.yaml$
     key_groups:
       - age:
           - *admin
