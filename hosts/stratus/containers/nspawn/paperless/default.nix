@@ -17,6 +17,9 @@
         settings.PAPERLESS_OCR_LANGUAGE = "deu+eng";
       };
 
-      myConfig.tailscale.serve = "28981";
+      myConfig.tailscale = {
+        subdomain = "paper";
+        serve = "28981";
+      };
     };
 }

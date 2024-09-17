@@ -41,6 +41,9 @@
         $create --admin --email "sebastian.stork@pm.me" --username seb --password "$(cat ${config.sops.secrets.forgejo-admin-password.path})" || true
       '';
 
-      myConfig.tailscale.serve = "3000";
+      myConfig.tailscale = {
+        subdomain = "git";
+        serve = "3000";
+      };
     };
 }

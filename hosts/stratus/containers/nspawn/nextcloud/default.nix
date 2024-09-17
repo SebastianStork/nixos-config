@@ -1,3 +1,6 @@
+let
+  subdomain = "cloud";
+in
 {
   containers.nextcloud.config =
     {
@@ -41,6 +44,7 @@
         https = true;
         settings = {
           overwriteProtocol = "https";
+          trusted_domains = [ "${subdomain}.${config.networking.domain}" ];
           trusted_proxies = [ "127.0.0.1" ];
           log_type = "file";
           default_phone_region = "DE";
@@ -87,6 +91,9 @@
 
       environment.systemPackages = [ pkgs.ffmpeg ];
 
-      myConfig.tailscale.serve = "80";
+      myConfig.tailscale = {
+        inherit subdomain;
+        serve = "80";
+      };
     };
 }

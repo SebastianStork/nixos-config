@@ -10,6 +10,10 @@ in
 {
   options.myConfig.tailscale = {
     enable = lib.mkEnableOption "";
+    subdomain = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = config.networking.hostName;
+    };
     ssh.enable = lib.mkEnableOption "";
     exitNode.enable = lib.mkEnableOption "";
     serve = lib.mkOption {
@@ -28,6 +32,7 @@ in
       useRoutingFeatures = if (cfg.exitNode.enable || (cfg.serve != null)) then "server" else "client";
       extraUpFlags = [ "--reset=true" ];
       extraSetFlags = [
+        "--hostname=${cfg.subdomain}"
         "--ssh=${lib.boolToString cfg.ssh.enable}"
         "--advertise-exit-node=${lib.boolToString cfg.exitNode.enable}"
       ];
