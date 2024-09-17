@@ -4,6 +4,7 @@
     ./hardware.nix
     ./disko.nix
 
+    ./containers/docker
     ./containers/nspawn
   ];
 
