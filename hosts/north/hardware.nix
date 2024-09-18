@@ -33,6 +33,21 @@
     udev.extraRules = ''
       ACTION=="add" SUBSYSTEM=="pci" ATTR{vendor}=="0x1022" ATTR{device}=="0x43ee" ATTR{power/wakeup}="disabled"
     '';
+
+    resolved.enable = true;
+  };
+
+  networking.useNetworkd = true;
+  systemd.network = {
+    enable = true;
+    networks."10-enp6s0" = {
+      matchConfig.Name = "enp6s0";
+      networkConfig = {
+        DHCP = "ipv4";
+        IPv6AcceptRA = true;
+      };
+      linkConfig.RequiredForOnline = "routable";
+    };
   };
 
   hardware.fancontrol = {
