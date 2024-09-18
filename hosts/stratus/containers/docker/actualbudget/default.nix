@@ -15,6 +15,8 @@ let
   configPath = pkgs.writeTextDir "tailscale-serve.json" serveConfig;
 in
 {
+  imports = [ ./backup.nix ];
+
   virtualisation.oci-containers.containers = {
     ${serviceName} = {
       image = "ghcr.io/actualbudget/actual-server:latest";
