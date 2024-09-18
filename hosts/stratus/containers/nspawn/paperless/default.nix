@@ -13,12 +13,12 @@ in
     {
       imports = [ ./backup.nix ];
 
-      sops.secrets."paperless-admin-password" = { };
+      sops.secrets."admin-password" = { };
 
       services.paperless = {
         enable = true;
         inherit dataDir;
-        passwordFile = config.sops.secrets."paperless-admin-password".path;
+        passwordFile = config.sops.secrets."admin-password".path;
         settings.PAPERLESS_OCR_LANGUAGE = "deu+eng";
       };
 

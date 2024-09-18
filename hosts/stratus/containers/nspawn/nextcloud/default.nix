@@ -22,9 +22,9 @@ in
         ./backup.nix
       ];
 
-      sops.secrets."nextcloud/admin-password" = {
-        owner = config.users.users.nextcloud.name;
-        inherit (config.users.users.nextcloud) group;
+      sops.secrets."admin-password" = {
+        owner = userName;
+        group = groupName;
       };
 
       systemd.tmpfiles.rules = [
@@ -44,7 +44,7 @@ in
         config = {
           dbtype = "pgsql";
           adminuser = "admin";
-          adminpassFile = config.sops.secrets."nextcloud/admin-password".path;
+          adminpassFile = config.sops.secrets."admin-password".path;
         };
 
         https = true;

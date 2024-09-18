@@ -18,9 +18,9 @@ in
     {
       imports = [ ./backup.nix ];
 
-      sops.secrets."forgejo-admin-password" = {
-        owner = config.users.users.forgejo.name;
-        inherit (config.users.users.forgejo) group;
+      sops.secrets."admin-password" = {
+        owner = userName;
+        group = groupName;
       };
 
       systemd.tmpfiles.rules = [
@@ -47,7 +47,9 @@ in
 
       systemd.services.forgejo.preStart = ''
         create="${lib.getExe config.services.forgejo.package} admin user create"
-        $create --admin --email "sebastian.stork@pm.me" --username seb --password "$(cat ${config.sops.secrets.forgejo-admin-password.path})" || true
+        $create --admin --email "sebastian.stork@pm.me" --username seb --password "$(cat ${
+          config.sops.secrets."admin-password".path
+        })" || true
       '';
 
       myConfig.tailscale = {
