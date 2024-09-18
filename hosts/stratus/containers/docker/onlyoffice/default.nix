@@ -1,6 +1,11 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
-  serviceName = "onlyoffice";
+  serviceName = lib.last (lib.splitString "/" (builtins.toString ./.)); # Parent directory name
   subdomain = "office";
 
   serveConfig = builtins.toJSON {

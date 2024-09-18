@@ -1,11 +1,20 @@
+{ lib, ... }:
+let
+  serviceName = lib.last (lib.splitString "/" (builtins.toString ./.)); # Parent directory name
+  subdomain = "git";
+in
 {
-  containers.forgejo.config =
+  containers.${serviceName}.config =
     {
       config,
       lib,
       dataDir,
       ...
     }:
+    let
+      userName = config.services.forgejo.user;
+      groupName = config.services.forgejo.group;
+    in
     {
       imports = [ ./backup.nix ];
 
@@ -15,7 +24,7 @@
       };
 
       systemd.tmpfiles.rules = [
-        "d ${dataDir}/home 750 forgejo forgejo -"
+        "d ${dataDir}/home 750 ${userName} ${groupName} -"
         "d ${dataDir}/postgresql 700 postgres postgres -"
       ];
 
@@ -42,7 +51,7 @@
       '';
 
       myConfig.tailscale = {
-        subdomain = "git";
+        inherit subdomain;
         serve = "3000";
       };
     };

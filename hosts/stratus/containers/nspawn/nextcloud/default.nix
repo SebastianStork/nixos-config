@@ -1,8 +1,10 @@
+{ lib, ... }:
 let
+  serviceName = lib.last (lib.splitString "/" (builtins.toString ./.)); # Parent directory name
   subdomain = "cloud";
 in
 {
-  containers.nextcloud.config =
+  containers.${serviceName}.config =
     {
       config,
       inputs,
@@ -10,6 +12,10 @@ in
       dataDir,
       ...
     }:
+    let
+      userName = config.users.users.nextcloud.name;
+      groupName = config.users.users.nextcloud.group;
+    in
     {
       imports = [
         ./email-server.nix
@@ -22,7 +28,7 @@ in
       };
 
       systemd.tmpfiles.rules = [
-        "d ${dataDir}/home 750 nextcloud nextcloud -"
+        "d ${dataDir}/home 750 ${userName} ${groupName} -"
         "d ${dataDir}/postgresql 700 postgres postgres -"
       ];
 

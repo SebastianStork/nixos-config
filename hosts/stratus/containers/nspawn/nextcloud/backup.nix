@@ -5,12 +5,17 @@
   dataDir,
   ...
 }:
+let
+  serviceName = lib.last (lib.splitString "/" (builtins.toString ./.)); # Parent directory name
+  userName = config.users.users.nextcloud.name;
+  groupName = config.users.users.nextcloud.group;
+in
 {
-  systemd.tmpfiles.rules = [ "d ${dataDir}/backup 700 nextcloud nextcloud -" ];
+  systemd.tmpfiles.rules = [ "d ${dataDir}/backup 700 ${userName} ${groupName} -" ];
 
-  myConfig.resticBackup.nextcloud = {
+  myConfig.resticBackup.${serviceName} = {
     enable = true;
-    user = config.users.users.nextcloud.name;
+    user = userName;
     healthchecks.enable = true;
 
     extraConfig = {
@@ -31,12 +36,12 @@
 
   environment.systemPackages = [
     (pkgs.writeShellApplication {
-      name = "nextcloud-restore";
+      name = "${serviceName}-restore";
       text = ''
-        sudo -u nextcloud ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on
-        sudo -u nextcloud restic-nextcloud restore --target / latest
-        sudo -u nextcloud pg_restore --clean --if-exists --dbname nextcloud ${dataDir}/backup/db.dump
-        sudo -u nextcloud ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off
+        sudo -u ${userName} ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on
+        sudo -u ${userName} restic-${serviceName} restore --target / latest
+        sudo -u ${userName} pg_restore --clean --if-exists --dbname nextcloud ${dataDir}/backup/db.dump
+        sudo -u ${userName} ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off
       '';
     })
   ];

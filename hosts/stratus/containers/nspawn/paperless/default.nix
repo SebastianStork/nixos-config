@@ -1,5 +1,10 @@
+{ lib, ... }:
+let
+  serviceName = lib.last (lib.splitString "/" (builtins.toString ./.)); # Parent directory name
+  subdomain = "paper";
+in
 {
-  containers.paperless.config =
+  containers.${serviceName}.config =
     {
       config,
       dataDir,
@@ -18,7 +23,7 @@
       };
 
       myConfig.tailscale = {
-        subdomain = "paper";
+        inherit subdomain;
         serve = "28981";
       };
     };

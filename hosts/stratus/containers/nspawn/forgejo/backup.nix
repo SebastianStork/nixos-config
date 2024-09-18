@@ -5,8 +5,13 @@
   dataDir,
   ...
 }:
+let
+  serviceName = lib.last (lib.splitString "/" (builtins.toString ./.)); # Parent directory name
+  userName = config.services.forgejo.user;
+  groupName = config.services.forgejo.group;
+in
 {
-  systemd.tmpfiles.rules = [ "d ${dataDir}/backup 750 forgejo forgejo -" ];
+  systemd.tmpfiles.rules = [ "d ${dataDir}/backup 750 ${userName} ${groupName} -" ];
 
   security.polkit = {
     enable = true;
@@ -21,9 +26,9 @@
     '';
   };
 
-  myConfig.resticBackup.forgejo = {
+  myConfig.resticBackup.${serviceName} = {
     enable = true;
-    user = config.users.users.forgejo.name;
+    user = userName;
     healthchecks.enable = true;
 
     extraConfig = {
@@ -47,11 +52,11 @@
 
   environment.systemPackages = [
     (pkgs.writeShellApplication {
-      name = "forgejo-restore";
+      name = "${serviceName}-restore";
       text = ''
         systemctl stop forgejo.service
-        sudo -u forgejo restic-forgejo restore --target / latest
-        sudo -u forgejo pg_restore --clean --if-exists --dbname forgejo ${dataDir}/backup/db.dump
+        sudo -u ${userName} restic-${serviceName} restore --target / latest
+        sudo -u ${userName} pg_restore --clean --if-exists --dbname forgejo ${dataDir}/backup/db.dump
         systemctl start forgejo.service
       '';
     })

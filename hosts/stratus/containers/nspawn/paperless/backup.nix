@@ -5,14 +5,19 @@
   dataDir,
   ...
 }:
+let
+  serviceName = lib.last (lib.splitString "/" (builtins.toString ./.)); # Parent directory name
+  userName = config.services.paperless.user;
+  groupName = config.users.users.${userName}.group;
+in
 {
-  systemd.tmpfiles.rules = [ "d ${dataDir}/backup 700 paperless paperless -" ];
+  systemd.tmpfiles.rules = [ "d ${dataDir}/backup 700 ${userName} ${groupName} -" ];
 
   users.users.paperless.extraGroups = [ "redis-paperless" ];
 
-  myConfig.resticBackup.paperless = {
+  myConfig.resticBackup.${serviceName} = {
     enable = true;
-    user = config.users.users.paperless.name;
+    user = userName;
     healthchecks.enable = true;
 
     extraConfig = {
@@ -33,10 +38,10 @@
 
   environment.systemPackages = [
     (pkgs.writeShellApplication {
-      name = "paperless-restore";
+      name = "${serviceName}-restore";
       text = ''
-        sudo -u paperless restic-paperless restore --target / latest
-        sudo -u paperless ${dataDir}/paperless-manage document_importer ${dataDir}/backup
+        sudo -u ${userName} restic-${serviceName} restore --target / latest
+        sudo -u ${userName} ${dataDir}/paperless-manage document_importer ${dataDir}/backup
       '';
     })
   ];
