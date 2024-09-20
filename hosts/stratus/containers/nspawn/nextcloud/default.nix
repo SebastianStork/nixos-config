@@ -80,12 +80,6 @@ in
             license = "agpl3Plus";
             unpack = true;
           };
-          news = pkgs.fetchNextcloudApp {
-            url = inputs.nextcloud-news.outPath;
-            sha256 = inputs.nextcloud-news.narHash;
-            license = "agpl3Plus";
-            unpack = true;
-          };
           side_menu = pkgs.fetchNextcloudApp {
             url = inputs.nextcloud-side-menu.outPath;
             sha256 = inputs.nextcloud-side-menu.narHash;

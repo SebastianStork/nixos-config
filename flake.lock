@@ -184,19 +184,6 @@
         "type": "github"
       }
     },
-    "nextcloud-news": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1720424186,
-        "narHash": "sha256-AhTZGQCLeNgsRBF5w3+Lf9JtNN4D1QncB5t+odU+XUc=",
-        "type": "tarball",
-        "url": "https://github.com/nextcloud/news/releases/download/25.0.0-alpha8/news.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://github.com/nextcloud/news/releases/download/25.0.0-alpha8/news.tar.gz"
-      }
-    },
     "nextcloud-side-menu": {
       "flake": false,
       "locked": {
@@ -313,7 +300,6 @@
         "firefox-addons": "firefox-addons",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
-        "nextcloud-news": "nextcloud-news",
         "nextcloud-side-menu": "nextcloud-side-menu",
         "nextcloud-twofactor-totp": "nextcloud-twofactor-totp",
         "nix-vscode-extensions": "nix-vscode-extensions",
