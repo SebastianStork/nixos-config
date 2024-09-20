@@ -19,7 +19,7 @@ in
 
   virtualisation.oci-containers.containers = {
     ${serviceName} = {
-      image = "onlyoffice/documentserver";
+      image = "onlyoffice/documentserver@sha256:b9e3c35eab182d3de822a53b109b0f27070f6eacea3b1388b9c50d1182f638f2";
       environmentFiles = [
         # Contains "JWT_SECRET=<token>"
         config.sops.secrets."container/${serviceName}/jwt-secret".path

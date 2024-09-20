@@ -19,7 +19,7 @@ in
 
   virtualisation.oci-containers.containers = {
     ${serviceName} = {
-      image = "ghcr.io/actualbudget/actual-server:latest";
+      image = "ghcr.io/actualbudget/actual-server@sha256:90a670b73ce539ca4bf70e3740756f106ec815d3933cabf2414ae2e26e031d65";
       volumes = [ "/data/${serviceName}:/data" ];
     };
 
