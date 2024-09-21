@@ -17,7 +17,7 @@ in
 {
   virtualisation.oci-containers.containers = {
     ${serviceName} = {
-      image = "frooodle/s-pdf:latest";
+      image = "frooodle/s-pdf@sha256:5b9c9443e6eb0fa23b39475d68741d80826249193df231d6859ecda0f0aedd8d";
       environment = {
         LANGS = "de_DE";
         SYSTEM_SHOWUPDATE = "false";
