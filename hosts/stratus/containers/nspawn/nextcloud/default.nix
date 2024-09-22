@@ -4,6 +4,11 @@ let
   subdomain = "cloud";
 in
 {
+  sops.secrets = {
+    "container/nextcloud/admin-password" = { };
+    "container/nextcloud/gmail-password" = { };
+  };
+
   containers.${serviceName}.config =
     {
       config,
@@ -22,12 +27,8 @@ in
         ./backup.nix
       ];
 
-      sops.secrets."admin-password" = {
-        owner = userName;
-        group = groupName;
-      };
-
       systemd.tmpfiles.rules = [
+        "z /run/secrets/container/nextcloud/admin-password - ${userName} ${groupName} -"
         "d ${dataDir}/home 750 ${userName} ${groupName} -"
         "d ${dataDir}/postgresql 700 postgres postgres -"
       ];
@@ -44,7 +45,7 @@ in
         config = {
           dbtype = "pgsql";
           adminuser = "admin";
-          adminpassFile = config.sops.secrets."admin-password".path;
+          adminpassFile = "/run/secrets/container/nextcloud/admin-password";
         };
 
         https = true;

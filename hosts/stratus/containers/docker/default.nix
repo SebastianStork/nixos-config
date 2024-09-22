@@ -5,9 +5,7 @@ in
 {
   imports = lib.mapAttrsToList (name: _: ./${name}) containers;
 
-  sops.secrets = lib.mapAttrs' (
-    name: _: lib.nameValuePair "container/${name}/tailscale-auth-key" { }
-  ) containers;
+  sops.secrets."container/tailscale-auth-key" = { };
 
   virtualisation.oci-containers = {
     backend = "docker";
@@ -23,7 +21,7 @@ in
         };
         environmentFiles = [
           # Contains "TS_AUTHKEY=<token>"
-          config.sops.secrets."container/${name}/tailscale-auth-key".path
+          config.sops.secrets."container/tailscale-auth-key".path
         ];
         volumes = [ "/var/lib/tailscale-${name}:/var/lib/tailscale" ];
         extraOptions = [ "--network=container:${name}" ];

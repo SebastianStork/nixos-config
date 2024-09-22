@@ -23,11 +23,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets."tailscale-auth-key" = { };
+    sops.secrets = lib.optionalAttrs config.myConfig.sops.enable {
+      "tailscale-auth-key" = { };
+    };
 
     services.tailscale = {
       enable = true;
-      authKeyFile = config.sops.secrets."tailscale-auth-key".path;
+      authKeyFile = config.sops.secrets."tailscale-auth-key".path or "/run/secrets/tailscale-auth-key";
       openFirewall = true;
       useRoutingFeatures = if (cfg.exitNode.enable || (cfg.serve != null)) then "server" else "client";
       extraUpFlags = [ "--reset=true" ];

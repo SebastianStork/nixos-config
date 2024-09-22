@@ -6,6 +6,8 @@
 }:
 let
   cfg = lib.filterAttrs (_: value: value.enable) config.myConfig.resticBackup;
+
+  healthchecksEnable = (lib.filterAttrs (_: value: value.healthchecks.enable) cfg) != { };
 in
 {
   options.myConfig.resticBackup = lib.mkOption {
@@ -35,7 +37,7 @@ in
 
     users.groups.backup.members = lib.mapAttrsToList (_: value: value.user) cfg;
 
-    sops.secrets =
+    sops.secrets = lib.optionalAttrs config.myConfig.sops.enable (
       let
         resticPermissions = {
           mode = "440";
@@ -45,11 +47,9 @@ in
       {
         "restic/environment" = resticPermissions;
         "restic/password" = resticPermissions;
-
-        "healthchecks-ping-key" = lib.mkIf (
-          (lib.filterAttrs (_: value: value.healthchecks.enable) cfg) != { }
-        ) resticPermissions;
-      };
+        "healthchecks-ping-key" = lib.mkIf healthchecksEnable resticPermissions;
+      }
+    );
 
     services.restic.backups = lib.mapAttrs (
       name: value:
@@ -57,8 +57,9 @@ in
         inherit (value) user;
         initialize = true;
         repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
-        environmentFile = config.sops.secrets."restic/environment".path;
-        passwordFile = config.sops.secrets."restic/password".path;
+        environmentFile =
+          config.sops.secrets."restic/environment".path or "/run/secrets/restic/environment";
+        passwordFile = config.sops.secrets."restic/password".path or "/run/secrets/restic/password";
         pruneOpts = [
           "--keep-daily 7"
           "--keep-weekly 5"
@@ -79,14 +80,14 @@ in
         }
       ) (lib.filterAttrs (_: value: value.healthchecks.enable) cfg))
 
-      (lib.mkIf ((lib.filterAttrs (_: value: value.healthchecks.enable) cfg) != { }) {
+      (lib.mkIf healthchecksEnable {
         "healthcheck-ping@" = {
           description = "Pings healthcheck (%i)";
           serviceConfig.Type = "oneshot";
           scriptArgs = "%i";
           script = ''
             ${lib.getExe pkgs.curl} -fsS -m 10 --retry 5  https://hc-ping.com/$(cat ${
-              config.sops.secrets."healthchecks-ping-key".path
+              config.sops.secrets."healthchecks-ping-key".path or "/run/secrets/healthchecks-ping-key"
             })/$(echo $1 | tr _ /)
           '';
         };

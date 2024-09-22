@@ -1,7 +1,4 @@
-{ config, ... }:
 {
-  sops.secrets."gmail-password" = { };
-
   services.nextcloud.settings = {
     mail_smtpmode = "sendmail";
     mail_sendmailmode = "pipe";
@@ -16,7 +13,7 @@
       port = "587";
       user = "nextcloud.stork";
       from = "nextcloud.stork@gmail.com";
-      passwordeval = "cat ${config.sops.secrets."gmail-password".path}";
+      passwordeval = "cat /run/secrets/container/nextcloud/gmail-password";
     };
   };
 }

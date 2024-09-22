@@ -12,9 +12,12 @@ in
 {
   imports = lib.mapAttrsToList (name: _: ./${name}) containers;
 
-  sops.secrets = lib.mapAttrs' (
-    name: _: lib.nameValuePair "container/${name}/ssh-key" { }
-  ) containers;
+  sops.secrets = {
+    "container/tailscale-auth-key" = { };
+    "restic/environment" = { };
+    "restic/password" = { };
+    "healthchecks-ping-key" = { };
+  };
 
   systemd.tmpfiles.rules = lib.flatten (
     lib.mapAttrsToList (name: _: [
@@ -44,7 +47,11 @@ in
     hostBridge = "br0";
 
     bindMounts = {
-      "/etc/ssh/ssh_host_ed25519_key".hostPath = config.sops.secrets."container/${name}/ssh-key".path;
+      "/run/secrets/container/tailscale-auth-key" = { };
+      "/run/secrets/container/${name}" = { };
+      "/run/secrets/restic" = { };
+      "/run/secrets/healthchecks-ping-key" = { };
+
       ${dataDirOf name}.isReadOnly = false;
       "/var/lib/tailscale" = {
         hostPath = "/var/lib/tailscale-${name}";
@@ -79,12 +86,6 @@ in
         };
         services.resolved.enable = true;
 
-        myConfig.sops = {
-          enable = true;
-          defaultSopsFile = ./${name}/secrets.yaml;
-        };
-
-        sops.secrets."tailscale-auth-key" = { };
         myConfig.tailscale.enable = true;
       };
   }) containers;

@@ -4,21 +4,17 @@ let
   subdomain = "paper";
 in
 {
+  sops.secrets."container/paperless/admin-password" = { };
+
   containers.${serviceName}.config =
-    {
-      config,
-      dataDir,
-      ...
-    }:
+    { dataDir, ... }:
     {
       imports = [ ./backup.nix ];
-
-      sops.secrets."admin-password" = { };
 
       services.paperless = {
         enable = true;
         inherit dataDir;
-        passwordFile = config.sops.secrets."admin-password".path;
+        passwordFile = "/run/secrets/container/paperless/admin-password";
         settings.PAPERLESS_OCR_LANGUAGE = "deu+eng";
       };
 

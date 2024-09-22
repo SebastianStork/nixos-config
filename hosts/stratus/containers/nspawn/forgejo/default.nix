@@ -4,6 +4,8 @@ let
   subdomain = "git";
 in
 {
+  sops.secrets."container/forgejo/admin-password" = { };
+
   containers.${serviceName}.config =
     {
       config,
@@ -18,12 +20,8 @@ in
     {
       imports = [ ./backup.nix ];
 
-      sops.secrets."admin-password" = {
-        owner = userName;
-        group = groupName;
-      };
-
       systemd.tmpfiles.rules = [
+        "z /run/secrets/container/forgejo/admin-password - ${userName} ${groupName} -"
         "d ${dataDir}/home 750 ${userName} ${groupName} -"
         "d ${dataDir}/postgresql 700 postgres postgres -"
       ];
@@ -47,14 +45,13 @@ in
 
       systemd.services.forgejo.preStart = ''
         create="${lib.getExe config.services.forgejo.package} admin user create"
-        $create --admin --email "sebastian.stork@pm.me" --username seb --password "$(cat ${
-          config.sops.secrets."admin-password".path
-        })" || true
+        $create --admin --email "sebastian.stork@pm.me" --username seb --password "$(cat /run/secrets/container/forgejo/admin-password)" || true
       '';
 
       myConfig.tailscale = {
         inherit subdomain;
         serve = "3000";
+
       };
     };
 }
