@@ -31,11 +31,19 @@ in
   };
 
   config = lib.mkIf (cfg != { }) {
-    systemd.tmpfiles.rules = lib.mapAttrsToList (
-      name: value: "d /var/cache/restic-backups-${name} 700 ${value.user} ${value.user} -"
-    ) cfg;
+    systemd.tmpfiles.rules =
+      (lib.optionals (!config.myConfig.sops.enable) [
+        "z /run/secrets/restic/environment 440 root ${config.users.groups.backup.name} -"
+        "z /run/secrets/restic/password 440 root ${config.users.groups.backup.name} -"
+        "z /run/secrets/healthchecks-ping-key 440 root ${config.users.groups.backup.name} -"
+      ])
+      ++ lib.mapAttrsToList (
+        name: value: "d /var/cache/restic-backups-${name} 700 ${value.user} ${value.user} -"
+      ) cfg;
 
-    users.groups.backup.members = lib.mapAttrsToList (_: value: value.user) cfg;
+    users.groups.backup.members = builtins.filter (user: user != config.users.users.root.name) (
+      lib.mapAttrsToList (_: value: value.user) cfg
+    );
 
     sops.secrets = lib.optionalAttrs config.myConfig.sops.enable (
       let

@@ -48,9 +48,9 @@ in
 
     bindMounts = {
       "/run/secrets/container/tailscale-auth-key" = { };
-      "/run/secrets/container/${name}" = { };
-      "/run/secrets/restic" = { };
-      "/run/secrets/healthchecks-ping-key" = { };
+      "/run/secrets/container/${name}".isReadOnly = false;
+      "/run/secrets/restic".isReadOnly = false;
+      "/run/secrets/healthchecks-ping-key".isReadOnly = false;
 
       ${dataDirOf name}.isReadOnly = false;
       "/var/lib/tailscale" = {
