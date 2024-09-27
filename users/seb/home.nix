@@ -31,6 +31,7 @@
     pkgs.todoist-electron
     pkgs.morgen
     pkgs.webcord
+    pkgs.signal-desktop
     pkgs.element-desktop
     pkgs.onlyoffice-bin_latest
     pkgs.libreoffice
