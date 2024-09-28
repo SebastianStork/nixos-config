@@ -29,12 +29,16 @@ in
         environment.systemPackages = [ pkgs.iwgtk ];
 
         sops = {
-          secrets."wlan/eduroam/password" = { };
+          secrets = {
+            "wlan/eduroam/password" = { };
+            "wlan/eduroam/cert" = { };
+          };
 
           templates."iwd/eduroam.8021x".content = ''
             [Security]
             EAP-Method=PEAP
             EAP-Identity=anonymous@h-da.de
+            EAP-PEAP-CACert=${config.sops.placeholder."wlan/eduroam/cert"}
             EAP-PEAP-Phase2-Method=MSCHAPV2
             EAP-PEAP-Phase2-Identity=sebastian.stork@stud.h-da.de
             EAP-PEAP-Phase2-Password=${config.sops.placeholder."wlan/eduroam/password"}
