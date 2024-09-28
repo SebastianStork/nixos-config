@@ -47,11 +47,13 @@ in
     hostBridge = "br0";
 
     bindMounts = {
+      # Secrets
       "/run/secrets/container/tailscale-auth-key" = { };
       "/run/secrets/container/${name}".isReadOnly = false;
       "/run/secrets/restic".isReadOnly = false;
       "/run/secrets/healthchecks-ping-key".isReadOnly = false;
 
+      # State
       ${dataDirOf name}.isReadOnly = false;
       "/var/lib/tailscale" = {
         hostPath = "/var/lib/tailscale-${name}";

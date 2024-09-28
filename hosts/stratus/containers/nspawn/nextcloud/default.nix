@@ -71,6 +71,7 @@ in
           inherit (config.services.nextcloud.package.packages.apps)
             calendar
             contacts
+            deck
             onlyoffice
             memories
             ;
