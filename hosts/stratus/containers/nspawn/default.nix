@@ -48,7 +48,7 @@ in
 
     bindMounts = {
       # Secrets
-      "/run/secrets/container/tailscale-auth-key" = { };
+      "/run/secrets/tailscale-auth-key".hostPath = "/run/secrets/container/tailscale-auth-key";
       "/run/secrets/container/${name}".isReadOnly = false;
       "/run/secrets/restic".isReadOnly = false;
       "/run/secrets/healthchecks-ping-key".isReadOnly = false;

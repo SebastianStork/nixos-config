@@ -42,7 +42,7 @@ in
 
     systemd.services.tailscaled-set.after = [ "tailscaled-autoconnect.service" ];
 
-    systemd.services.tailscale-serve = lib.mkIf (cfg.serve != null) {
+    systemd.services.tailscaled-serve = lib.mkIf (cfg.serve != null) {
       after = [
         "tailscaled.service"
         "tailscaled-autoconnect.service"
@@ -51,7 +51,7 @@ in
       wantedBy = [ "multi-user.target" ];
       serviceConfig.Type = "oneshot";
       script = ''
-        ${lib.getExe pkgs.tailscale} cert ${config.networking.fqdn}
+        ${lib.getExe pkgs.tailscale} cert ${cfg.subdomain}.${config.networking.domain}
         ${lib.getExe pkgs.tailscale} serve reset
         ${lib.getExe pkgs.tailscale} serve --bg ${cfg.serve}
       '';

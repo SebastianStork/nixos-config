@@ -51,7 +51,6 @@ in
       myConfig.tailscale = {
         inherit subdomain;
         serve = "3000";
-
       };
     };
 }
