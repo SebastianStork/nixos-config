@@ -7,6 +7,7 @@
 let
   pskSsids = [
     "WLAN-233151"
+    "EW90N"
     "Fairphone4"
     "DSL_EXT"
   ];
@@ -54,7 +55,6 @@ in
         lib.forEach pskSsids (ssid: {
           sops = {
             secrets."wlan/${ssid}/key" = { };
-
             templates."iwd/${ssid}.psk".content = ''
               [Security]
               Passphrase=${config.sops.placeholder."wlan/${ssid}/key"}
