@@ -57,6 +57,10 @@ in
           default_phone_region = "DE";
           maintenance_window_start = "2"; # UTC
           defaultapp = "side_menu";
+          memories = {
+            exiftool_no_local = false;
+            exiftool = "${lib.getExe pkgs.exiftool}";
+          };
         };
 
         configureRedis = true;
