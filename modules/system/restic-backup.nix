@@ -61,21 +61,23 @@ in
 
     services.restic.backups = lib.mapAttrs (
       name: value:
-      {
-        inherit (value) user;
-        initialize = true;
-        repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
-        environmentFile =
-          config.sops.secrets."restic/environment".path or "/run/secrets/restic/environment";
-        passwordFile = config.sops.secrets."restic/password".path or "/run/secrets/restic/password";
-        pruneOpts = [
-          "--keep-daily 7"
-          "--keep-weekly 5"
-          "--keep-monthly 6"
-          "--keep-yearly 1"
-        ];
-      }
-      // value.extraConfig
+      lib.mkMerge [
+        {
+          inherit (value) user;
+          initialize = true;
+          repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
+          environmentFile =
+            config.sops.secrets."restic/environment".path or "/run/secrets/restic/environment";
+          passwordFile = config.sops.secrets."restic/password".path or "/run/secrets/restic/password";
+          pruneOpts = [
+            "--keep-daily 7"
+            "--keep-weekly 5"
+            "--keep-monthly 6"
+            "--keep-yearly 1"
+          ];
+        }
+        value.extraConfig
+      ]
     ) cfg;
 
     systemd.services = lib.mkMerge [
