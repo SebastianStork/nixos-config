@@ -32,6 +32,7 @@
     pkgs.webcord
     pkgs.signal-desktop
     pkgs.element-desktop
+    pkgs.celluloid
     pkgs.onlyoffice-bin_latest
     pkgs.libreoffice
     pkgs.hunspell
