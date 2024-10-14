@@ -10,6 +10,7 @@
     extraGroups = [
       "wheel"
       "libvirtd"
+      "vboxusers"
     ];
   };
 }
