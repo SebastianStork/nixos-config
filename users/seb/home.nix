@@ -34,7 +34,6 @@
     pkgs.element-desktop
     pkgs.celluloid
     pkgs.anki
-    pkgs.onlyoffice-bin_latest
     pkgs.libreoffice
     pkgs.hunspell
     pkgs.hunspellDicts.de_DE
