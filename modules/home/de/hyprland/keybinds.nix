@@ -92,27 +92,11 @@
       bind = , Print, exec, grimblast --notify --freeze copysave output
       bind = SHIFT, Print, exec, grimblast --notify --freeze copysave area
 
-      # Music workspace
-      workspace = special:music, border:false, gapsout:30, on-created-empty:spotify
-      exec-once = [workspace special:music silent] spotify
+      # Special workspaces
       bind = SUPER, S, togglespecialworkspace, music
-
-      # Chat workspace
-      workspace = special:chat, border:false, gapsout:30, on-created-empty:webcord
-      exec-once = [workspace special:chat silent] webcord
       bind = SUPER, D, togglespecialworkspace, chat
-
-      # Flake workspace
-      workspace = special:flake, border:false, gapsout:30, on-created-empty:kitty --directory ${config.home.sessionVariables.FLAKE}
-      windowrulev2 = noblur, class:(kitty), onworkspace:special:flake
       bind = SUPER, Q, togglespecialworkspace, flake
-
-      # System monitor workspace
-      workspace = special:monitor, border:false, gapsout:30, on-created-empty:kitty btm
       bind = SUPER, M, togglespecialworkspace, monitor
-
-      # Files workspace
-      workspace = special:files, border:false, gapsout:30, on-created-empty:nemo
       bind = SUPER, F, togglespecialworkspace, files
     '';
   };

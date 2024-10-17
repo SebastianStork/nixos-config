@@ -49,6 +49,19 @@
         force_default_wallpaper = 0;
         key_press_enables_dpms = true;
       };
+
+      workspace = [
+        "special:music, border:false, gapsout:30, on-created-empty:spotify"
+        "special:chat, border:false, gapsout:30, on-created-empty:webcord"
+        "special:flake, border:false, gapsout:30, on-created-empty:kitty --directory ${config.home.sessionVariables.FLAKE}"
+        "special:monitor, border:false, gapsout:30, on-created-empty:kitty btm"
+        "special:files, border:false, gapsout:30, on-created-empty:nemo"
+      ];
+      windowrulev2 = [ "noblur, class:(kitty), onworkspace:special:flake" ];
+      exec-once = [
+        "[workspace special:music silent] spotify"
+        "[workspace special:chat silent] webcord"
+      ];
     };
   };
 }
