@@ -112,7 +112,7 @@
       bind = SUPER, D, togglespecialworkspace, chat
 
       # Flake workspace
-      workspace = special:flake, border:false, gapsout:30, on-created-empty:kitty --override background_opacity=0.7 --directory ${config.home.sessionVariables.FLAKE}
+      workspace = special:flake, border:false, gapsout:30, on-created-empty:kitty --directory ${config.home.sessionVariables.FLAKE}
       windowrulev2 = noblur, class:(kitty), onworkspace:special:flake
       bind = SUPER, Q, togglespecialworkspace, flake
 
