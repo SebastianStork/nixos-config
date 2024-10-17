@@ -24,16 +24,19 @@
 
     (wrappers.kitty { inherit (config.myConfig.de) theme; })
     wrappers.firefox
-    pkgs.nemo-with-extensions
     pkgs.jetbrains.idea-community
+    pkgs.nemo-with-extensions
+    pkgs.celluloid
     pkgs.spotify
+
     pkgs.obsidian
     pkgs.todoist-electron
+    pkgs.anki
+
     pkgs.webcord
     pkgs.signal-desktop
     pkgs.element-desktop
-    pkgs.celluloid
-    pkgs.anki
+
     pkgs.libreoffice
     pkgs.hunspell
     pkgs.hunspellDicts.de_DE
