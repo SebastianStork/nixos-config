@@ -49,13 +49,6 @@
       binde = SUPER CONTROL, down, resizeactive, 0 100
       bindm = SUPER, mouse:273, resizewindow
 
-      # Minimize window
-      bind = SUPER SHIFT, M, togglespecialworkspace, minimize
-      bind = SUPER SHIFT, M, movetoworkspace, +0
-      bind = SUPER SHIFT, M, togglespecialworkspace, minimize
-      bind = SUPER SHIFT, M, movetoworkspace, special:minimize
-      bind = SUPER SHIFT, M, togglespecialworkspace, minimize
-
       # Switch workspace
       ${lib.concatMapStringsSep "\n" (n: ''
         bind = SUPER, ${toString n}, focusworkspaceoncurrentmonitor, ${toString n}
@@ -63,8 +56,6 @@
         bind = SUPER, ${toString n}, togglespecialworkspace, blank
         bind = SUPER SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}
       '') (lib.range 1 9)}
-      bind = SUPER, mouse_down, workspace, e-1
-      bind = SUPER, mouse_up, workspace, e+1
 
       # Manage session
       bindrl = SUPER CONTROL, Q, exit,
