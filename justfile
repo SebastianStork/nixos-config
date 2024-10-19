@@ -1,18 +1,16 @@
 set quiet := true
 
-rebuild := "sudo -v && nh os"
-
 default:
     just --list --unsorted
 
 switch:
-    {{ rebuild }} switch .
+    nh os switch .
 
 test:
-    {{ rebuild }} test .
+    nh os test .
 
 boot:
-    {{ rebuild }} boot .
+    nh os boot .
 
 reboot: boot
     reboot
