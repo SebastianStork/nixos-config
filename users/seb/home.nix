@@ -29,6 +29,7 @@
     pkgs.celluloid
     pkgs.spotify
 
+    pkgs.marktext
     pkgs.obsidian
     pkgs.todoist-electron
     pkgs.anki
