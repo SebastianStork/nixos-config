@@ -34,6 +34,12 @@
             light = "rgb(000000)";
           }
           .${config.myConfig.de.theme};
+        "col.inactive_border" =
+          {
+            dark = "rgba(ffffff00)";
+            light = "rgba(ffffff00)";
+          }
+          .${config.myConfig.de.theme};
         layout = "master";
       };
 
