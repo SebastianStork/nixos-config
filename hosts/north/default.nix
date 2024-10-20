@@ -23,7 +23,6 @@
     virtualisation.enable = true;
     sops.enable = true;
     printing.enable = true;
-    syncthing.enable = true;
     auto-gc.enable = true;
     geoclue.enable = true;
     tailscale = {
