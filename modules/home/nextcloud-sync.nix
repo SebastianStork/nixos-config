@@ -49,10 +49,7 @@ in
           OnBootSec = "1min";
           OnUnitActiveSec = "5min";
         };
-        Unit.After = [
-          "network-online.target"
-          "sops-nix.service"
-        ];
+        Unit.After = [ "network-online.target" ];
       };
     };
   };
