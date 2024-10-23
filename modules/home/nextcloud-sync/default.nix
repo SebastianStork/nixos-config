@@ -13,6 +13,10 @@ let
     "Videos"
     "Projects"
   ];
+  excludeList = pkgs.concatText "nextcloud-sync-exclude" [
+    "${pkgs.nextcloud-client}/etc/Nextcloud/sync-exclude.lst"
+    ./sync-exclude.lst
+  ];
   syncCommand =
     path:
     "nextcloudcmd ${
@@ -21,6 +25,7 @@ let
         "--password \"$(cat ${config.sops.secrets."nextcloud-password".path})\""
         "--path /Sync/${path}"
         "--non-interactive"
+        "--exclude ${excludeList}"
         "~/${path}"
         "https://cloud.stork-atlas.ts.net"
       ]
