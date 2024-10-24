@@ -7,7 +7,7 @@
 {
   imports = [ ../common-home.nix ];
 
-  home.sessionVariables.FLAKE = "~/Projects/nixos/my-config";
+  home.sessionVariables.FLAKE = "~/Projects/nixos-config";
 
   myConfig = {
     sops.enable = true;
