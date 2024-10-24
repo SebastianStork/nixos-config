@@ -6,12 +6,12 @@
 }:
 let
   paths = [
-    "Documents"
     "Downloads"
-    "Pictures"
-    "Music"
-    "Videos"
     "Projects"
+    "Documents/h_da"
+    "Documents/vault"
+    "Pictures/Wallpapers"
+    "Pictures/Screenshots"
   ];
   excludeList = pkgs.concatText "nextcloud-sync-exclude" [
     "${pkgs.nextcloud-client}/etc/Nextcloud/sync-exclude.lst"
@@ -23,7 +23,7 @@ let
       lib.concatStringsSep " " [
         "--user seb"
         "--password \"$(cat ${config.sops.secrets."nextcloud-password".path})\""
-        "--path /Sync/${path}"
+        "--path /${path}"
         "--non-interactive"
         "--exclude ${excludeList}"
         "~/${path}"
