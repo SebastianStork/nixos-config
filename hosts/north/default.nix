@@ -8,7 +8,7 @@
   ];
 
   system.stateVersion = "23.11";
-  boot.kernelPackages = pkgs.linuxPackages_6_10;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   myConfig = {
     boot = {
