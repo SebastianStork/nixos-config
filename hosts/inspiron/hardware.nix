@@ -24,5 +24,6 @@
     fstrim.enable = true;
     fwupd.enable = true;
     auto-cpufreq.enable = true;
+    logind.lidSwitch = "ignore";
   };
 }
