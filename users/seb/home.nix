@@ -24,10 +24,13 @@
 
     (wrappers.kitty { inherit (config.myConfig.de) theme; })
     wrappers.firefox
-    pkgs.jetbrains.idea-community
     pkgs.nemo-with-extensions
     pkgs.celluloid
     pkgs.spotify
+
+    pkgs.pkgs.jetbrains.idea-community
+    pkgs.kicad
+    pkgs.fritzing
 
     pkgs.marktext
     pkgs.obsidian
