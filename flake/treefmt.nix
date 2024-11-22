@@ -6,4 +6,5 @@
     prettier.enable = true;
     just.enable = true;
   };
+  settings.formatter.nixfmt.excludes = [ "modules/home/shell/aliases.nix" ];
 }).config.build
