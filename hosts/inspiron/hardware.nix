@@ -26,4 +26,10 @@
     auto-cpufreq.enable = true;
     logind.lidSwitch = "ignore";
   };
+
+  # Allow access to labrador usb device
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="03eb", MODE="0666"
+    SUBSYSTEM=="usb_device", ATTRS{idVendor}=="03eb", MODE="0666"
+  '';
 }
