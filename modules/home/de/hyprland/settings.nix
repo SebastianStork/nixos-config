@@ -50,7 +50,7 @@
 
       decoration = {
         rounding = 6;
-        drop_shadow = false;
+        shadow.enabled = false;
       };
 
       animations.enabled = false;
