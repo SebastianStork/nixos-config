@@ -43,10 +43,7 @@
         layout = "master";
       };
 
-      master = {
-        no_gaps_when_only = 1;
-        mfact = "0.5";
-      };
+      master.mfact = "0.5";
 
       decoration = {
         rounding = 6;
@@ -63,13 +60,30 @@
       };
 
       workspace = [
-        "special:music, border:false, gapsout:30, on-created-empty:spotify"
-        "special:chat, border:false, gapsout:30, on-created-empty:webcord"
-        "special:flake, border:false, gapsout:30, on-created-empty:kitty --directory ${config.home.sessionVariables.FLAKE}"
-        "special:monitor, border:false, gapsout:30, on-created-empty:kitty btm"
-        "special:files, border:false, gapsout:30, on-created-empty:nemo"
+        # No gaps when only one
+        "w[tv1], gapsout:0, gapsin:0"
+        "f[1], gapsout:0, gapsin:0"
+
+        "special:music, gapsout:30, on-created-empty:spotify"
+        "special:chat, gapsout:30, on-created-empty:webcord"
+        "special:flake, gapsout:30, on-created-empty:kitty --directory ${config.home.sessionVariables.FLAKE}"
+        "special:monitor, gapsout:30, on-created-empty:kitty btm"
+        "special:files, gapsout:30, on-created-empty:nemo"
       ];
-      windowrulev2 = [ "noblur, class:(kitty), onworkspace:special:flake" ];
+      windowrulev2 = [
+        # No gaps when only one
+        "bordersize 0, floating:0, onworkspace:w[tv1]"
+        "rounding 0, floating:0, onworkspace:w[tv1]"
+        "bordersize 0, floating:0, onworkspace:f[1]"
+        "rounding 0,  floating:0, onworkspace:f[1]"
+        "rounding 6, floating:0, onworkspace:special:music"
+        "rounding 6, floating:0, onworkspace:special:chat"
+        "rounding 6, floating:0, onworkspace:special:flake"
+        "rounding 6, floating:0, onworkspace:special:monitor"
+        "rounding 6, floating:0, onworkspace:special:files"
+
+        "noblur, class:(kitty), onworkspace:special:flake"
+      ];
       exec-once = [
         "[workspace special:music silent] spotify"
         "[workspace special:chat silent] webcord"
