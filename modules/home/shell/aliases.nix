@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  wrappers,
   ...
 }:
 {
@@ -33,10 +34,15 @@
           {
             cat = "bat --plain --theme=${theme}";
           };
+
+        kittyAlias = {
+          kitty = lib.getExe (wrappers.kitty { inherit (config.myConfig.de) theme; });
+        };
       in
       lib.mkMerge [
         lsAliases
         catAlias
+        kittyAlias
       ];
   };
 }
