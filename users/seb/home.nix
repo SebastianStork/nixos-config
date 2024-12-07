@@ -29,8 +29,6 @@
     pkgs.spotify
 
     pkgs.pkgs.jetbrains.idea-community
-    pkgs.kicad
-    pkgs.fritzing
 
     pkgs.marktext
     pkgs.obsidian
