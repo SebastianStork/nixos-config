@@ -5,8 +5,8 @@
   ...
 }:
 let
-  unstable = inputs.nixpkgs;
-  stable = inputs.nixpkgs-stable;
+  stable = inputs.nixpkgs;
+  # unstable = inputs.nixpkgs-unstable;
 
   mkHost = hostname: nixpkgs: {
     ${hostname} = nixpkgs.lib.nixosSystem {
@@ -29,8 +29,8 @@ in
 {
   flake = {
     nixosConfigurations = lib.mkMerge [
-      (mkHost "north" unstable)
-      (mkHost "inspiron" unstable)
+      (mkHost "north" stable)
+      (mkHost "inspiron" stable)
       (mkHost "stratus" stable)
       (mkHost "installer" stable)
     ];

@@ -14,7 +14,8 @@
       allowImages = false;
     };
 
-    systemd.user.services.cliphist.Service.ExecStartPre = "${lib.getExe config.services.cliphist.package} wipe";
+    systemd.user.services.cliphist.Service.ExecStartPre =
+      "${lib.getExe config.services.cliphist.package} wipe";
 
     home.packages = [
       (wrappers.rofi { inherit (config.myConfig.de) theme; })
