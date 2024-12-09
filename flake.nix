@@ -55,7 +55,7 @@
       flake = false;
     };
     nextcloud-side-menu = {
-      url = "https://gitnet.fr/deblan/side_menu/releases/download/v3.13.1/side_menu_v3.13.1.tar.gz";
+      url = "https://gitnet.fr/deblan/side_menu/releases/download/v4.0.1/side_menu_v4.0.1.tar.gz";
       flake = false;
     };
   };

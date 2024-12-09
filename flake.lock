@@ -188,14 +188,14 @@
     "nextcloud-side-menu": {
       "flake": false,
       "locked": {
-        "lastModified": 1720634526,
-        "narHash": "sha256-Uiq7LSVFzFy1HB9nbHT2r2wWBIbZjjYTsBT3I9aesmI=",
+        "lastModified": 1730312102,
+        "narHash": "sha256-xOZ1jEivRaKEcoBtTpQ3EvrMe2lLdgILoFMr+pgMRpU=",
         "type": "tarball",
-        "url": "https://gitnet.fr/deblan/side_menu/releases/download/v3.13.1/side_menu_v3.13.1.tar.gz"
+        "url": "https://gitnet.fr/deblan/side_menu/releases/download/v4.0.1/side_menu_v4.0.1.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://gitnet.fr/deblan/side_menu/releases/download/v3.13.1/side_menu_v3.13.1.tar.gz"
+        "url": "https://gitnet.fr/deblan/side_menu/releases/download/v4.0.1/side_menu_v4.0.1.tar.gz"
       }
     },
     "nextcloud-twofactor-totp": {
