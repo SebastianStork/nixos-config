@@ -13,7 +13,7 @@ in
     containers = lib.mapAttrs' (
       name: _:
       lib.nameValuePair "tailscale-${name}" {
-        image = "ghcr.io/tailscale/tailscale@sha256:83a6faec34866f70914a7d241d6ca749e6914f08f4f9059d942e1c3088dc001b";
+        image = "ghcr.io/tailscale/tailscale@sha256:da35f0fbeb3037754049e3b079cb30c58c140576a50b54be107c0ff6ad0ec0e9";
         environment = {
           TS_STATE_DIR = "/var/lib/tailscale";
           TS_SERVE_CONFIG = "/config/tailscale-serve.json";
