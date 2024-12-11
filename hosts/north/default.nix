@@ -4,11 +4,10 @@
     ../common.nix
     ./hardware.nix
     ./disko.nix
-    ./nvidia.nix
   ];
 
   system.stateVersion = "23.11";
-  boot.kernelPackages = pkgs.linuxPackages_6_11;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   myConfig = {
     boot = {
