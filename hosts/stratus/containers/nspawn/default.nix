@@ -85,6 +85,10 @@ in
           inherit domain;
           useHostResolvConf = false;
           interfaces."eth0".useDHCP = true;
+          nameservers = [
+            "8.8.8.8"
+            "1.1.1.1"
+          ];
         };
         services.resolved.enable = true;
 
