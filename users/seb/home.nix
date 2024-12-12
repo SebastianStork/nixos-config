@@ -28,7 +28,8 @@
     pkgs.celluloid
     pkgs.spotify
 
-    pkgs.pkgs.jetbrains.idea-community
+    pkgs.jetbrains.idea-community
+    pkgs.qtcreator
 
     pkgs.marktext
     pkgs.obsidian
