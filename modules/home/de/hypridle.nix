@@ -12,7 +12,7 @@
     home.packages = [
       wrappers.hyprlock
       pkgs.brightnessctl
-      (pkgs.writeScriptBin "lock-suspend" "loginctl lock-session && sleep 0.5 && systemctl suspend")
+      (pkgs.writeScriptBin "lock-suspend" "loginctl lock-session && sleep 0.5 && systemctl suspend-then-hibernate")
     ];
 
     services.hypridle = {
