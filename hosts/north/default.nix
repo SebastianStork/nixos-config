@@ -21,7 +21,6 @@
     sound.enable = true;
     virtualisation.enable = true;
     sops.enable = true;
-    printing.enable = true;
     auto-gc.enable = true;
     geoclue.enable = true;
     tailscale = {
