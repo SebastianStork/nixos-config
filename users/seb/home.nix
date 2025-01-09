@@ -29,6 +29,7 @@
     pkgs.spotify
 
     pkgs.jetbrains.idea-community
+    pkgs.jetbrains.goland
     pkgs.qtcreator
 
     pkgs.marktext
