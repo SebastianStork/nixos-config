@@ -14,7 +14,7 @@
       allowImages = false;
     };
 
-    systemd.user.services.cliphist.Service.ExecStartPre =
+    systemd.user.services.cliphist.Service.ExecStopPost =
       "${lib.getExe config.services.cliphist.package} wipe";
 
     home.packages = [
