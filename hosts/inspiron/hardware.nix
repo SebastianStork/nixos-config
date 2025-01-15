@@ -25,6 +25,10 @@
     fwupd.enable = true;
     auto-cpufreq.enable = true;
     logind.lidSwitch = "ignore";
+    upower = {
+      enable = true;
+      criticalPowerAction = "Hibernate";
+    };
   };
 
   # Allow access to labrador usb device
