@@ -1,4 +1,9 @@
-{ inputs, self, ... }:
+{
+  inputs,
+  self,
+  pkgs-unstable,
+  ...
+}:
 {
   imports = [ inputs.home-manager.nixosModules.home-manager ];
 
@@ -6,7 +11,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = {
-      inherit inputs self;
+      inherit inputs self pkgs-unstable;
     };
   };
 }

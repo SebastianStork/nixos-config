@@ -5,14 +5,9 @@
   ...
 }:
 let
-  stable = inputs.nixpkgs;
-  # unstable = inputs.nixpkgs-unstable;
-
-  mkHost = hostname: nixpkgs: {
-    ${hostname} = nixpkgs.lib.nixosSystem {
-      specialArgs = {
-        inherit inputs self;
-      };
+  mkHost = hostname: {
+    ${hostname} = inputs.nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit inputs self; };
       modules =
         [
           { networking.hostName = hostname; }
@@ -29,10 +24,10 @@ in
 {
   flake = {
     nixosConfigurations = lib.mkMerge [
-      (mkHost "north" stable)
-      (mkHost "inspiron" stable)
-      (mkHost "stratus" stable)
-      (mkHost "installer" stable)
+      (mkHost "north")
+      (mkHost "inspiron")
+      (mkHost "stratus")
+      (mkHost "installer")
     ];
 
     deploy.nodes.stratus = {
