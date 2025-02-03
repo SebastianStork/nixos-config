@@ -65,7 +65,7 @@
         "f[1], gapsout:0, gapsin:0"
 
         "special:music, gapsout:30, on-created-empty:spotify"
-        "special:chat, gapsout:30, on-created-empty:webcord"
+        "special:chat, gapsout:30, on-created-empty:discord"
         "special:flake, gapsout:30, on-created-empty:kitty --directory ${config.home.sessionVariables.FLAKE}"
         "special:monitor, gapsout:30, on-created-empty:kitty btm"
         "special:files, gapsout:30, on-created-empty:nemo"

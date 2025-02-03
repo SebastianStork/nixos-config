@@ -37,7 +37,7 @@
     pkgs.todoist-electron
     pkgs.anki
 
-    pkgs.webcord
+    pkgs.discord
     pkgs.signal-desktop
     pkgs.element-desktop
 
