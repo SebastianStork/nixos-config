@@ -39,6 +39,10 @@
             timeout = 610;
             on-timeout = "loginctl lock-session";
           }
+          {
+            timeout = 1800;
+            on-timeout = "lock-suspend";
+          }
         ];
       };
     };
