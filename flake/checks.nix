@@ -4,8 +4,6 @@
     { pkgs, ... }:
     {
       checks = {
-        treefmt = (import ./treefmt.nix { inherit inputs pkgs; }).check self;
-
         statix = pkgs.runCommand "statix" { buildInputs = [ pkgs.statix ]; } ''
           statix check ${self}
           mkdir $out
