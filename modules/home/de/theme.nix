@@ -8,10 +8,15 @@ let
   cfg = config.myConfig.de;
 in
 {
-  options.myConfig.de.theme = lib.mkOption { type = lib.types.str; };
+  options.myConfig.de.theme = lib.mkOption {
+    type = lib.types.enum [
+      "dark"
+      "light"
+    ];
+  };
 
   config = lib.mkMerge [
-    (lib.mkIf ((cfg.theme == "dark") || (cfg.theme == "light")) {
+    {
       gtk = {
         enable = true;
         gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
@@ -30,7 +35,7 @@ in
         package = pkgs.bibata-cursors;
         size = 24;
       };
-    })
+    }
 
     (lib.mkIf (cfg.theme == "dark") {
       dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
