@@ -8,6 +8,7 @@
       # l = locked
 
       # Variables
+      $suspend = systemctl suspend${lib.optionalString config.myConfig.hibernation.enable "-then-hibernate"}
       $play-pause = playerctl --ignore-player=firefox play-pause
       $play-next = playerctl --ignore-player=firefox next
       $play-previous = playerctl --ignore-player=firefox previous
@@ -61,9 +62,9 @@
       bindrl = SUPER CONTROL, Q, exit,
       bindrl = SUPER CONTROL, P, exec, poweroff
       bindrl = SUPER CONTROL, R, exec, reboot
-      bindrl = SUPER CONTROL, H, exec, systemctl hibernate
-      bindrl = SUPER CONTROL, S, exec, lock-suspend
-      bindl = , switch:on:Lid Switch, exec, lock-suspend
+      ${lib.optionalString config.myConfig.hibernation.enable "bindrl = SUPER CONTROL, H, exec, systemctl hibernate"}
+      bindrl = SUPER CONTROL, S, exec, $suspend
+      bindl = , switch:on:Lid Switch, exec, $suspend
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
 

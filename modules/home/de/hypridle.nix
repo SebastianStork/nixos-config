@@ -12,7 +12,6 @@
     home.packages = [
       wrappers.hyprlock
       pkgs.brightnessctl
-      (pkgs.writeScriptBin "lock-suspend" "loginctl lock-session && sleep 0.5 && systemctl suspend-then-hibernate")
     ];
 
     services.hypridle = {
@@ -21,6 +20,7 @@
       settings = {
         general = {
           lock_cmd = "pidof hyprlock || hyprlock";
+          before_sleep_cmd = "loginctl lock-session";
           after_sleep_cmd = "hyprctl dispatch dpms on";
         };
 
@@ -41,7 +41,7 @@
           }
           {
             timeout = 1800;
-            on-timeout = "lock-suspend";
+            on-timeout = "systemctl suspend${lib.optionalString config.myConfig.hibernation.enable "-then-hibernate"}";
           }
         ];
       };

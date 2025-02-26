@@ -3,7 +3,11 @@
   imports = [ ../home.nix ];
 
   home.stateVersion = "23.11";
-  myConfig.de.theme = "dark";
+
+  myConfig = {
+    de.theme = "dark";
+    hibernation.enable = true;
+  };
 
   home.packages = [
     pkgs.ffmpeg
