@@ -40,8 +40,8 @@ in
     (pkgs.writeShellApplication {
       name = "${serviceName}-restore";
       text = ''
-        sudo -u ${userName} restic-${serviceName} restore --target / latest
-        sudo -u ${userName} ${dataDir}/paperless-manage document_importer ${dataDir}/backup
+        sudo --user=${userName} restic-${serviceName} restore --target / latest
+        sudo --user=${userName} ${dataDir}/paperless-manage document_importer ${dataDir}/backup
       '';
     })
   ];

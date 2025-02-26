@@ -96,7 +96,7 @@ in
           serviceConfig.Type = "oneshot";
           scriptArgs = "%i";
           script = ''
-            ${lib.getExe pkgs.curl} -fsS -m 10 --retry 5  https://hc-ping.com/$(cat ${
+            ${lib.getExe pkgs.curl} --fail --silent --show-error --max-time 10 --retry 5  https://hc-ping.com/$(cat ${
               config.sops.secrets."healthchecks-ping-key".path or "/run/secrets/healthchecks-ping-key"
             })/$(echo $1 | tr _ /)
           '';

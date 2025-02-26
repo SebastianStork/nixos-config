@@ -38,10 +38,10 @@ in
     (pkgs.writeShellApplication {
       name = "${serviceName}-restore";
       text = ''
-        sudo -u ${userName} ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on
-        sudo -u ${userName} restic-${serviceName} restore --target / latest
-        sudo -u ${userName} pg_restore --clean --if-exists --dbname nextcloud ${dataDir}/backup/db.dump
-        sudo -u ${userName} ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off
+        sudo --user=${userName} ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on
+        sudo --user=${userName} restic-${serviceName} restore --target / latest
+        sudo --user=${userName} pg_restore --clean --if-exists --dbname nextcloud ${dataDir}/backup/db.dump
+        sudo --user=${userName} ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off
       '';
     })
   ];

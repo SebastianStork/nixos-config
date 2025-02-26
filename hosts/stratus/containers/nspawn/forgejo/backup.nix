@@ -55,8 +55,8 @@ in
       name = "${serviceName}-restore";
       text = ''
         systemctl stop forgejo.service
-        sudo -u ${userName} restic-${serviceName} restore --target / latest
-        sudo -u ${userName} pg_restore --clean --if-exists --dbname forgejo ${dataDir}/backup/db.dump
+        sudo --user=${userName} restic-${serviceName} restore --target / latest
+        sudo --user=${userName} pg_restore --clean --if-exists --dbname forgejo ${dataDir}/backup/db.dump
         systemctl start forgejo.service
       '';
     })

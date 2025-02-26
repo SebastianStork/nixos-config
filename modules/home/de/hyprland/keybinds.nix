@@ -86,8 +86,8 @@
       bindl = SUPER ALT, M, exec, $mute-mic
 
       # Adjust brightness
-      bindel = , XF86MonBrightnessUp, exec, brightnessctl -e set +2%
-      bindel = , XF86MonBrightnessDown, exec, brightnessctl -e set 2%-
+      bindel = , XF86MonBrightnessUp, exec, brightnessctl --exponent set +2%
+      bindel = , XF86MonBrightnessDown, exec, brightnessctl --exponent set 2%-
 
       # Screenshot
       bind = , Print, exec, grimblast --notify --freeze copysave output
