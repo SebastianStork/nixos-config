@@ -21,4 +21,5 @@ in
   pref("signon.rememberSignons", false);
   pref("extensions.formautofill.creditCards.enabled", false);
   pref("browser.tabs.loadBookmarksInBackground", true);
+  pref("browser.tabs.groups.enabled", true);
 ''
