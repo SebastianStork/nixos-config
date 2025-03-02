@@ -27,7 +27,7 @@
       enable = true;
       ssh.enable = true;
     };
-  };
 
-  programs.steam.enable = true;
+    steam.enable = true;
+  };
 }
