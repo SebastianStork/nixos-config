@@ -10,7 +10,7 @@
   config = lib.mkIf config.myConfig.steam.enable {
     programs = {
       steam.enable = true;
-      
+
       gamemode = {
         enable = true;
         settings.custom = {
@@ -19,5 +19,7 @@
         };
       };
     };
+
+    environment.systemPackages = [ pkgs.mangohud ];
   };
 }
