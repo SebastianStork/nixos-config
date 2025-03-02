@@ -83,6 +83,8 @@
         "rounding 6, floating:0, onworkspace:special:files"
 
         "noblur, class:(kitty), onworkspace:special:flake"
+
+        "idleinhibit fullscreen, class:.*"
       ];
       exec-once = [
         "[workspace special:music silent] spotify"
