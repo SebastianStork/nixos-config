@@ -25,6 +25,7 @@
 
   services = {
     fwupd.enable = true;
+    fprintd.enable = true;
     logind.lidSwitch = "ignore";
     upower = {
       enable = true;
