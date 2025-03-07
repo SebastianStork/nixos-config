@@ -10,6 +10,7 @@ keys:
   # Users
   - &seb-north age1p32cyzakxtcx346ej82ftln4r2aw2pcuazq3583s85nzsan4ygqsj32hjf
   - &seb-inspiron age1s9h9hh8f0vudwn4awr90mj0ka2xh9gppwus0jmvmaz3j3uckz94s36gzkz
+  - &seb-fern age190mf9wx4ct7qvne3ly9j3cj9740z5wnfhsl6vsc5wtfyc5pueuas9hnjtr
 
 creation_rules:
   # Hosts
@@ -45,3 +46,8 @@ creation_rules:
       - age:
           - *admin
           - *seb-inspiron
+  - path_regex: users/seb/@fern/secrets.yaml$
+    key_groups:
+      - age:
+          - *admin
+          - *seb-fern
