@@ -3,7 +3,10 @@
 
   home.stateVersion = "24.11";
 
-  myConfig.de.theme = "light";
+  myConfig = {
+    de.theme = "light";
+    hibernation.enable = true;
+  };
 
   wayland.windowManager.hyprland.settings.monitor = [
     "eDP-1,2880x1920@60,0x0,2"
