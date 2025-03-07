@@ -1,6 +1,9 @@
 { inputs, ... }:
 {
-  imports = [ inputs.disko.nixosModules.default ];
+  imports = [
+    inputs.disko.nixosModules.default
+    inputs.nixos-hardware.nixosModules.framework-13-7040-amd
+  ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
