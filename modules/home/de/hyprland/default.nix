@@ -27,6 +27,7 @@
       waybar.enable = true;
       cliphist.enable = true;
       gammastep.enable = true;
+      wluma.enable = true;
     };
 
     services.dunst.enable = true;
