@@ -6,7 +6,7 @@
   myConfig.de.theme = "light";
 
   wayland.windowManager.hyprland.settings.monitor = [
-    "eDP-1,2880x1920@60,0x0,1"
+    "eDP-1,2880x1920@60,0x0,2"
     ",preferred,auto,1,mirror,eDP-1"
   ];
 }
