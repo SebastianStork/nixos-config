@@ -4,6 +4,7 @@ keys:
   # Hosts
   - &north age18x6herevmcuhcmeh47ll6p9ck9zk4ga6gfxwlc8yl49rwjxm7qusylwfgc
   - &inspiron age1jl9s4vp78wuwymjxaje6fg4ax0gg5aq8pn8khfmtn5rvap0d83tqfr05dv
+  - &fern age1sywwrwse76x8yskrsfpwk38fu2cmyx5s9qkf2pgc68cta0vj9psql7dp6e
   - &stratus age1pryafed9elaea6zk5gnf6drjt4nznc02385y973lwt9t2s7j7vmsfnggkp
 
   # Users
@@ -22,6 +23,11 @@ creation_rules:
       - age:
           - *admin
           - *inspiron
+  - path_regex: hosts/fern/secrets.yaml$
+    key_groups:
+      - age:
+          - *admin
+          - *fern
   - path_regex: hosts/stratus/secrets.yaml$
     key_groups:
       - age:
