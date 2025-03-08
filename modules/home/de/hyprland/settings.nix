@@ -20,10 +20,6 @@
           sensitivity = "0.2";
         }
         {
-          name = "dell0b9f:00-27c6:0d43-touchpad";
-          accel_profile = "adaptive";
-        }
-        {
           name = "pixa3854:00-093a:0274-touchpad";
           accel_profile = "adaptive";
         }

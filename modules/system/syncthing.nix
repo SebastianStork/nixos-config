@@ -16,14 +16,12 @@
       settings = {
         devices = {
           north.id = "FAJS5WM-UAWGW2U-FXCGPSP-VAUOTGM-XUKSEES-D66PMCJ-WBODJLV-XTNCRA7";
-          inspiron.id = "DLFGFCF-MTYXA23-F235RKL-QFZ4GB6-BUHTYMX-DJCTFRA-NVMAE5Y-R63NMQY";
         };
 
         folders =
           let
             allDevices = [
               "north"
-              "inspiron"
             ];
             staggeredVersioning = {
               type = "staggered";

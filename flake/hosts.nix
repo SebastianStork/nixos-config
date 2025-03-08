@@ -25,7 +25,6 @@ in
   flake = {
     nixosConfigurations = lib.mkMerge [
       (mkHost "north")
-      (mkHost "inspiron")
       (mkHost "fern")
       (mkHost "stratus")
       (mkHost "installer")
