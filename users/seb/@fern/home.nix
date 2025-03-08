@@ -4,7 +4,7 @@
   home.stateVersion = "24.11";
 
   myConfig = {
-    de.theme = "light";
+    theme = "light";
     hibernation.enable = true;
   };
 

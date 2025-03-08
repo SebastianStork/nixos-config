@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.myConfig.de;
+  cfgTheme = config.myConfig.theme;
 in
 {
-  options.myConfig.de.theme = lib.mkOption {
+  options.myConfig.theme = lib.mkOption {
     type = lib.types.enum [
       "dark"
       "light"
@@ -37,7 +37,7 @@ in
       };
     }
 
-    (lib.mkIf (cfg.theme == "dark") {
+    (lib.mkIf (cfgTheme == "dark") {
       dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
       gtk.theme.name = "Adwaita-dark";
       gtk.iconTheme.name = "Papirus-Dark";
@@ -45,7 +45,7 @@ in
       home.pointerCursor.name = "Bibata-Original-Classic";
     })
 
-    (lib.mkIf (cfg.theme == "light") {
+    (lib.mkIf (cfgTheme == "light") {
       dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-light";
       gtk.theme.name = "Adwaita";
       gtk.iconTheme.name = "Papirus";

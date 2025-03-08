@@ -5,7 +5,7 @@
   home.stateVersion = "23.11";
 
   myConfig = {
-    de.theme = "dark";
+    theme = "dark";
     hibernation.enable = true;
   };
 

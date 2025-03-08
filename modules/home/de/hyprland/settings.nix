@@ -36,13 +36,13 @@
             dark = "rgb(ffffff)";
             light = "rgb(000000)";
           }
-          .${config.myConfig.de.theme};
+          .${config.myConfig.theme};
         "col.inactive_border" =
           {
             dark = "rgba(ffffff00)";
             light = "rgba(ffffff00)";
           }
-          .${config.myConfig.de.theme};
+          .${config.myConfig.theme};
         layout = "master";
       };
 

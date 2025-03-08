@@ -19,7 +19,7 @@
       pkgs.grimblast
     ];
 
-    myConfig.de = {
+    myConfig.deUtils = {
       rofi.enable = true;
       hyprpaper.enable = true;
       hyprlock.enable = true;

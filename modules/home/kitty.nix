@@ -18,7 +18,7 @@
               dark = "default";
               light = "GitHub_Light";
             }
-            .${config.myConfig.de.theme};
+            .${config.myConfig.theme};
         in
         {
           include = "${pkgs.kitty-themes}/share/kitty-themes/themes/${theme-name}.conf";

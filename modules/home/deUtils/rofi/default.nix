@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.de.rofi.enable = lib.mkEnableOption "";
+  options.myConfig.deUtils.rofi.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.de.rofi.enable {
+  config = lib.mkIf config.myConfig.deUtils.rofi.enable {
     home.packages = [ pkgs.rofi-wayland ];
 
     xdg.configFile."rofi/config.rasi".source =
@@ -17,7 +17,7 @@
             dark = ./dark-theme.rasi;
             light = ./light-theme.rasi;
           }
-          .${config.myConfig.de.theme};
+          .${config.myConfig.theme};
       in
       pkgs.concatText "rofi-config" [
         ./config.rasi

@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.de.hypridle.enable = lib.mkEnableOption "";
+  options.myConfig.deUtils.hypridle.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.de.hypridle.enable {
+  config = lib.mkIf config.myConfig.deUtils.hypridle.enable {
     home.packages = [ pkgs.brightnessctl ];
 
     services.hypridle = {

@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.de.cliphist.enable = lib.mkEnableOption "";
+  options.myConfig.deUtils.cliphist.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.de.cliphist.enable {
+  config = lib.mkIf config.myConfig.deUtils.cliphist.enable {
     services.cliphist = {
       enable = true;
       allowImages = false;

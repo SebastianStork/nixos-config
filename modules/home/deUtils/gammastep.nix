@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.de.gammastep.enable = lib.mkEnableOption "";
+  options.myConfig.deUtils.gammastep.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.de.gammastep.enable {
+  config = lib.mkIf config.myConfig.deUtils.gammastep.enable {
     services.gammastep = {
       enable = true;
       provider = "geoclue2";

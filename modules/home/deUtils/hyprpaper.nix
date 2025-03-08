@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.de.hyprpaper.enable = lib.mkEnableOption "";
+  options.myConfig.deUtils.hyprpaper.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.de.hyprpaper.enable {
+  config = lib.mkIf config.myConfig.deUtils.hyprpaper.enable {
     services.hyprpaper = {
       enable = true;
 

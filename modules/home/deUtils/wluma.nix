@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.de.wluma.enable = lib.mkEnableOption "";
+  options.myConfig.deUtils.wluma.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.de.wluma.enable {
+  config = lib.mkIf config.myConfig.deUtils.wluma.enable {
     home.packages = [ pkgs.wluma ];
 
     xdg.configFile."wluma/config.toml".source = (pkgs.formats.toml { }).generate "wluma-config" {

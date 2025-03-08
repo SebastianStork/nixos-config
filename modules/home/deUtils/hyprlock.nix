@@ -5,10 +5,10 @@
   ...
 }@moduleArgs:
 let
-  cfg = config.myConfig.de.hyprlock;
+  cfg = config.myConfig.deUtils.hyprlock;
 in
 {
-  options.myConfig.de.hyprlock = {
+  options.myConfig.deUtils.hyprlock = {
     enable = lib.mkEnableOption "";
     fprintAuth = lib.mkEnableOption "" // {
       default = moduleArgs.osConfig.services.fprintd.enable or false;
