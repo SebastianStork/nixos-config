@@ -1,15 +1,12 @@
-{
-  config,
-  pkgs,
-  wrappers,
-  ...
-}:
+{ pkgs, ... }:
 {
   imports = [ ../common-home.nix ];
 
   home.sessionVariables.FLAKE = "~/Projects/nixos-config";
 
   myConfig = {
+    kitty.enable = true;
+    firefox.enable = true;
     sops.enable = true;
     shell.zsh.enable = true;
     git.enable = true;
@@ -19,11 +16,9 @@
   };
 
   home.packages = [
-    wrappers.bottom
+    pkgs.bottom
     pkgs.fastfetch
 
-    (wrappers.kitty { inherit (config.myConfig.de) theme; })
-    wrappers.firefox
     pkgs.nemo-with-extensions
     pkgs.celluloid
     pkgs.spotify

@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  wrappers,
   ...
 }:
 {
@@ -18,7 +17,6 @@
       "${lib.getExe config.services.cliphist.package} wipe";
 
     home.packages = [
-      (wrappers.rofi { inherit (config.myConfig.de) theme; })
       pkgs.wl-clipboard
       (pkgs.writeScriptBin "rofi-clipboard" "cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy")
     ];

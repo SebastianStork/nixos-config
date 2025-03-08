@@ -291,8 +291,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix",
-        "treefmt-nix": "treefmt-nix",
-        "wrapper-manager": "wrapper-manager"
+        "treefmt-nix": "treefmt-nix"
       }
     },
     "sops-nix": {
@@ -380,27 +379,6 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "wrapper-manager": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1707514093,
-        "narHash": "sha256-vrESSBhoRgEnAglfr30Vd1lzuS4pX/xLjoSj78oQKOc=",
-        "owner": "nrabulinski",
-        "repo": "wrapper-manager",
-        "rev": "01b80d8ea37839a7614177d59f06eb88fbe30fd2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nrabulinski",
-        "ref": "wrap-certain-programs",
-        "repo": "wrapper-manager",
         "type": "github"
       }
     }

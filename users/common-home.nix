@@ -1,9 +1,6 @@
 { self, ... }:
 {
-  imports = [
-    self.homeManagerModules.default
-    self.wrappers.default
-  ];
+  imports = [ self.homeManagerModules.default ];
 
   systemd.user.startServices = "sd-switch";
 

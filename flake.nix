@@ -18,12 +18,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    wrapper-manager = {
-      # Wrapper-manager fork with selective binary wrapping
-      url = "github:nrabulinski/wrapper-manager/wrap-certain-programs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -72,7 +66,6 @@
       imports = [
         ./flake/hosts.nix
         ./flake/modules.nix
-        ./flake/wrappers.nix
         ./flake/dev-shells.nix
         ./flake/formatter.nix
         ./flake/checks.nix

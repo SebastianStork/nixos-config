@@ -6,10 +6,7 @@
   ...
 }:
 {
-  imports = [
-    self.nixosModules.default
-    self.wrappers.default
-  ];
+  imports = [ self.nixosModules.default ];
 
   networking.domain = "stork-atlas.ts.net";
 

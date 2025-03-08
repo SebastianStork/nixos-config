@@ -2,17 +2,13 @@
   config,
   pkgs,
   lib,
-  wrappers,
   ...
 }:
 {
   options.myConfig.de.hypridle.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.myConfig.de.hypridle.enable {
-    home.packages = [
-      wrappers.hyprlock
-      pkgs.brightnessctl
-    ];
+    home.packages = [ pkgs.brightnessctl ];
 
     services.hypridle = {
       enable = true;
