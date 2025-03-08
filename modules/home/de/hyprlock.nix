@@ -1,20 +1,36 @@
-{ config, lib, ... }:
 {
-  options.myConfig.de.hyprlock.enable = lib.mkEnableOption "";
+  config,
+  pkgs-unstable,
+  lib,
+  ...
+}@moduleArgs:
+let
+  cfg = config.myConfig.de.hyprlock;
+in
+{
+  options.myConfig.de.hyprlock = {
+    enable = lib.mkEnableOption "";
+    fprintAuth = lib.mkEnableOption "" // {
+      default = moduleArgs.osConfig.services.fprintd.enable or false;
+    };
+  };
 
-  config = lib.mkIf config.myConfig.de.hyprlock.enable {
+  config = lib.mkIf cfg.enable {
     programs.hyprlock = {
       enable = true;
+      package = pkgs-unstable.hyprlock;
 
       settings = {
-        general.no_fade_in = true;
+        general.immediate_render = true;
+        auth."fingerprint:enabled" = cfg.fprintAuth;
+        animations.enabled = false;
+        input-field.monitor = "";
         background = {
           monitor = "";
           path = "~/Pictures/.wallpaper";
           blur_size = 4;
           blur_passes = 1;
         };
-        input-field.monitor = "";
       };
     };
   };
