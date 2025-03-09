@@ -24,10 +24,10 @@ in
 {
   flake = {
     nixosConfigurations = lib.mkMerge [
-      (mkHost "north")
       (mkHost "fern")
-      (mkHost "stratus")
       (mkHost "installer")
+      (mkHost "north")
+      (mkHost "stratus")
     ];
 
     deploy.nodes.stratus = {
