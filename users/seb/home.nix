@@ -12,7 +12,6 @@
     git.enable = true;
     vscode.enable = true;
     equalizer.enable = true;
-    nextcloud-sync.enable = true;
   };
 
   home.packages = [
