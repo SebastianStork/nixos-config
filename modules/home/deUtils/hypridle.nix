@@ -37,7 +37,7 @@
           }
           {
             timeout = 1800;
-            on-timeout = "systemctl suspend${lib.optionalString config.myConfig.hibernation.enable "-then-hibernate"}";
+            on-timeout = "systemctl sleep";
           }
         ];
       };

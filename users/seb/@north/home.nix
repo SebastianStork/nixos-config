@@ -4,10 +4,7 @@
 
   home.stateVersion = "23.11";
 
-  myConfig = {
-    theme = "dark";
-    hibernation.enable = true;
-  };
+  myConfig.theme = "dark";
 
   home.packages = [
     pkgs.ffmpeg
