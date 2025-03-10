@@ -26,10 +26,14 @@
   services = {
     fwupd.enable = true;
     fprintd.enable = true;
-    logind.lidSwitch = "ignore";
     upower = {
       enable = true;
       criticalPowerAction = "Hibernate";
+    };
+
+    logind = {
+      powerKey = "suspend-then-hibernate";
+      lidSwitch = "suspend-then-hibernate";
     };
   };
 
