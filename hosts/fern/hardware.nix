@@ -32,4 +32,9 @@
       criticalPowerAction = "Hibernate";
     };
   };
+
+  systemd.sleep.extraConfig = ''
+    HibernateDelaySec=1h
+    HibernateOnACPower=yes
+  '';
 }
