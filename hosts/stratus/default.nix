@@ -1,6 +1,6 @@
 {
   imports = [
-    ../common.nix
+    ../shared.nix
     ./hardware.nix
     ./disko.nix
 
