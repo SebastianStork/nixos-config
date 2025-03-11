@@ -18,6 +18,3 @@ check:
 
 dev shell='default':
     nix develop .#{{ shell }} --command zsh
-
-build-iso:
-    nix run nixpkgs#nixos-generators -- --format iso --flake .#installer -o result
