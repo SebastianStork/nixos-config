@@ -8,7 +8,7 @@ rebuild mode='switch':
     {{ if mode == 'reboot' { 'reboot' } else { '' } }}
 
 update:
-    nix flake update
+    nix flake update --commit-lock-file
 
 fmt:
     nix fmt
