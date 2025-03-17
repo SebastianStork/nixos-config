@@ -27,6 +27,7 @@
       enable = true;
       ssh.enable = true;
     };
+    syncthing.enable = true;
 
     steam.enable = true;
   };
