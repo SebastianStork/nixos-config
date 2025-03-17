@@ -5,13 +5,11 @@
   config = lib.mkIf config.myConfig.syncthing.enable {
     services.syncthing = {
       enable = true;
+      openDefaultPorts = true;
 
       user = "seb";
       group = "users";
       dataDir = "/home/seb";
-
-      overrideDevices = true;
-      overrideFolders = true;
 
       settings = {
         devices = {
@@ -20,54 +18,24 @@
 
         folders =
           let
-            allDevices = [
-              "north"
-            ];
-            staggeredVersioning = {
-              type = "staggered";
-              params = {
-                cleanInterval = "3600"; # 1 hour in seconds
-                maxAge = "15552000"; # 180 days in seconds
-              };
-            };
+            genFolders =
+              folders:
+              lib.genAttrs folders (name: {
+                path = "~/${name}";
+                ignorePerms = false;
+                devices = [
+                  "north"
+                ];
+              });
           in
-          {
-            Documents = {
-              path = "/home/seb/Documents";
-              devices = allDevices;
-              versioning = staggeredVersioning;
-              ignorePerms = false;
-            };
-            Downloads = {
-              path = "/home/seb/Downloads";
-              devices = allDevices;
-              versioning = staggeredVersioning;
-              ignorePerms = false;
-            };
-            Pictures = {
-              path = "/home/seb/Pictures";
-              devices = allDevices;
-              versioning = staggeredVersioning;
-              ignorePerms = false;
-            };
-            Music = {
-              path = "/home/seb/Music";
-              devices = allDevices;
-              versioning = staggeredVersioning;
-              ignorePerms = false;
-            };
-            Videos = {
-              path = "/home/seb/Videos";
-              devices = allDevices;
-              versioning = staggeredVersioning;
-              ignorePerms = false;
-            };
-            Projects = {
-              path = "/home/seb/Projects";
-              devices = allDevices;
-              ignorePerms = false;
-            };
-          };
+          genFolders [
+            "Documents"
+            "Downloads"
+            "Music"
+            "Pictures"
+            "Projects"
+            "Videos"
+          ];
       };
     };
   };
