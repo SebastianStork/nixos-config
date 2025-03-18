@@ -22,21 +22,21 @@
 
         listener = [
           {
-            timeout = 300;
+            timeout = 5 * 60;
             on-timeout = "brightnessctl --save --exponent set 10%";
             on-resume = "brightnessctl --restore";
           }
           {
-            timeout = 600;
+            timeout = 10 * 60;
             on-timeout = "hyprctl dispatch dpms off";
             on-resume = "hyprctl dispatch dpms on";
           }
           {
-            timeout = 610;
+            timeout = 10 * 60 + 10;
             on-timeout = "loginctl lock-session";
           }
           {
-            timeout = 1800;
+            timeout = 30 * 60;
             on-timeout = "systemctl sleep";
           }
         ];
