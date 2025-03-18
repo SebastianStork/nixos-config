@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.auto-gc.enable = lib.mkEnableOption "";
+  options.myConfig.garbageCollection.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.auto-gc.enable {
+  config = lib.mkIf config.myConfig.garbageCollection.enable {
     programs.nh = {
       enable = true;
       clean = {

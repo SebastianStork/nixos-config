@@ -32,9 +32,9 @@ let
     }";
 in
 {
-  options.myConfig.nextcloud-sync.enable = lib.mkEnableOption "";
+  options.myConfig.nextcloudSync.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.nextcloud-sync.enable {
+  config = lib.mkIf config.myConfig.nextcloudSync.enable {
     sops.secrets."nextcloud-password" = { };
 
     systemd.user = {

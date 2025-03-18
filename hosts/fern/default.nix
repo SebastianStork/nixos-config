@@ -11,7 +11,7 @@
 
   myConfig = {
     boot = {
-      loader.systemd-boot.enable = true;
+      loader.systemdBoot.enable = true;
       silent = true;
     };
 
@@ -24,7 +24,7 @@
     sound.enable = true;
     virtualisation.enable = true;
     sops.enable = true;
-    auto-gc.enable = true;
+    garbageCollection.enable = true;
     geoclue.enable = true;
     tailscale = {
       enable = true;

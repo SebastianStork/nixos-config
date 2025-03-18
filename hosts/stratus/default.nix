@@ -12,7 +12,7 @@
 
   myConfig = {
     sops.enable = true;
-    boot.loader.systemd-boot.enable = true;
+    boot.loader.systemdBoot.enable = true;
     tailscale = {
       enable = true;
       ssh.enable = true;
