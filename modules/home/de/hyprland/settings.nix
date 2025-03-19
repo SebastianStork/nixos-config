@@ -79,19 +79,19 @@
         "rounding 0, floating:0, onworkspace:w[tv1]"
         "bordersize 0, floating:0, onworkspace:f[1]"
         "rounding 0,  floating:0, onworkspace:f[1]"
+
         "rounding 6, floating:0, onworkspace:special:music"
         "rounding 6, floating:0, onworkspace:special:chat"
-        "rounding 6, floating:0, onworkspace:special:flake"
         "rounding 6, floating:0, onworkspace:special:monitor"
         "rounding 6, floating:0, onworkspace:special:files"
-
+        "rounding 6, floating:0, onworkspace:special:flake"
         "noblur, class:(kitty), onworkspace:special:flake"
 
         "idleinhibit fullscreen, class:.*"
       ];
       exec-once = [
         "[workspace special:music silent] spotify"
-        "[workspace special:chat silent] webcord"
+        "[workspace special:chat silent] discord"
       ];
     };
   };
