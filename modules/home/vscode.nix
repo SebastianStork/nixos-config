@@ -55,6 +55,8 @@
             "editor.minimap.enabled" = false;
             "window.menuBarVisibility" = "toggle";
             "workbench.editor.decorations.colors" = false;
+            "window.titleBarStyle" = "native";
+            "window.customTitleBarVisibility" = "never";
           }
         );
       in
