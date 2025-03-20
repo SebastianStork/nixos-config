@@ -24,7 +24,7 @@
     sound.enable = true;
     virtualisation.enable = true;
     sops.enable = true;
-    garbageCollection.enable = true;
+    gc.enable = true;
     geoclue.enable = true;
     tailscale = {
       enable = true;

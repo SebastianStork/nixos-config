@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.garbageCollection.enable = lib.mkEnableOption "";
+  options.myConfig.gc.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.garbageCollection.enable {
+  config = lib.mkIf config.myConfig.gc.enable {
     programs.nh = {
       enable = true;
       clean = {
