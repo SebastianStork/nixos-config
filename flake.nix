@@ -56,6 +56,11 @@
       url = "https://gitnet.fr/deblan/side_menu/releases/download/v4.0.1/side_menu_v4.0.1.tar.gz";
       flake = false;
     };
+
+    hypridle = {
+      url = "github:hyprwm/Hypridle";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  pkgs-unstable,
   lib,
   ...
 }@moduleArgs:
@@ -10,7 +11,10 @@
   };
 
   config = lib.mkIf config.myConfig.de.hyprland.enable {
-    wayland.windowManager.hyprland.enable = true;
+    wayland.windowManager.hyprland = {
+      enable = true;
+      package = pkgs-unstable.hyprland;
+    };
 
     home.packages = [
       pkgs.wl-clipboard

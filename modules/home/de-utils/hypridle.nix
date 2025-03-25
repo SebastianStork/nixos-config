@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   pkgs,
   lib,
   ...
@@ -12,6 +13,7 @@
 
     services.hypridle = {
       enable = true;
+      package = inputs.hypridle.packages.${pkgs.system}.default;
 
       settings = {
         general = {
