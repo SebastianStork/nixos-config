@@ -28,6 +28,7 @@ in
         background = {
           monitor = "";
           path = "~/Pictures/.wallpaper";
+          color = "rgb(0,0,0)";
           blur_size = 4;
           blur_passes = 1;
         };
