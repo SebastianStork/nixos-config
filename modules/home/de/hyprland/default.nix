@@ -1,11 +1,15 @@
 {
   config,
+  inputs,
   pkgs,
-  pkgs-unstable,
   lib,
   ...
 }@moduleArgs:
 {
+  # Use unstable hyprland module for nullable package
+  disabledModules = [ "services/window-managers/hyprland.nix" ];
+  imports = [ "${inputs.home-manager-unstable}/modules/services/window-managers/hyprland.nix" ];
+
   options.myConfig.de.hyprland.enable = lib.mkEnableOption "" // {
     default = moduleArgs.osConfig.myConfig.de.hyprland.enable or false;
   };
@@ -13,7 +17,8 @@
   config = lib.mkIf config.myConfig.de.hyprland.enable {
     wayland.windowManager.hyprland = {
       enable = true;
-      package = pkgs-unstable.hyprland;
+      package = null;
+      portalPackage = null;
     };
 
     home.packages = [

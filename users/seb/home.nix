@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 {
   imports = [ ../shared-home.nix ];
 
@@ -31,7 +31,7 @@
     pkgs.todoist-electron
     pkgs.anki
 
-    pkgs.discord
+    pkgs-unstable.discord
     pkgs.signal-desktop
     pkgs.element-desktop
 

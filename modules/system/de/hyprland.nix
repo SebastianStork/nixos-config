@@ -8,10 +8,14 @@
   options.myConfig.de.hyprland.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.myConfig.de.hyprland.enable {
-    programs.hyprland = {
-      enable = true;
-      package = pkgs-unstable.hyprland;
-      portalPackage = pkgs-unstable.xdg-desktop-portal-hyprland;
+    programs = {
+      hyprland = {
+        enable = true;
+        package = pkgs-unstable.hyprland;
+        portalPackage = pkgs-unstable.xdg-desktop-portal-hyprland;
+      };
+
+      xwayland.package = pkgs-unstable.xwayland;
     };
 
     hardware.graphics = {
