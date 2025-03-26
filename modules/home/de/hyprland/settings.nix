@@ -89,10 +89,7 @@
 
         "idleinhibit fullscreen, class:.*"
       ];
-      exec-once = [
-        "[workspace special:music silent] spotify"
-        "[workspace special:chat silent] discord"
-      ];
+      exec-once = [ "[workspace special:music silent] spotify" ];
     };
   };
 }
