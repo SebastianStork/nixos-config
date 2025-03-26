@@ -22,9 +22,7 @@
     };
 
     home.packages = [
-      pkgs.wl-clipboard
       pkgs.playerctl
-      pkgs.brightnessctl
       pkgs.grimblast
     ];
 

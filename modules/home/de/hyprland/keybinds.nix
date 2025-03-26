@@ -83,9 +83,11 @@
       bindel = SUPER ALT, down, exec, $volume-down
       bindl = SUPER ALT, M, exec, $mute-mic
 
-      # Adjust brightness
-      bindel = , XF86MonBrightnessUp, exec, brightnessctl --exponent set +2%
-      bindel = , XF86MonBrightnessDown, exec, brightnessctl --exponent set 2%-
+      ${lib.optionalString config.myConfig.deUtils.brightnessctl.enable ''
+        # Adjust brightness
+        bindel = , XF86MonBrightnessUp, exec, brightnessctl --exponent set +2%
+        bindel = , XF86MonBrightnessDown, exec, brightnessctl --exponent set 2%-
+      ''}
 
       # Screenshot
       bind = , Print, exec, grimblast --notify --freeze copysave output

@@ -8,6 +8,13 @@
   options.myConfig.deUtils.cliphist.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.myConfig.deUtils.cliphist.enable {
+    assertions = [
+      {
+        assertion = config.myConfig.deUtils.rofi.enable;
+        message = "cliphist requires rofi";
+      }
+    ];
+
     services.cliphist = {
       enable = true;
       allowImages = false;
