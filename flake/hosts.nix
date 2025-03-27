@@ -24,16 +24,25 @@ in
 {
   flake = {
     nixosConfigurations = lib.mkMerge [
+      (mkHost "alto")
       (mkHost "fern")
       (mkHost "north")
       (mkHost "stratus")
     ];
 
-    deploy.nodes.stratus = {
-      hostname = "stratus";
-      sshUser = "root";
-      remoteBuild = true;
-      profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.stratus;
+    deploy.nodes = {
+      stratus = {
+        hostname = "stratus";
+        sshUser = "root";
+        remoteBuild = true;
+        profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.stratus;
+      };
+      alto = {
+        hostname = "alto";
+        sshUser = "root";
+        remoteBuild = true;
+        profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.alto;
+      };
     };
   };
 }
