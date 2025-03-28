@@ -51,15 +51,16 @@
   users.mutableUsers = false;
 
   programs.neovim = {
-      enable = true;
-      defaultEditor = true;
-      viAlias = true;
-      vimAlias = true;
-    };
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+  };
 
   environment.systemPackages = [
     pkgs.git
     pkgs.just
+    pkgs.nh
   ];
 
   nixpkgs.config.allowUnfree = true;
