@@ -50,20 +50,12 @@
 
   users.mutableUsers = false;
 
-  programs = {
-    zsh = {
-      enable = true;
-      autosuggestions.enable = true;
-      syntaxHighlighting.enable = true;
-    };
-
-    neovim = {
+  programs.neovim = {
       enable = true;
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
     };
-  };
 
   environment.systemPackages = [
     pkgs.git
