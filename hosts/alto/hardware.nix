@@ -24,7 +24,7 @@
       matchConfig.Name = "ens3";
       address = [
         "152.53.85.193/22"
-        "2a0a:4cc0:c0:23bd::/64"
+        "2a0a:4cc0:c0:23bd::1/64"
       ];
       routes = [
         { Gateway = "152.53.84.1"; }
