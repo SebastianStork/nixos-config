@@ -1,7 +1,6 @@
 {
   config,
-  inputs,
-  pkgs,
+  pkgs-unstable,
   lib,
   ...
 }:
@@ -9,11 +8,9 @@
   options.myConfig.deUtils.hypridle.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.myConfig.deUtils.hypridle.enable {
-    home.packages = [ pkgs.brightnessctl ];
-
     services.hypridle = {
       enable = true;
-      package = inputs.hypridle.packages.${pkgs.system}.default;
+      package = pkgs-unstable.hypridle;
 
       settings = {
         general = {
