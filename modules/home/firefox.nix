@@ -33,6 +33,7 @@
             "extensions.formautofill.creditCards.enabled" = false;
             "browser.tabs.loadBookmarksInBackground" = true;
             "browser.tabs.groups.enabled" = true;
+            "browser.uidensity" = 1;
           };
 
         extraConfig = builtins.readFile "${inputs.betterfox}/user.js";
