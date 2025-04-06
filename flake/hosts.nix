@@ -5,19 +5,24 @@
   ...
 }:
 let
-  mkHost = hostname: {
-    ${hostname} = inputs.nixpkgs.lib.nixosSystem {
+  mkHost = hostName: {
+    ${hostName} = inputs.nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs self; };
       modules =
-        [
-          { networking.hostName = hostname; }
-          "${self}/hosts/${hostname}"
-        ]
-        ++ builtins.filter (path: builtins.pathExists path) (
-          map (user: "${self}/users/${user}/@${hostname}") (
-            builtins.attrNames (lib.filterAttrs (_: v: v == "directory") (builtins.readDir "${self}/users"))
-          )
-        );
+        let
+          userFiles =
+            "${self}/users"
+            |> builtins.readDir
+            |> lib.filterAttrs (_: type: type == "directory")
+            |> builtins.attrNames
+            |> map (user: "${self}/users/${user}/@${hostName}")
+            |> builtins.filter (path: builtins.pathExists path);
+        in
+        lib.flatten [
+          { networking = { inherit hostName; }; }
+          "${self}/hosts/${hostName}"
+          userFiles
+        ];
     };
   };
 in
