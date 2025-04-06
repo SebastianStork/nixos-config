@@ -1,11 +1,5 @@
 { pkgs, ... }:
 {
-  imports = [
-    ../shared.nix
-    ./hardware.nix
-    ./disko.nix
-  ];
-
   system.stateVersion = "24.11";
   boot.kernelPackages = pkgs.linuxPackages_latest;
 

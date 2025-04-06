@@ -1,10 +1,4 @@
 {
-  imports = [
-    ../shared.nix
-    ./hardware.nix
-    ./disko.nix
-  ];
-
   system.stateVersion = "24.11";
 
   myConfig = {

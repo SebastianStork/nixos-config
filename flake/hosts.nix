@@ -10,6 +10,12 @@ let
       specialArgs = { inherit inputs self; };
       modules =
         let
+          hostFiles =
+            "${self}/hosts/${hostName}"
+            |> builtins.readDir
+            |> lib.filterAttrs (fileName: type: (fileName |> lib.hasSuffix ".nix") && type == "regular")
+            |> builtins.attrNames
+            |> map (fileName: "${self}/hosts/${hostName}/${fileName}");
           userFiles =
             "${self}/users"
             |> builtins.readDir
@@ -20,7 +26,8 @@ let
         in
         lib.flatten [
           { networking = { inherit hostName; }; }
-          "${self}/hosts/${hostName}"
+          "${self}/hosts/shared.nix"
+          hostFiles
           userFiles
         ];
     };
