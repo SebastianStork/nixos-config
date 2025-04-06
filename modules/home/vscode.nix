@@ -47,7 +47,7 @@
             "git.autofetch" = true;
             "git.confirmSync" = false;
             "nix.enableLanguageServer" = true;
-            "nix.serverPath" = "${lib.getExe pkgs.nil}";
+            "nix.serverPath" = "${lib.getExe pkgs.nixd}";
             "update.mode" = "none";
             "git.suggestSmartCommit" = false;
             "workbench.sideBar.location" = "right";
