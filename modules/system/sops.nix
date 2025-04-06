@@ -5,24 +5,15 @@
   lib,
   ...
 }:
-let
-  cfg = config.myConfig.sops;
-in
 {
   imports = [ inputs.sops-nix.nixosModules.sops ];
 
-  options.myConfig.sops = {
-    enable = lib.mkEnableOption "";
-    defaultSopsFile = lib.mkOption {
-      type = lib.types.path;
-      default = "${self}/hosts/${config.networking.hostName}/secrets.yaml";
-    };
-  };
+  options.myConfig.sops.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf config.myConfig.sops.enable {
     sops = {
       age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-      inherit (cfg) defaultSopsFile;
+      defaultSopsFile = "${self}/hosts/${config.networking.hostName}/secrets.yaml";
     };
   };
 }
