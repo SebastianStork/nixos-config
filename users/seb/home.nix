@@ -29,7 +29,7 @@
     pkgs.marktext
     pkgs.obsidian
     pkgs.todoist-electron
-    pkgs.anki
+    pkgs-unstable.anki
 
     pkgs-unstable.discord
     pkgs.signal-desktop
