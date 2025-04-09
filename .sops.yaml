@@ -3,7 +3,6 @@ keys:
   - &alto age1qz04yg4h4g22wxqca2pd5k0z574223f6m5c9jy5ny37nlgcd6u4styf06t
   - &fern age1sywwrwse76x8yskrsfpwk38fu2cmyx5s9qkf2pgc68cta0vj9psql7dp6e
   - &north age18x6herevmcuhcmeh47ll6p9ck9zk4ga6gfxwlc8yl49rwjxm7qusylwfgc
-  - &stratus age1pryafed9elaea6zk5gnf6drjt4nznc02385y973lwt9t2s7j7vmsfnggkp
 
   # Users
   - &seb-admin age1mpq8m4p7dnxh5ze3fh7etd2k6sp85zdnmp9te3e9chcw4pw07pcq960zh5
@@ -27,11 +26,6 @@ creation_rules:
       - age:
           - *seb-admin
           - *north
-  - path_regex: hosts/stratus/secrets.yaml$
-    key_groups:
-      - age:
-          - *seb-admin
-          - *stratus
 
   # Users
   - path_regex: users/seb/@fern/secrets.yaml$
