@@ -5,16 +5,18 @@
   ...
 }:
 let
-  cfg = lib.filterAttrs (_: value: value.enable) config.myConfig.resticBackup;
+  backupServices = lib.filterAttrs (_: value: value.enable) config.myConfig.resticBackup;
 
-  healthchecksEnable = (lib.filterAttrs (_: value: value.healthchecks.enable) cfg) != { };
+  healthchecksEnable = (lib.filterAttrs (_: value: value.healthchecks.enable) backupServices) != { };
 in
 {
   options.myConfig.resticBackup = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
         options = {
-          enable = lib.mkEnableOption "";
+          enable = lib.mkEnableOption "" // {
+            default = true;
+          };
           user = lib.mkOption {
             type = lib.types.str;
             default = config.users.users.root.name;
@@ -30,22 +32,12 @@ in
     default = { };
   };
 
-  config = lib.mkIf (cfg != { }) {
-    systemd.tmpfiles.rules =
-      (lib.optionals (!config.myConfig.sops.enable) [
-        "z /run/secrets/restic/environment 440 root ${config.users.groups.backup.name} -"
-        "z /run/secrets/restic/password 440 root ${config.users.groups.backup.name} -"
-        "z /run/secrets/healthchecks-ping-key 440 root ${config.users.groups.backup.name} -"
-      ])
-      ++ lib.mapAttrsToList (
-        name: value: "d /var/cache/restic-backups-${name} 700 ${value.user} ${value.user} -"
-      ) cfg;
-
+  config = lib.mkIf (backupServices != { }) {
     users.groups.backup.members = builtins.filter (user: user != config.users.users.root.name) (
-      lib.mapAttrsToList (_: value: value.user) cfg
+      lib.mapAttrsToList (_: value: value.user) backupServices
     );
 
-    sops.secrets = lib.optionalAttrs config.myConfig.sops.enable (
+    sops.secrets =
       let
         resticPermissions = {
           mode = "440";
@@ -56,8 +48,12 @@ in
         "restic/environment" = resticPermissions;
         "restic/password" = resticPermissions;
         "healthchecks-ping-key" = lib.mkIf healthchecksEnable resticPermissions;
-      }
-    );
+      };
+
+    systemd.tmpfiles.rules = lib.mapAttrsToList (
+      name: value:
+      "d /var/cache/restic-backups-${name} 700 ${value.user} ${config.users.groups.backup.name} -"
+    ) backupServices;
 
     services.restic.backups = lib.mapAttrs (
       name: value:
@@ -66,9 +62,8 @@ in
           inherit (value) user;
           initialize = true;
           repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
-          environmentFile =
-            config.sops.secrets."restic/environment".path or "/run/secrets/restic/environment";
-          passwordFile = config.sops.secrets."restic/password".path or "/run/secrets/restic/password";
+          environmentFile = config.sops.secrets."restic/environment".path;
+          passwordFile = config.sops.secrets."restic/password".path;
           pruneOpts = [
             "--keep-daily 7"
             "--keep-weekly 5"
@@ -78,7 +73,7 @@ in
         }
         value.extraConfig
       ]
-    ) cfg;
+    ) backupServices;
 
     systemd.services = lib.mkMerge [
       (lib.mapAttrs' (
@@ -88,7 +83,7 @@ in
           onSuccess = [ "healthcheck-ping@${name}-backup.service" ];
           onFailure = [ "healthcheck-ping@${name}-backup_fail.service" ];
         }
-      ) (lib.filterAttrs (_: value: value.healthchecks.enable) cfg))
+      ) (lib.filterAttrs (_: value: value.healthchecks.enable) backupServices))
 
       (lib.mkIf healthchecksEnable {
         "healthcheck-ping@" = {
@@ -97,7 +92,7 @@ in
           scriptArgs = "%i";
           script = ''
             ${lib.getExe pkgs.curl} --fail --silent --show-error --max-time 10 --retry 5  https://hc-ping.com/$(cat ${
-              config.sops.secrets."healthchecks-ping-key".path or "/run/secrets/healthchecks-ping-key"
+              config.sops.secrets."healthchecks-ping-key".path
             })/$(echo $1 | tr _ /)
           '';
         };
