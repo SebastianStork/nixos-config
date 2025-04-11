@@ -17,8 +17,13 @@ in
         target = "localhost:${toString myConfig.hedgedoc.port}";
       };
 
-      caddyServe.nextcloud = {
-        inherit (myConfig.nextcloud) subdomain port;
+      caddyServe = {
+        nextcloud = {
+          inherit (myConfig.nextcloud) subdomain port;
+        };
+        actualbudget = {
+          inherit (myConfig.actualbudget) subdomain port;
+        };
       };
     };
 
@@ -26,6 +31,11 @@ in
       enable = true;
       backups.enable = true;
       subdomain = "cloud";
+    };
+    actualbudget = {
+      enable = true;
+      backups.enable = true;
+      subdomain = "budget";
     };
     hedgedoc = {
       enable = true;
