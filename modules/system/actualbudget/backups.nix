@@ -23,9 +23,11 @@
       (pkgs.writeShellApplication {
         name = "actual-restore";
         text = ''
-          sudo systemctl stop actual.service
-          sudo restic-actual restore latest --target /
-          sudo systemctl start actual.service
+          sudo bash -c "
+            systemctl stop actual.service
+            restic-actual restore latest --target /
+            systemctl start actual.service
+          "
         '';
       })
     ];

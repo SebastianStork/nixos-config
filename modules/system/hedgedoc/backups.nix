@@ -26,9 +26,11 @@
       (pkgs.writeShellApplication {
         name = "hedgedoc-restore";
         text = ''
-          sudo systemctl stop hedgedoc.service
-          sudo restic-hedgedoc restore latest --target /
-          sudo systemctl start hedgedoc.service
+          sudo bash -c "
+            systemctl stop hedgedoc.service
+            restic-hedgedoc restore latest --target /
+            systemctl start hedgedoc.service
+          "
         '';
       })
     ];
