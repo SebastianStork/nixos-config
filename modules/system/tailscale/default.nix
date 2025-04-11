@@ -16,9 +16,12 @@ in
     };
     ssh.enable = lib.mkEnableOption "";
     exitNode.enable = lib.mkEnableOption "";
-    serve = lib.mkOption {
-      type = lib.types.nullOr lib.types.nonEmptyStr;
-      default = null;
+    serve = {
+      isFunnel = lib.mkEnableOption "";
+      target = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default = null;
+      };
     };
   };
 
@@ -29,7 +32,8 @@ in
       enable = true;
       authKeyFile = config.sops.secrets."tailscale-auth-key".path;
       openFirewall = true;
-      useRoutingFeatures = if (cfg.exitNode.enable || (cfg.serve != null)) then "server" else "client";
+      useRoutingFeatures =
+        if (cfg.exitNode.enable || (cfg.serve.target != null)) then "server" else "client";
       extraUpFlags = [ "--reset=true" ];
       extraSetFlags = [
         "--hostname=${cfg.subdomain}"
@@ -38,21 +42,24 @@ in
       ];
     };
 
-    systemd.services.tailscaled-set.after = [ "tailscaled-autoconnect.service" ];
+    systemd.services =
+      let
+        mode = if cfg.serve.isFunnel then "funnel" else "serve";
+      in
+      {
+        "tailscaled-${mode}" = lib.mkIf (cfg.serve.target != null) {
+          after = [
+            "tailscaled.service"
+            "tailscaled-autoconnect.service"
+          ];
+          wants = [ "tailscaled.service" ];
+          wantedBy = [ "multi-user.target" ];
+          serviceConfig.Type = "oneshot";
+          preStart = "${lib.getExe pkgs.tailscale} cert --min-validity 120h ${cfg.subdomain}.${config.networking.domain}";
+          script = "${lib.getExe pkgs.tailscale} ${mode} ${cfg.serve.target}";
+        };
 
-    systemd.services.tailscaled-serve = lib.mkIf (cfg.serve != null) {
-      after = [
-        "tailscaled.service"
-        "tailscaled-autoconnect.service"
-      ];
-      wants = [ "tailscaled.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig.Type = "oneshot";
-      script = ''
-        ${lib.getExe pkgs.tailscale} cert --min-validity 120h ${cfg.subdomain}.${config.networking.domain}
-        ${lib.getExe pkgs.tailscale} serve reset
-        ${lib.getExe pkgs.tailscale} serve --bg ${cfg.serve}
-      '';
-    };
+        tailscaled-set.after = [ "tailscaled-autoconnect.service" ];
+      };
   };
 }
