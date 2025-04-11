@@ -1,7 +1,8 @@
 { config, ... }:
 let
   myCfg = config.myConfig;
-  in
+  caddyServe = myCfg.tailscale.caddyServe;
+in
 {
   system.stateVersion = "24.11";
 
@@ -13,16 +14,27 @@ let
       ssh.enable = true;
       exitNode.enable = true;
 
-      caddyServe.nextcloud = {
-        subdomain = "cloud";
-        inherit (myCfg.nextcloud) port;
+      caddyServe = {
+        nextcloud = {
+          subdomain = "cloud";
+          inherit (myCfg.nextcloud) port;
+        };
+        hedgedoc = {
+          subdomain = "docs";
+          inherit (myCfg.hedgedoc) port;
+        };
       };
     };
 
     nextcloud = {
       enable = true;
       backups.enable = true;
-      inherit (myCfg.tailscale.caddyServe.nextcloud) subdomain;
+      inherit (caddyServe.nextcloud) subdomain;
+    };
+    hedgedoc = {
+      enable = true;
+      backups.enable = true;
+      inherit (caddyServe.hedgedoc) subdomain;
     };
   };
 }
