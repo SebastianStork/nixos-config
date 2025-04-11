@@ -31,7 +31,7 @@ in
 
       settings = {
         domain = "${cfg.subdomain}.${config.networking.domain}";
-        port = cfg.port;
+        inherit (cfg) port;
         protocolUseSSL = true;
 
         allowAnonymous = false;

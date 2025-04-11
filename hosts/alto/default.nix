@@ -1,7 +1,7 @@
 { config, ... }:
 let
-  myCfg = config.myConfig;
-  caddyServe = myCfg.tailscale.caddyServe;
+  inherit (config) myConfig;
+  inherit (myConfig.tailscale) caddyServe;
 in
 {
   system.stateVersion = "24.11";
@@ -17,11 +17,11 @@ in
       caddyServe = {
         nextcloud = {
           subdomain = "cloud";
-          inherit (myCfg.nextcloud) port;
+          inherit (myConfig.nextcloud) port;
         };
         hedgedoc = {
           subdomain = "docs";
-          inherit (myCfg.hedgedoc) port;
+          inherit (myConfig.hedgedoc) port;
         };
       };
     };
