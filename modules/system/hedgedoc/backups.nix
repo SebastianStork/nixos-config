@@ -27,7 +27,7 @@
         name = "hedgedoc-restore";
         text = ''
           sudo systemctl stop hedgedoc.service
-          sudo restic-hedgedoc restore --target / latest
+          sudo restic-hedgedoc restore latest --target /
           sudo systemctl start hedgedoc.service
         '';
       })

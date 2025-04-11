@@ -41,7 +41,7 @@ in
         name = "nextcloud-restore";
         text = ''
           sudo --user=${user} ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on
-          sudo --user=${user} restic-nextcloud restore --target / latest
+          sudo --user=${user} restic-nextcloud restore latest --target /
           sudo --user=${user} pg_restore --clean --if-exists --dbname nextcloud ${cfg.dataDir}/backup/db.dump
           sudo --user=${user} ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off
         '';
