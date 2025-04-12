@@ -1,19 +1,29 @@
 { config, lib, ... }:
+let
+  cfg = config.myConfig.syncthing;
+in
 {
-  options.myConfig.syncthing.enable = lib.mkEnableOption "";
+  options.myConfig.syncthing = {
+    enable = lib.mkEnableOption "";
+    isServer = lib.mkEnableOption "";
+  };
 
-  config = lib.mkIf config.myConfig.syncthing.enable {
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22000 ];
-
+  config = lib.mkIf cfg.enable {
     services.syncthing = {
       enable = true;
 
-      user = "seb";
-      group = "users";
-      dataDir = "/home/seb";
+      user = lib.mkIf (!cfg.isServer) "seb";
+      group = lib.mkIf (!cfg.isServer) "users";
+      dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
+
+      guiAddress = lib.mkIf cfg.isServer "0.0.0.0:8384";
 
       settings = {
         devices = {
+          alto = {
+            id = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
+            addresses = [ "tcp://alto.${config.networking.domain}:22000" ];
+          };
           fern = {
             id = "Q4YPD3V-GXZPHSN-PT5X4PU-FBG4GX2-IASBX75-7NYMG75-4EJHBMZ-4WGDDAP";
             addresses = [ "tcp://fern.${config.networking.domain}:22000" ];
@@ -29,7 +39,7 @@
             genFolders =
               folders:
               lib.genAttrs folders (name: {
-                path = "~/${name}";
+                path = "${config.services.syncthing.dataDir}/${name}";
                 ignorePerms = false;
                 devices = lib.attrNames config.services.syncthing.settings.devices;
               });

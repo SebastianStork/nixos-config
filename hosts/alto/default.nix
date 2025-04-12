@@ -8,10 +8,12 @@ in
   myConfig = {
     boot.loader.systemdBoot.enable = true;
     sops.enable = true;
+
     tailscale = {
       enable = true;
       ssh.enable = true;
       exitNode.enable = true;
+
       serve = {
         isFunnel = true;
         target = "localhost:${toString myConfig.hedgedoc.port}";
@@ -41,6 +43,10 @@ in
       enable = true;
       backups.enable = true;
       subdomain = config.networking.hostName;
+    };
+    syncthing = {
+      enable = true;
+      isServer = true;
     };
   };
 }
