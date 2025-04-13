@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  self,
+  lib,
+  ...
+}:
 let
   cfg = config.myConfig.syncthing;
 in
@@ -6,6 +11,10 @@ in
   options.myConfig.syncthing = {
     enable = lib.mkEnableOption "";
     isServer = lib.mkEnableOption "";
+    deviceId = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -19,20 +28,17 @@ in
       guiAddress = lib.mkIf cfg.isServer "0.0.0.0:8384";
 
       settings = {
-        devices = {
-          alto = {
-            id = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
-            addresses = [ "tcp://alto.${config.networking.domain}:22000" ];
-          };
-          fern = {
-            id = "Q4YPD3V-GXZPHSN-PT5X4PU-FBG4GX2-IASBX75-7NYMG75-4EJHBMZ-4WGDDAP";
-            addresses = [ "tcp://fern.${config.networking.domain}:22000" ];
-          };
-          north = {
-            id = "FAJS5WM-UAWGW2U-FXCGPSP-VAUOTGM-XUKSEES-D66PMCJ-WBODJLV-XTNCRA7";
-            addresses = [ "tcp://north.${config.networking.domain}:22000" ];
-          };
-        };
+        # Get the devices and their ids from the configs of the other hosts
+        devices =
+          self.nixosConfigurations
+          |> lib.filterAttrs (name: _: name != config.networking.hostName)
+          |> lib.filterAttrs (_: value: value.config.myConfig.syncthing.enable)
+          |> lib.mapAttrs (
+            name: value: {
+              id = value.config.myConfig.syncthing.deviceId;
+              addresses = [ "tcp://${name}.${value.config.networking.domain}:22000" ];
+            }
+          );
 
         folders =
           let

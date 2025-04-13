@@ -21,7 +21,10 @@
       enable = true;
       ssh.enable = true;
     };
-    syncthing.enable = true;
+    syncthing = {
+      enable = true;
+      deviceId = "FAJS5WM-UAWGW2U-FXCGPSP-VAUOTGM-XUKSEES-D66PMCJ-WBODJLV-XTNCRA7";
+    };
 
     steam.enable = true;
   };

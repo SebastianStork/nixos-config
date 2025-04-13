@@ -24,6 +24,9 @@
       enable = true;
       ssh.enable = true;
     };
-    syncthing.enable = true;
+    syncthing = {
+      enable = true;
+      deviceId = "Q4YPD3V-GXZPHSN-PT5X4PU-FBG4GX2-IASBX75-7NYMG75-4EJHBMZ-4WGDDAP";
+    };
   };
 }
