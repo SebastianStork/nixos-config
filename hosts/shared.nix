@@ -2,6 +2,7 @@
   config,
   inputs,
   self,
+  lib,
   pkgs,
   ...
 }:
@@ -10,22 +11,32 @@
 
   networking.domain = "stork-atlas.ts.net";
 
-  nix = {
-    channel.enable = false;
-    settings = {
-      experimental-features = [
-        "nix-command"
-        "flakes"
-        "pipe-operators"
-      ];
-      auto-optimise-store = true;
-      warn-dirty = false;
-      trusted-users = [
-        "root"
-        "@wheel"
-      ];
+  nix =
+    let
+      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+    in
+    {
+      channel.enable = false;
+      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
+      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+
+      settings = {
+        flake-registry = "";
+        nix-path = config.nix.nixPath;
+
+        experimental-features = [
+          "nix-command"
+          "flakes"
+          "pipe-operators"
+        ];
+        auto-optimise-store = true;
+        warn-dirty = false;
+        trusted-users = [
+          "root"
+          "@wheel"
+        ];
+      };
     };
-  };
 
   time.timeZone = "Europe/Berlin";
   i18n = {
