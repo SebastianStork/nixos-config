@@ -34,6 +34,7 @@
             "browser.tabs.loadBookmarksInBackground" = true;
             "browser.tabs.groups.enabled" = true;
             "browser.uidensity" = 1;
+            "sidebar.revamp" = false;
           };
 
         extraConfig = builtins.readFile "${inputs.betterfox}/user.js";
