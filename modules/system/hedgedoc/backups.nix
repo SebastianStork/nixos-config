@@ -12,12 +12,8 @@
       healthchecks.enable = true;
 
       extraConfig = {
-        backupPrepareCommand = ''
-          ${lib.getExe' pkgs.systemd "systemctl"} stop hedgedoc.service
-        '';
-        backupCleanupCommand = ''
-          ${lib.getExe' pkgs.systemd "systemctl"} start hedgedoc.service
-        '';
+        backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop hedgedoc.service";
+        backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start hedgedoc.service";
         paths = [ "/var/lib/hedgedoc" ];
       };
     };

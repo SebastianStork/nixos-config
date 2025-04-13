@@ -25,9 +25,7 @@ in
           ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on
           ${lib.getExe' config.services.postgresql.package "pg_dump"} nextcloud --format=custom --file=${cfg.dataDir}/backup/db.dump
         '';
-        backupCleanupCommand = ''
-          ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off
-        '';
+        backupCleanupCommand = "${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off";
         paths = [
           "${cfg.dataDir}/home/data"
           "${cfg.dataDir}/home/config/config.php"

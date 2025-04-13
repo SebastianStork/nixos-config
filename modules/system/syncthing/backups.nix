@@ -22,12 +22,8 @@ in
       healthchecks.enable = true;
 
       extraConfig = {
-        backupPrepareCommand = ''
-          ${lib.getExe' pkgs.systemd "systemctl"} stop syncthing.service
-        '';
-        backupCleanupCommand = ''
-          ${lib.getExe' pkgs.systemd "systemctl"} start syncthing.service
-        '';
+        backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop syncthing.service";
+        backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start syncthing.service";
         paths = [ "/var/lib/syncthing" ];
       };
     };
