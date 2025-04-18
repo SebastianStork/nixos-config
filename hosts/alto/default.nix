@@ -1,6 +1,7 @@
 { config, ... }:
 let
   inherit (config) myConfig;
+  inherit (config.myConfig.tailscale) caddyServe;
 in
 {
   system.stateVersion = "24.11";
@@ -21,34 +22,36 @@ in
 
       caddyServe = {
         nextcloud = {
-          inherit (myConfig.nextcloud) subdomain port;
+          subdomain = "cloud";
+          inherit (myConfig.nextcloud) port;
         };
         actualbudget = {
-          inherit (myConfig.actualbudget) subdomain port;
+          subdomain = "budget";
+          inherit (myConfig.actualbudget) port;
         };
       };
     };
 
+    hedgedoc = {
+      enable = true;
+      subdomain = config.networking.hostName;
+      backups.enable = true;
+    };
     nextcloud = {
       enable = true;
+      inherit (caddyServe.nextcloud) subdomain;
       backups.enable = true;
-      subdomain = "cloud";
     };
     actualbudget = {
       enable = true;
+      inherit (caddyServe.actualbudget) subdomain;
       backups.enable = true;
-      subdomain = "budget";
-    };
-    hedgedoc = {
-      enable = true;
-      backups.enable = true;
-      subdomain = config.networking.hostName;
     };
     syncthing = {
       enable = true;
+      deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
       isServer = true;
       backups.enable = true;
-      deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
     };
   };
 }
