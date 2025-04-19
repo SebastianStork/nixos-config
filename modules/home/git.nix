@@ -11,6 +11,7 @@
     programs = {
       git = {
         enable = true;
+
         userName = "SebastianStork";
         userEmail = "sebastian.stork@pm.me";
         extraConfig.init.defaultBranch = "main";
@@ -19,7 +20,10 @@
           {
             condition = "gitdir:~/Projects/h-da/**";
             contents = {
-              user.email = "sebastian.stork@stud.h-da.de";
+              user = {
+                name = "Sebastian Stork";
+                email = "sebastian.stork@stud.h-da.de";
+              };
               init.defaultBranch = "main";
             };
           }
