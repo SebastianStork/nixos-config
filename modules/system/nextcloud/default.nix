@@ -36,8 +36,6 @@ in
       inherit group;
     };
 
-    systemd.tmpfiles.rules = [ "d ${cfg.dataDir}/home 750 ${user} ${group} -" ];
-
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud31;
