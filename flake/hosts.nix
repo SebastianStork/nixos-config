@@ -12,10 +12,8 @@ let
         let
           hostFiles =
             "${self}/hosts/${hostName}"
-            |> builtins.readDir
-            |> lib.filterAttrs (fileName: type: (fileName |> lib.hasSuffix ".nix") && type == "regular")
-            |> builtins.attrNames
-            |> map (fileName: "${self}/hosts/${hostName}/${fileName}");
+            |> lib.filesystem.listFilesRecursive
+            |> builtins.filter (lib.hasSuffix ".nix");
           userFiles =
             "${self}/users"
             |> builtins.readDir
