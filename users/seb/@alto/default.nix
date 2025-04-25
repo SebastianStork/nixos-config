@@ -1,1 +1,4 @@
-{ imports = [ ../user.nix ]; }
+{ ... }:
+{
+  imports = [ ../user.nix ];
+}
