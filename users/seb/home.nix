@@ -20,7 +20,7 @@
 
     pkgs.nemo-with-extensions
     pkgs.celluloid
-    pkgs.spotify
+    pkgs-unstable.spotify
 
     pkgs.jetbrains.idea-community
     pkgs.jetbrains.goland
