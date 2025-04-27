@@ -27,8 +27,8 @@ in
         '';
         backupCleanupCommand = "${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off";
         paths = [
-          "${cfg.dataDir}/home/data"
-          "${cfg.dataDir}/home/config/config.php"
+          "${cfg.dataDir}/data"
+          "${cfg.dataDir}/config/config.php"
           "${cfg.dataDir}/backup"
         ];
       };
