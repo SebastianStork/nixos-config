@@ -10,7 +10,7 @@
         '';
 
         deadnix = pkgs.runCommand "deadnix" { buildInputs = [ pkgs.deadnix ]; } ''
-          deadnix ${self} --fail --exclude ${self}/flake/formatter.nix
+          deadnix --fail ${self}
           mkdir $out
         '';
       };
