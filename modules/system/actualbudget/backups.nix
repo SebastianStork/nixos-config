@@ -15,7 +15,7 @@
       extraConfig = {
         backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop actual.service";
         backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start actual.service";
-        paths = [ "/var/lib/actual" ];
+        paths = [ config.services.actual.settings.dataDir ];
       };
     };
 

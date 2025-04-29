@@ -24,7 +24,7 @@ in
       extraConfig = {
         backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop syncthing.service";
         backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start syncthing.service";
-        paths = [ "/var/lib/syncthing" ];
+        paths = [ config.services.syncthing.dataDir ];
       };
     };
 

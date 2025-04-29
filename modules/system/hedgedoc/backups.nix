@@ -14,7 +14,10 @@
       extraConfig = {
         backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop hedgedoc.service";
         backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start hedgedoc.service";
-        paths = [ "/var/lib/hedgedoc" ];
+        paths = with config.services.hedgedoc.settings; [
+          uploadsPath
+          db.storage
+        ];
       };
     };
 

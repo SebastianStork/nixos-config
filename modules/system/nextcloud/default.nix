@@ -18,11 +18,6 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
-    dataDir = lib.mkOption {
-      type = lib.types.path;
-      default = config.services.nextcloud.home;
-      readOnly = true;
-    };
     port = lib.mkOption {
       type = lib.types.port;
       default = 80;
