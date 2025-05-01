@@ -92,6 +92,7 @@
       # Screenshot
       bind = , Print, exec, grimblast --notify --freeze copysave output
       bind = SHIFT, Print, exec, grimblast --notify --freeze copysave area
+      bind = CONTROL, Print, exec, grimblast --notify --freeze copysave active
 
       # Special workspaces
       bind = SUPER, S, togglespecialworkspace, music
