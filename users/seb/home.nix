@@ -25,6 +25,7 @@
     pkgs.jetbrains.idea-community
     pkgs.jetbrains.goland
     pkgs.qtcreator
+    pkgs-unstable.logisim-evolution
 
     pkgs.marktext
     pkgs.obsidian
