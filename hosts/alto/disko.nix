@@ -1,7 +1,4 @@
-{ inputs, ... }:
 {
-  imports = [ inputs.disko.nixosModules.default ];
-
   disko.devices = {
     disk.disk1 = {
       device = "/dev/vda";
