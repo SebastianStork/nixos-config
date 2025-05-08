@@ -27,14 +27,10 @@
     pkgs.qtcreator
     pkgs-unstable.logisim-evolution
 
-    pkgs.marktext
     pkgs.obsidian
-    pkgs.todoist-electron
     pkgs-unstable.anki
 
     pkgs-unstable.discord
-    pkgs.signal-desktop
-    pkgs.element-desktop
 
     pkgs.libreoffice
     pkgs.hunspell
