@@ -33,12 +33,11 @@ let
 in
 {
   flake = {
-    nixosConfigurations = lib.mkMerge [
-      (mkHost "alto")
-      (mkHost "cirrus")
-      (mkHost "fern")
-      (mkHost "north")
-    ];
+    nixosConfigurations =
+      "${self}/hosts"
+      |> builtins.readDir
+      |> lib.filterAttrs (_: type: type == "directory")
+      |> lib.concatMapAttrs (name: _: mkHost name);
 
     deploy.nodes = {
       alto = {
