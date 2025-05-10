@@ -19,12 +19,5 @@ check:
 dev shell='default':
     nix develop .#{{ shell }} --command zsh
 
-install host:
-    ssh -o StrictHostKeyChecking=no root@installer ' \
-        git clone https://github.com/SebastianStork/nixos-config.git /tmp/nixos-config && \
-        disko --mode destroy,format,mount --yes-wipe-all-disks /tmp/nixos-config/hosts/{{ host }}/disko.nix && \
-        mkdir -p /mnt/etc/ssh \
-    '
-    scp -o StrictHostKeyChecking=no ~/.ssh/{{ host }} root@installer:/mnt/etc/ssh/ssh_host_ed25519_key
-    scp -o StrictHostKeyChecking=no ~/.ssh/{{ host }}.pub root@installer:/mnt/etc/ssh/ssh_host_ed25519_key.pub
-    ssh -o StrictHostKeyChecking=no root@installer 'nixos-install --flake github:SebastianStork/nixos-config#{{ host }} && reboot'
+install host destination='root@installer':
+    nix run github:nix-community/nixos-anywhere -- --extra-files ~/.ssh/{{ host }} --flake .#{{ host }} --target-host {{ destination }}
