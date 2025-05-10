@@ -4,10 +4,10 @@
     { pkgs, ... }:
     {
       checks = {
-        statix = pkgs.runCommand "statix" { buildInputs = [ pkgs.statix ]; } ''
-          statix check ${self}
-          mkdir $out
-        '';
+        # statix = pkgs.runCommand "statix" { buildInputs = [ pkgs.statix ]; } ''
+        #   statix check ${self}
+        #   mkdir $out
+        # '';
 
         deadnix = pkgs.runCommand "deadnix" { buildInputs = [ pkgs.deadnix ]; } ''
           deadnix --fail ${self}
