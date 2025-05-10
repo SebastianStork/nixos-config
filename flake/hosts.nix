@@ -30,6 +30,16 @@ let
         ];
     };
   };
+
+  mkDeployNode = hostName: {
+    ${hostName} = {
+      hostname = hostName;
+      sshUser = "root";
+      profiles.system.path =
+        inputs.deploy-rs.lib.x86_64-linux.activate.nixos
+          self.nixosConfigurations.${hostName};
+    };
+  };
 in
 {
   flake = {
@@ -39,12 +49,10 @@ in
       |> lib.filterAttrs (_: type: type == "directory")
       |> lib.concatMapAttrs (name: _: mkHost name);
 
-    deploy.nodes = {
-      alto = {
-        hostname = "alto";
-        sshUser = "root";
-        profiles.system.path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.alto;
-      };
-    };
+    deploy.nodes =
+      "${self}/hosts"
+      |> builtins.readDir
+      |> lib.filterAttrs (_: type: type == "directory")
+      |> lib.concatMapAttrs (name: _: mkDeployNode name);
   };
 }
