@@ -27,7 +27,7 @@
       networkConfig.DHCP = "no";
       address = [
         "91.99.70.118/32"
-        "2a01:4f8:1c1b:ffc7:1/64"
+        "2a01:4f8:1c1b:ffc7::1/64"
       ];
       routes = [
         {
