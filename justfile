@@ -19,5 +19,8 @@ check:
 dev shell='default':
     nix develop .#{{ shell }} --command zsh
 
+deploy +hosts:
+    deploy --skip-checks --targets $(echo {{ hosts }} | sed 's/[^ ]*/\.#&/g')
+
 install host destination='root@installer':
     nix run github:nix-community/nixos-anywhere -- --extra-files ~/.ssh/{{ host }} --flake .#{{ host }} --target-host {{ destination }}
