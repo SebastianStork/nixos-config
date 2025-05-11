@@ -13,6 +13,11 @@
           deadnix --fail ${self}
           mkdir $out
         '';
+
+        flake-checker = pkgs.runCommandLocal "flake-checker" { buildInputs = [ pkgs.flake-checker ]; } ''
+          flake-checker --fail-mode
+          mkdir $out
+        '';
       };
     };
 
