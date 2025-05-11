@@ -1,4 +1,24 @@
-{ pkgs, pkgs-unstable, ... }:
+{
+  inputs,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
+let
+  lazyApp = pkg: inputs.lazy-apps.packages.${pkgs.system}.lazy-app.override { inherit pkg; };
+  lazyDesktopApp =
+    pkg:
+    inputs.lazy-apps.packages.${pkgs.system}.lazy-app.override {
+      inherit pkg;
+      desktopItem = pkgs.makeDesktopItem {
+        name = pkg.meta.mainProgram;
+        exec = "${pkg.meta.mainProgram} %U";
+        icon = pkg.meta.mainProgram;
+        desktopName = pkg.meta.mainProgram;
+        comment = pkg.meta.description;
+      };
+    };
+in
 {
   imports = [ ../shared-home.nix ];
 
@@ -16,21 +36,21 @@
 
   home.packages = [
     pkgs.bottom
-    pkgs.fastfetch
+    (lazyApp pkgs.fastfetch)
+    (lazyApp pkgs.dust)
 
     pkgs.nemo-with-extensions
     pkgs.celluloid
     pkgs-unstable.spotify
+    pkgs.obsidian
+    pkgs-unstable.anki
+    pkgs-unstable.discord
+    (lazyDesktopApp pkgs.brave)
 
     pkgs.jetbrains.idea-community
     pkgs.jetbrains.goland
     pkgs.qtcreator
     pkgs-unstable.logisim-evolution
-
-    pkgs.obsidian
-    pkgs-unstable.anki
-
-    pkgs-unstable.discord
 
     pkgs.libreoffice
     pkgs.hunspell
