@@ -1,17 +1,12 @@
 {
   inputs = {
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-
-    flake-parts.url = "github:hercules-ci/flake-parts";
-
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
@@ -23,13 +18,18 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -69,11 +69,11 @@
       systems = [ "x86_64-linux" ];
 
       imports = [
-        ./flake/hosts.nix
-        ./flake/modules.nix
+        ./flake/checks.nix
         ./flake/dev-shells.nix
         ./flake/formatter.nix
-        ./flake/checks.nix
+        ./flake/hosts.nix
+        ./flake/modules.nix
       ];
     };
 }
