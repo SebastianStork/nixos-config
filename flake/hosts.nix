@@ -35,6 +35,7 @@ let
     ${hostName} = {
       hostname = hostName;
       sshUser = "root";
+      remoteBuild = true;
       profiles.system.path =
         inputs.deploy-rs.lib.x86_64-linux.activate.nixos
           self.nixosConfigurations.${hostName};
