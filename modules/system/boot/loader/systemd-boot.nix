@@ -12,9 +12,7 @@
           configurationLimit = 20;
         };
         efi.canTouchEfiVariables = true;
-        timeout = 0;
       };
     };
-    systemd.watchdog.rebootTime = "10";
   };
 }

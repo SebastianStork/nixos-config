@@ -4,6 +4,7 @@
 
   config = lib.mkIf config.myConfig.boot.silent {
     boot = {
+      loader.timeout = 0;
       kernelParams = [
         "quiet"
         "rd.systemd.show_status=false"
