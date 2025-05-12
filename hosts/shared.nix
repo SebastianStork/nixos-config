@@ -9,7 +9,7 @@
 {
   imports = [ self.nixosModules.default ];
 
-  networking.domain = "stork-atlas.ts.net";
+  networking.domain = lib.mkDefault "stork-atlas.ts.net";
 
   nix =
     let

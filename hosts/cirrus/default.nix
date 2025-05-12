@@ -1,5 +1,7 @@
-_: {
+{ config, ... }:
+{
   system.stateVersion = "24.11";
+  networking.domain = "sprouted.cloud";
 
   myConfig = {
     boot.loader.grub.enable = true;
@@ -9,5 +11,23 @@ _: {
       enable = true;
       ssh.enable = true;
     };
+
+    hedgedoc = {
+      enable = true;
+      subdomain = "docs";
+      backups.enable = true;
+    };
   };
+
+  services.caddy = {
+    enable = true;
+    virtualHosts."docs.${config.networking.domain}".extraConfig = ''
+      reverse_proxy localhost:${toString config.myConfig.hedgedoc.port}
+    '';
+  };
+
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }
