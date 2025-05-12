@@ -17,7 +17,7 @@ in
 
       serve = {
         isFunnel = true;
-        target = "localhost:${toString myConfig.hedgedoc.port}";
+        target = toString ./hedgedoc.html;
       };
 
       caddyServe = {
@@ -32,11 +32,6 @@ in
       };
     };
 
-    hedgedoc = {
-      enable = true;
-      subdomain = config.networking.hostName;
-      backups.enable = true;
-    };
     nextcloud = {
       enable = true;
       inherit (caddyServe.nextcloud) subdomain;
