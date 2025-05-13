@@ -54,9 +54,14 @@ in
           ];
           wants = [ "tailscaled.service" ];
           wantedBy = [ "multi-user.target" ];
-          serviceConfig.Type = "oneshot";
-          preStart = "${lib.getExe pkgs.tailscale} cert --min-validity 120h ${cfg.subdomain}.${config.networking.domain}";
-          script = "${lib.getExe pkgs.tailscale} ${mode} ${cfg.serve.target}";
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            ExecStartPre = "${lib.getExe pkgs.tailscale} cert --min-validity 120h ${cfg.subdomain}.${config.networking.domain}";
+            ExecStart = "${lib.getExe pkgs.tailscale} ${mode} --bg ${cfg.serve.target}";
+            ExecStop = "${lib.getExe pkgs.tailscale} ${mode} reset";
+            Restart = "on-failure";
+          };
         };
 
         tailscaled-set.after = [ "tailscaled-autoconnect.service" ];
