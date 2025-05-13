@@ -17,7 +17,7 @@ in
 
       serve = {
         isFunnel = true;
-        target = toString ./hedgedoc.html;
+        target = toString ./hedgedoc-redirect.html;
       };
 
       caddyServe = {
