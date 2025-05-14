@@ -49,6 +49,7 @@ in
 
     pkgs.jetbrains.idea-community
     pkgs.jetbrains.goland
+    pkgs.jetbrains.clion
     pkgs.qtcreator
     pkgs-unstable.logisim-evolution
 
