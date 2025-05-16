@@ -4,6 +4,7 @@
     { pkgs, ... }:
     {
       checks = {
+        # Disable until https://github.com/oppiliappan/statix/issues/88 is resolved
         # statix = pkgs.runCommandLocal "statix" { buildInputs = [ pkgs.statix ]; } ''
         #   statix check ${self}
         #   mkdir $out
