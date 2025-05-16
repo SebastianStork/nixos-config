@@ -26,23 +26,36 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    sops = {
+      secrets = {
+        "hedgedoc/session-secret" = {
+          owner = user;
+          inherit group;
+        };
+        "hedgedoc/seb-password" = {
+          owner = user;
+          inherit group;
+        };
+      };
+
+      templates."hedgedoc/environment".content = ''
+        SESSION_SECRET=${config.sops.placeholder."hedgedoc/session-secret"}
+      '';
+    };
+
     services.hedgedoc = {
       enable = true;
 
+      environmentFile = config.sops.templates."hedgedoc/environment".path;
       settings = {
         domain = "${cfg.subdomain}.${config.networking.domain}";
         inherit (cfg) port;
         protocolUseSSL = true;
-
         allowAnonymous = false;
         allowEmailRegister = false;
         defaultPermission = "limited";
+        sessionSecret = "$SESSION_SECRET";
       };
-    };
-
-    sops.secrets."hedgedoc/seb-password" = {
-      owner = user;
-      inherit group;
     };
 
     systemd.services.hedgedoc.postStart =
