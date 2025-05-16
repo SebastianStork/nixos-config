@@ -22,6 +22,7 @@
             open-vsx.jnoortheen.nix-ide
             open-vsx.aaron-bond.better-comments
             open-vsx.llvm-vs-code-extensions.vscode-clangd
+            open-vsx.nefrob.vscode-just-syntax
 
             open-vsx.github.github-vscode-theme
             open-vsx.pkief.material-icon-theme
