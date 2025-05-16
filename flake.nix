@@ -62,10 +62,6 @@
       url = "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.1/twofactor_totp-v6.4.1.tar.gz";
       flake = false;
     };
-    nextcloud-side-menu = {
-      url = "https://gitnet.fr/deblan/side_menu/releases/download/v4.1.1/side_menu_v4.1.1.tar.gz";
-      flake = false;
-    };
   };
 
   outputs =

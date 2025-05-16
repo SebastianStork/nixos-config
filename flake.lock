@@ -232,19 +232,6 @@
         "type": "sourcehut"
       }
     },
-    "nextcloud-side-menu": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1741801575,
-        "narHash": "sha256-/TyrVD5Nx+rf2D4+pv2wIxzMdc08PDEpToCbI+A1ZPg=",
-        "type": "tarball",
-        "url": "https://gitnet.fr/deblan/side_menu/releases/download/v4.1.1/side_menu_v4.1.1.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://gitnet.fr/deblan/side_menu/releases/download/v4.1.1/side_menu_v4.1.1.tar.gz"
-      }
-    },
     "nextcloud-twofactor-totp": {
       "flake": false,
       "locked": {
@@ -392,7 +379,6 @@
         "home-manager": "home-manager",
         "home-manager-unstable": "home-manager-unstable",
         "lazy-apps": "lazy-apps",
-        "nextcloud-side-menu": "nextcloud-side-menu",
         "nextcloud-twofactor-totp": "nextcloud-twofactor-totp",
         "nix-vscode-extensions": "nix-vscode-extensions",
         "nixos-hardware": "nixos-hardware",

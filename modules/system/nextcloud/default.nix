@@ -65,19 +65,11 @@ in
         inherit (config.services.nextcloud.package.packages.apps)
           calendar
           contacts
-          deck
-          onlyoffice
           ;
 
         twofactor_totp = pkgs.fetchNextcloudApp {
           url = inputs.nextcloud-twofactor-totp.outPath;
           sha256 = inputs.nextcloud-twofactor-totp.narHash;
-          license = "agpl3Plus";
-          unpack = true;
-        };
-        side_menu = pkgs.fetchNextcloudApp {
-          url = inputs.nextcloud-side-menu.outPath;
-          sha256 = inputs.nextcloud-side-menu.narHash;
           license = "agpl3Plus";
           unpack = true;
         };
