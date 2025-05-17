@@ -67,6 +67,7 @@
         "w[tv1], gapsout:0, gapsin:0"
         "f[1], gapsout:0, gapsin:0"
 
+        "special:music, gapsout:30, on-created-empty:spotify"
         "special:chat, gapsout:30, on-created-empty:discord"
         "special:flake, gapsout:30, on-created-empty:kitty --directory ${config.home.sessionVariables.FLAKE}"
         "special:monitor, gapsout:30, on-created-empty:kitty btm"
@@ -88,7 +89,6 @@
 
         "idleinhibit fullscreen, class:.*"
       ];
-      exec-once = [ "[workspace special:music silent] spotify" ];
     };
   };
 }
