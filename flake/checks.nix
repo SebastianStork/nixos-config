@@ -4,11 +4,11 @@
     { pkgs, ... }:
     {
       checks = {
-        # Disable until https://github.com/oppiliappan/statix/issues/88 is resolved
-        # statix = pkgs.runCommand "statix" { buildInputs = [ pkgs.statix ]; } ''
-        #   statix check ${self}
-        #   mkdir $out
-        # '';
+        # Ignore hosts.nix until https://github.com/oppiliappan/statix/issues/88 is resolved
+        statix = pkgs.runCommand "statix" { buildInputs = [ pkgs.statix ]; } ''
+          statix check --ignore ${self}/flake/hosts.nix ${self}
+          mkdir $out
+        '';
 
         deadnix = pkgs.runCommand "deadnix" { buildInputs = [ pkgs.deadnix ]; } ''
           deadnix --fail ${self}
