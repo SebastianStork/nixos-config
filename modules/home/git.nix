@@ -4,8 +4,8 @@
 
   config = lib.mkIf config.myConfig.git.enable {
     sops.secrets = {
-      "github-ssh-key".path = "${config.home.homeDirectory}/.ssh/github";
-      "hda-gitlab-ssh-key".path = "${config.home.homeDirectory}/.ssh/hda-gitlab";
+      "ssh-key/github" = { };
+      "ssh-key/hda-gitlab" = { };
     };
 
     programs = {
@@ -33,8 +33,8 @@
       ssh = {
         enable = true;
         matchBlocks = {
-          "github.com".identityFile = "~/.ssh/github";
-          "code.fbi.h-da.de".identityFile = "~/.ssh/hda-gitlab";
+          "github.com".identityFile = config.sops.secrets."ssh-key/github".path;
+          "code.fbi.h-da.de".identityFile = config.sops.secrets."ssh-key/hda-gitlab".path;
         };
       };
 
