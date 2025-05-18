@@ -1,4 +1,6 @@
 keys:
+  - &admin age1mpq8m4p7dnxh5ze3fh7etd2k6sp85zdnmp9te3e9chcw4pw07pcq960zh5
+
   # Hosts
   - &alto age1qz04yg4h4g22wxqca2pd5k0z574223f6m5c9jy5ny37nlgcd6u4styf06t
   - &cirrus age1dnpwfwh0h95r63e5qfjc2gvffw2tr2tx4new7sq2h3qs90kx9fmq322mx4
@@ -6,7 +8,6 @@ keys:
   - &north age18x6herevmcuhcmeh47ll6p9ck9zk4ga6gfxwlc8yl49rwjxm7qusylwfgc
 
   # Users
-  - &seb-admin age1mpq8m4p7dnxh5ze3fh7etd2k6sp85zdnmp9te3e9chcw4pw07pcq960zh5
   - &seb-fern age190mf9wx4ct7qvne3ly9j3cj9740z5wnfhsl6vsc5wtfyc5pueuas9hnjtr
   - &seb-north age1p32cyzakxtcx346ej82ftln4r2aw2pcuazq3583s85nzsan4ygqsj32hjf
 
@@ -15,32 +16,32 @@ creation_rules:
   - path_regex: hosts/alto/secrets.yaml$
     key_groups:
       - age:
-          - *seb-admin
+          - *admin
           - *alto
   - path_regex: hosts/cirrus/secrets.yaml$
     key_groups:
       - age:
-          - *seb-admin
+          - *admin
           - *cirrus
   - path_regex: hosts/fern/secrets.yaml$
     key_groups:
       - age:
-          - *seb-admin
+          - *admin
           - *fern
   - path_regex: hosts/north/secrets.yaml$
     key_groups:
       - age:
-          - *seb-admin
+          - *admin
           - *north
 
   # Users
   - path_regex: users/seb/@fern/secrets.yaml$
     key_groups:
       - age:
-          - *seb-admin
+          - *admin
           - *seb-fern
   - path_regex: users/seb/@north/secrets.yaml$
     key_groups:
       - age:
-          - *seb-admin
+          - *admin
           - *seb-north
