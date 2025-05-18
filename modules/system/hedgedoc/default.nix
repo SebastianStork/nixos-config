@@ -26,27 +26,14 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    sops = {
-      secrets = {
-        "hedgedoc/session-secret" = {
-          owner = user;
-          inherit group;
-        };
-        "hedgedoc/seb-password" = {
-          owner = user;
-          inherit group;
-        };
-      };
-
-      templates."hedgedoc/environment".content = ''
-        SESSION_SECRET=${config.sops.placeholder."hedgedoc/session-secret"}
-      '';
+    sops.secrets."hedgedoc/seb-password" = {
+      owner = user;
+      inherit group;
     };
 
     services.hedgedoc = {
       enable = true;
 
-      environmentFile = config.sops.templates."hedgedoc/environment".path;
       settings = {
         domain = "${cfg.subdomain}.${config.networking.domain}";
         inherit (cfg) port;
@@ -58,15 +45,25 @@ in
       };
     };
 
-    systemd.services.hedgedoc.postStart =
-      let
-        manageUserSeb =
-          mode:
-          "${manage_users} --${mode} sebastian.stork@pm.me --pass \"$(cat ${
-            config.sops.secrets."hedgedoc/seb-password".path
-          })\"";
-      in
-      "${manageUserSeb "add"} || ${manageUserSeb "reset"}";
+    systemd.services.hedgedoc = {
+      # Ensure session-secret
+      preStart = lib.mkBefore ''
+        if [ ! -f /var/lib/hedgedoc/session-secret ]; then
+          ${lib.getExe pkgs.pwgen} -s 64 1 > /var/lib/hedgedoc/session-secret
+        fi
+        export SESSION_SECRET=$(cat /var/lib/hedgedoc/session-secret)
+      '';
+
+      postStart =
+        let
+          manageUserSeb =
+            mode:
+            "${manage_users} --${mode} sebastian.stork@pm.me --pass \"$(cat ${
+              config.sops.secrets."hedgedoc/seb-password".path
+            })\"";
+        in
+        "${manageUserSeb "add"} || ${manageUserSeb "reset"}";
+    };
 
     environment.shellAliases.hedgedoc-manage-users = "sudo --user=${user} ${manage_users}";
   };
