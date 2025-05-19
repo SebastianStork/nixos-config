@@ -70,6 +70,10 @@ in
             "--keep-monthly 6"
             "--keep-yearly 1"
           ];
+          timerConfig = {
+            OnCalendar = "03:00";
+            Persistent = true;
+          };
         }
         value.extraConfig
       ]
