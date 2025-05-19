@@ -4,12 +4,32 @@
   lib,
   ...
 }:
+let
+  user = config.users.users.actual.name;
+in
 {
   options.myConfig.actualbudget.backups.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.myConfig.actualbudget.backups.enable {
-    myConfig.resticBackup.actual = {
+    security.polkit = {
       enable = true;
+      extraConfig =
+        let
+          service = "actual.service";
+        in
+        ''
+          polkit.addRule(function(action, subject) {
+            if (action.id == "org.freedesktop.systemd1.manage-units" &&
+              action.lookup("unit") == "${service}" &&
+              subject.user == "${user}") {
+              return polkit.Result.YES;
+            }
+          });
+        '';
+    };
+
+    myConfig.resticBackup.actual = {
+      inherit user;
       healthchecks.enable = true;
 
       extraConfig = {
@@ -23,7 +43,7 @@
       (pkgs.writeShellApplication {
         name = "actual-restore";
         text = ''
-          sudo bash -c "
+          sudo --user=${user} bash -c "
             systemctl stop actual.service
             restic-actual restore latest --target /
             systemctl start actual.service

@@ -6,6 +6,8 @@
 }:
 let
   cfg = config.myConfig.syncthing;
+
+  user = config.users.users.syncthing.name;
 in
 {
   options.myConfig.syncthing.backups.enable = lib.mkEnableOption "";
@@ -18,7 +20,25 @@ in
       }
     ];
 
+    security.polkit = {
+      enable = true;
+      extraConfig =
+        let
+          service = "syncthing.service";
+        in
+        ''
+          polkit.addRule(function(action, subject) {
+            if (action.id == "org.freedesktop.systemd1.manage-units" &&
+              action.lookup("unit") == "${service}" &&
+              subject.user == "${user}") {
+              return polkit.Result.YES;
+            }
+          });
+        '';
+    };
+
     myConfig.resticBackup.syncthing = {
+      inherit user;
       healthchecks.enable = true;
 
       extraConfig = {
@@ -32,7 +52,7 @@ in
       (pkgs.writeShellApplication {
         name = "syncthing-restore";
         text = ''
-          sudo bash -c "
+          sudo --user=${user} bash -c "
             systemctl stop syncthing.service
             restic-syncthing restore latest --target /
             systemctl start syncthing.service
