@@ -30,5 +30,7 @@
           update_check_interval = 0;
         };
     };
+
+    home.shellAliases.ssh = "kitten ssh";
   };
 }
