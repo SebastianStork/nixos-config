@@ -72,7 +72,7 @@ in
           ];
           timerConfig = {
             OnCalendar = "03:00";
-            Persistent = true;
+            RandomizedDelaySec = "1h";
           };
         }
         value.extraConfig
