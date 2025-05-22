@@ -1,7 +1,6 @@
 {
   inputs,
   pkgs,
-  pkgs-unstable,
   ...
 }:
 let
@@ -22,7 +21,7 @@ in
 {
   imports = [ ../shared-home.nix ];
 
-  home.sessionVariables.FLAKE = "~/Projects/nixos-config";
+  home.sessionVariables.NH_FLAKE = "~/Projects/nixos-config";
 
   myConfig = {
     kitty.enable = true;
@@ -41,17 +40,17 @@ in
 
     pkgs.nemo-with-extensions
     pkgs.celluloid
-    pkgs-unstable.spotify
+    pkgs.spotify
     pkgs.obsidian
-    pkgs-unstable.anki
-    pkgs-unstable.discord
+    pkgs.anki
+    pkgs.discord
     (lazyDesktopApp pkgs.brave)
 
     pkgs.jetbrains.idea-community
     pkgs.jetbrains.goland
     pkgs.jetbrains.clion
     pkgs.qtcreator
-    pkgs-unstable.logisim-evolution
+    pkgs.logisim-evolution
 
     pkgs.libreoffice
     pkgs.hunspell
@@ -61,12 +60,8 @@ in
     pkgs.corefonts
     pkgs.roboto
     pkgs.open-sans
-    (pkgs.nerdfonts.override {
-      fonts = [
-        "JetBrainsMono"
-        "NerdFontsSymbolsOnly"
-      ];
-    })
+    pkgs.nerd-fonts.jetbrains-mono
+    pkgs.nerd-fonts.symbols-only
   ];
 
   fonts.fontconfig.enable = true;

@@ -1,6 +1,5 @@
 {
   config,
-  pkgs-unstable,
   lib,
   ...
 }:
@@ -10,7 +9,6 @@
   config = lib.mkIf config.myConfig.deUtils.hypridle.enable {
     services.hypridle = {
       enable = true;
-      package = pkgs-unstable.hypridle;
 
       settings = {
         general = {

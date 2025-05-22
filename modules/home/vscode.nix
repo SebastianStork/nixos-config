@@ -12,22 +12,20 @@
   config = lib.mkIf config.myConfig.vscode.enable {
     programs.vscode = {
       enable = true;
-      package = pkgs-unstable.vscode-with-extensions.override {
-        vscode = pkgs-unstable.vscodium;
-        vscodeExtensions =
-          let
-            inherit (inputs.nix-vscode-extensions.extensions.${pkgs.system}) open-vsx;
-          in
-          [
-            open-vsx.jnoortheen.nix-ide
-            open-vsx.aaron-bond.better-comments
-            open-vsx.llvm-vs-code-extensions.vscode-clangd
-            open-vsx.nefrob.vscode-just-syntax
+      package = pkgs-unstable.vscodium;
+      profiles.default.extensions =
+        let
+          inherit (inputs.nix-vscode-extensions.extensions.${pkgs.system}) open-vsx;
+        in
+        [
+          open-vsx.jnoortheen.nix-ide
+          open-vsx.aaron-bond.better-comments
+          open-vsx.llvm-vs-code-extensions.vscode-clangd
+          open-vsx.nefrob.vscode-just-syntax
 
-            open-vsx.github.github-vscode-theme
-            open-vsx.pkief.material-icon-theme
-          ];
-      };
+          open-vsx.github.github-vscode-theme
+          open-vsx.pkief.material-icon-theme
+        ];
     };
 
     systemd.user.tmpfiles.rules =

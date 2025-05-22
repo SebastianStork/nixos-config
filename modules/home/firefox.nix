@@ -2,7 +2,6 @@
   config,
   inputs,
   pkgs,
-  pkgs-unstable,
   lib,
   ...
 }:
@@ -12,7 +11,6 @@
   config = lib.mkIf config.myConfig.firefox.enable {
     programs.firefox = {
       enable = true;
-      package = pkgs-unstable.firefox;
 
       profiles.default = {
         settings =

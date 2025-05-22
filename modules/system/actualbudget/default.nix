@@ -1,7 +1,5 @@
 {
   config,
-  inputs,
-  pkgs-unstable,
   lib,
   ...
 }:
@@ -9,9 +7,6 @@ let
   cfg = config.myConfig.actualbudget;
 in
 {
-  disabledModules = [ "services/web-apps/actual.nix" ];
-  imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/web-apps/actual.nix" ];
-
   options.myConfig.actualbudget = {
     enable = lib.mkEnableOption "";
     subdomain = lib.mkOption {
@@ -33,7 +28,6 @@ in
 
     services.actual = {
       enable = true;
-      package = pkgs-unstable.actual-server;
 
       settings = {
         hostname = "localhost";

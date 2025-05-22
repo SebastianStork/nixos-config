@@ -4,14 +4,16 @@
 
   config = lib.mkIf config.myConfig.sound.enable {
     security.rtkit.enable = true;
-    hardware.pulseaudio.enable = false;
-    services.pipewire = {
-      enable = true;
-      wireplumber.enable = true;
-      pulse.enable = true;
-      alsa = {
+    services = {
+      pulseaudio.enable = false;
+      pipewire = {
         enable = true;
-        support32Bit = true;
+        wireplumber.enable = true;
+        pulse.enable = true;
+        alsa = {
+          enable = true;
+          support32Bit = true;
+        };
       };
     };
   };

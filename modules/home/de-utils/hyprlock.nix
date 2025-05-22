@@ -1,6 +1,5 @@
 {
   config,
-  pkgs-unstable,
   lib,
   ...
 }@moduleArgs:
@@ -18,7 +17,6 @@ in
   config = lib.mkIf cfg.enable {
     programs.hyprlock = {
       enable = true;
-      package = pkgs-unstable.hyprlock;
 
       settings = {
         general.immediate_render = true;
