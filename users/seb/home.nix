@@ -30,7 +30,6 @@ in
     shell.zsh.enable = true;
     git.enable = true;
     vscode.enable = true;
-    equalizer.enable = true;
   };
 
   home.packages = [
