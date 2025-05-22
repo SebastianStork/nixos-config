@@ -73,6 +73,7 @@
     pkgs.git
     pkgs.just
     pkgs.nh
+    (lib.hiPrio pkgs.uutils-coreutils-noprefix)
   ];
 
   nixpkgs.config.allowUnfree = true;
