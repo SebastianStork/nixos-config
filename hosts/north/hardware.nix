@@ -25,7 +25,9 @@
     ];
   };
 
-  hardware.logitech.lcd.enable = true;
+  # Disable until https://github.com/NixOS/nixpkgs/issues/368642 is resolved
+  # hardware.logitech.lcd.enable = true;
+
   services = {
     fstrim.enable = true;
 
