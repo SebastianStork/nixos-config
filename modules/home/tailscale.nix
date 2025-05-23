@@ -7,7 +7,10 @@
   config = lib.mkIf config.myConfig.tailscale.enable {
     programs.ssh = {
       enable = true;
-      matchBlocks.installer.extraOptions.UserKnownHostsFile = "/dev/null";
+      matchBlocks.installer.extraOptions = {
+        UserKnownHostsFile = "/dev/null";
+        StrictHostKeyChecking = "no";
+      };
     };
   };
 }
