@@ -24,3 +24,6 @@ deploy +hosts:
 
 install host destination='root@installer':
     nix run github:nix-community/nixos-anywhere -- --extra-files ~/.ssh/{{ host }} --flake .#{{ host }} --target-host {{ destination }}
+
+repair:
+    nix-store --verify --check-contents --repair
