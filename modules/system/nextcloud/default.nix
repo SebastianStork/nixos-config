@@ -9,7 +9,6 @@ let
   cfg = config.myConfig.nextcloud;
 
   user = config.users.users.nextcloud.name;
-  inherit (config.users.users.nextcloud) group;
 in
 {
   options.myConfig.nextcloud = {
@@ -26,10 +25,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets."nextcloud/admin-password" = {
-      owner = user;
-      inherit group;
-    };
+    sops.secrets."nextcloud/admin-password".owner = user;
 
     services.nextcloud = {
       enable = true;

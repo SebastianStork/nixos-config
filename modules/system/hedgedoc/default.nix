@@ -8,7 +8,6 @@ let
   cfg = config.myConfig.hedgedoc;
 
   user = config.users.users.hedgedoc.name;
-  inherit (config.users.users.hedgedoc) group;
 
   manage_users = "CMD_CONFIG_FILE=/run/hedgedoc/config.json NODE_ENV=production ${lib.getExe' pkgs.hedgedoc "manage_users"}";
 in
@@ -27,23 +26,16 @@ in
 
   config = lib.mkIf cfg.enable {
     sops = {
-        secrets = {
-          "hedgedoc/seb-password" = {
-            owner = user;
-            inherit group;
-          };
-          "hedgedoc/gitlab-auth-secret" = {
-            owner = user;
-            inherit group;
-          };
-        };
-
-        templates."hedgedoc/environment" = {
-          owner = user;
-          inherit group;
-          content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
-        };
+      secrets = {
+        "hedgedoc/seb-password".owner = user;
+        "hedgedoc/gitlab-auth-secret".owner = user;
       };
+
+      templates."hedgedoc/environment" = {
+        owner = user;
+        content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
+      };
+    };
 
     services.hedgedoc = {
       enable = true;

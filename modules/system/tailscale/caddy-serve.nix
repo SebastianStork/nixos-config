@@ -38,10 +38,7 @@ in
   };
 
   config = lib.mkIf (nodes != { }) {
-    sops.secrets."service-tailscale-auth-key" = {
-      owner = config.services.caddy.user;
-      inherit (config.services.caddy) group;
-    };
+    sops.secrets."service-tailscale-auth-key".owner = config.services.caddy.user;
 
     services.caddy = {
       enable = true;
