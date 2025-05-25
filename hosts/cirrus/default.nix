@@ -17,6 +17,15 @@
       subdomain = "docs";
       backups.enable = true;
     };
+
+    crowdsec = {
+      enable = true;
+      firewallBouncer.enable = true;
+      sources = [
+        "iptables"
+        "caddy"
+      ];
+    };
   };
 
   services.caddy = {
