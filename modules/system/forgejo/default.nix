@@ -27,6 +27,7 @@ in
     services.forgejo = {
       enable = true;
       lfs.enable = true;
+
       settings = {
         server = {
           DOMAIN = "${cfg.subdomain}.${config.networking.domain}";
@@ -34,6 +35,15 @@ in
           HTTP_PORT = cfg.port;
         };
         service.DISABLE_REGISTRATION = true;
+
+        # https://forgejo.org/docs/latest/admin/recommendations
+        database.SQLITE_JOURNAL_MODE = "WAL";
+        cache = {
+          ADAPTER = "twoqueue";
+          HOST = ''{"size":100, "recent_ratio":0.25, "ghost_ratio":0.5}'';
+        };
+        "repository.signing".DEFAULT_TRUST_MODEL = "committer";
+        security.LOGIN_REMEMBER_DAYS = 365;
       };
     };
 
