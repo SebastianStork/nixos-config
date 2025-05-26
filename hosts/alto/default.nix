@@ -29,6 +29,10 @@ in
           subdomain = "budget";
           inherit (myConfig.actualbudget) port;
         };
+        forgejo = {
+          subdomain = "git";
+          inherit (myConfig.forgejo) port;
+        };
       };
     };
 
@@ -42,6 +46,11 @@ in
       inherit (caddyServe.actualbudget) subdomain;
       backups.enable = true;
     };
+    forgejo = {
+      enable = true;
+      inherit (caddyServe.forgejo) subdomain;
+    };
+
     syncthing = {
       enable = true;
       deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";

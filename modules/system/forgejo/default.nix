@@ -42,6 +42,6 @@ in
         createCmd = "${lib.getExe config.services.forgejo.package} admin user create";
         passwordPath = config.sops.secrets."forgejo/admin-password".path;
       in
-      ''${createCmd} --username seb --password "$(cat ${passwordPath})" --email "sebastian.stork@pm.me" --admin || true'';
+      ''${createCmd} --username SebastianStork --password "$(cat ${passwordPath})" --email "sebastian.stork@pm.me" --admin || true'';
   };
 }
