@@ -4,7 +4,7 @@
 
   home.stateVersion = "23.11";
 
-  myConfig.theme = "dark";
+  custom.theme = "dark";
 
   home.packages = [
     pkgs.ffmpeg

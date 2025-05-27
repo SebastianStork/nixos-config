@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.shell.zsh.enable = lib.mkEnableOption "";
+  options.custom.shell.zsh.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.shell.zsh.enable {
+  config = lib.mkIf config.custom.shell.zsh.enable {
     programs = {
       zsh = {
         enable = true;

@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.myConfig.shell.zsh.enable {
+  config = lib.mkIf config.custom.shell.zsh.enable {
     programs.zsh = {
       plugins = [
         {

@@ -1,10 +1,10 @@
 { config, lib, ... }@moduleArgs:
 {
-  options.myConfig.tailscale.enable = lib.mkEnableOption "" // {
+  options.custom.services.tailscale.enable = lib.mkEnableOption "" // {
     default = moduleArgs.osConfig.custom.services.tailscale.enable or false;
   };
 
-  config = lib.mkIf config.myConfig.tailscale.enable {
+  config = lib.mkIf config.custom.services.tailscale.enable {
     programs.ssh = {
       enable = true;
       matchBlocks.installer.extraOptions = {

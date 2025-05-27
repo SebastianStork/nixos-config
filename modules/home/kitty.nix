@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.kitty.enable = lib.mkEnableOption "";
+  options.custom.programs.kitty.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.kitty.enable {
+  config = lib.mkIf config.custom.programs.kitty.enable {
     programs.kitty = {
       enable = true;
 
@@ -18,7 +18,7 @@
               dark = "default";
               light = "GitHub_Light";
             }
-            .${config.myConfig.theme};
+            .${config.custom.theme};
         in
         {
           include = "${pkgs.kitty-themes}/share/kitty-themes/themes/${theme-name}.conf";

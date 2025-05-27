@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.deUtils.brightnessctl.enable = lib.mkEnableOption "";
+  options.custom.deUtils.programs.brightnessctl.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.deUtils.brightnessctl.enable {
+  config = lib.mkIf config.custom.deUtils.programs.brightnessctl.enable {
     home.packages = [ pkgs.brightnessctl ];
   };
 }

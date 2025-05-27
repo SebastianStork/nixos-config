@@ -8,9 +8,9 @@
 {
   imports = [ inputs.sops-nix.homeManagerModules.sops ];
 
-  options.myConfig.sops.enable = lib.mkEnableOption "";
+  options.custom.sops.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.sops.enable {
+  config = lib.mkIf config.custom.sops.enable {
     sops = {
       age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
       defaultSopsFile =

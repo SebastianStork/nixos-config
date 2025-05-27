@@ -23,13 +23,16 @@ in
 
   home.sessionVariables.NH_FLAKE = "~/Projects/nixos-config";
 
-  myConfig = {
-    kitty.enable = true;
-    firefox.enable = true;
+  custom = {
     sops.enable = true;
     shell.zsh.enable = true;
-    git.enable = true;
-    vscode.enable = true;
+
+    programs = {
+      kitty.enable = true;
+      firefox.enable = true;
+      git.enable = true;
+      vscode.enable = true;
+    };
   };
 
   home.packages = [

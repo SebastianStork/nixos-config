@@ -3,9 +3,9 @@ _: {
 
   home.stateVersion = "24.11";
 
-  myConfig = {
+  custom = {
     theme = "light";
-    deUtils.brightnessctl.enable = true;
+    deUtils.programs.brightnessctl.enable = true;
   };
 
   wayland.windowManager.hyprland.settings.monitor = [

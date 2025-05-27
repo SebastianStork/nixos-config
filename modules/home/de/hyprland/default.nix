@@ -5,11 +5,11 @@
   ...
 }@moduleArgs:
 {
-  options.myConfig.de.hyprland.enable = lib.mkEnableOption "" // {
+  options.custom.de.hyprland.enable = lib.mkEnableOption "" // {
     default = moduleArgs.osConfig.custom.de.hyprland.enable or false;
   };
 
-  config = lib.mkIf config.myConfig.de.hyprland.enable {
+  config = lib.mkIf config.custom.de.hyprland.enable {
     wayland.windowManager.hyprland = {
       enable = true;
       package = null;
@@ -21,14 +21,19 @@
       pkgs.grimblast
     ];
 
-    myConfig.deUtils = {
-      rofi.enable = true;
-      hyprpaper.enable = true;
-      hyprlock.enable = true;
-      hypridle.enable = true;
-      waybar.enable = true;
-      cliphist.enable = true;
-      gammastep.enable = true;
+    custom.deUtils = {
+      services = {
+        hyprpaper.enable = true;
+        hypridle.enable = true;
+        waybar.enable = true;
+        cliphist.enable = true;
+        gammastep.enable = true;
+      };
+
+      programs = {
+        rofi.enable = true;
+        hyprlock.enable = true;
+      };
     };
 
     services.dunst.enable = true;

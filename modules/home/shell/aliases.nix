@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.myConfig.shell.zsh.enable {
+  config = lib.mkIf config.custom.shell.zsh.enable {
     home.packages = [
       pkgs.eza
       pkgs.bat
@@ -28,7 +28,7 @@
                 dark = "";
                 light = "GitHub";
               }
-              .${config.myConfig.theme};
+              .${config.custom.theme};
           in
           {
             cat = "bat --plain --theme=${theme}";

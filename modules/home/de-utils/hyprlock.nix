@@ -4,10 +4,10 @@
   ...
 }@moduleArgs:
 let
-  cfg = config.myConfig.deUtils.hyprlock;
+  cfg = config.custom.deUtils.programs.hyprlock;
 in
 {
-  options.myConfig.deUtils.hyprlock = {
+  options.custom.deUtils.programs.hyprlock = {
     enable = lib.mkEnableOption "";
     fprintAuth = lib.mkEnableOption "" // {
       default = moduleArgs.osConfig.services.fprintd.enable or false;
@@ -17,7 +17,6 @@ in
   config = lib.mkIf cfg.enable {
     programs.hyprlock = {
       enable = true;
-
       settings = {
         general.immediate_render = true;
         auth."fingerprint:enabled" = cfg.fprintAuth;

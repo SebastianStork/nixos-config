@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfgTheme = config.myConfig.theme;
+  cfgTheme = config.custom.theme;
 in
 {
-  options.myConfig.theme = lib.mkOption {
+  options.custom.theme = lib.mkOption {
     type = lib.types.enum [
       "dark"
       "light"

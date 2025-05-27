@@ -4,21 +4,21 @@
   ...
 }:
 {
-  options.myConfig.deUtils.hypridle.enable = lib.mkEnableOption "";
+  options.custom.deUtils.services.hypridle.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.deUtils.hypridle.enable {
+  config = lib.mkIf config.custom.deUtils.services.hypridle.enable {
     services.hypridle = {
       enable = true;
 
       settings = {
         general = {
-          lock_cmd = lib.mkIf config.myConfig.deUtils.hyprlock.enable "pidof hyprlock || hyprlock";
+          lock_cmd = lib.mkIf config.custom.deUtils.programs.hyprlock.enable "pidof hyprlock || hyprlock";
           before_sleep_cmd = "loginctl lock-session";
           after_sleep_cmd = "hyprctl dispatch dpms on";
         };
 
         listener = [
-          (lib.mkIf config.myConfig.deUtils.brightnessctl.enable {
+          (lib.mkIf config.custom.deUtils.programs.brightnessctl.enable {
             timeout = 5 * 60;
             on-timeout = "brightnessctl --save --exponent set 10%";
             on-resume = "brightnessctl --restore";

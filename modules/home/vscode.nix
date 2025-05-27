@@ -7,9 +7,9 @@
   ...
 }:
 {
-  options.myConfig.vscode.enable = lib.mkEnableOption "";
+  options.custom.programs.vscode.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.vscode.enable {
+  config = lib.mkIf config.custom.programs.vscode.enable {
     programs.vscode = {
       enable = true;
       package = pkgs-unstable.vscodium;
@@ -37,7 +37,7 @@
                 dark = "GitHub Dark";
                 light = "GitHub Light";
               }
-              .${config.myConfig.theme};
+              .${config.custom.theme};
             "workbench.iconTheme" = "material-icon-theme";
             "editor.fontFamily" = "JetBrainsMono Nerd Font";
             "explorer.confirmDelete" = false;

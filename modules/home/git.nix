@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.git.enable = lib.mkEnableOption "";
+  options.custom.programs.git.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.git.enable {
+  config = lib.mkIf config.custom.programs.git.enable {
     sops.secrets = {
       "ssh-key/github" = { };
       "ssh-key/hda-gitlab" = { };

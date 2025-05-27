@@ -1,6 +1,6 @@
 { config, lib, ... }:
 {
-  config = lib.mkIf config.myConfig.de.hyprland.enable {
+  config = lib.mkIf config.custom.de.hyprland.enable {
     wayland.windowManager.hyprland.settings = {
       input = {
         kb_layout = "de";
@@ -36,13 +36,13 @@
             dark = "rgb(ffffff)";
             light = "rgb(000000)";
           }
-          .${config.myConfig.theme};
+          .${config.custom.theme};
         "col.inactive_border" =
           {
             dark = "rgba(ffffff00)";
             light = "rgba(ffffff00)";
           }
-          .${config.myConfig.theme};
+          .${config.custom.theme};
         layout = "master";
       };
 

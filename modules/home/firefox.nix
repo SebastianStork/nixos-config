@@ -6,9 +6,9 @@
   ...
 }:
 {
-  options.myConfig.firefox.enable = lib.mkEnableOption "";
+  options.custom.programs.firefox.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.firefox.enable {
+  config = lib.mkIf config.custom.programs.firefox.enable {
     programs.firefox = {
       enable = true;
 
