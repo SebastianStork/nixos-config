@@ -5,12 +5,12 @@
   ...
 }:
 let
-  cfg = config.myConfig.syncthing;
+  cfg = config.custom.services.syncthing;
 
   user = config.users.users.syncthing.name;
 in
 {
-  options.myConfig.syncthing.backups.enable = lib.mkEnableOption "";
+  options.custom.services.syncthing.backups.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.backups.enable {
     assertions = [
@@ -37,7 +37,7 @@ in
         '';
     };
 
-    myConfig.resticBackup.syncthing = {
+    custom.services.resticBackup.syncthing = {
       inherit user;
       healthchecks.enable = true;
 

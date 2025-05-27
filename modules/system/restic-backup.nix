@@ -5,12 +5,12 @@
   ...
 }:
 let
-  backupServices = lib.filterAttrs (_: value: value.enable) config.myConfig.resticBackup;
+  backupServices = lib.filterAttrs (_: value: value.enable) config.custom.services.resticBackup;
 
   healthchecksEnable = (lib.filterAttrs (_: value: value.healthchecks.enable) backupServices) != { };
 in
 {
-  options.myConfig.resticBackup = lib.mkOption {
+  options.custom.services.resticBackup = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
         options = {

@@ -5,7 +5,7 @@
   ...
 }:
 let
-  nodes = config.myConfig.tailscale.caddyServe |> lib.filterAttrs (_: value: value.enable);
+  nodes = config.custom.services.tailscale.caddyServe |> lib.filterAttrs (_: value: value.enable);
 
   caddy-tailscale = pkgs.caddy.withPlugins {
     plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20250207163903-69a970c84556" ];
@@ -13,7 +13,7 @@ let
   };
 in
 {
-  options.myConfig.tailscale.caddyServe = lib.mkOption {
+  options.custom.services.tailscale.caddyServe = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule (
         { name, ... }:

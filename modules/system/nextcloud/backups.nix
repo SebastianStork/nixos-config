@@ -5,16 +5,16 @@
   ...
 }:
 let
-  cfg = config.myConfig.nextcloud;
+  cfg = config.custom.services.nextcloud;
 
   dataDir = config.services.nextcloud.home;
   user = config.users.users.nextcloud.name;
 in
 {
-  options.myConfig.nextcloud.backups.enable = lib.mkEnableOption "";
+  options.custom.services.nextcloud.backups.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.backups.enable {
-    myConfig.resticBackup.nextcloud = {
+    custom.services.resticBackup.nextcloud = {
       inherit user;
       healthchecks.enable = true;
 

@@ -6,7 +6,7 @@
 }@moduleArgs:
 {
   options.myConfig.de.hyprland.enable = lib.mkEnableOption "" // {
-    default = moduleArgs.osConfig.myConfig.de.hyprland.enable or false;
+    default = moduleArgs.osConfig.custom.de.hyprland.enable or false;
   };
 
   config = lib.mkIf config.myConfig.de.hyprland.enable {

@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.virtualisation.enable = lib.mkEnableOption "";
+  options.custom.virtualisation.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.virtualisation.enable {
+  config = lib.mkIf config.custom.virtualisation.enable {
     virtualisation.libvirtd.enable = true;
     programs.virt-manager.enable = true;
 

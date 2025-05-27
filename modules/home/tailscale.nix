@@ -1,7 +1,7 @@
 { config, lib, ... }@moduleArgs:
 {
   options.myConfig.tailscale.enable = lib.mkEnableOption "" // {
-    default = moduleArgs.osConfig.myConfig.tailscale.enable or false;
+    default = moduleArgs.osConfig.custom.services.tailscale.enable or false;
   };
 
   config = lib.mkIf config.myConfig.tailscale.enable {

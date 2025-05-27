@@ -6,12 +6,12 @@
   ...
 }:
 let
-  cfg = config.myConfig.nextcloud;
+  cfg = config.custom.services.nextcloud;
 
   user = config.users.users.nextcloud.name;
 in
 {
-  options.myConfig.nextcloud = {
+  options.custom.services.nextcloud = {
     enable = lib.mkEnableOption "";
     subdomain = lib.mkOption {
       type = lib.types.nonEmptyStr;

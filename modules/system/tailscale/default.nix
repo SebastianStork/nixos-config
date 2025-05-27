@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.myConfig.tailscale;
+  cfg = config.custom.services.tailscale;
 in
 {
-  options.myConfig.tailscale = {
+  options.custom.services.tailscale = {
     enable = lib.mkEnableOption "";
     subdomain = lib.mkOption {
       type = lib.types.nonEmptyStr;

@@ -8,9 +8,9 @@ let
   user = config.users.users.actual.name;
 in
 {
-  options.myConfig.actualbudget.backups.enable = lib.mkEnableOption "";
+  options.custom.services.actualbudget.backups.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.actualbudget.backups.enable {
+  config = lib.mkIf config.custom.services.actualbudget.backups.enable {
     security.polkit = {
       enable = true;
       extraConfig =
@@ -28,7 +28,7 @@ in
         '';
     };
 
-    myConfig.resticBackup.actual = {
+    custom.services.resticBackup.actual = {
       inherit user;
       healthchecks.enable = true;
 

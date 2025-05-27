@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.geoclue.enable = lib.mkEnableOption "";
+  options.custom.services.geoclue.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.geoclue.enable {
+  config = lib.mkIf config.custom.services.geoclue.enable {
     services.geoclue2 = {
       enable = true;
 

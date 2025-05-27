@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.dm.tuigreet.enable = lib.mkEnableOption "";
+  options.custom.dm.tuigreet.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.dm.tuigreet.enable {
+  config = lib.mkIf config.custom.dm.tuigreet.enable {
     services.greetd = {
       enable = true;
       settings = {

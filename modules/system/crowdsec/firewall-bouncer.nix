@@ -6,12 +6,12 @@
   ...
 }:
 let
-  cfg = config.myConfig.crowdsec;
+  cfg = config.custom.services.crowdsec;
 in
 {
   imports = [ inputs.crowdsec.nixosModules.crowdsec-firewall-bouncer ];
 
-  options.myConfig.crowdsec.firewallBouncer.enable = lib.mkEnableOption "";
+  options.custom.services.crowdsec.firewallBouncer.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.firewallBouncer.enable {
     services.crowdsec-firewall-bouncer = {

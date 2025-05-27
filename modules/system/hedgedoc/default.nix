@@ -5,14 +5,14 @@
   ...
 }:
 let
-  cfg = config.myConfig.hedgedoc;
+  cfg = config.custom.services.hedgedoc;
 
   user = config.users.users.hedgedoc.name;
 
   manage_users = "CMD_CONFIG_FILE=/run/hedgedoc/config.json NODE_ENV=production ${lib.getExe' pkgs.hedgedoc "manage_users"}";
 in
 {
-  options.myConfig.hedgedoc = {
+  options.custom.services.hedgedoc = {
     enable = lib.mkEnableOption "";
     subdomain = lib.mkOption {
       type = lib.types.nonEmptyStr;

@@ -8,9 +8,9 @@ let
   user = config.users.users.hedgedoc.name;
 in
 {
-  options.myConfig.hedgedoc.backups.enable = lib.mkEnableOption "";
+  options.custom.services.hedgedoc.backups.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.hedgedoc.backups.enable {
+  config = lib.mkIf config.custom.services.hedgedoc.backups.enable {
     security.polkit = {
       enable = true;
       extraConfig =
@@ -28,7 +28,7 @@ in
         '';
     };
 
-    myConfig.resticBackup.hedgedoc = {
+    custom.services.resticBackup.hedgedoc = {
       inherit user;
       healthchecks.enable = true;
 

@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.myConfig.syncthing;
+  cfg = config.custom.services.syncthing;
 in
 {
-  options.myConfig.syncthing = {
+  options.custom.services.syncthing = {
     enable = lib.mkEnableOption "";
     isServer = lib.mkEnableOption "";
     deviceId = lib.mkOption {
@@ -32,10 +32,10 @@ in
         devices =
           self.nixosConfigurations
           |> lib.filterAttrs (name: _: name != config.networking.hostName)
-          |> lib.filterAttrs (_: value: value.config.myConfig.syncthing.enable)
+          |> lib.filterAttrs (_: value: value.config.custom.services.syncthing.enable)
           |> lib.mapAttrs (
             name: value: {
-              id = value.config.myConfig.syncthing.deviceId;
+              id = value.config.custom.services.syncthing.deviceId;
               addresses = [ "tcp://${name}.${value.config.networking.domain}:22000" ];
             }
           );

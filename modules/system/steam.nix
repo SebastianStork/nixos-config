@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.steam.enable = lib.mkEnableOption "";
+  options.custom.programs.steam.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.steam.enable {
+  config = lib.mkIf config.custom.programs.steam.enable {
     programs = {
       steam.enable = true;
 

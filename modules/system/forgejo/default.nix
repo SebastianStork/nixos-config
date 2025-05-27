@@ -4,12 +4,12 @@
   ...
 }:
 let
-  cfg = config.myConfig.forgejo;
+  cfg = config.custom.services.forgejo;
 
   user = config.users.users.forgejo.name;
 in
 {
-  options.myConfig.forgejo = {
+  options.custom.services.forgejo = {
     enable = lib.mkEnableOption "";
     subdomain = lib.mkOption {
       type = lib.types.nonEmptyStr;

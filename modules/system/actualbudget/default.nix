@@ -4,10 +4,10 @@
   ...
 }:
 let
-  cfg = config.myConfig.actualbudget;
+  cfg = config.custom.services.actualbudget;
 in
 {
-  options.myConfig.actualbudget = {
+  options.custom.services.actualbudget = {
     enable = lib.mkEnableOption "";
     subdomain = lib.mkOption {
       type = lib.types.nonEmptyStr;

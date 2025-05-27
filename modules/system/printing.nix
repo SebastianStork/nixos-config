@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.printing.enable = lib.mkEnableOption "";
+  options.custom.services.printing.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.printing.enable {
+  config = lib.mkIf config.custom.services.printing.enable {
     services = {
       printing.enable = true;
       avahi = {

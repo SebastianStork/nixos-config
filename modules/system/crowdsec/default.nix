@@ -6,12 +6,12 @@
   ...
 }:
 let
-  cfg = config.myConfig.crowdsec;
+  cfg = config.custom.services.crowdsec;
 in
 {
   imports = [ inputs.crowdsec.nixosModules.crowdsec ];
 
-  options.myConfig.crowdsec = {
+  options.custom.services.crowdsec = {
     enable = lib.mkEnableOption "";
     apiPort = lib.mkOption {
       type = lib.types.port;

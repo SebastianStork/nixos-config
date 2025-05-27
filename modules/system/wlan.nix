@@ -13,9 +13,9 @@ let
   ];
 in
 {
-  options.myConfig.wlan.enable = lib.mkEnableOption "";
+  options.custom.services.wlan.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.wlan.enable (
+  config = lib.mkIf config.custom.services.wlan.enable (
     lib.mkMerge [
       {
         networking.wireless.iwd = {

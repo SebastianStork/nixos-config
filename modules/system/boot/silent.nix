@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.boot.silent = lib.mkEnableOption "";
+  options.custom.boot.silent = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.boot.silent {
+  config = lib.mkIf config.custom.boot.silent {
     boot = {
       loader.timeout = 0;
       kernelParams = [

@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.myConfig.gc.enable = lib.mkEnableOption "";
+  options.custom.services.gc.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.myConfig.gc.enable {
+  config = lib.mkIf config.custom.services.gc.enable {
     programs.nh = {
       enable = true;
       clean = {
