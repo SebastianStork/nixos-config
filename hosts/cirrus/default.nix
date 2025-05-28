@@ -30,23 +30,15 @@
         enable = true;
         domain = "git.sstork.dev";
       };
+
+      caddy.virtualHosts = {
+        hedgedoc = {
+          inherit (config.custom.services.hedgedoc) domain port;
+        };
+        forgejo = {
+          inherit (config.custom.services.forgejo) domain port;
+        };
+      };
     };
   };
-
-  services.caddy = {
-    enable = true;
-    virtualHosts = {
-      ${config.custom.services.hedgedoc.domain}.extraConfig = ''
-        reverse_proxy localhost:${toString config.custom.services.hedgedoc.port}
-      '';
-      ${config.custom.services.forgejo.domain}.extraConfig = ''
-        reverse_proxy localhost:${toString config.custom.services.forgejo.port}
-      '';
-    };
-  };
-
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-  ];
 }

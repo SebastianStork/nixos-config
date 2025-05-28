@@ -1,8 +1,4 @@
 { config, ... }:
-let
-  tsDomain = config.custom.services.tailscale.domain;
-  portOf = service: config.custom.services.${service}.port;
-in
 {
   system.stateVersion = "24.11";
 
@@ -20,28 +16,6 @@ in
           isFunnel = true;
           target = toString ./hedgedoc-redirect.html;
         };
-
-        caddyServe = {
-          nextcloud = {
-            subdomain = "cloud";
-            port = portOf "nextcloud";
-          };
-          actualbudget = {
-            subdomain = "budget";
-            port = portOf "actualbudget";
-          };
-        };
-      };
-
-      nextcloud = {
-        enable = true;
-        domain = "cloud.${tsDomain}";
-        backups.enable = true;
-      };
-      actualbudget = {
-        enable = true;
-        domain = "budget.${tsDomain}";
-        backups.enable = true;
       };
 
       syncthing = {
@@ -49,6 +23,26 @@ in
         deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
         isServer = true;
         backups.enable = true;
+      };
+
+      nextcloud = {
+        enable = true;
+        domain = "cloud.${config.custom.services.tailscale.domain}";
+        backups.enable = true;
+      };
+      actualbudget = {
+        enable = true;
+        domain = "budget.${config.custom.services.tailscale.domain}";
+        backups.enable = true;
+      };
+
+      caddy.virtualHosts = {
+        nextcloud = {
+          inherit (config.custom.services.nextcloud) domain port;
+        };
+        actualbudget = {
+          inherit (config.custom.services.actualbudget) domain port;
+        };
       };
     };
   };
