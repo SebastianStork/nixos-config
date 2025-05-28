@@ -5,12 +5,12 @@
   ...
 }:
 {
-  options.custom.deUtils.services.cliphist.enable = lib.mkEnableOption "";
+  options.custom.services.cliphist.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.deUtils.services.cliphist.enable {
+  config = lib.mkIf config.custom.services.cliphist.enable {
     assertions = [
       {
-        assertion = config.custom.deUtils.programs.rofi.enable;
+        assertion = config.custom.programs.rofi.enable;
         message = "cliphist requires rofi";
       }
     ];

@@ -5,7 +5,7 @@ _: {
 
   custom = {
     theme = "light";
-    deUtils.programs.brightnessctl.enable = true;
+    programs.brightnessctl.enable = true;
   };
 
   wayland.windowManager.hyprland.settings.monitor = [

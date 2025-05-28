@@ -21,7 +21,7 @@
       pkgs.grimblast
     ];
 
-    custom.deUtils = {
+    custom = {
       services = {
         hyprpaper.enable = true;
         hypridle.enable = true;

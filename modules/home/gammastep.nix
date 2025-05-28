@@ -1,8 +1,8 @@
 { config, lib, ... }@moduleArgs:
 {
-  options.custom.deUtils.services.gammastep.enable = lib.mkEnableOption "";
+  options.custom.services.gammastep.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.deUtils.services.gammastep.enable {
+  config = lib.mkIf config.custom.services.gammastep.enable {
     assertions = [
       {
         assertion =

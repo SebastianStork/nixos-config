@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.custom.deUtils.services.waybar.enable = lib.mkEnableOption "";
+  options.custom.services.waybar.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.deUtils.services.waybar.enable {
+  config = lib.mkIf config.custom.services.waybar.enable {
     programs.waybar = {
       enable = true;
       systemd.enable = true;

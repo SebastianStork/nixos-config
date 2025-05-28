@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.custom.deUtils.programs.rofi.enable = lib.mkEnableOption "";
+  options.custom.programs.rofi.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.deUtils.programs.rofi.enable {
+  config = lib.mkIf config.custom.programs.rofi.enable {
     home.packages = [ pkgs.rofi-wayland ];
 
     xdg.configFile."rofi/config.rasi".source =
