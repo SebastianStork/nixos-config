@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.custom.shell.zsh.enable {
+  config = lib.mkIf config.custom.programs.shell.zsh.enable {
     home.packages = [
       pkgs.eza
       pkgs.bat

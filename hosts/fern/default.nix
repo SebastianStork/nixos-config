@@ -24,12 +24,12 @@
     dm.tuigreet.enable = true;
     de.hyprland.enable = true;
 
+    wlan.enable = true;
+    bluetooth.enable = true;
+    sound.enable = true;
     virtualisation.enable = true;
 
     services = {
-      wlan.enable = true;
-      bluetooth.enable = true;
-      sound.enable = true;
       gc.enable = true;
       geoclue.enable = true;
       tailscale = {

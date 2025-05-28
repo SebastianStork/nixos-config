@@ -25,9 +25,9 @@ in
 
   custom = {
     sops.enable = true;
-    shell.zsh.enable = true;
 
     programs = {
+      shell.zsh.enable = true;
       kitty.enable = true;
       firefox.enable = true;
       git.enable = true;

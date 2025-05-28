@@ -1,8 +1,8 @@
 { config, lib, ... }:
 {
-  options.custom.services.bluetooth.enable = lib.mkEnableOption "";
+  options.custom.bluetooth.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.services.bluetooth.enable {
+  config = lib.mkIf config.custom.bluetooth.enable {
     hardware = {
       bluetooth = {
         enable = true;

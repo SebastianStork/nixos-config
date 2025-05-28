@@ -24,10 +24,10 @@
     dm.tuigreet.enable = true;
     de.hyprland.enable = true;
 
+    sound.enable = true;
     virtualisation.enable = true;
 
     services = {
-      sound.enable = true;
       gc.enable = true;
       geoclue.enable = true;
       tailscale = {
