@@ -30,10 +30,6 @@ in
             subdomain = "budget";
             port = portOf "actualbudget";
           };
-          forgejo = {
-            subdomain = "git";
-            port = portOf "forgejo";
-          };
         };
       };
 
@@ -46,10 +42,6 @@ in
         enable = true;
         domain = "budget.${tsDomain}";
         backups.enable = true;
-      };
-      forgejo = {
-        enable = true;
-        domain = "git.${tsDomain}";
       };
 
       syncthing = {
