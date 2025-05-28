@@ -14,7 +14,7 @@ fmt:
     nix fmt
 
 check:
-    nix flake check
+    nix flake check --no-build
 
 dev shell='default':
     nix develop .#{{ shell }} --command zsh

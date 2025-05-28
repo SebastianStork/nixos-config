@@ -75,7 +75,6 @@
       systems = [ "x86_64-linux" ];
 
       imports = [
-        ./flake/checks.nix
         ./flake/dev-shells.nix
         ./flake/formatter.nix
         ./flake/hosts.nix

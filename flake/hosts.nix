@@ -54,5 +54,7 @@ in
       |> builtins.readDir
       |> lib.filterAttrs (_: type: type == "directory")
       |> lib.concatMapAttrs (name: _: mkDeployNode name);
+
+    checks = builtins.mapAttrs (_: deployLib: deployLib.deployChecks self.deploy) inputs.deploy-rs.lib;
   };
 }
