@@ -11,7 +11,7 @@ in
 {
   options.custom.services.forgejo = {
     enable = lib.mkEnableOption "";
-    subdomain = lib.mkOption {
+    domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
     };
@@ -30,7 +30,7 @@ in
 
       settings = {
         server = {
-          DOMAIN = "${cfg.subdomain}.${config.networking.domain}";
+          DOMAIN = cfg.domain;
           ROOT_URL = "https://${config.services.forgejo.settings.server.DOMAIN}/";
           HTTP_PORT = cfg.port;
         };

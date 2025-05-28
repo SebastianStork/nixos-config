@@ -9,7 +9,7 @@ in
 {
   options.custom.services.actualbudget = {
     enable = lib.mkEnableOption "";
-    subdomain = lib.mkOption {
+    domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
     };
@@ -28,7 +28,6 @@ in
 
     services.actual = {
       enable = true;
-
       settings = {
         hostname = "localhost";
         inherit (cfg) port;

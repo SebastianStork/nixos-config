@@ -10,9 +10,9 @@ in
 {
   options.custom.services.tailscale = {
     enable = lib.mkEnableOption "";
-    subdomain = lib.mkOption {
+    domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = config.networking.hostName;
+      default = "stork-atlas.ts.net";
     };
     ssh.enable = lib.mkEnableOption "";
     exitNode.enable = lib.mkEnableOption "";
@@ -36,7 +36,6 @@ in
         if (cfg.exitNode.enable || (cfg.serve.target != null)) then "server" else "client";
       extraUpFlags = [ "--reset=true" ];
       extraSetFlags = [
-        "--hostname=${cfg.subdomain}"
         "--ssh=${lib.boolToString cfg.ssh.enable}"
         "--advertise-exit-node=${lib.boolToString cfg.exitNode.enable}"
       ];
@@ -57,7 +56,7 @@ in
           serviceConfig = {
             Type = "oneshot";
             RemainAfterExit = true;
-            ExecStartPre = "${lib.getExe pkgs.tailscale} cert --min-validity 120h ${cfg.subdomain}.${config.networking.domain}";
+            ExecStartPre = "${lib.getExe pkgs.tailscale} cert --min-validity 120h ${config.networking.hostName}.${cfg.domain}";
             ExecStart = "${lib.getExe pkgs.tailscale} ${mode} --bg ${cfg.serve.target}";
             ExecStop = "${lib.getExe pkgs.tailscale} ${mode} reset";
             Restart = "on-failure";

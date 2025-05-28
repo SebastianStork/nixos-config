@@ -14,7 +14,7 @@ in
 {
   options.custom.services.hedgedoc = {
     enable = lib.mkEnableOption "";
-    subdomain = lib.mkOption {
+    domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
     };
@@ -42,7 +42,7 @@ in
 
       environmentFile = config.sops.templates."hedgedoc/environment".path;
       settings = {
-        domain = "${cfg.subdomain}.${config.networking.domain}";
+        domain = cfg.domain;
         inherit (cfg) port;
         protocolUseSSL = true;
         allowAnonymous = false;

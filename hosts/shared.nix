@@ -9,8 +9,6 @@
 {
   imports = [ self.nixosModules.default ];
 
-  networking.domain = lib.mkDefault "stork-atlas.ts.net";
-
   nix =
     let
       flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;

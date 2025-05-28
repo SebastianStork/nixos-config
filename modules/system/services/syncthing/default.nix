@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.custom.services.syncthing;
+  tsCfg = config.custom.services.tailscale;
 in
 {
   options.custom.services.syncthing = {
@@ -18,6 +19,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = tsCfg.enable;
+        message = "syncthing requires tailscale";
+      }
+    ];
+
     services.syncthing = {
       enable = true;
 
@@ -36,7 +44,7 @@ in
           |> lib.mapAttrs (
             name: value: {
               id = value.config.custom.services.syncthing.deviceId;
-              addresses = [ "tcp://${name}.${value.config.networking.domain}:22000" ];
+              addresses = [ "tcp://${name}.${tsCfg.domain}:22000" ];
             }
           );
 

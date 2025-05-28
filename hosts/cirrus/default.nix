@@ -1,11 +1,10 @@
 { config, ... }:
 {
   system.stateVersion = "24.11";
-  networking.domain = "sprouted.cloud";
 
   custom = {
-    boot.loader.grub.enable = true;
     sops.enable = true;
+    boot.loader.grub.enable = true;
 
     services = {
       tailscale = {
@@ -15,7 +14,7 @@
 
       hedgedoc = {
         enable = true;
-        subdomain = "docs";
+        domain = "docs.sprouted.cloud";
         backups.enable = true;
       };
 
@@ -32,7 +31,7 @@
 
   services.caddy = {
     enable = true;
-    virtualHosts."docs.${config.networking.domain}".extraConfig = ''
+    virtualHosts.${config.custom.services.hedgedoc.domain}.extraConfig = ''
       reverse_proxy localhost:${toString config.custom.services.hedgedoc.port}
     '';
   };

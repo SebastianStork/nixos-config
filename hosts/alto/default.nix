@@ -1,14 +1,14 @@
 { config, ... }:
 let
-  inherit (config.custom) services;
-  inherit (config.custom.services.tailscale) caddyServe;
+  tsDomain = config.custom.services.tailscale.domain;
+  portOf = service: config.custom.services.${service}.port;
 in
 {
   system.stateVersion = "24.11";
 
   custom = {
-    boot.loader.systemdBoot.enable = true;
     sops.enable = true;
+    boot.loader.systemdBoot.enable = true;
 
     services = {
       tailscale = {
@@ -24,32 +24,32 @@ in
         caddyServe = {
           nextcloud = {
             subdomain = "cloud";
-            inherit (services.nextcloud) port;
+            port = portOf "nextcloud";
           };
           actualbudget = {
             subdomain = "budget";
-            inherit (services.actualbudget) port;
+            port = portOf "actualbudget";
           };
           forgejo = {
             subdomain = "git";
-            inherit (services.forgejo) port;
+            port = portOf "forgejo";
           };
         };
       };
 
       nextcloud = {
         enable = true;
-        inherit (caddyServe.nextcloud) subdomain;
+        domain = "cloud.${tsDomain}";
         backups.enable = true;
       };
       actualbudget = {
         enable = true;
-        inherit (caddyServe.actualbudget) subdomain;
+        domain = "budget.${tsDomain}";
         backups.enable = true;
       };
       forgejo = {
         enable = true;
-        inherit (caddyServe.forgejo) subdomain;
+        domain = "git.${tsDomain}";
       };
 
       syncthing = {

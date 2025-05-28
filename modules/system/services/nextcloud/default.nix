@@ -13,7 +13,7 @@ in
 {
   options.custom.services.nextcloud = {
     enable = lib.mkEnableOption "";
-    subdomain = lib.mkOption {
+    domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
     };
@@ -30,7 +30,7 @@ in
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud31;
-      hostName = "${cfg.subdomain}.${config.networking.domain}";
+      hostName = cfg.domain;
 
       database.createLocally = true;
       config = {

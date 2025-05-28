@@ -53,7 +53,7 @@ in
 
       virtualHosts = lib.mapAttrs' (
         _: value:
-        lib.nameValuePair "https://${value.subdomain}.${config.networking.domain}" {
+        lib.nameValuePair "https://${value.subdomain}.${config.custom.services.tailscale.domain}" {
           extraConfig = ''
             bind tailscale/${value.subdomain}
             tailscale_auth
