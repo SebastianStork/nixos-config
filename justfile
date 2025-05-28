@@ -27,3 +27,6 @@ install host destination='root@installer':
 
 repair:
     nix-store --verify --check-contents --repair
+
+repl hostname='$(hostname)':
+    nix repl .#nixosConfigurations.{{ hostname }}
