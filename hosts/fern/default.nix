@@ -24,7 +24,7 @@
     dm.tuigreet.enable = true;
     de.hyprland.enable = true;
 
-    wlan.enable = true;
+    wifi.enable = true;
     bluetooth.enable = true;
     sound.enable = true;
     virtualisation.enable = true;

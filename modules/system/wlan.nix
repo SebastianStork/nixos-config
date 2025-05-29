@@ -14,9 +14,9 @@ let
   ];
 in
 {
-  options.custom.wlan.enable = lib.mkEnableOption "";
+  options.custom.wifi.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.wlan.enable (
+  config = lib.mkIf config.custom.wifi.enable (
     lib.mkMerge (
       lib.flatten [
         {
@@ -34,7 +34,7 @@ in
 
         (lib.forEach networks (name: {
           sops.secrets."iwd/${name}" = { };
-          
+
           systemd.tmpfiles.rules = [
             "C /var/lib/iwd/${name} - - - - ${config.sops.secrets."iwd/${name}".path}"
           ];
