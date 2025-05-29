@@ -20,8 +20,7 @@ in
       enable = true;
       authKeyFile = config.sops.secrets."tailscale-auth-key".path;
       openFirewall = true;
-      useRoutingFeatures =
-        if (cfg.exitNode.enable || (cfg.serve.target != null)) then "server" else "client";
+      useRoutingFeatures = if cfg.exitNode.enable then "server" else "client";
       extraUpFlags = [ "--reset=true" ];
       extraSetFlags = [
         "--ssh=${lib.boolToString cfg.ssh.enable}"
