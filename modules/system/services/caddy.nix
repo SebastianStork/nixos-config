@@ -10,13 +10,13 @@ let
     hash = "sha256-wt3+xCsT83RpPySbL7dKVwgqjKw06qzrP2Em+SxEPto=";
   };
 
-  allVirtualHosts =
+  virtualHosts =
     config.custom.services.caddy.virtualHosts |> lib.filterAttrs (_: value: value.enable);
 
   isTailscaleDomain = domain: domain |> lib.hasSuffix config.custom.services.tailscale.domain;
 
-  tailscaleHostsExist = lib.any (v: isTailscaleDomain v.domain) (lib.attrValues allVirtualHosts);
-  nonTailscaleHostsExist = lib.any (v: !isTailscaleDomain v.domain) (lib.attrValues allVirtualHosts);
+  tailscaleHostsExist = lib.any (v: isTailscaleDomain v.domain) (lib.attrValues virtualHosts);
+  nonTailscaleHostsExist = lib.any (v: !isTailscaleDomain v.domain) (lib.attrValues virtualHosts);
 
   getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
 in
@@ -46,23 +46,23 @@ in
     default = { };
   };
 
-  config = lib.mkIf (allVirtualHosts != { }) (
+  config = lib.mkIf (virtualHosts != { }) (
     lib.mkMerge [
       {
         services.caddy = {
           enable = true;
           virtualHosts = lib.mapAttrs' (
-            _: v:
-            lib.nameValuePair v.domain {
+            _: value:
+            lib.nameValuePair value.domain {
               extraConfig = lib.concatStrings [
-                (lib.optionalString (isTailscaleDomain v.domain) ''
-                  bind tailscale/${getSubdomain v.domain}
+                (lib.optionalString (isTailscaleDomain value.domain) ''
+                  bind tailscale/${getSubdomain value.domain}
                   tailscale_auth
                 '')
-                "reverse_proxy localhost:${toString v.port}"
+                "reverse_proxy localhost:${toString value.port}"
               ];
             }
-          ) allVirtualHosts;
+          ) virtualHosts;
         };
 
         networking.firewall.allowedTCPPorts = lib.mkIf nonTailscaleHostsExist [
