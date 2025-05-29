@@ -11,11 +11,6 @@
         enable = true;
         ssh.enable = true;
         exitNode.enable = true;
-
-        serve = {
-          isFunnel = true;
-          target = toString ./hedgedoc-redirect.html;
-        };
       };
 
       syncthing = {
