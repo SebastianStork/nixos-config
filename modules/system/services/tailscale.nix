@@ -27,5 +27,7 @@ in
         "--advertise-exit-node=${lib.boolToString cfg.exitNode.enable}"
       ];
     };
+
+    systemd.services.tailscaled-set.after = [ "tailscaled-autoconnect.service" ];
   };
 }
