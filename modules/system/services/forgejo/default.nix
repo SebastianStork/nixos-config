@@ -35,6 +35,7 @@ in
           DOMAIN = cfg.domain;
           ROOT_URL = "https://${config.services.forgejo.settings.server.DOMAIN}/";
           HTTP_PORT = cfg.port;
+          LANDING_PAGE = "explore";
         };
         service.DISABLE_REGISTRATION = true;
 
