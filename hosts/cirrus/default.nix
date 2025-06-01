@@ -29,6 +29,7 @@
       forgejo = {
         enable = true;
         domain = "git.sstork.dev";
+        ssh.enable = true;
       };
 
       caddy.virtualHosts = {
