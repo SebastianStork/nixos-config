@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.services.forgejo;
 
@@ -53,10 +48,18 @@ in
 
     systemd.services.forgejo.preStart =
       let
-        createCmd = "${lib.getExe config.services.forgejo.package} admin user create";
-        passwordPath = config.sops.secrets."forgejo/admin-password".path;
+        userCmd = "${lib.getExe config.services.forgejo.package} admin user";
+        credentials = lib.concatStringsSep " " [
+          "--username SebastianStork"
+          "--password \"$PASSWORD\""
+        ];
       in
-      ''${createCmd} --username SebastianStork --password "$(cat ${passwordPath})" --email "sebastian.stork@pm.me" --admin || true'';
+      ''
+        PASSWORD="$(< ${config.sops.secrets."forgejo/admin-password".path})"
+
+        ${userCmd} create ${credentials} --email "sebastian.stork@pm.me" --admin \
+          || ${userCmd} change-password ${credentials} --must-change-password=false
+      '';
 
     systemd.tmpfiles.rules =
       let
