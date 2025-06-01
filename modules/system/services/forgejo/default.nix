@@ -38,6 +38,7 @@ in
           LANDING_PAGE = "explore";
         };
         service.DISABLE_REGISTRATION = true;
+        session.PROVIDER = "db";
 
         # https://forgejo.org/docs/latest/admin/recommendations
         database.SQLITE_JOURNAL_MODE = "WAL";
