@@ -40,7 +40,6 @@ in
       enrollKeyFile = config.sops.secrets."crowdsec/enrollment-key".path;
       settings = {
         api.server.listen_uri = "127.0.0.1:${toString cfg.apiPort}";
-        prometheus.enabled = false;
       };
 
       acquisitions =
