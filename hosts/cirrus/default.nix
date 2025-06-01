@@ -16,6 +16,7 @@
         enable = true;
         firewallBouncer.enable = true;
         sources = [
+          "sshd"
           "iptables"
           "caddy"
         ];

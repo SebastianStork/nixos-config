@@ -20,6 +20,7 @@ in
     sources = lib.mkOption {
       type = lib.types.listOf (
         lib.types.enum [
+          "sshd"
           "iptables"
           "caddy"
         ]
@@ -42,33 +43,43 @@ in
         prometheus.enabled = false;
       };
 
-      acquisitions = [
-        (lib.mkIf (lib.elem "iptables" cfg.sources) {
-          source = "journalctl";
-          journalctl_filter = [ "-k" ];
-          labels.type = "syslog";
-        })
-        (lib.mkIf (lib.elem "caddy" cfg.sources) {
-          source = "journalctl";
-          journalctl_filter = [ "_SYSTEMD_UNIT=caddy.service" ];
-          labels.type = "syslog";
-        })
-      ];
+      acquisitions =
+        let
+          mkAcquisition =
+            enable: unit:
+            lib.optionalAttrs enable {
+              source = "journalctl";
+              journalctl_filter = [ "_SYSTEMD_UNIT=${unit}" ];
+              labels.type = "syslog";
+            };
+        in
+        [
+          (mkAcquisition (lib.elem "sshd" cfg.sources) "sshd.service")
+          (mkAcquisition (lib.elem "caddy" cfg.sources) "caddy.service")
+          (lib.mkIf (lib.elem "iptables" cfg.sources) {
+            source = "journalctl";
+            journalctl_filter = [ "-k" ];
+            labels.type = "syslog";
+          })
+        ];
     };
 
     systemd.services.crowdsec.preStart =
       let
-        collections = lib.flatten [
-          "crowdsecurity/linux"
-          (lib.optional (lib.elem "iptables" cfg.sources) "crowdsecurity/iptables")
-          (lib.optional (lib.elem "caddy" cfg.sources) "crowdsecurity/caddy")
-        ];
         addCollection = collection: ''
           if ! cscli collections list | grep -q "${collection}"; then
             cscli collections install ${collection}
           fi
         '';
       in
-      collections |> lib.map addCollection |> lib.concatLines;
+      [
+        "crowdsecurity/linux"
+        (lib.optional (lib.elem "sshd" cfg.sources) "crowdsecurity/sshd")
+        (lib.optional (lib.elem "caddy" cfg.sources) "crowdsecurity/caddy")
+        (lib.optional (lib.elem "iptables" cfg.sources) "crowdsecurity/iptables")
+      ]
+      |> lib.flatten
+      |> lib.map addCollection
+      |> lib.concatLines;
   };
 }
