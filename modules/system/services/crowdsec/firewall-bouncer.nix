@@ -24,8 +24,8 @@ in
     };
 
     systemd.services.crowdsec.preStart = ''
-      if ! cscli bouncers list | grep -q "firewall-bouncer"; then
-        cscli bouncers add "firewall-bouncer" --key "cs-firewall-bouncer"
+      if ! cscli bouncers list | grep -q "firewall"; then
+        cscli bouncers add "firewall" --key "cs-firewall-bouncer"
       fi
     '';
   };
