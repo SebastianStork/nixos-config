@@ -4,6 +4,7 @@
 
   config = lib.mkIf config.custom.programs.git.enable {
     sops.secrets = {
+      "ssh-key/forgejo" = { };
       "ssh-key/github" = { };
       "ssh-key/hda-gitlab" = { };
     };
@@ -33,6 +34,7 @@
       ssh = {
         enable = true;
         matchBlocks = {
+          "git.sstork.dev".identityFile = config.sops.secrets."ssh-key/forgejo".path;
           "github.com".identityFile = config.sops.secrets."ssh-key/github".path;
           "code.fbi.h-da.de".identityFile = config.sops.secrets."ssh-key/hda-gitlab".path;
         };
