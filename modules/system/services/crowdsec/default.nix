@@ -63,9 +63,9 @@ in
         ];
     };
 
-    systemd.services.crowdsec.preStart =
+    systemd.services.crowdsec.serviceConfig.ExecStartPre =
       let
-        addCollection = collection: ''
+        installCollection = collection: ''
           if ! cscli collections list | grep -q "${collection}"; then
             cscli collections install ${collection}
           fi
@@ -78,7 +78,9 @@ in
         (lib.optional (lib.elem "iptables" cfg.sources) "crowdsecurity/iptables")
       ]
       |> lib.flatten
-      |> lib.map addCollection
-      |> lib.concatLines;
+      |> lib.map installCollection
+      |> lib.concatLines
+      |> (text: pkgs.writeShellScript "crowdsec-install-collections" "set -e\n${text}")
+      |> lib.mkAfter;
   };
 }

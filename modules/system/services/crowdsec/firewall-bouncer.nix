@@ -23,10 +23,13 @@ in
       };
     };
 
-    systemd.services.crowdsec.preStart = ''
-      if ! cscli bouncers list | grep -q "firewall"; then
-        cscli bouncers add "firewall" --key "cs-firewall-bouncer"
-      fi
-    '';
+    systemd.services.crowdsec.serviceConfig.ExecStartPre = lib.mkAfter (
+      pkgs.writeShellScript "crowdsec-add-bouncer" ''
+        set -e
+        if ! cscli bouncers list | grep -q "firewall"; then
+          cscli bouncers add "firewall" --key "cs-firewall-bouncer"
+        fi
+      ''
+    );
   };
 }
