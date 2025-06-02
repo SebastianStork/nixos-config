@@ -38,10 +38,9 @@ in
       enable = true;
       package = inputs.crowdsec.packages.${pkgs.system}.crowdsec;
       enrollKeyFile = config.sops.secrets."crowdsec/enrollment-key".path;
-      settings = {
-        api.server.listen_uri = "127.0.0.1:${toString cfg.apiPort}";
-      };
+      settings.api.server.listen_uri = "127.0.0.1:${toString cfg.apiPort}";
 
+      allowLocalJournalAccess = true;
       acquisitions =
         let
           mkAcquisition =
