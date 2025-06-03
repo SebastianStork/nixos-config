@@ -28,19 +28,19 @@ in
     sops = {
       secrets = {
         "hedgedoc/seb-password".owner = user;
-        "hedgedoc/gitlab-auth-secret".owner = user;
+        # "hedgedoc/gitlab-auth-secret".owner = user;
       };
 
-      templates."hedgedoc/environment" = {
-        owner = user;
-        content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
-      };
+      # templates."hedgedoc/environment" = {
+      #   owner = user;
+      #   content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
+      # };
     };
 
     services.hedgedoc = {
       enable = true;
 
-      environmentFile = config.sops.templates."hedgedoc/environment".path;
+      # environmentFile = config.sops.templates."hedgedoc/environment".path;
       settings = {
         domain = cfg.domain;
         inherit (cfg) port;
@@ -49,11 +49,11 @@ in
         allowEmailRegister = false;
         defaultPermission = "limited";
         sessionSecret = "$SESSION_SECRET";
-        gitlab = {
-          baseURL = "https://code.fbi.h-da.de";
-          clientID = "dc71d7ec1525ce3b425d7d41d602f67e1a06cef981259605a87841a6be62cc58";
-          clientSecret = "$GITLAB_CLIENTSECRET";
-        };
+        # gitlab = {
+        #   baseURL = "https://code.fbi.h-da.de";
+        #   clientID = "dc71d7ec1525ce3b425d7d41d602f67e1a06cef981259605a87841a6be62cc58";
+        #   clientSecret = "$GITLAB_CLIENTSECRET";
+        # };
       };
     };
 
