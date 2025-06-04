@@ -28,7 +28,7 @@ in
       settings = {
         server = {
           DOMAIN = cfg.domain;
-          ROOT_URL = "https://${config.services.forgejo.settings.server.DOMAIN}/";
+          ROOT_URL = "https://${cfg.domain}/";
           HTTP_PORT = cfg.port;
           LANDING_PAGE = "explore";
         };
@@ -40,7 +40,11 @@ in
         database.SQLITE_JOURNAL_MODE = "WAL";
         cache = {
           ADAPTER = "twoqueue";
-          HOST = ''{"size":100, "recent_ratio":0.25, "ghost_ratio":0.5}'';
+          HOST = builtins.toJSON {
+            size = 100;
+            recent_ratio = 0.25;
+            ghost_ratio = 0.5;
+          };
         };
         "repository.signing".DEFAULT_TRUST_MODEL = "committer";
         security.LOGIN_REMEMBER_DAYS = 365;

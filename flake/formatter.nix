@@ -11,7 +11,7 @@
             prettier.enable = true;
             just.enable = true;
           };
-          settings.formatter.nixfmt.excludes = [ "modules/home/shell/aliases.nix" ];
+          settings.formatter.nixfmt.excludes = [ "modules/home/programs/shell/aliases.nix" ];
         }).config.build.wrapper;
     };
 }

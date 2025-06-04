@@ -10,8 +10,6 @@
         KbdInteractiveAuthentication = false;
         PermitRootLogin = "no";
         AllowUsers = [ config.users.users.forgejo.name ];
-        # https://forgejo.org/docs/latest/admin/recommendations/#git-over-ssh
-        AcceptEnv = "GIT_PROTOCOL";
       };
     };
   };
