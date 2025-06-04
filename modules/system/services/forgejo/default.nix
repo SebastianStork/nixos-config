@@ -35,6 +35,7 @@ in
         service.DISABLE_REGISTRATION = true;
         session.PROVIDER = "db";
         mirror.DEFAULT_INTERVAL = "1h";
+        federation.ENABLED = true;
 
         # https://forgejo.org/docs/latest/admin/recommendations
         database.SQLITE_JOURNAL_MODE = "WAL";
