@@ -30,7 +30,7 @@ in
           DOMAIN = cfg.domain;
           ROOT_URL = "https://${cfg.domain}/";
           HTTP_PORT = cfg.port;
-          LANDING_PAGE = "explore";
+          LANDING_PAGE = "/SebastianStork";
         };
         service.DISABLE_REGISTRATION = true;
         session.PROVIDER = "db";
