@@ -37,6 +37,9 @@ in
         mirror.DEFAULT_INTERVAL = "1h";
         federation.ENABLED = true;
 
+        cron.ENABLED = true;
+        "cron.git_gc_repos".ENABLED = true;
+
         # https://forgejo.org/docs/latest/admin/recommendations
         database.SQLITE_JOURNAL_MODE = "WAL";
         cache = {
