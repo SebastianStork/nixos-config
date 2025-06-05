@@ -25,7 +25,6 @@
     de.hyprland.enable = true;
 
     sound.enable = true;
-    virtualisation.enable = true;
 
     services = {
       gc.enable = true;

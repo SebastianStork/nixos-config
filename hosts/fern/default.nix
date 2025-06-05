@@ -27,7 +27,6 @@
     wifi.enable = true;
     bluetooth.enable = true;
     sound.enable = true;
-    virtualisation.enable = true;
 
     services = {
       gc.enable = true;
