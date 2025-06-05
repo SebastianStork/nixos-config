@@ -8,6 +8,8 @@
   options.custom.programs.shell.zsh.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.shell.zsh.enable {
+    custom.programs.shell.aliases.enable = true;
+    
     programs = {
       zsh = {
         enable = true;
