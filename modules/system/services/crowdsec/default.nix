@@ -7,6 +7,8 @@
 }:
 let
   cfg = config.custom.services.crowdsec;
+
+  user = config.users.users.crowdsec.name;
 in
 {
   imports = [ inputs.crowdsec.nixosModules.crowdsec ];
@@ -32,7 +34,9 @@ in
   config = lib.mkIf cfg.enable {
     nixpkgs.overlays = [ inputs.crowdsec.overlays.default ];
 
-    sops.secrets."crowdsec/enrollment-key".owner = config.users.users.crowdsec.name;
+    sops.secrets."crowdsec/enrollment-key".owner = user;
+
+    users.groups.caddy.members = lib.mkIf (lib.elem "caddy" cfg.sources) [ user ];
 
     services.crowdsec = {
       enable = true;
@@ -53,7 +57,10 @@ in
         in
         [
           (mkAcquisition (lib.elem "sshd" cfg.sources) "sshd.service")
-          (mkAcquisition (lib.elem "caddy" cfg.sources) "caddy.service")
+          (lib.mkIf (lib.elem "caddy" cfg.sources) {
+            filenames = [ "${config.services.caddy.logDir}/*.log" ];
+            labels.type = "caddy";
+          })
           (lib.mkIf (lib.elem "iptables" cfg.sources) {
             source = "journalctl";
             journalctl_filter = [ "-k" ];

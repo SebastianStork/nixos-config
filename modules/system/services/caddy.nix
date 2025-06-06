@@ -54,6 +54,7 @@ in
           virtualHosts = lib.mapAttrs' (
             _: value:
             lib.nameValuePair value.domain {
+              logFormat = "output file ${config.services.caddy.logDir}/access-${value.domain}.log { mode 640 }";
               extraConfig = lib.concatStrings [
                 (lib.optionalString (isTailscaleDomain value.domain) ''
                   bind tailscale/${getSubdomain value.domain}
