@@ -14,7 +14,7 @@ in
   options.custom.services.nextcloud.backups.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.backups.enable {
-    custom.services.resticBackup.nextcloud = {
+    custom.services.resticBackups.nextcloud = {
       inherit user;
       healthchecks.enable = true;
 

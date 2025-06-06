@@ -28,7 +28,7 @@ in
         '';
     };
 
-    custom.services.resticBackup.hedgedoc = {
+    custom.services.resticBackups.hedgedoc = {
       inherit user;
       healthchecks.enable = true;
 

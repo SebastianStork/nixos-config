@@ -28,7 +28,7 @@ in
         '';
     };
 
-    custom.services.resticBackup.forgejo = {
+    custom.services.resticBackups.forgejo = {
       inherit user;
       healthchecks.enable = true;
 

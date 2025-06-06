@@ -37,7 +37,7 @@ in
         '';
     };
 
-    custom.services.resticBackup.syncthing = {
+    custom.services.resticBackups.syncthing = {
       inherit user;
       healthchecks.enable = true;
 
