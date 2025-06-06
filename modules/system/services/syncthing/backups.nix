@@ -20,30 +20,10 @@ in
       }
     ];
 
-    security.polkit = {
-      enable = true;
-      extraConfig =
-        let
-          service = "syncthing.service";
-        in
-        ''
-          polkit.addRule(function(action, subject) {
-            if (action.id == "org.freedesktop.systemd1.manage-units" &&
-              action.lookup("unit") == "${service}" &&
-              subject.user == "${user}") {
-              return polkit.Result.YES;
-            }
-          });
-        '';
-    };
-
     custom.services.resticBackups.syncthing = {
       inherit user;
-      extraConfig = {
-        backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop syncthing.service";
-        backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start syncthing.service";
-        paths = [ config.services.syncthing.dataDir ];
-      };
+      suspendService = "syncthing.service";
+      extraConfig.paths = [ config.services.syncthing.dataDir ];
     };
 
     environment.systemPackages = [

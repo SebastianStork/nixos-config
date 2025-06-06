@@ -11,30 +11,10 @@ in
   options.custom.services.actualbudget.backups.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.actualbudget.backups.enable {
-    security.polkit = {
-      enable = true;
-      extraConfig =
-        let
-          service = "actual.service";
-        in
-        ''
-          polkit.addRule(function(action, subject) {
-            if (action.id == "org.freedesktop.systemd1.manage-units" &&
-              action.lookup("unit") == "${service}" &&
-              subject.user == "${user}") {
-              return polkit.Result.YES;
-            }
-          });
-        '';
-    };
-
     custom.services.resticBackups.actual = {
       inherit user;
-      extraConfig = {
-        backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop actual.service";
-        backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start actual.service";
-        paths = [ config.services.actual.settings.dataDir ];
-      };
+      suspendService = "actual.service";
+      extraConfig.paths = [ config.services.actual.settings.dataDir ];
     };
 
     environment.systemPackages = [

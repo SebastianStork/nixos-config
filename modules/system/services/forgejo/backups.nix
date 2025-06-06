@@ -11,30 +11,10 @@ in
   options.custom.services.forgejo.backups.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.forgejo.backups.enable {
-    security.polkit = {
-      enable = true;
-      extraConfig =
-        let
-          service = "forgejo.service";
-        in
-        ''
-          polkit.addRule(function(action, subject) {
-            if (action.id == "org.freedesktop.systemd1.manage-units" &&
-              action.lookup("unit") == "${service}" &&
-              subject.user == "${user}") {
-              return polkit.Result.YES;
-            }
-          });
-        '';
-    };
-
     custom.services.resticBackups.forgejo = {
       inherit user;
-      extraConfig = {
-        backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop forgejo.service";
-        backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start forgejo.service";
-        paths = [ config.services.forgejo.stateDir ];
-      };
+      suspendService = "forgejo.service";
+      extraConfig.paths = [ config.services.forgejo.stateDir ];
     };
 
     environment.systemPackages = [

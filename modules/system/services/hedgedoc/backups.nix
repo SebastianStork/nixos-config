@@ -11,33 +11,13 @@ in
   options.custom.services.hedgedoc.backups.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.hedgedoc.backups.enable {
-    security.polkit = {
-      enable = true;
-      extraConfig =
-        let
-          service = "hedgedoc.service";
-        in
-        ''
-          polkit.addRule(function(action, subject) {
-            if (action.id == "org.freedesktop.systemd1.manage-units" &&
-              action.lookup("unit") == "${service}" &&
-              subject.user == "${user}") {
-              return polkit.Result.YES;
-            }
-          });
-        '';
-    };
-
     custom.services.resticBackups.hedgedoc = {
       inherit user;
-      extraConfig = {
-        backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop hedgedoc.service";
-        backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start hedgedoc.service";
-        paths = with config.services.hedgedoc.settings; [
-          uploadsPath
-          db.storage
-        ];
-      };
+      suspendService = "hedgedoc.service";
+      extraConfig.paths = with config.services.hedgedoc.settings; [
+        uploadsPath
+        db.storage
+      ];
     };
 
     environment.systemPackages = [
