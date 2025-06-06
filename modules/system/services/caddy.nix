@@ -19,6 +19,17 @@ let
   nonTailscaleHostsExist = lib.any (v: !isTailscaleDomain v.domain) (lib.attrValues virtualHosts);
 
   getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
+
+  mkVirtualHostConfig = domain: port: {
+    logFormat = "output file ${config.services.caddy.logDir}/access-${domain}.log { mode 640 }";
+    extraConfig = ''
+      ${lib.optionalString (isTailscaleDomain domain) ''
+        bind tailscale/${getSubdomain domain}
+        tailscale_auth
+      ''}
+      reverse_proxy localhost:${toString port}
+    '';
+  };
 in
 {
   options.custom.services.caddy.virtualHosts = lib.mkOption {
@@ -51,19 +62,11 @@ in
       {
         services.caddy = {
           enable = true;
-          virtualHosts = lib.mapAttrs' (
-            _: value:
-            lib.nameValuePair value.domain {
-              logFormat = "output file ${config.services.caddy.logDir}/access-${value.domain}.log { mode 640 }";
-              extraConfig = lib.concatStrings [
-                (lib.optionalString (isTailscaleDomain value.domain) ''
-                  bind tailscale/${getSubdomain value.domain}
-                  tailscale_auth
-                '')
-                "reverse_proxy localhost:${toString value.port}"
-              ];
-            }
-          ) virtualHosts;
+          virtualHosts =
+            virtualHosts
+            |> lib.mapAttrs' (
+              _: value: lib.nameValuePair value.domain (mkVirtualHostConfig value.domain value.port)
+            );
         };
 
         networking.firewall.allowedTCPPorts = lib.mkIf nonTailscaleHostsExist [
