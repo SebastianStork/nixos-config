@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.services.forgejo;
 
@@ -72,14 +77,14 @@ in
 
     systemd.tmpfiles.rules =
       let
-        disallow-all-robots = lib.replaceStrings [ "\n" ] [ "\\n" ] ''
+        disallow-all-robots = pkgs.writeText "disallow-all-robots.txt" ''
           User-agent: *
           Disallow: /
         '';
       in
       [
         "d ${config.services.forgejo.customDir}/public 750 ${user} ${group} - -"
-        "f+ ${config.services.forgejo.customDir}/public/robots.txt 750 ${user} ${group} - ${disallow-all-robots}"
+        "L+ ${config.services.forgejo.customDir}/public/robots.txt 750 - - - ${disallow-all-robots}"
       ];
   };
 }
