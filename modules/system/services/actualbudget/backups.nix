@@ -30,8 +30,6 @@ in
 
     custom.services.resticBackups.actual = {
       inherit user;
-      healthchecks.enable = true;
-
       extraConfig = {
         backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop actual.service";
         backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start actual.service";

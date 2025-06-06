@@ -30,8 +30,6 @@ in
 
     custom.services.resticBackups.hedgedoc = {
       inherit user;
-      healthchecks.enable = true;
-
       extraConfig = {
         backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop hedgedoc.service";
         backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start hedgedoc.service";

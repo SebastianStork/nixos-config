@@ -39,8 +39,6 @@ in
 
     custom.services.resticBackups.syncthing = {
       inherit user;
-      healthchecks.enable = true;
-
       extraConfig = {
         backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop syncthing.service";
         backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start syncthing.service";

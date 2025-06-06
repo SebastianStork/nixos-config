@@ -16,8 +16,6 @@ in
   config = lib.mkIf cfg.backups.enable {
     custom.services.resticBackups.nextcloud = {
       inherit user;
-      healthchecks.enable = true;
-
       extraConfig = {
         backupPrepareCommand = ''
           ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on

@@ -16,16 +16,15 @@ in
   options.custom.services.resticBackups = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.healthchecks.enable = lib.mkEnableOption "";
+        options.healthchecks.enable = lib.mkEnableOption "" // {
+          default = true;
+        };
       }
     );
   };
 
   config = lib.mkIf (resticBackups != { }) {
-    sops.secrets."healthchecks-ping-key" = {
-      mode = "440";
-      group = config.users.groups.backup.name;
-    };
+    sops.secrets."healthchecks-ping-key" = { };
 
     systemd.services = lib.mkMerge [
       {

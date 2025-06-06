@@ -30,8 +30,6 @@ in
 
     custom.services.resticBackups.forgejo = {
       inherit user;
-      healthchecks.enable = true;
-
       extraConfig = {
         backupPrepareCommand = "${lib.getExe' pkgs.systemd "systemctl"} stop forgejo.service";
         backupCleanupCommand = "${lib.getExe' pkgs.systemd "systemctl"} start forgejo.service";
