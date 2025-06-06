@@ -31,6 +31,7 @@
         enable = true;
         domain = "git.sstork.dev";
         ssh.enable = true;
+        backups.enable = true;
       };
 
       caddy.virtualHosts = {
