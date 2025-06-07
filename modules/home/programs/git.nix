@@ -4,9 +4,9 @@
 
   config = lib.mkIf config.custom.programs.git.enable {
     sops.secrets = {
-      "ssh-key/git.sstork.dev" = { };
-      "ssh-key/github.com" = { };
-      "ssh-key/code.fbi.h-da.de" = { };
+      "ssh-key/git.sstork.dev".path = "${config.home.homeDirectory}/.ssh/git.sstork.dev";
+      "ssh-key/github.com".path = "${config.home.homeDirectory}/.ssh/github.com";
+      "ssh-key/code.fbi.h-da.de".path = "${config.home.homeDirectory}/.ssh/code.fbi.h-da.de";
     };
 
     programs = {
