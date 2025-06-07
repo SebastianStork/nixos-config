@@ -41,6 +41,11 @@ in
         session.PROVIDER = "db";
         mirror.DEFAULT_INTERVAL = "1h";
         federation.ENABLED = true;
+        other = {
+          SHOW_FOOTER_VERSION = false;
+          SHOW_FOOTER_TEMPLATE_LOAD_TIME = false;
+          SHOW_FOOTER_POWERED_BY = false;
+        };
 
         cron.ENABLED = true;
         "cron.git_gc_repos".ENABLED = true;
