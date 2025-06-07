@@ -16,7 +16,7 @@ in
             type = lib.types.str;
             default = config.users.users.root.name;
           };
-          suspendService = lib.mkOption {
+          dependentService = lib.mkOption {
             type = lib.types.nullOr lib.types.nonEmptyStr;
             default = null;
           };
@@ -83,11 +83,11 @@ in
       |> lib.mapAttrs' (
         name: value:
         lib.nameValuePair "restic-backups-${name}" (
-          lib.mkIf (value.suspendService != null) {
-            unitConfig.Conflicts = [ value.suspendService ];
-            after = [ value.suspendService ];
-            onSuccess = [ value.suspendService ];
-            onFailure = [ value.suspendService ];
+          lib.mkIf (value.dependentService != null) {
+            unitConfig.Conflicts = [ value.dependentService ];
+            after = [ value.dependentService ];
+            onSuccess = [ value.dependentService ];
+            onFailure = [ value.dependentService ];
           }
         )
       );

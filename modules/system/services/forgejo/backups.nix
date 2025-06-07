@@ -13,7 +13,7 @@ in
   config = lib.mkIf config.custom.services.forgejo.backups.enable {
     custom.services.resticBackups.forgejo = {
       inherit user;
-      suspendService = "forgejo.service";
+      dependentService = "forgejo.service";
       extraConfig.paths = [ config.services.forgejo.stateDir ];
     };
 

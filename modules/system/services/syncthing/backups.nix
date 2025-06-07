@@ -22,7 +22,7 @@ in
 
     custom.services.resticBackups.syncthing = {
       inherit user;
-      suspendService = "syncthing.service";
+      dependentService = "syncthing.service";
       extraConfig.paths = [ config.services.syncthing.dataDir ];
     };
 

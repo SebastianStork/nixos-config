@@ -13,7 +13,7 @@ in
   config = lib.mkIf config.custom.services.actualbudget.backups.enable {
     custom.services.resticBackups.actual = {
       inherit user;
-      suspendService = "actual.service";
+      dependentService = "actual.service";
       extraConfig.paths = [ config.services.actual.settings.dataDir ];
     };
 
