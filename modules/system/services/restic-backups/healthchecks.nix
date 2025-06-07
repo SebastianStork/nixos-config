@@ -5,10 +5,8 @@
   ...
 }:
 let
-  inherit (config.custom.services) resticBackups;
-
   backupsWithHealthchecks =
-    resticBackups
+    config.custom.services.resticBackups
     |> lib.filterAttrs (_: value: value.enable)
     |> lib.filterAttrs (_: value: value.healthchecks.enable);
 in
@@ -23,7 +21,7 @@ in
     );
   };
 
-  config = lib.mkIf (resticBackups != { }) {
+  config = lib.mkIf (backupsWithHealthchecks != { }) {
     sops.secrets."healthchecks-ping-key" = { };
 
     systemd.services = lib.mkMerge [
