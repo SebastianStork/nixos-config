@@ -4,6 +4,7 @@ keys:
   # Hosts
   - &alto age1qz04yg4h4g22wxqca2pd5k0z574223f6m5c9jy5ny37nlgcd6u4styf06t
   - &cirrus age1dnpwfwh0h95r63e5qfjc2gvffw2tr2tx4new7sq2h3qs90kx9fmq322mx4
+  - &cumulus age1dnru7l0agvnw3t9kmx60u4vh5u4tyd49xdve53zspxkznnp9f34qtec9dl
   - &fern age1sywwrwse76x8yskrsfpwk38fu2cmyx5s9qkf2pgc68cta0vj9psql7dp6e
   - &north age18x6herevmcuhcmeh47ll6p9ck9zk4ga6gfxwlc8yl49rwjxm7qusylwfgc
 
@@ -23,6 +24,11 @@ creation_rules:
       - age:
           - *admin
           - *cirrus
+  - path_regex: hosts/cumulus/secrets.yaml$
+    key_groups:
+      - age:
+          - *admin
+          - *cumulus
   - path_regex: hosts/fern/secrets.yaml$
     key_groups:
       - age:
