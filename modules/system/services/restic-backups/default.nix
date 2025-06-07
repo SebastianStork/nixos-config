@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   resticBackups = lib.filterAttrs (_: value: value.enable) config.custom.services.resticBackups;
 
@@ -57,27 +52,6 @@ in
         "restic/password" = resticPermissions;
       };
 
-    security.polkit = {
-      enable = resticBackups |> lib.attrValues |> lib.any (value: value.suspendService != null);
-      extraConfig =
-        let
-          mkAllowRule = service: user: ''
-            polkit.addRule(function(action, subject) {
-              if (action.id == "org.freedesktop.systemd1.manage-units" &&
-                action.lookup("unit") == "${service}" &&
-                subject.user == "${user}") {
-                return polkit.Result.YES;
-              }
-            });
-          '';
-        in
-        resticBackups
-        |> lib.attrValues
-        |> lib.filter (value: value.suspendService != null)
-        |> lib.map (value: mkAllowRule value.suspendService value.user)
-        |> lib.concatLines;
-    };
-
     services.restic.backups =
       resticBackups
       |> lib.mapAttrs (
@@ -89,12 +63,6 @@ in
             repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
             environmentFile = config.sops.secrets."restic/environment".path;
             passwordFile = config.sops.secrets."restic/password".path;
-            backupPrepareCommand = lib.mkIf (value.suspendService != null) (
-              lib.mkBefore "${lib.getExe' pkgs.systemd "systemctl"} stop ${value.suspendService}"
-            );
-            backupCleanupCommand = lib.mkIf (value.suspendService != null) (
-              lib.mkAfter "${lib.getExe' pkgs.systemd "systemctl"} start ${value.suspendService}"
-            );
             pruneOpts = [
               "--keep-daily 7"
               "--keep-weekly 5"
@@ -108,6 +76,20 @@ in
           }
           value.extraConfig
         ]
+      );
+
+    systemd.services =
+      resticBackups
+      |> lib.mapAttrs' (
+        name: value:
+        lib.nameValuePair "restic-backups-${name}" (
+          lib.mkIf (value.suspendService != null) {
+            unitConfig.Conflicts = [ value.suspendService ];
+            after = [ value.suspendService ];
+            onSuccess = [ value.suspendService ];
+            onFailure = [ value.suspendService ];
+          }
+        )
       );
   };
 }
