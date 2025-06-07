@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   user = config.users.users.hedgedoc.name;
 in
@@ -19,18 +14,5 @@ in
         db.storage
       ];
     };
-
-    environment.systemPackages = [
-      (pkgs.writeShellApplication {
-        name = "hedgedoc-restore";
-        text = ''
-          sudo --user=${user} bash -c "
-            systemctl stop hedgedoc.service
-            restic-hedgedoc restore latest --target /
-            systemctl start hedgedoc.service
-          "
-        '';
-      })
-    ];
   };
 }

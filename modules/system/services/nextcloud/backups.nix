@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.services.nextcloud;
 
@@ -28,20 +23,14 @@ in
           "${dataDir}/db.dump"
         ];
       };
-    };
 
-    environment.systemPackages = [
-      (pkgs.writeShellApplication {
-        name = "nextcloud-restore";
-        text = ''
-          sudo --user=${user} bash -c "
-            ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on
-            restic-nextcloud restore latest --target /
-            pg_restore --clean --if-exists --dbname nextcloud ${dataDir}/db.dump
-            ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off
-          "
+      restoreCommand = {
+        preRestore = "${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on";
+        postRestore = ''
+          pg_restore --clean --if-exists --dbname nextcloud ${dataDir}/db.dump
+          ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off
         '';
-      })
-    ];
+      };
+    };
   };
 }

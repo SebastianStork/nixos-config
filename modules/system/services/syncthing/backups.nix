@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.services.syncthing;
 
@@ -25,18 +20,5 @@ in
       dependentService = "syncthing.service";
       extraConfig.paths = [ config.services.syncthing.dataDir ];
     };
-
-    environment.systemPackages = [
-      (pkgs.writeShellApplication {
-        name = "syncthing-restore";
-        text = ''
-          sudo --user=${user} bash -c "
-            systemctl stop syncthing.service
-            restic-syncthing restore latest --target /
-            systemctl start syncthing.service
-          "
-        '';
-      })
-    ];
   };
 }

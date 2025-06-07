@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   user = config.users.users.forgejo.name;
 in
@@ -16,18 +11,5 @@ in
       dependentService = "forgejo.service";
       extraConfig.paths = [ config.services.forgejo.stateDir ];
     };
-
-    environment.systemPackages = [
-      (pkgs.writeShellApplication {
-        name = "forgejo-restore";
-        text = ''
-          sudo --user=${user} bash -c "
-            systemctl stop forgejo.service
-            restic-forgejo restore latest --target /
-            systemctl start forgejo.service
-          "
-        '';
-      })
-    ];
   };
 }
