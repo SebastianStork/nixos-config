@@ -7,7 +7,7 @@
         default = pkgs.mkShell {
           packages = [
             pkgs.nh
-            inputs.deploy-rs.defaultPackage.${system}
+            inputs.deploy-rs.packages.${system}.default
           ];
         };
 
