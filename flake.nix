@@ -79,7 +79,6 @@
         ./flake/formatter.nix
         ./flake/hosts.nix
         ./flake/modules.nix
-        ./flake/packages.nix
       ];
     };
 }
