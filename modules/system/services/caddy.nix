@@ -23,10 +23,7 @@ let
   mkVirtualHostConfig = domain: port: {
     logFormat = "output file ${config.services.caddy.logDir}/access-${domain}.log { mode 640 }";
     extraConfig = ''
-      ${lib.optionalString (isTailscaleDomain domain) ''
-        bind tailscale/${getSubdomain domain}
-        tailscale_auth
-      ''}
+      ${lib.optionalString (isTailscaleDomain domain) "bind tailscale/${getSubdomain domain}"}
       reverse_proxy localhost:${toString port}
     '';
   };
