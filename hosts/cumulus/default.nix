@@ -16,9 +16,18 @@
         enable = true;
         domain = "uptime.${config.custom.services.tailscale.domain}";
       };
+      ntfy = {
+        enable = true;
+        domain = "notify.${config.custom.services.tailscale.domain}";
+      };
 
-      caddy.virtualHosts.uptimeKuma = {
-        inherit (config.custom.services.uptimeKuma) domain port;
+      caddy.virtualHosts = {
+        uptimeKuma = {
+          inherit (config.custom.services.uptimeKuma) domain port;
+        };
+        ntfy = {
+          inherit (config.custom.services.ntfy) domain port;
+        };
       };
     };
   };
