@@ -15,6 +15,7 @@
       uptimeKuma = {
         enable = true;
         domain = "uptime.${config.custom.services.tailscale.domain}";
+        backups.enable = true;
       };
       ntfy = {
         enable = true;
