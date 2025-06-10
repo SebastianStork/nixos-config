@@ -47,7 +47,7 @@ in
               ${lib.optionalString hasDependentService "sudo systemctl stop ${dependentService}"}
               sudo --user=${value.user} bash -c "
                 ${value.restoreCommand.preRestore}
-                restic-nextcloud restore latest --target /
+                restic-${name} restore latest --target /
                 ${value.restoreCommand.postRestore}
               "
               ${lib.optionalString hasDependentService "sudo systemctl start ${dependentService}"}
