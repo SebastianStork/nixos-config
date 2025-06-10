@@ -31,13 +31,6 @@ in
   };
 
   config = lib.mkIf (resticBackups != { }) {
-    assertions = [
-      {
-        assertion = lib.any (user: user != config.users.users.root.name) backupUsers;
-        message = "restic shouldn't be run as root";
-      }
-    ];
-
     users.groups.backup.members = backupUsers;
 
     sops.secrets =
