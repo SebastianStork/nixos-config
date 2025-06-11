@@ -3,14 +3,12 @@ let
   cfg = config.custom.services.nextcloud;
 
   dataDir = config.services.nextcloud.home;
-  user = config.users.users.nextcloud.name;
 in
 {
   options.custom.services.nextcloud.backups.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.backups.enable {
     custom.services.resticBackups.nextcloud = {
-      inherit user;
       extraConfig = {
         backupPrepareCommand = ''
           ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on

@@ -44,13 +44,11 @@ in
               hasDependentService = dependentService != null;
             in
             ''
-              ${lib.optionalString hasDependentService "sudo systemctl stop ${dependentService}"}
-              sudo --user=${value.user} bash -c "
-                ${value.restoreCommand.preRestore}
-                restic-${name} restore latest --target /
-                ${value.restoreCommand.postRestore}
-              "
-              ${lib.optionalString hasDependentService "sudo systemctl start ${dependentService}"}
+              ${lib.optionalString hasDependentService "systemctl stop ${dependentService}"}
+              ${value.restoreCommand.preRestore}
+              restic-${name} restore latest --target /
+              ${value.restoreCommand.postRestore}
+              ${lib.optionalString hasDependentService "systemctl start ${dependentService}"}
             '';
         }
       );

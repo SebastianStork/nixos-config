@@ -2,7 +2,7 @@
 let
   resticBackups = lib.filterAttrs (_: value: value.enable) config.custom.services.resticBackups;
 
-  backupUsers = lib.mapAttrsToList (_: value: value.user) resticBackups;
+  # user = config.users.users.restic.name;
 in
 {
   options.custom.services.resticBackups = lib.mkOption {
@@ -11,10 +11,6 @@ in
         options = {
           enable = lib.mkEnableOption "" // {
             default = true;
-          };
-          user = lib.mkOption {
-            type = lib.types.str;
-            default = config.users.users.root.name;
           };
           dependentService = lib.mkOption {
             type = lib.types.nullOr lib.types.nonEmptyStr;
@@ -31,19 +27,10 @@ in
   };
 
   config = lib.mkIf (resticBackups != { }) {
-    users.groups.backup.members = backupUsers;
-
-    sops.secrets =
-      let
-        resticPermissions = {
-          mode = "440";
-          group = config.users.groups.backup.name;
-        };
-      in
-      {
-        "restic/environment" = resticPermissions;
-        "restic/password" = resticPermissions;
-      };
+    sops.secrets = {
+      "restic/environment" = { };
+      "restic/password" = { };
+    };
 
     services.restic.backups =
       resticBackups
@@ -51,7 +38,7 @@ in
         name: value:
         lib.mkMerge [
           {
-            inherit (value) user;
+            #inherit user;
             initialize = true;
             repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
             environmentFile = config.sops.secrets."restic/environment".path;

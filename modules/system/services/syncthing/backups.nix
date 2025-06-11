@@ -1,8 +1,6 @@
 { config, lib, ... }:
 let
   cfg = config.custom.services.syncthing;
-
-  user = config.users.users.syncthing.name;
 in
 {
   options.custom.services.syncthing.backups.enable = lib.mkEnableOption "";
@@ -16,7 +14,6 @@ in
     ];
 
     custom.services.resticBackups.syncthing = {
-      inherit user;
       dependentService = "syncthing.service";
       extraConfig.paths = [ config.services.syncthing.dataDir ];
     };
