@@ -6,6 +6,8 @@
     sops.enable = true;
     boot.loader.systemdBoot.enable = true;
 
+    users.seb.enable = true;
+
     services = {
       tailscale = {
         enable = true;

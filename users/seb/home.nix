@@ -19,8 +19,6 @@ let
     };
 in
 {
-  imports = [ ../shared-home.nix ];
-
   home.sessionVariables.NH_FLAKE = "~/Projects/nixos-config";
 
   custom = {

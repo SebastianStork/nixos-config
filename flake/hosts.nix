@@ -14,19 +14,11 @@ let
             "${self}/hosts/${hostName}"
             |> lib.filesystem.listFilesRecursive
             |> builtins.filter (lib.hasSuffix ".nix");
-          userFiles =
-            "${self}/users"
-            |> builtins.readDir
-            |> lib.filterAttrs (_: type: type == "directory")
-            |> builtins.attrNames
-            |> map (user: "${self}/users/${user}/@${hostName}")
-            |> builtins.filter (path: builtins.pathExists path);
         in
         lib.flatten [
           { networking = { inherit hostName; }; }
           "${self}/hosts/shared.nix"
           hostFiles
-          userFiles
         ];
     };
   };

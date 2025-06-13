@@ -10,6 +10,12 @@
       silent = true;
     };
 
+    users.seb = {
+      enable = true;
+      zsh.enable = true;
+      homeManager.enable = true;
+    };
+
     dm.tuigreet.enable = true;
     de.hyprland.enable = true;
 
