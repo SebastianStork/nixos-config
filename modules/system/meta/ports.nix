@@ -13,7 +13,7 @@ let
       entry:
       map (port: {
         file = entry.file;
-        port = port;
+        inherit port;
       }) entry.value
     )
     |> lib.groupBy (entry: toString entry.port)
