@@ -1,7 +1,7 @@
 {
   config,
-  self,
   inputs,
+  self,
   pkgs,
   pkgs-unstable,
   lib,
@@ -18,7 +18,7 @@ in
     zsh.enable = lib.mkEnableOption "";
     homeManager = {
       enable = lib.mkEnableOption "";
-      configPath = lib.mkOption {
+      configPaths = lib.mkOption {
         type = lib.types.listOf lib.types.path;
         default = [
           "${self}/users/shared-home.nix"
@@ -53,7 +53,7 @@ in
             inherit inputs self pkgs-unstable;
           };
 
-          users.seb.imports = cfg.homeManager.configPath;
+          users.seb.imports = cfg.homeManager.configPaths;
         };
       })
     ]

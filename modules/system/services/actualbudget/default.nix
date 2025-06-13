@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.services.actualbudget;
 in
@@ -20,10 +16,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    users.groups.actual = { };
-    users.users.actual = {
-      isSystemUser = true;
-      group = "actual";
+    users = {
+      groups.actual = { };
+      users.actual = {
+        isSystemUser = true;
+        group = config.users.groups.actual.name;
+      };
     };
 
     services.actual = {

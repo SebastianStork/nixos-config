@@ -46,7 +46,6 @@ in
         log_type = "file";
         default_phone_region = "DE";
         maintenance_window_start = "2"; # UTC
-        defaultapp = "side_menu";
       };
 
       configureRedis = true;

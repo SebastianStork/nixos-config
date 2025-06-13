@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}@moduleArgs:
+{ config, lib, ... }@moduleArgs:
 let
   cfg = config.custom.programs.hyprlock;
 in
@@ -17,9 +13,11 @@ in
   config = lib.mkIf cfg.enable {
     programs.hyprlock = {
       enable = true;
+
       settings = {
         general.immediate_render = true;
         auth."fingerprint:enabled" = cfg.fprintAuth;
+
         animations.enabled = false;
         input-field.monitor = "";
         background = {

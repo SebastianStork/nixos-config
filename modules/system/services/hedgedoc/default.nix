@@ -42,8 +42,7 @@ in
 
       # environmentFile = config.sops.templates."hedgedoc/environment".path;
       settings = {
-        domain = cfg.domain;
-        inherit (cfg) port;
+        inherit (cfg) domain port;
         protocolUseSSL = true;
         allowAnonymous = false;
         allowEmailRegister = false;

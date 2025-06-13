@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 {
   options.custom.services.hypridle.enable = lib.mkEnableOption "";
 
