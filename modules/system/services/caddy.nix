@@ -27,6 +27,11 @@ let
       reverse_proxy localhost:${toString port}
     '';
   };
+
+  ports = [
+    80
+    443
+  ];
 in
 {
   options.custom.services.caddy.virtualHosts = lib.mkOption {
@@ -57,6 +62,9 @@ in
   config = lib.mkIf (virtualHosts != { }) (
     lib.mkMerge [
       {
+        meta.ports.list = lib.mkIf nonTailscaleHostsExist ports;
+        networking.firewall.allowedTCPPorts = lib.mkIf nonTailscaleHostsExist ports;
+
         services.caddy = {
           enable = true;
           enableReload = false;
@@ -66,11 +74,6 @@ in
               _: value: lib.nameValuePair value.domain (mkVirtualHostConfig value.domain value.port)
             );
         };
-
-        networking.firewall.allowedTCPPorts = lib.mkIf nonTailscaleHostsExist [
-          80
-          443
-        ];
       }
 
       (lib.mkIf tailscaleHostsExist {
@@ -78,7 +81,6 @@ in
 
         services.caddy = {
           package = caddyWithTailscale;
-          enableReload = false;
           globalConfig = ''
             admin off
 

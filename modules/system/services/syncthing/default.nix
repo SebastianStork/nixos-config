@@ -40,6 +40,11 @@ in
       }
     ];
 
+    meta.ports.list = [
+      cfg.syncPort
+      cfg.gui.port
+    ];
+
     services.syncthing = {
       enable = true;
 

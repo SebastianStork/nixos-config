@@ -44,5 +44,4 @@
       ];
     };
   };
-  services.resolved.enable = true;
 }

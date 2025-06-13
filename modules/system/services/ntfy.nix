@@ -16,6 +16,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    meta.ports.list = [ cfg.port ];
+
     services.ntfy-sh = {
       enable = true;
       settings = {

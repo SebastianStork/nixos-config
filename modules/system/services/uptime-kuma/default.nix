@@ -16,6 +16,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    meta.ports.list = [ cfg.port ];
+
     services.uptime-kuma = {
       enable = true;
       settings.PORT = toString cfg.port;

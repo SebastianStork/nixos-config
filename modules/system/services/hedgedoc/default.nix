@@ -25,6 +25,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    meta.ports.list = [ cfg.port ];
+
     sops = {
       secrets = {
         "hedgedoc/seb-password".owner = user;

@@ -24,6 +24,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    meta.ports.list = [ cfg.port ];
+
     sops.secrets."forgejo/admin-password".owner = user;
 
     services.forgejo = {

@@ -19,6 +19,10 @@ in
       type = lib.types.port;
       default = 8080;
     };
+    prometheusPort = lib.mkOption {
+      type = lib.types.port;
+      default = 6060;
+    };
     sources = lib.mkOption {
       type = lib.types.listOf (
         lib.types.enum [
@@ -32,6 +36,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    meta.ports.list = [
+      cfg.apiPort
+      cfg.prometheusPort
+    ];
+
     nixpkgs.overlays = [ inputs.crowdsec.overlays.default ];
 
     sops.secrets."crowdsec/enrollment-key".owner = user;
@@ -42,7 +51,10 @@ in
       enable = true;
       package = inputs.crowdsec.packages.${pkgs.system}.crowdsec;
       enrollKeyFile = config.sops.secrets."crowdsec/enrollment-key".path;
-      settings.api.server.listen_uri = "127.0.0.1:${toString cfg.apiPort}";
+      settings = {
+        api.server.listen_uri = "127.0.0.1:${toString cfg.apiPort}";
+        cscli.prometheus_uri = "http://127.0.0.1:${toString cfg.prometheusPort}";
+      };
 
       allowLocalJournalAccess = true;
       acquisitions =

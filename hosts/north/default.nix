@@ -22,6 +22,7 @@
     sound.enable = true;
 
     services = {
+      resolved.enable = true;
       gc.enable = true;
       geoclue.enable = true;
       tailscale = {

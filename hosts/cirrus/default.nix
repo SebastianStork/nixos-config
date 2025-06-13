@@ -9,6 +9,7 @@
     users.seb.enable = true;
 
     services = {
+      resolved.enable = true;
       tailscale = {
         enable = true;
         ssh.enable = true;

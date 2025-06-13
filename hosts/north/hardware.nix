@@ -35,8 +35,6 @@
     udev.extraRules = ''
       ACTION=="add" SUBSYSTEM=="pci" ATTR{vendor}=="0x1022" ATTR{device}=="0x43ee" ATTR{power/wakeup}="disabled"
     '';
-
-    resolved.enable = true;
   };
 
   networking.useNetworkd = true;

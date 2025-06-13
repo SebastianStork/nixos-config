@@ -14,6 +14,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    meta.ports.list = [ config.services.tailscale.port ];
+
     sops.secrets."tailscale-auth-key" = { };
 
     services.tailscale = {

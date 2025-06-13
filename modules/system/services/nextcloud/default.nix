@@ -25,6 +25,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    meta.ports.list = [ cfg.port ];
+
     sops.secrets."nextcloud/admin-password".owner = user;
 
     services.nextcloud = {

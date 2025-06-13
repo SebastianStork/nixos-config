@@ -39,5 +39,4 @@
       linkConfig.RequiredForOnline = "routable";
     };
   };
-  services.resolved.enable = true;
 }
