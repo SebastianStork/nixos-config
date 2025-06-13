@@ -18,14 +18,6 @@ in
   config = lib.mkIf cfg.enable {
     meta.ports.list = [ cfg.port ];
 
-    users = {
-      groups.actual = { };
-      users.actual = {
-        isSystemUser = true;
-        group = config.users.groups.actual.name;
-      };
-    };
-
     services.actual = {
       enable = true;
       settings = {
