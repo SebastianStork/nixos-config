@@ -20,9 +20,15 @@ in
       type = lib.types.port;
       default = 22000;
     };
-    guiPort = lib.mkOption {
-      type = lib.types.port;
-      default = 8384;
+    gui = {
+      domain = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "";
+      };
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 8384;
+      };
     };
   };
 
@@ -41,7 +47,7 @@ in
       group = lib.mkIf (!cfg.isServer) "users";
       dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
 
-      guiAddress = lib.mkIf cfg.isServer "0.0.0.0:${toString cfg.guiPort}";
+      guiAddress = lib.mkIf cfg.isServer "127.0.0.1:${toString cfg.gui.port}";
 
       settings = {
         # Get the devices and their ids from the configs of the other hosts

@@ -17,11 +17,11 @@
 
       syncthing = {
         enable = true;
-        deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
         isServer = true;
+        deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
+        gui.domain = "syncthing.${config.custom.services.tailscale.domain}";
         backups.enable = true;
       };
-
       nextcloud = {
         enable = true;
         domain = "cloud.${config.custom.services.tailscale.domain}";
@@ -34,6 +34,9 @@
       };
 
       caddy.virtualHosts = {
+        syncthing-gui = {
+          inherit (config.custom.services.syncthing.gui) domain port;
+        };
         nextcloud = {
           inherit (config.custom.services.nextcloud) domain port;
         };
