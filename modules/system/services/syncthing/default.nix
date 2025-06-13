@@ -16,6 +16,14 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
+    syncPort = lib.mkOption {
+      type = lib.types.port;
+      default = 22000;
+    };
+    guiPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8384;
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -33,7 +41,7 @@ in
       group = lib.mkIf (!cfg.isServer) "users";
       dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
 
-      guiAddress = lib.mkIf cfg.isServer "0.0.0.0:8384";
+      guiAddress = lib.mkIf cfg.isServer "0.0.0.0:${toString cfg.guiPort}";
 
       settings = {
         # Get the devices and their ids from the configs of the other hosts
@@ -44,7 +52,7 @@ in
           |> lib.mapAttrs (
             name: value: {
               id = value.config.custom.services.syncthing.deviceId;
-              addresses = [ "tcp://${name}.${tailscaleCfg.domain}:22000" ];
+              addresses = [ "tcp://${name}.${tailscaleCfg.domain}:${toString cfg.syncPort}" ];
             }
           );
 
@@ -68,6 +76,7 @@ in
           ];
 
         options = {
+          listenAddress = "tcp://0.0.0.0:${toString cfg.syncPort}";
           globalAnnounceEnabled = false;
           localAnnounceEnabled = false;
           relaysEnabled = false;
