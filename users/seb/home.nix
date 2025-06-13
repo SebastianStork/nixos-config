@@ -1,23 +1,4 @@
-{
-  inputs,
-  pkgs,
-  ...
-}:
-let
-  lazyApp = pkg: inputs.lazy-apps.packages.${pkgs.system}.lazy-app.override { inherit pkg; };
-  lazyDesktopApp =
-    pkg:
-    inputs.lazy-apps.packages.${pkgs.system}.lazy-app.override {
-      inherit pkg;
-      desktopItem = pkgs.makeDesktopItem {
-        name = pkg.meta.mainProgram;
-        exec = "${pkg.meta.mainProgram} %U";
-        icon = pkg.meta.mainProgram;
-        desktopName = pkg.meta.mainProgram;
-        comment = pkg.meta.description;
-      };
-    };
-in
+{ pkgs, ... }:
 {
   home.sessionVariables.NH_FLAKE = "~/Projects/nixos-config";
 
@@ -35,8 +16,8 @@ in
 
   home.packages = [
     pkgs.bottom
-    (lazyApp pkgs.fastfetch)
-    (lazyApp pkgs.dust)
+    pkgs.fastfetch
+    pkgs.dust
 
     pkgs.nemo-with-extensions
     pkgs.celluloid
@@ -44,7 +25,7 @@ in
     pkgs.obsidian
     pkgs.anki
     pkgs.discord
-    (lazyDesktopApp pkgs.brave)
+    pkgs.brave
 
     pkgs.jetbrains.idea-community
     pkgs.jetbrains.goland

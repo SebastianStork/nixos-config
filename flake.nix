@@ -38,11 +38,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    lazy-apps = {
-      url = "sourcehut:~rycee/lazy-apps";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     crowdsec = {
       url = "git+https://codeberg.org/kampka/nix-flake-crowdsec.git";
       inputs.nixpkgs.follows = "nixpkgs";
