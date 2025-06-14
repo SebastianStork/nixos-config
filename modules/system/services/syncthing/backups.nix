@@ -14,7 +14,7 @@ in
     ];
 
     custom.services.resticBackups.syncthing = {
-      dependentService = "syncthing.service";
+      conflictingService = "syncthing.service";
       extraConfig.paths = [ config.services.syncthing.dataDir ];
     };
   };

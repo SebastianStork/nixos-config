@@ -40,15 +40,15 @@ in
           name = "restic-restore-${name}";
           text =
             let
-              inherit (value) dependentService;
-              hasDependentService = dependentService != null;
+              inherit (value) conflictingService;
+              hasconflictingService = conflictingService != null;
             in
             ''
-              ${lib.optionalString hasDependentService "systemctl stop ${dependentService}"}
+              ${lib.optionalString hasconflictingService "systemctl stop ${conflictingService}"}
               ${value.restoreCommand.preRestore}
               restic-${name} restore latest --target /
               ${value.restoreCommand.postRestore}
-              ${lib.optionalString hasDependentService "systemctl start ${dependentService}"}
+              ${lib.optionalString hasconflictingService "systemctl start ${conflictingService}"}
             '';
         }
       );

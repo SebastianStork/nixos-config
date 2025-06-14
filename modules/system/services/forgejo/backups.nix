@@ -4,7 +4,7 @@
 
   config = lib.mkIf config.custom.services.forgejo.backups.enable {
     custom.services.resticBackups.forgejo = {
-      dependentService = "forgejo.service";
+      conflictingService = "forgejo.service";
       extraConfig.paths = [ config.services.forgejo.stateDir ];
     };
   };

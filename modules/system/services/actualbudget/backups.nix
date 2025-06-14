@@ -4,7 +4,7 @@
 
   config = lib.mkIf config.custom.services.actualbudget.backups.enable {
     custom.services.resticBackups.actual = {
-      dependentService = "actual.service";
+      conflictingService = "actual.service";
       extraConfig.paths = [ config.services.actual.settings.dataDir ];
     };
   };

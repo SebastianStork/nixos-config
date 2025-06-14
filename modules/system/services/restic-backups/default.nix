@@ -1,8 +1,6 @@
 { config, lib, ... }:
 let
   resticBackups = lib.filterAttrs (_: value: value.enable) config.custom.services.resticBackups;
-
-  # user = config.users.users.restic.name;
 in
 {
   options.custom.services.resticBackups = lib.mkOption {
@@ -12,7 +10,7 @@ in
           enable = lib.mkEnableOption "" // {
             default = true;
           };
-          dependentService = lib.mkOption {
+          conflictingService = lib.mkOption {
             type = lib.types.nullOr lib.types.nonEmptyStr;
             default = null;
           };
@@ -38,7 +36,6 @@ in
         name: value:
         lib.mkMerge [
           {
-            #inherit user;
             initialize = true;
             repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
             environmentFile = config.sops.secrets."restic/environment".path;
@@ -63,11 +60,11 @@ in
       |> lib.mapAttrs' (
         name: value:
         lib.nameValuePair "restic-backups-${name}" (
-          lib.mkIf (value.dependentService != null) {
-            unitConfig.Conflicts = [ value.dependentService ];
-            after = [ value.dependentService ];
-            onSuccess = [ value.dependentService ];
-            onFailure = [ value.dependentService ];
+          lib.mkIf (value.conflictingService != null) {
+            unitConfig.Conflicts = [ value.conflictingService ];
+            after = [ value.conflictingService ];
+            onSuccess = [ value.conflictingService ];
+            onFailure = [ value.conflictingService ];
           }
         )
       );
