@@ -52,11 +52,12 @@ in
             mkHttpCheck =
               {
                 name,
+                group,
                 url,
                 conditions ? [ ],
               }:
               {
-                inherit name url;
+                inherit name group url;
                 conditions = [ "[STATUS] == 200" ] ++ conditions;
                 interval = "30s";
                 alerts = [ { type = "ntfy"; } ];
@@ -65,6 +66,7 @@ in
           [
             {
               name = "Syncthing";
+              group = "Private";
               url = "tcp://alto.${tailscaleDomain}:22000";
               conditions = [ "[CONNECTED] == true" ];
               interval = "30s";
@@ -72,11 +74,13 @@ in
             }
             (mkHttpCheck {
               name = "Syncthing GUI";
+              group = "Private";
               url = "https://syncthing.${tailscaleDomain}/rest/noauth/health";
               conditions = [ "[BODY].status == OK" ];
             })
             (mkHttpCheck {
               name = "Nextcloud";
+              group = "Private";
               url = "https://cloud.${tailscaleDomain}/status.php";
               conditions = [
                 "[BODY].installed == true"
@@ -86,20 +90,24 @@ in
             })
             (mkHttpCheck {
               name = "Actual Budget";
+              group = "Private";
               url = "https://budget.${tailscaleDomain}/";
             })
             (mkHttpCheck {
               name = "Hedgedoc";
+              group = "Public";
               url = "https://docs.sprouted.cloud/_health";
               conditions = [ "[BODY].ready == true" ];
             })
             (mkHttpCheck {
               name = "Forgejo";
+              group = "Public";
               url = "https://git.sstork.dev/api/healthz";
               conditions = [ "[BODY].status == pass" ];
             })
             {
               name = "Forgejo SSH";
+              group = "Public";
               url = "ssh://git.sstork.dev";
               ssh = {
                 username = "";
@@ -111,6 +119,7 @@ in
             }
             (mkHttpCheck {
               name = "Ntfy";
+              group = "Monitoring";
               url = "https://alerts.${tailscaleDomain}/v1/health";
               conditions = [ "[BODY].healthy == true" ];
             })
