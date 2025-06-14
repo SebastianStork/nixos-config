@@ -47,6 +47,12 @@ in
           };
         };
 
+        maintenance = {
+          start = "03:00";
+          duration = "1h";
+          timezone = "Europe/Berlin";
+        };
+
         endpoints =
           let
             mkHttpCheck =
