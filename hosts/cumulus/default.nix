@@ -15,10 +15,9 @@
         ssh.enable = true;
       };
 
-      uptimeKuma = {
+      gatus = {
         enable = true;
-        domain = "uptime.${config.custom.services.tailscale.domain}";
-        backups.enable = true;
+        domain = "status.${config.custom.services.tailscale.domain}";
       };
       ntfy = {
         enable = true;
@@ -26,8 +25,8 @@
       };
 
       caddy.virtualHosts = {
-        uptimeKuma = {
-          inherit (config.custom.services.uptimeKuma) domain port;
+        gatus = {
+          inherit (config.custom.services.gatus) domain port;
         };
         ntfy = {
           inherit (config.custom.services.ntfy) domain port;
