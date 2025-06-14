@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  self,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.services.gatus;
 
@@ -14,6 +19,34 @@ in
     port = lib.mkOption {
       type = lib.types.port;
       default = 8080;
+    };
+    endpoints = lib.mkOption {
+      type = lib.types.attrsOf (
+        lib.types.submodule (
+          { name, ... }:
+          {
+            options = {
+              name = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = name;
+              };
+              group = lib.mkOption {
+                type = lib.types.str;
+                default = "";
+              };
+              url = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "";
+              };
+              extraConditions = lib.mkOption {
+                type = lib.types.listOf lib.types.nonEmptyStr;
+                default = [ ];
+              };
+            };
+          }
+        )
+      );
+      default = { };
     };
   };
 
@@ -54,82 +87,25 @@ in
         };
 
         endpoints =
-          let
-            mkHttpCheck =
-              {
-                name,
-                group,
-                url,
-                conditions ? [ ],
-              }:
-              {
-                inherit name group url;
-                conditions = [ "[STATUS] == 200" ] ++ conditions;
-                interval = "30s";
-                alerts = [ { type = "ntfy"; } ];
-              };
-          in
-          [
-            {
-              name = "Syncthing";
-              group = "Private";
-              url = "tcp://alto.${tailscaleDomain}:22000";
-              conditions = [ "[CONNECTED] == true" ];
-              interval = "30s";
-              alerts = [ { type = "ntfy"; } ];
-            }
-            (mkHttpCheck {
-              name = "Syncthing GUI";
-              group = "Private";
-              url = "https://syncthing.${tailscaleDomain}/rest/noauth/health";
-              conditions = [ "[BODY].status == OK" ];
-            })
-            (mkHttpCheck {
-              name = "Nextcloud";
-              group = "Private";
-              url = "https://cloud.${tailscaleDomain}/status.php";
-              conditions = [
-                "[BODY].installed == true"
-                "[BODY].maintenance == false"
-                "[BODY].needsDbUpgrade == false"
-              ];
-            })
-            (mkHttpCheck {
-              name = "Actual Budget";
-              group = "Private";
-              url = "https://budget.${tailscaleDomain}/";
-            })
-            (mkHttpCheck {
-              name = "Hedgedoc";
-              group = "Public";
-              url = "https://docs.sprouted.cloud/_health";
-              conditions = [ "[BODY].ready == true" ];
-            })
-            (mkHttpCheck {
-              name = "Forgejo";
-              group = "Public";
-              url = "https://git.sstork.dev/api/healthz";
-              conditions = [ "[BODY].status == pass" ];
-            })
-            {
-              name = "Forgejo SSH";
-              group = "Public";
-              url = "ssh://git.sstork.dev";
-              ssh = {
-                username = "";
-                password = "";
-              };
-              conditions = [ "[CONNECTED] == true" ];
-              interval = "30s";
-              alerts = [ { type = "ntfy"; } ];
-            }
-            (mkHttpCheck {
-              name = "Ntfy";
-              group = "Monitoring";
-              url = "https://alerts.${tailscaleDomain}/v1/health";
-              conditions = [ "[BODY].healthy == true" ];
-            })
-          ];
+          self.nixosConfigurations
+          |> lib.mapAttrsToList (_: value: value.config.custom.services.gatus.endpoints)
+          |> lib.map (entry: lib.mapAttrsToList (_: value: value) entry)
+          |> lib.flatten
+          |> lib.map (value: {
+            inherit (value) name group url;
+            interval = "30s";
+            alerts = [ { type = "ntfy"; } ];
+            ssh = lib.mkIf (lib.hasPrefix "ssh" value.url) {
+              username = "";
+              password = "";
+            };
+            conditions = lib.flatten [
+              value.extraConditions
+              (lib.optional (lib.hasPrefix "http" value.url) "[STATUS] == 200")
+              (lib.optional (lib.hasPrefix "tcp" value.url) "[CONNECTED] == true")
+              (lib.optional (lib.hasPrefix "ssh" value.url) "[CONNECTED] == true")
+            ];
+          });
       };
     };
   };

@@ -97,5 +97,17 @@ in
         };
       };
     };
+
+    custom.services.gatus.endpoints = lib.mkIf cfg.isServer {
+      "Syncthing" = {
+        group = "Private";
+        url = "tcp://${config.networking.hostName}.${tailscaleCfg.domain}:22000";
+      };
+      "Syncthing GUI" = {
+        group = "Private";
+        url = "https://${cfg.gui.domain}/rest/noauth/health";
+        extraConditions = [ "[BODY].status == OK" ];
+      };
+    };
   };
 }

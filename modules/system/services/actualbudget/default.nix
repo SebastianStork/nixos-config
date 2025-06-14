@@ -25,5 +25,10 @@ in
         inherit (cfg) port;
       };
     };
+
+    custom.services.gatus.endpoints."Actual Budget" = {
+      group = "Private";
+      url = "https://${cfg.domain}/";
+    };
   };
 }
