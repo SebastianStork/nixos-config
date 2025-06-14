@@ -22,7 +22,7 @@
       };
       ntfy = {
         enable = true;
-        domain = "notify.${config.custom.services.tailscale.domain}";
+        domain = "alerts.${config.custom.services.tailscale.domain}";
       };
 
       caddy.virtualHosts = {
