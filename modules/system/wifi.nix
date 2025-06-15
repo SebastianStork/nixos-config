@@ -32,7 +32,7 @@ in
           environment.systemPackages = [ pkgs.iwgtk ];
         }
 
-        (lib.forEach networks (name: {
+        (networks |> lib.map (name: {
           sops.secrets."iwd/${name}" = { };
 
           systemd.tmpfiles.rules = [
