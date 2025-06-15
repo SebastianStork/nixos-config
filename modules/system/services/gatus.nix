@@ -6,8 +6,6 @@
 }:
 let
   cfg = config.custom.services.gatus;
-
-  tailscaleDomain = config.custom.services.tailscale.domain;
 in
 {
   options.custom.services.gatus = {
@@ -66,17 +64,15 @@ in
 
         connectivity.checker.target = "1.1.1.1:53";
 
-        alerting = {
-          ntfy = {
-            topic = "uptime";
-            url = "https://alerts.${tailscaleDomain}";
-            click = "https://${cfg.domain}";
-            default-alert = {
-              enable = true;
-              failure-threshold = 4;
-              success-threshold = 2;
-              send-on-resolved = true;
-            };
+        alerting.ntfy = {
+          topic = "uptime";
+          url = "https://alerts.${config.custom.services.tailscale.domain}";
+          click = "https://${cfg.domain}";
+          default-alert = {
+            enable = true;
+            failure-threshold = 4;
+            success-threshold = 2;
+            send-on-resolved = true;
           };
         };
 
@@ -87,25 +83,36 @@ in
         };
 
         endpoints =
+          let
+            mkEndpoint = (
+              {
+                name,
+                group,
+                url,
+                extraConditions,
+              }:
+              {
+                inherit name group url;
+                interval = "30s";
+                alerts = [ { type = "ntfy"; } ];
+                ssh = lib.mkIf (lib.hasPrefix "ssh" url) {
+                  username = "";
+                  password = "";
+                };
+                conditions = lib.flatten [
+                  extraConditions
+                  (lib.optional (lib.hasPrefix "http" url) "[STATUS] == 200")
+                  (lib.optional (lib.hasPrefix "tcp" url) "[CONNECTED] == true")
+                  (lib.optional (lib.hasPrefix "ssh" url) "[CONNECTED] == true")
+                ];
+              }
+            );
+          in
           self.nixosConfigurations
           |> lib.mapAttrsToList (_: value: value.config.custom.services.gatus.endpoints)
           |> lib.map (entry: lib.mapAttrsToList (_: value: value) entry)
-          |> lib.flatten
-          |> lib.map (value: {
-            inherit (value) name group url;
-            interval = "30s";
-            alerts = [ { type = "ntfy"; } ];
-            ssh = lib.mkIf (lib.hasPrefix "ssh" value.url) {
-              username = "";
-              password = "";
-            };
-            conditions = lib.flatten [
-              value.extraConditions
-              (lib.optional (lib.hasPrefix "http" value.url) "[STATUS] == 200")
-              (lib.optional (lib.hasPrefix "tcp" value.url) "[CONNECTED] == true")
-              (lib.optional (lib.hasPrefix "ssh" value.url) "[CONNECTED] == true")
-            ];
-          });
+          |> lib.concatLists
+          |> lib.map (entry: mkEndpoint entry);
       };
     };
   };
