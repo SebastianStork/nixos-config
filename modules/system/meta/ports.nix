@@ -6,26 +6,6 @@
 }:
 let
   cfg = config.meta.ports;
-
-  duplicatedPorts =
-    options.meta.ports.list.definitionsWithLocations
-    |> lib.concatMap (
-      entry:
-      map (port: {
-        file = entry.file;
-        inherit port;
-      }) entry.value
-    )
-    |> lib.groupBy (entry: toString entry.port)
-    |> lib.filterAttrs (port: entries: lib.length entries > 1);
-
-  errorMessage =
-    duplicatedPorts
-    |> lib.mapAttrsToList (
-      port: entries:
-      "Duplicate port ${port} found in:\n" + lib.concatMapStrings (entry: "  - ${entry.file}\n") entries
-    )
-    |> lib.concatStrings;
 in
 {
   options.meta.ports = {
@@ -40,11 +20,33 @@ in
   };
 
   config = lib.mkIf cfg.assertUnique {
-    assertions = [
-      {
-        assertion = duplicatedPorts == { };
-        message = errorMessage;
-      }
-    ];
+    assertions =
+      let
+        duplicatePorts =
+          options.meta.ports.list.definitionsWithLocations
+          |> lib.concatMap (
+            entry:
+            map (port: {
+              inherit (entry) file;
+              inherit port;
+            }) entry.value
+          )
+          |> lib.groupBy (entry: toString entry.port)
+          |> lib.filterAttrs (port: entries: lib.length entries > 1);
+
+        errorMessage =
+          duplicatePorts
+          |> lib.mapAttrsToList (
+            port: entries:
+            "Duplicate port ${port} found in:\n" + lib.concatMapStrings (entry: "  - ${entry.file}\n") entries
+          )
+          |> lib.concatStrings;
+      in
+      [
+        {
+          assertion = duplicatePorts == { };
+          message = errorMessage;
+        }
+      ];
   };
 }
