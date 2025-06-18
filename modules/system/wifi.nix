@@ -32,13 +32,16 @@ in
           environment.systemPackages = [ pkgs.iwgtk ];
         }
 
-        (networks |> lib.map (name: {
-          sops.secrets."iwd/${name}" = { };
+        (
+          networks
+          |> lib.map (name: {
+            sops.secrets."iwd/${name}" = { };
 
-          systemd.tmpfiles.rules = [
-            "C /var/lib/iwd/${name} - - - - ${config.sops.secrets."iwd/${name}".path}"
-          ];
-        }))
+            systemd.tmpfiles.rules = [
+              "C /var/lib/iwd/${name} - - - - ${config.sops.secrets."iwd/${name}".path}"
+            ];
+          })
+        )
       ]
     )
   );
