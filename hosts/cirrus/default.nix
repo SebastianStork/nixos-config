@@ -30,6 +30,10 @@
         domain = "docs.sprouted.cloud";
         backups.enable = true;
       };
+      it-tools = {
+        enable = true;
+        domain = "tools.sprouted.cloud";
+      };
       forgejo = {
         enable = true;
         domain = "git.sstork.dev";
@@ -40,6 +44,9 @@
       caddy.virtualHosts = {
         hedgedoc = {
           inherit (config.custom.services.hedgedoc) domain port;
+        };
+        it-tools = {
+          inherit (config.custom.services.it-tools) domain port;
         };
         forgejo = {
           inherit (config.custom.services.forgejo) domain port;
