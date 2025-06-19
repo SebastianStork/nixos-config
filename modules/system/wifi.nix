@@ -16,33 +16,28 @@ in
 {
   options.custom.wifi.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.wifi.enable (
-    lib.mkMerge (
-      lib.flatten [
-        {
-          networking.wireless.iwd = {
-            enable = true;
-            settings = {
-              General.EnableNetworkConfiguration = true;
-              Settings.AutoConnect = true;
-              Network.NameResolvingService = "resolvconf";
-            };
-          };
+  config = lib.mkIf config.custom.wifi.enable {
+    networking.wireless.iwd = {
+      enable = true;
+      settings = {
+        General.EnableNetworkConfiguration = true;
+        Settings.AutoConnect = true;
+        Network.NameResolvingService = "resolvconf";
+      };
+    };
 
-          environment.systemPackages = [ pkgs.iwgtk ];
-        }
+    environment.systemPackages = [ pkgs.iwgtk ];
 
-        (
-          networks
-          |> lib.map (name: {
-            sops.secrets."iwd/${name}" = { };
+    sops.secrets =
+      networks
+      |> lib.map (name: {
+        name = "iwd/${name}";
+        value = { };
+      })
+      |> lib.listToAttrs;
 
-            systemd.tmpfiles.rules = [
-              "C /var/lib/iwd/${name} - - - - ${config.sops.secrets."iwd/${name}".path}"
-            ];
-          })
-        )
-      ]
-    )
-  );
+    systemd.tmpfiles.rules =
+      networks
+      |> lib.map (name: "C /var/lib/iwd/${name} - - - - ${config.sops.secrets."iwd/${name}".path}");
+  };
 }

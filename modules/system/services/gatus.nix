@@ -101,7 +101,7 @@ in
                   username = "";
                   password = "";
                 };
-                conditions = lib.flatten [
+                conditions = lib.concatLists [
                   extraConditions
                   (lib.optional (lib.hasPrefix "http" url) "[STATUS] == 200")
                   (lib.optional (lib.hasPrefix "tcp" url) "[CONNECTED] == true")

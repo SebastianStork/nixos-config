@@ -90,12 +90,12 @@ in
         '';
       in
       [
-        "crowdsecurity/linux"
+        (lib.singleton "crowdsecurity/linux")
         (lib.optional (lib.elem "sshd" cfg.sources) "crowdsecurity/sshd")
         (lib.optional (lib.elem "caddy" cfg.sources) "crowdsecurity/caddy")
         (lib.optional (lib.elem "iptables" cfg.sources) "crowdsecurity/iptables")
       ]
-      |> lib.flatten
+      |> lib.concatLists
       |> lib.map installCollection
       |> lib.concatLines
       |> (text: pkgs.writeShellScript "crowdsec-install-collections" "set -e\n${text}")

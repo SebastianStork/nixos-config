@@ -15,11 +15,11 @@ let
             |> lib.filesystem.listFilesRecursive
             |> builtins.filter (lib.hasSuffix ".nix");
         in
-        lib.flatten [
+        [
           { networking = { inherit hostName; }; }
           "${self}/hosts/shared.nix"
-          hostFiles
-        ];
+        ]
+        ++ hostFiles;
     };
   };
 
