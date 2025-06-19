@@ -51,8 +51,16 @@ in
   config = lib.mkIf cfg.enable {
     meta.ports.list = [ cfg.port ];
 
+    sops = {
+      secrets."healthchecks-ping-key" = { };
+      templates."gatus.env".content = ''
+        HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks-ping-key"}
+      '';
+    };
+
     services.gatus = {
       enable = true;
+      environmentFile = config.sops.templates."gatus.env".path;
 
       settings = {
         web.port = cfg.port;
@@ -110,11 +118,23 @@ in
               }
             );
           in
-          self.nixosConfigurations
-          |> lib.mapAttrsToList (_: value: value.config.custom.services.gatus.endpoints)
-          |> lib.map (entry: lib.mapAttrsToList (_: value: value) entry)
-          |> lib.concatLists
-          |> lib.map (entry: mkEndpoint entry);
+          [
+            {
+              name = "Healthchecks.io";
+              group = "Monitoring";
+              url = "https://hc-ping.com/\${HEALTHCHECKS_PING_KEY}/gatus-uptime?create=1";
+              interval = "2h";
+              alerts = [ { type = "ntfy"; } ];
+              conditions = [ "[STATUS] == 200" ];
+            }
+          ]
+          ++ (
+            self.nixosConfigurations
+            |> lib.mapAttrsToList (_: value: value.config.custom.services.gatus.endpoints)
+            |> lib.map (entry: lib.mapAttrsToList (_: value: value) entry)
+            |> lib.concatLists
+            |> lib.map (entry: mkEndpoint entry)
+          );
       };
     };
   };
