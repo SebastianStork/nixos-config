@@ -1,7 +1,13 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.services.nextcloud;
 
+  user = config.users.users.nextcloud.name;
   dataDir = config.services.nextcloud.home;
 in
 {
@@ -12,7 +18,7 @@ in
       extraConfig = {
         backupPrepareCommand = ''
           ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on
-          ${lib.getExe' config.services.postgresql.package "pg_dump"} nextcloud --format=custom --file=${dataDir}/db.dump
+          ${lib.getExe pkgs.sudo} --user=${user} ${lib.getExe' config.services.postgresql.package "pg_dump"} nextcloud --format=custom --file=${dataDir}/db.dump
         '';
         backupCleanupCommand = "${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off";
         paths = [
@@ -25,7 +31,7 @@ in
       restoreCommand = {
         preRestore = "${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --on";
         postRestore = ''
-          pg_restore --clean --if-exists --dbname nextcloud ${dataDir}/db.dump
+          sudo --user=${user} pg_restore --clean --if-exists --dbname nextcloud ${dataDir}/db.dump
           ${lib.getExe' config.services.nextcloud.occ "nextcloud-occ"} maintenance:mode --off
         '';
       };

@@ -30,6 +30,9 @@ in
       "restic/password" = { };
     };
 
+    systemd.tmpfiles.rules =
+      resticBackups |> lib.mapAttrsToList (name: _: "d /var/cache/restic-backups-${name} 700 - - -");
+
     services.restic.backups =
       resticBackups
       |> lib.mapAttrs (
