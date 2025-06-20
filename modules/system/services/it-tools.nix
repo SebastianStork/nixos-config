@@ -31,7 +31,6 @@ in
     };
 
     custom.services.gatus.endpoints."IT Tools" = {
-      group = "Public";
       url = "https://${cfg.domain}/health";
       extraConditions = [ "[BODY] == OK" ];
     };

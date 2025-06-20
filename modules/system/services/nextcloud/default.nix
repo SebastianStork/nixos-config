@@ -74,7 +74,6 @@ in
     };
 
     custom.services.gatus.endpoints."Nextcloud" = {
-      group = "Private";
       url = "https://${cfg.domain}/status.php";
       extraConditions = [
         "[BODY].installed == true"

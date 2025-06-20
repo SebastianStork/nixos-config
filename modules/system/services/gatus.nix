@@ -29,8 +29,8 @@ in
                 default = name;
               };
               group = lib.mkOption {
-                type = lib.types.str;
-                default = "";
+                type = lib.types.nullOr lib.types.str;
+                default = null;
               };
               url = lib.mkOption {
                 type = lib.types.nonEmptyStr;
@@ -101,8 +101,13 @@ in
                 url,
                 extraConditions,
               }:
+              let
+                isPrivate = lib.hasInfix config.custom.services.tailscale.domain url;
+                deducedGroup = if isPrivate then "Private" else "Public";
+              in
               {
-                inherit name group url;
+                inherit name url;
+                group = if group == null then deducedGroup else group;
                 interval = "30s";
                 alerts = [ { type = "ntfy"; } ];
                 ssh = lib.mkIf (lib.hasPrefix "ssh" url) {

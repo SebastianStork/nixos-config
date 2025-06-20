@@ -96,14 +96,10 @@ in
 
     custom.services.gatus.endpoints = {
       "Forgejo" = {
-        group = "Public";
         url = "https://${cfg.domain}/api/healthz";
         extraConditions = [ "[BODY].status == pass" ];
       };
-      "Forgejo SSH" = {
-        group = "Public";
-        url = "ssh://${cfg.domain}";
-      };
+      "Forgejo SSH".url = "ssh://${cfg.domain}";
     };
   };
 }

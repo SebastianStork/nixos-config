@@ -26,9 +26,6 @@ in
       };
     };
 
-    custom.services.gatus.endpoints."Actual Budget" = {
-      group = "Private";
-      url = "https://${cfg.domain}/";
-    };
+    custom.services.gatus.endpoints."Actual Budget".url = "https://${cfg.domain}/";
   };
 }
