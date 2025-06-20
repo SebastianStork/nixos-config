@@ -124,7 +124,6 @@ in
               group = "Monitoring";
               url = "https://hc-ping.com/\${HEALTHCHECKS_PING_KEY}/gatus-uptime?create=1";
               interval = "2h";
-              alerts = [ { type = "ntfy"; } ];
               conditions = [ "[STATUS] == 200" ];
             }
           ]
