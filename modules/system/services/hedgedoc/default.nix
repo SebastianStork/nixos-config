@@ -79,10 +79,5 @@ in
     };
 
     environment.shellAliases.hedgedoc-manage-users = "sudo --user=${user} ${manage_users}";
-
-    custom.services.gatus.endpoints."Hedgedoc" = {
-      url = "https://${cfg.domain}/_health";
-      extraConditions = [ "[BODY].ready == true" ];
-    };
   };
 }

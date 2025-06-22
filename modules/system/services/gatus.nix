@@ -1,9 +1,4 @@
-{
-  config,
-  self,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.services.gatus;
 in
@@ -36,6 +31,10 @@ in
                 type = lib.types.nonEmptyStr;
                 default = "";
               };
+              appendPath = lib.mkOption {
+                type = lib.types.str;
+                default = "";
+              };
               extraConditions = lib.mkOption {
                 type = lib.types.listOf lib.types.nonEmptyStr;
                 default = [ ];
@@ -57,6 +56,14 @@ in
         HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks-ping-key"}
       '';
     };
+
+    custom.services.gatus.endpoints =
+      let
+        getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
+      in
+      config.meta.domains.globalList
+      |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { url = "https://${domain}"; })
+      |> lib.listToAttrs;
 
     services.gatus = {
       enable = true;
@@ -99,6 +106,7 @@ in
                 name,
                 group,
                 url,
+                appendPath,
                 extraConditions,
               }:
               let
@@ -106,9 +114,9 @@ in
                 deducedGroup = if isPrivate then "Private" else "Public";
               in
               {
-                inherit name url;
-                group = if group == null then deducedGroup else group;
-                interval = "30s";
+                inherit name;
+                group = if group != null then group else deducedGroup;
+                url = url + appendPath;
                 alerts = [ { type = "ntfy"; } ];
                 ssh = lib.mkIf (lib.hasPrefix "ssh" url) {
                   username = "";
@@ -125,20 +133,14 @@ in
           in
           [
             {
-              name = "Healthchecks.io";
+              name = "healthchecks.io";
               group = "Monitoring";
-              url = "https://hc-ping.com/\${HEALTHCHECKS_PING_KEY}/gatus-uptime?create=1";
+              url = "https://hc-ping.com/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
               interval = "2h";
               conditions = [ "[STATUS] == 200" ];
             }
           ]
-          ++ (
-            self.nixosConfigurations
-            |> lib.mapAttrsToList (_: value: value.config.custom.services.gatus.endpoints)
-            |> lib.map (entry: lib.mapAttrsToList (_: value: value) entry)
-            |> lib.concatLists
-            |> lib.map (entry: mkEndpoint entry)
-          );
+          ++ (cfg.endpoints |> lib.mapAttrsToList (_: value: value) |> lib.map (entry: mkEndpoint entry));
       };
     };
   };

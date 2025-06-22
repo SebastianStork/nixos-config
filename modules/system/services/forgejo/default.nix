@@ -93,13 +93,5 @@ in
         "d ${config.services.forgejo.customDir}/public 750 ${user} ${group} - -"
         "L+ ${config.services.forgejo.customDir}/public/robots.txt 750 - - - ${disallow-all-robots}"
       ];
-
-    custom.services.gatus.endpoints = {
-      "Forgejo" = {
-        url = "https://${cfg.domain}/api/healthz";
-        extraConditions = [ "[BODY].status == pass" ];
-      };
-      "Forgejo SSH".url = "ssh://${cfg.domain}";
-    };
   };
 }

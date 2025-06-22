@@ -72,14 +72,5 @@ in
         };
       };
     };
-
-    custom.services.gatus.endpoints."Nextcloud" = {
-      url = "https://${cfg.domain}/status.php";
-      extraConditions = [
-        "[BODY].installed == true"
-        "[BODY].maintenance == false"
-        "[BODY].needsDbUpgrade == false"
-      ];
-    };
   };
 }

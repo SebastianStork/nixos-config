@@ -29,10 +29,5 @@ in
       root = "${pkgs.it-tools}/lib";
       configuration.general.health = true;
     };
-
-    custom.services.gatus.endpoints."IT Tools" = {
-      url = "https://${cfg.domain}/health";
-      extraConditions = [ "[BODY] == OK" ];
-    };
   };
 }

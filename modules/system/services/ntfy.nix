@@ -27,11 +27,5 @@ in
         web-root = "disable";
       };
     };
-
-    custom.services.gatus.endpoints."Ntfy" = {
-      group = "Monitoring";
-      url = "https://${cfg.domain}/v1/health";
-      extraConditions = [ "[BODY].healthy == true" ];
-    };
   };
 }

@@ -97,13 +97,5 @@ in
         };
       };
     };
-
-    custom.services.gatus.endpoints = lib.mkIf cfg.isServer {
-      "Syncthing".url = "tcp://${config.networking.hostName}.${tailscaleCfg.domain}:22000";
-      "Syncthing GUI" = {
-        url = "https://${cfg.gui.domain}/rest/noauth/health";
-        extraConditions = [ "[BODY].status == OK" ];
-      };
-    };
   };
 }

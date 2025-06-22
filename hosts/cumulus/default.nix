@@ -18,6 +18,15 @@
       gatus = {
         enable = true;
         domain = "status.${config.custom.services.tailscale.domain}";
+        endpoints = {
+          "status".group = "Monitoring";
+          "alerts" = {
+            group = "Monitoring";
+            appendPath = "/v1/health";
+            extraConditions = [ "[BODY].healthy == true" ];
+          };
+          "git ssh".url = "ssh://git.sstork.dev";
+        };
       };
       ntfy = {
         enable = true;
