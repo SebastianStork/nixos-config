@@ -18,6 +18,7 @@
       gatus = {
         enable = true;
         domain = "status.${config.custom.services.tailscale.domain}";
+        endpointDomains = config.meta.domains.globalList;
         endpoints = {
           "status".group = "Monitoring";
           "alerts" = {
@@ -28,6 +29,7 @@
           "git ssh".url = "ssh://git.sstork.dev";
         };
       };
+      
       ntfy = {
         enable = true;
         domain = "alerts.${config.custom.services.tailscale.domain}";

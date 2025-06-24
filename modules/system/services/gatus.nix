@@ -13,6 +13,10 @@ in
       type = lib.types.port;
       default = 8080;
     };
+    endpointDomains = lib.mkOption {
+      type = lib.types.listOf lib.types.nonEmptyStr;
+      default = [ ];
+    };
     endpoints = lib.mkOption {
       type = lib.types.attrsOf (
         lib.types.submodule (
@@ -61,7 +65,7 @@ in
       let
         getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
       in
-      config.meta.domains.globalList
+      cfg.endpointDomains
       |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { url = "https://${domain}"; })
       |> lib.listToAttrs;
 
