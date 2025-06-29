@@ -103,6 +103,17 @@ in
             success-threshold = 2;
             send-on-resolved = true;
           };
+          overrides = [
+            {
+              group = "Monitoring";
+              topic = "stork-atlas";
+              url = "https://ntfy.sh";
+              default-alert = {
+                failure-threshold = 1;
+                success-threshold = 1;
+              };
+            }
+          ];
         };
 
         maintenance = {
