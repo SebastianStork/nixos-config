@@ -2,19 +2,43 @@
 let
   cfg = config.custom.services.gatus;
 
+  endpointType = lib.types.attrsOf (
+    lib.types.submodule (
+      { name, ... }:
+      {
+        options = {
+          name = lib.mkOption {
+            type = lib.types.nonEmptyStr;
+            default = name;
+          };
+          group = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+          };
+          url = lib.mkOption {
+            type = lib.types.nonEmptyStr;
+            default = "";
+          };
+          interval = lib.mkOption {
+            type = lib.types.nonEmptyStr;
+            default = "30s";
+          };
+          extraConditions = lib.mkOption {
+            type = lib.types.listOf lib.types.nonEmptyStr;
+            default = [ ];
+          };
+        };
+      }
+    )
+  );
+
   defaultEndpoints =
     let
       getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
     in
     cfg.endpointDomains
     |> lib.filter (domain: domain != cfg.domain)
-    |> lib.map (
-      domain:
-      lib.nameValuePair (getSubdomain domain) {
-        name = getSubdomain domain;
-        url = "https://${domain}";
-      }
-    )
+    |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { url = "https://${domain}"; })
     |> lib.listToAttrs;
 in
 {
@@ -33,35 +57,11 @@ in
       default = [ ];
     };
     customEndpoints = lib.mkOption {
-      type = lib.types.attrsOf (
-        lib.types.submodule (
-          { name, ... }:
-          {
-            options = {
-              name = lib.mkOption {
-                type = lib.types.nonEmptyStr;
-                default = name;
-              };
-              group = lib.mkOption {
-                type = lib.types.nullOr lib.types.str;
-                default = null;
-              };
-              url = lib.mkOption {
-                type = lib.types.nonEmptyStr;
-                default = "";
-              };
-              extraConditions = lib.mkOption {
-                type = lib.types.listOf lib.types.nonEmptyStr;
-                default = [ ];
-              };
-            };
-          }
-        )
-      );
+      type = endpointType;
       default = { };
     };
     finalEndpoints = lib.mkOption {
-      type = lib.types.attrsOf lib.types.anything;
+      type = endpointType;
       default = defaultEndpoints // cfg.customEndpoints;
       readOnly = true;
     };
@@ -75,6 +75,12 @@ in
       templates."gatus.env".content = ''
         HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks-ping-key"}
       '';
+    };
+
+    custom.services.gatus.customEndpoints."healthchecks.io" = {
+      group = "Monitoring";
+      url = "https://hc-ping.com/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
+      interval = "2h";
     };
 
     services.gatus = {
@@ -127,18 +133,18 @@ in
             mkEndpoint = (
               {
                 name,
-                group ? null,
+                group,
                 url,
-                extraConditions ? [ ],
+                interval,
+                extraConditions,
               }:
               let
                 isPrivate = lib.hasInfix config.custom.services.tailscale.domain url;
                 deducedGroup = if isPrivate then "Private" else "Public";
               in
               {
-                inherit name;
+                inherit name url interval;
                 group = if group != null then group else deducedGroup;
-                url = url;
                 alerts = [ { type = "ntfy"; } ];
                 ssh = lib.mkIf (lib.hasPrefix "ssh" url) {
                   username = "";
@@ -153,18 +159,7 @@ in
               }
             );
           in
-          [
-            {
-              name = "healthchecks.io";
-              group = "Monitoring";
-              url = "https://hc-ping.com/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
-              interval = "2h";
-              conditions = [ "[STATUS] == 200" ];
-            }
-          ]
-          ++ (
-            cfg.finalEndpoints |> lib.mapAttrsToList (_: value: value) |> lib.map (entry: mkEndpoint entry)
-          );
+          cfg.finalEndpoints |> lib.mapAttrsToList (_: value: value) |> lib.map (entry: mkEndpoint entry);
       };
     };
   };
