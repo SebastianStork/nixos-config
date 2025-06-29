@@ -20,10 +20,6 @@
         domain = "status.${config.custom.services.tailscale.domain}";
         endpointDomains = config.meta.domains.globalList;
         customEndpoints = {
-          "status" = {
-            group = "Monitoring";
-            url = "https://${config.custom.services.gatus.domain}";
-          };
           "alerts" = {
             group = "Monitoring";
             url = "https://alerts.${config.custom.services.tailscale.domain}/v1/health";

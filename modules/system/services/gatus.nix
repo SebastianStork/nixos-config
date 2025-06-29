@@ -7,6 +7,7 @@ let
       getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
     in
     cfg.endpointDomains
+    |> lib.filter (domain: domain != cfg.domain)
     |> lib.map (
       domain:
       lib.nameValuePair (getSubdomain domain) {
