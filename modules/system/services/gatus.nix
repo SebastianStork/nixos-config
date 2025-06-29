@@ -1,6 +1,20 @@
 { config, lib, ... }:
 let
   cfg = config.custom.services.gatus;
+
+  defaultEndpoints =
+    let
+      getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
+    in
+    cfg.endpointDomains
+    |> lib.map (
+      domain:
+      lib.nameValuePair (getSubdomain domain) {
+        name = getSubdomain domain;
+        url = "https://${domain}";
+      }
+    )
+    |> lib.listToAttrs;
 in
 {
   options.custom.services.gatus = {
@@ -17,7 +31,7 @@ in
       type = lib.types.listOf lib.types.nonEmptyStr;
       default = [ ];
     };
-    endpoints = lib.mkOption {
+    customEndpoints = lib.mkOption {
       type = lib.types.attrsOf (
         lib.types.submodule (
           { name, ... }:
@@ -35,10 +49,6 @@ in
                 type = lib.types.nonEmptyStr;
                 default = "";
               };
-              appendPath = lib.mkOption {
-                type = lib.types.str;
-                default = "";
-              };
               extraConditions = lib.mkOption {
                 type = lib.types.listOf lib.types.nonEmptyStr;
                 default = [ ];
@@ -48,6 +58,11 @@ in
         )
       );
       default = { };
+    };
+    finalEndpoints = lib.mkOption {
+      type = lib.types.attrsOf lib.types.anything;
+      default = defaultEndpoints // cfg.customEndpoints;
+      readOnly = true;
     };
   };
 
@@ -60,14 +75,6 @@ in
         HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks-ping-key"}
       '';
     };
-
-    custom.services.gatus.endpoints =
-      let
-        getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
-      in
-      cfg.endpointDomains
-      |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { url = "https://${domain}"; })
-      |> lib.listToAttrs;
 
     services.gatus = {
       enable = true;
@@ -108,10 +115,9 @@ in
             mkEndpoint = (
               {
                 name,
-                group,
+                group ? null,
                 url,
-                appendPath,
-                extraConditions,
+                extraConditions ? [ ],
               }:
               let
                 isPrivate = lib.hasInfix config.custom.services.tailscale.domain url;
@@ -120,7 +126,7 @@ in
               {
                 inherit name;
                 group = if group != null then group else deducedGroup;
-                url = url + appendPath;
+                url = url;
                 alerts = [ { type = "ntfy"; } ];
                 ssh = lib.mkIf (lib.hasPrefix "ssh" url) {
                   username = "";
@@ -144,7 +150,9 @@ in
               conditions = [ "[STATUS] == 200" ];
             }
           ]
-          ++ (cfg.endpoints |> lib.mapAttrsToList (_: value: value) |> lib.map (entry: mkEndpoint entry));
+          ++ (
+            cfg.finalEndpoints |> lib.mapAttrsToList (_: value: value) |> lib.map (entry: mkEndpoint entry)
+          );
       };
     };
   };

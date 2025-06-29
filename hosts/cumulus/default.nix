@@ -19,17 +19,20 @@
         enable = true;
         domain = "status.${config.custom.services.tailscale.domain}";
         endpointDomains = config.meta.domains.globalList;
-        endpoints = {
-          "status".group = "Monitoring";
+        customEndpoints = {
+          "status" = {
+            group = "Monitoring";
+            url = "https://${config.custom.services.gatus.domain}";
+          };
           "alerts" = {
             group = "Monitoring";
-            appendPath = "/v1/health";
+            url = "https://alerts.${config.custom.services.tailscale.domain}/v1/health";
             extraConditions = [ "[BODY].healthy == true" ];
           };
           "git ssh".url = "ssh://git.sstork.dev";
         };
       };
-      
+
       ntfy = {
         enable = true;
         domain = "alerts.${config.custom.services.tailscale.domain}";
