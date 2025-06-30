@@ -5,6 +5,7 @@ in
 {
   options.custom.services.actualbudget = {
     enable = lib.mkEnableOption "";
+    doBackups = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
@@ -24,6 +25,11 @@ in
         hostname = "localhost";
         inherit (cfg) port;
       };
+    };
+
+    custom.services.resticBackups.actual = lib.mkIf cfg.doBackups {
+      conflictingService = "actual.service";
+      extraConfig.paths = [ config.services.actual.settings.dataDir ];
     };
   };
 }

@@ -12,6 +12,7 @@ in
   options.custom.services.syncthing = {
     enable = lib.mkEnableOption "";
     isServer = lib.mkEnableOption "";
+    doBackups = lib.mkEnableOption "";
     deviceId = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
@@ -37,6 +38,10 @@ in
       {
         assertion = tailscaleCfg.enable;
         message = "syncthing requires tailscale";
+      }
+      {
+        assertion = cfg.doBackups -> cfg.isServer;
+        message = "syncthing backups can only be performed on a server";
       }
     ];
 
@@ -96,6 +101,11 @@ in
           autoUpgradeIntervalH = 0;
         };
       };
+    };
+
+    custom.services.resticBackups.syncthing = lib.mkIf cfg.doBackups {
+      conflictingService = "syncthing.service";
+      extraConfig.paths = [ config.services.syncthing.dataDir ];
     };
   };
 }

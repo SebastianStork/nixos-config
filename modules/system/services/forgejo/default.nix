@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.custom.services.forgejo;
+  originalCfg = config.services.forgejo;
 
   user = config.users.users.forgejo.name;
   inherit (config.users.users.forgejo) group;
@@ -13,6 +14,7 @@ in
 {
   options.custom.services.forgejo = {
     enable = lib.mkEnableOption "";
+    doBackups = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
@@ -67,31 +69,38 @@ in
       };
     };
 
-    systemd.services.forgejo.preStart =
-      let
-        userCmd = "${lib.getExe config.services.forgejo.package} admin user";
-        credentials = lib.concatStringsSep " " [
-          "--username SebastianStork"
-          "--password \"$PASSWORD\""
-        ];
-      in
-      ''
-        PASSWORD="$(< ${config.sops.secrets."forgejo/admin-password".path})"
+    systemd = {
+      services.forgejo.preStart =
+        let
+          userCmd = "${lib.getExe originalCfg.package} admin user";
+          credentials = lib.concatStringsSep " " [
+            "--username SebastianStork"
+            "--password \"$PASSWORD\""
+          ];
+        in
+        ''
+          PASSWORD="$(< ${config.sops.secrets."forgejo/admin-password".path})"
 
-        ${userCmd} create ${credentials} --email "sebastian.stork@pm.me" --admin \
-          || ${userCmd} change-password ${credentials} --must-change-password=false
-      '';
-
-    systemd.tmpfiles.rules =
-      let
-        disallow-all-robots = pkgs.writeText "disallow-all-robots.txt" ''
-          User-agent: *
-          Disallow: /
+          ${userCmd} create ${credentials} --email "sebastian.stork@pm.me" --admin \
+            || ${userCmd} change-password ${credentials} --must-change-password=false
         '';
-      in
-      [
-        "d ${config.services.forgejo.customDir}/public 750 ${user} ${group} - -"
-        "L+ ${config.services.forgejo.customDir}/public/robots.txt 750 - - - ${disallow-all-robots}"
-      ];
+
+      tmpfiles.rules =
+        let
+          disallow-all-robots = pkgs.writeText "disallow-all-robots.txt" ''
+            User-agent: *
+            Disallow: /
+          '';
+        in
+        [
+          "d ${originalCfg.customDir}/public 750 ${user} ${group} - -"
+          "L+ ${originalCfg.customDir}/public/robots.txt 750 - - - ${disallow-all-robots}"
+        ];
+    };
+
+    custom.services.resticBackups.forgejo = lib.mkIf cfg.doBackups {
+      conflictingService = "forgejo.service";
+      extraConfig.paths = [ originalCfg.stateDir ];
+    };
   };
 }

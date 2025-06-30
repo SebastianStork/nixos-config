@@ -14,6 +14,7 @@ in
 {
   options.custom.services.hedgedoc = {
     enable = lib.mkEnableOption "";
+    doBackups = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
@@ -79,5 +80,13 @@ in
     };
 
     environment.shellAliases.hedgedoc-manage-users = "sudo --user=${user} ${manage_users}";
+
+    custom.services.resticBackups.hedgedoc = lib.mkIf cfg.doBackups {
+      conflictingService = "hedgedoc.service";
+      extraConfig.paths = with config.services.hedgedoc.settings; [
+        uploadsPath
+        db.storage
+      ];
+    };
   };
 }

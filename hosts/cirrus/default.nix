@@ -27,8 +27,8 @@
 
       hedgedoc = {
         enable = true;
+        doBackups = true;
         domain = "docs.sprouted.cloud";
-        backups.enable = true;
       };
       it-tools = {
         enable = true;
@@ -36,9 +36,9 @@
       };
       forgejo = {
         enable = true;
+        doBackups = true;
         domain = "git.sstork.dev";
         ssh.enable = true;
-        backups.enable = true;
       };
 
       caddy.virtualHosts = {
