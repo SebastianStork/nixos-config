@@ -25,9 +25,17 @@ in
   };
 
   config = lib.mkIf (resticBackups != { }) {
-    sops.secrets = {
-      "restic/environment" = { };
-      "restic/password" = { };
+    sops = {
+      secrets = {
+        "restic/backblaze/key-id" = { };
+        "restic/backblaze/application-key" = { };
+        "restic/password" = { };
+      };
+
+      templates."restic/environment".content = ''
+        AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/backblaze/key-id"}
+        AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/backblaze/application-key"}
+      '';
     };
 
     systemd.tmpfiles.rules =
@@ -41,7 +49,7 @@ in
           {
             initialize = true;
             repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
-            environmentFile = config.sops.secrets."restic/environment".path;
+            environmentFile = config.sops.templates."restic/environment".path;
             passwordFile = config.sops.secrets."restic/password".path;
             pruneOpts = [
               "--keep-daily 7"
