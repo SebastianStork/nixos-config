@@ -8,13 +8,13 @@ let
   backupsWithHealthchecks =
     config.custom.services.resticBackups
     |> lib.filterAttrs (_: value: value.enable)
-    |> lib.filterAttrs (_: value: value.healthchecks.enable);
+    |> lib.filterAttrs (_: value: value.doHealthchecks);
 in
 {
   options.custom.services.resticBackups = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
-        options.healthchecks.enable = lib.mkEnableOption "" // {
+        options.doHealthchecks = lib.mkEnableOption "" // {
           default = true;
         };
       }
