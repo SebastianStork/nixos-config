@@ -12,7 +12,6 @@ in
     list = lib.mkOption {
       type = lib.types.listOf lib.types.nonEmptyStr;
       default = [ ];
-      internal = true;
     };
     globalList = lib.mkOption {
       type = lib.types.listOf lib.types.nonEmptyStr;
@@ -20,7 +19,6 @@ in
         self.nixosConfigurations
         |> lib.mapAttrsToList (_: value: value.config.meta.domains.list)
         |> lib.concatLists;
-      internal = true;
       readOnly = true;
     };
     assertUnique = lib.mkEnableOption "" // {

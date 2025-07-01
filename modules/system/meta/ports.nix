@@ -12,7 +12,6 @@ in
     list = lib.mkOption {
       type = lib.types.listOf lib.types.port;
       default = [ ];
-      internal = true;
     };
     assertUnique = lib.mkEnableOption "" // {
       default = true;
