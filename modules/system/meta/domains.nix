@@ -21,9 +21,7 @@ in
         |> lib.concatLists;
       readOnly = true;
     };
-    assertUnique = lib.mkEnableOption "" // {
-      default = true;
-    };
+    assertUnique = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.assertUnique {

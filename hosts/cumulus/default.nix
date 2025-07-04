@@ -2,6 +2,11 @@
 {
   system.stateVersion = "24.11";
 
+  meta = {
+    domains.assertUnique = true;
+    ports.assertUnique = true;
+  };
+
   custom = {
     sops.enable = true;
     boot.loader.grub.enable = true;

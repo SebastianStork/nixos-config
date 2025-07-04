@@ -13,9 +13,7 @@ in
       type = lib.types.listOf lib.types.port;
       default = [ ];
     };
-    assertUnique = lib.mkEnableOption "" // {
-      default = true;
-    };
+    assertUnique = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.assertUnique {
