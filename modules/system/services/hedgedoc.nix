@@ -26,7 +26,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.ports.list = [ cfg.port ];
+    meta = {
+      domains.list = [ cfg.domain ];
+      ports.list = [ cfg.port ];
+    };
 
     sops = {
       secrets = {

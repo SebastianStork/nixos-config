@@ -45,10 +45,13 @@ in
       }
     ];
 
-    meta.ports.list = [
-      cfg.syncPort
-      cfg.gui.port
-    ];
+    meta = {
+      domains.list = lib.mkIf cfg.isServer [ cfg.gui.domain ];
+      ports.list = [
+        cfg.syncPort
+        cfg.gui.port
+      ];
+    };
 
     services.syncthing = {
       enable = true;

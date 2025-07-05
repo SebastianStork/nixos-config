@@ -62,10 +62,7 @@ in
   config = lib.mkIf (virtualHosts != { }) (
     lib.mkMerge [
       {
-        meta = {
-          ports.list = lib.mkIf nonTailscaleHostsExist ports;
-          domains.list = lib.mapAttrsToList (_: value: value.domain) virtualHosts;
-        };
+        meta.ports.list = lib.mkIf nonTailscaleHostsExist ports;
 
         networking.firewall.allowedTCPPorts = lib.mkIf nonTailscaleHostsExist ports;
 
