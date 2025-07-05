@@ -69,6 +69,7 @@ in
         services.caddy = {
           enable = true;
           enableReload = false;
+          globalConfig = "admin off";
           virtualHosts =
             virtualHosts
             |> lib.mapAttrs' (
@@ -83,8 +84,6 @@ in
         services.caddy = {
           package = caddyWithTailscale;
           globalConfig = ''
-            admin off
-
             tailscale {
               auth_key {file.${config.sops.secrets."service-tailscale-auth-key".path}}
             }
