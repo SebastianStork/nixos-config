@@ -27,7 +27,7 @@
         customEndpoints = {
           "alerts" = {
             group = "Monitoring";
-            url = "https://alerts.${config.custom.services.tailscale.domain}/v1/health";
+            url = "https://${config.custom.services.ntfy.domain}/v1/health";
             extraConditions = [ "[BODY].healthy == true" ];
           };
           "git ssh".url = "ssh://git.sstork.dev";
