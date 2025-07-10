@@ -7,7 +7,7 @@
 let
   caddyWithTailscale = pkgs.caddy.withPlugins {
     plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20250207163903-69a970c84556" ];
-    hash = "sha256-wt3+xCsT83RpPySbL7dKVwgqjKw06qzrP2Em+SxEPto=";
+    hash = "sha256-mGJcpvs3XqW5UNUkIADdz/poyr96cq+SzCFdKyWdMKY=";
   };
 
   virtualHosts =
