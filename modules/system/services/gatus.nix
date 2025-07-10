@@ -1,71 +1,93 @@
 { config, lib, ... }:
 let
   cfg = config.custom.services.gatus;
-
-  endpointType = lib.types.attrsOf (
-    lib.types.submodule (
-      { name, ... }:
-      {
-        options = {
-          name = lib.mkOption {
-            type = lib.types.nonEmptyStr;
-            default = name;
-          };
-          group = lib.mkOption {
-            type = lib.types.nullOr lib.types.str;
-            default = null;
-          };
-          url = lib.mkOption {
-            type = lib.types.nonEmptyStr;
-            default = "";
-          };
-          interval = lib.mkOption {
-            type = lib.types.nonEmptyStr;
-            default = "30s";
-          };
-          extraConditions = lib.mkOption {
-            type = lib.types.listOf lib.types.nonEmptyStr;
-            default = [ ];
-          };
-        };
-      }
-    )
-  );
-
-  defaultEndpoints =
-    let
-      getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
-    in
-    cfg.endpointDomains
-    |> lib.filter (domain: domain != cfg.domain)
-    |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { url = "https://${domain}"; })
-    |> lib.listToAttrs;
 in
 {
-  options.custom.services.gatus = {
-    enable = lib.mkEnableOption "";
-    domain = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "";
+  options.custom.services.gatus =
+    let
+      endpointType = lib.types.attrsOf (
+        lib.types.submodule (
+          { name, ... }:
+          {
+            options = {
+              name = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = name;
+              };
+              group = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+              };
+              url = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "";
+              };
+              interval = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "30s";
+              };
+              extraConditions = lib.mkOption {
+                type = lib.types.listOf lib.types.nonEmptyStr;
+                default = [ ];
+              };
+              enableAlerts = lib.mkEnableOption "" // {
+                default = true;
+              };
+            };
+          }
+        )
+      );
+
+      defaultDomainEndpoints =
+        let
+          getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
+        in
+        cfg.domainsToMonitor
+        |> lib.filter (domain: domain != cfg.domain)
+        |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { url = "https://${domain}"; })
+        |> lib.listToAttrs;
+
+      defaultHostEndpoints =
+        cfg.hostsToMonitor
+        |> lib.filter (hostName: hostName != config.networking.hostName)
+        |> lib.map (
+          hostName:
+          lib.nameValuePair hostName {
+            group = "Hosts";
+            url = "icmp://${hostName}.${config.custom.services.tailscale.domain}";
+            enableAlerts = false;
+          }
+        )
+        |> lib.listToAttrs;
+    in
+    {
+      enable = lib.mkEnableOption "";
+      domain = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "";
+      };
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 8080;
+      };
+      domainsToMonitor = lib.mkOption {
+        type = lib.types.listOf lib.types.nonEmptyStr;
+        default = [ ];
+      };
+      hostsToMonitor = lib.mkOption {
+        type = lib.types.listOf lib.types.nonEmptyStr;
+        default = [ ];
+      };
+      customEndpoints = lib.mkOption {
+        type = endpointType;
+        default = { };
+      };
+      finalEndpoints = lib.mkOption {
+        type = endpointType;
+        default = defaultDomainEndpoints // defaultHostEndpoints // cfg.customEndpoints;
+        readOnly = true;
+      };
     };
-    port = lib.mkOption {
-      type = lib.types.port;
-      default = 8080;
-    };
-    endpointDomains = lib.mkOption {
-      type = lib.types.listOf lib.types.nonEmptyStr;
-      default = [ ];
-    };
-    customEndpoints = lib.mkOption {
-      type = endpointType;
-      default = { };
-    };
-    finalEndpoints = lib.mkOption {
-      type = endpointType;
-      default = defaultEndpoints // cfg.customEndpoints;
-      readOnly = true;
-    };
-  };
 
   config = lib.mkIf cfg.enable {
     meta = {
@@ -88,8 +110,8 @@ in
 
     services.gatus = {
       enable = true;
-      environmentFile = config.sops.templates."gatus.env".path;
 
+      environmentFile = config.sops.templates."gatus.env".path;
       settings = {
         web.port = cfg.port;
 
@@ -100,7 +122,7 @@ in
           maximum-number-of-events = 100;
         };
 
-        connectivity.checker.target = "1.1.1.1:53";
+        connectivity.checker.target = "1.1.1.1:53"; # Cloudflare DNS
 
         alerting.ntfy = {
           topic = "uptime";
@@ -133,37 +155,34 @@ in
 
         endpoints =
           let
-            mkEndpoint = (
-              {
-                name,
-                group,
-                url,
-                interval,
-                extraConditions,
-              }:
+            mkEndpoint =
+              value:
               let
-                isPrivate = lib.hasInfix config.custom.services.tailscale.domain url;
+                isPrivate = lib.hasInfix config.custom.services.tailscale.domain value.url;
                 deducedGroup = if isPrivate then "Private" else "Public";
               in
               {
-                inherit name url interval;
-                group = if group != null then group else deducedGroup;
-                alerts = [ { type = "ntfy"; } ];
-                ssh = lib.mkIf (lib.hasPrefix "ssh" url) {
+                inherit (value) name url interval;
+                group = if value.group != null then value.group else deducedGroup;
+                alerts = lib.mkIf value.enableAlerts [ { type = "ntfy"; } ];
+                ssh = lib.mkIf (lib.hasPrefix "ssh" value.url) {
                   username = "";
                   password = "";
                 };
                 conditions = lib.concatLists [
-                  extraConditions
-                  (lib.optional (lib.hasPrefix "http" url) "[STATUS] == 200")
-                  (lib.optional (lib.hasPrefix "tcp" url) "[CONNECTED] == true")
-                  (lib.optional (lib.hasPrefix "ssh" url) "[CONNECTED] == true")
+                  value.extraConditions
+                  (lib.optional (lib.hasPrefix "http" value.url) "[STATUS] == 200")
+                  (lib.optional (lib.hasPrefix "tcp" value.url) "[CONNECTED] == true")
+                  (lib.optional (lib.hasPrefix "ssh" value.url) "[CONNECTED] == true")
+                  (lib.optional (lib.hasPrefix "icmp" value.url) "[CONNECTED] == true")
+
                 ];
-              }
-            );
+              };
           in
           cfg.finalEndpoints |> lib.mapAttrsToList (_: value: value) |> lib.map (entry: mkEndpoint entry);
       };
     };
+
+    systemd.services.gatus.serviceConfig.AmbientCapabilities = "CAP_NET_RAW"; # Allow icmp/pings
   };
 }

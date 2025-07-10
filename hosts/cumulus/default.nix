@@ -1,4 +1,9 @@
-{ config, ... }:
+{
+  config,
+  self,
+  lib,
+  ...
+}:
 {
   system.stateVersion = "24.11";
 
@@ -23,7 +28,8 @@
       gatus = {
         enable = true;
         domain = "status.${config.custom.services.tailscale.domain}";
-        endpointDomains = config.meta.domains.globalList;
+        domainsToMonitor = config.meta.domains.globalList;
+        hostsToMonitor = self.nixosConfigurations |> lib.attrNames;
         customEndpoints = {
           "alerts" = {
             group = "Monitoring";
