@@ -26,7 +26,8 @@ let
   mkDeployNode = hostName: {
     ${hostName} = {
       hostname = hostName;
-      sshUser = "root";
+      user = "root";
+      interactiveSudo = true;
       profiles.system.path =
         inputs.deploy-rs.lib.x86_64-linux.activate.nixos
           self.nixosConfigurations.${hostName};
