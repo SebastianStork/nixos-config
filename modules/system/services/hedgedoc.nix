@@ -87,10 +87,14 @@ in
 
     custom.services.resticBackups.hedgedoc = lib.mkIf cfg.doBackups {
       conflictingService = "hedgedoc.service";
-      extraConfig.paths = with config.services.hedgedoc.settings; [
-        uploadsPath
-        db.storage
-      ];
+      extraConfig.paths =
+        let
+          hedgedocSettings = config.services.hedgedoc.settings;
+        in
+        [
+          hedgedocSettings.uploadsPath
+          hedgedocSettings.db.storage
+        ];
     };
   };
 }
