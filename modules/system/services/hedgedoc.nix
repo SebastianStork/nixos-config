@@ -8,6 +8,7 @@ let
   cfg = config.custom.services.hedgedoc;
 
   user = config.users.users.hedgedoc.name;
+  dataDir = "/var/lib/hedgedoc";
 
   manage_users = "CMD_CONFIG_FILE=/run/hedgedoc/config.json NODE_ENV=production ${lib.getExe' pkgs.hedgedoc "manage_users"}";
 in
@@ -65,10 +66,10 @@ in
     systemd.services.hedgedoc = {
       # Ensure session-secret
       preStart = lib.mkBefore ''
-        if [ ! -f /var/lib/hedgedoc/session-secret ]; then
-          ${lib.getExe pkgs.pwgen} -s 64 1 > /var/lib/hedgedoc/session-secret
+        if [ ! -f ${dataDir}/session-secret ]; then
+          ${lib.getExe pkgs.pwgen} -s 64 1 > ${dataDir}/session-secret
         fi
-        export SESSION_SECRET=$(cat /var/lib/hedgedoc/session-secret)
+        export SESSION_SECRET=$(cat ${dataDir}/session-secret)
       '';
 
       postStart =
