@@ -15,17 +15,20 @@ in
       enable = true;
 
       settings = {
-        general.immediate_render = true;
+        general = {
+          hide_cursor = true;
+          immediate_render = true;
+        };
         auth."fingerprint:enabled" = cfg.fprintAuth;
 
         animations.enabled = false;
         input-field.monitor = "";
         background = {
           monitor = "";
-          path = "~/Pictures/.wallpaper";
+          path = "screenshot";
           color = "rgb(0,0,0)";
-          blur_size = 4;
-          blur_passes = 1;
+          blur_passes = 2;
+          brightness = 0.5;
         };
       };
     };
