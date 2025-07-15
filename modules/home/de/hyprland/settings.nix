@@ -8,7 +8,6 @@
         accel_profile = "flat";
 
         touchpad = {
-          disable_while_typing = true;
           natural_scroll = true;
           middle_button_emulation = true;
         };
@@ -33,14 +32,14 @@
         border_size = 2;
         "col.active_border" =
           {
-            dark = "rgb(ffffff)";
-            light = "rgb(000000)";
+            dark = "rgb(ffffff)"; # White
+            light = "rgb(000000)"; # Black
           }
           .${config.custom.theme};
         "col.inactive_border" =
           {
-            dark = "rgba(ffffff00)";
-            light = "rgba(ffffff00)";
+            dark = "rgba(ffffff00)"; # Transparent
+            light = "rgba(ffffff00)"; # Transparent
           }
           .${config.custom.theme};
         layout = "master";
@@ -50,6 +49,7 @@
 
       decoration = {
         rounding = 6;
+        blur.enabled = false;
         shadow.enabled = false;
       };
 
@@ -63,7 +63,7 @@
       };
 
       workspace = [
-        # No gaps when only one
+        # No gaps when only one window
         "w[tv1], gapsout:0, gapsin:0"
         "f[1], gapsout:0, gapsin:0"
 
@@ -74,7 +74,7 @@
         "special:files, gapsout:30, on-created-empty:nemo"
       ];
       windowrulev2 = [
-        # No gaps when only one
+        # No border when only one window
         "bordersize 0, floating:0, onworkspace:w[tv1]"
         "rounding 0, floating:0, onworkspace:w[tv1]"
         "bordersize 0, floating:0, onworkspace:f[1]"
