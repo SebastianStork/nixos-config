@@ -52,8 +52,6 @@
       # Switch workspace
       ${lib.concatMapStringsSep "\n" (n: ''
         bind = SUPER, ${toString n}, focusworkspaceoncurrentmonitor, ${toString n}
-        bind = SUPER, ${toString n}, togglespecialworkspace, blank
-        bind = SUPER, ${toString n}, togglespecialworkspace, blank
         bind = SUPER SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}
       '') (lib.range 1 9)}
 

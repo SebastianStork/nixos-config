@@ -62,6 +62,8 @@
         key_press_enables_dpms = true;
       };
 
+      binds.hide_special_on_workspace_change = true;
+
       workspace = [
         # No gaps when only one window
         "w[tv1], gapsout:0, gapsin:0"
