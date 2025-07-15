@@ -16,7 +16,10 @@
       homeManager.enable = true;
     };
 
-    dm.tuigreet.enable = true;
+    dm.tuigreet = {
+      enable = true;
+      autoLogin = true;
+    };
     de.hyprland.enable = true;
 
     wifi.enable = true;
