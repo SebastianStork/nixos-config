@@ -5,20 +5,24 @@
   lib,
   ...
 }@moduleArgs:
+let
+  cfg = config.custom.sops;
+in
 {
   imports = [ inputs.sops-nix.homeManagerModules.sops ];
 
-  options.custom.sops.enable = lib.mkEnableOption "";
+  options.custom.sops = {
+    enable = lib.mkEnableOption "";
+    hostName = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = moduleArgs.osConfig.networking.hostName or "";
+    };
+  };
 
-  config = lib.mkIf config.custom.sops.enable {
+  config = lib.mkIf cfg.enable {
     sops = {
       age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
-      defaultSopsFile =
-        let
-          hostName = moduleArgs.osConfig.networking.hostName or "";
-          hostDir = if hostName != "" then "/@" + hostName else "";
-        in
-        "${self}/users/${config.home.username}${hostDir}/secrets.yaml";
+      defaultSopsFile = "${self}/users/${config.home.username}/${cfg.hostName}/secrets.yaml";
     };
   };
 }
