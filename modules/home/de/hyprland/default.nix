@@ -23,7 +23,7 @@
 
     custom = {
       services = {
-        hyprpaper.enable = true;
+        wpaperd.enable = true;
         hypridle.enable = true;
         waybar.enable = true;
         cliphist.enable = true;
