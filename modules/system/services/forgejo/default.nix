@@ -47,7 +47,6 @@ in
         service.DISABLE_REGISTRATION = true;
         session.PROVIDER = "db";
         mirror.DEFAULT_INTERVAL = "1h";
-        federation.ENABLED = true;
         other = {
           SHOW_FOOTER_VERSION = false;
           SHOW_FOOTER_TEMPLATE_LOAD_TIME = false;
