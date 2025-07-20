@@ -22,7 +22,7 @@ in
   };
 
   config = lib.mkIf (backupsWithHealthchecks != { }) {
-    sops.secrets."healthchecks-ping-key" = { };
+    sops.secrets."healthchecks/ping-key" = { };
 
     systemd.services = lib.mkMerge [
       {
@@ -32,7 +32,7 @@ in
           scriptArgs = "%i";
           script = ''
             ${lib.getExe pkgs.curl} --fail --silent --show-error --max-time 10 --retry 5  https://hc-ping.com/$(cat ${
-              config.sops.secrets."healthchecks-ping-key".path
+              config.sops.secrets."healthchecks/ping-key".path
             })/$(echo $1 | tr _ /)
           '';
         };

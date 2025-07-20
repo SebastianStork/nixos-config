@@ -79,13 +79,13 @@ in
       }
 
       (lib.mkIf tailscaleHostsExist {
-        sops.secrets."service-tailscale-auth-key".owner = config.services.caddy.user;
+        sops.secrets."tailscale/service-auth-key".owner = config.services.caddy.user;
 
         services.caddy = {
           package = caddyWithTailscale;
           globalConfig = ''
             tailscale {
-              auth_key {file.${config.sops.secrets."service-tailscale-auth-key".path}}
+              auth_key {file.${config.sops.secrets."tailscale/service-auth-key".path}}
             }
           '';
         };

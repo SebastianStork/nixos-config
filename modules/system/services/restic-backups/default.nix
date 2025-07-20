@@ -27,14 +27,14 @@ in
   config = lib.mkIf (resticBackups != { }) {
     sops = {
       secrets = {
-        "restic/backblaze/key-id" = { };
-        "restic/backblaze/application-key" = { };
+        "backblaze/key-id" = { };
+        "backblaze/application-key" = { };
         "restic/password" = { };
       };
 
       templates."restic/environment".content = ''
-        AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/backblaze/key-id"}
-        AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/backblaze/application-key"}
+        AWS_ACCESS_KEY_ID=${config.sops.placeholder."backblaze/key-id"}
+        AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."backblaze/application-key"}
       '';
     };
 

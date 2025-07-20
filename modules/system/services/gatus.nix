@@ -96,9 +96,9 @@ in
     };
 
     sops = {
-      secrets."healthchecks-ping-key" = { };
+      secrets."healthchecks/ping-key" = { };
       templates."gatus.env".content = ''
-        HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks-ping-key"}
+        HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks/ping-key"}
       '';
     };
 

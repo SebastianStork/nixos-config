@@ -16,11 +16,11 @@ in
   config = lib.mkIf cfg.enable {
     meta.ports.list = [ config.services.tailscale.port ];
 
-    sops.secrets."tailscale-auth-key" = { };
+    sops.secrets."tailscale/auth-key" = { };
 
     services.tailscale = {
       enable = true;
-      authKeyFile = config.sops.secrets."tailscale-auth-key".path;
+      authKeyFile = config.sops.secrets."tailscale/auth-key".path;
       openFirewall = true;
       useRoutingFeatures = if cfg.exitNode.enable then "server" else "client";
       extraUpFlags = [ "--reset=true" ];
