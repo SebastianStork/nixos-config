@@ -6,6 +6,7 @@
       devShells = {
         default = pkgs.mkShell {
           packages = [
+            pkgs.just
             pkgs.nh
             inputs.deploy-rs.packages.${system}.default
           ];
