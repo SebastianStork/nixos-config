@@ -3,11 +3,11 @@
   options.custom.programs.git.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.git.enable {
-    sops.secrets = {
-      "ssh-key/git.sstork.dev".path = "${config.home.homeDirectory}/.ssh/git.sstork.dev";
-      "ssh-key/github.com".path = "${config.home.homeDirectory}/.ssh/github.com";
-      "ssh-key/code.fbi.h-da.de".path = "${config.home.homeDirectory}/.ssh/code.fbi.h-da.de";
-    };
+    sops.secrets =
+      config.custom.sops.secrets.ssh-key
+      |> lib.mapAttrs' (
+        name: _: lib.nameValuePair "ssh-key/${name}" { path = "${config.home.homeDirectory}/.ssh/${name}"; }
+      );
 
     programs = {
       git = {
@@ -33,11 +33,9 @@
 
       ssh = {
         enable = true;
-        matchBlocks = {
-          "git.sstork.dev".identityFile = config.sops.secrets."ssh-key/git.sstork.dev".path;
-          "github.com".identityFile = config.sops.secrets."ssh-key/github.com".path;
-          "code.fbi.h-da.de".identityFile = config.sops.secrets."ssh-key/code.fbi.h-da.de".path;
-        };
+        matchBlocks =
+          config.custom.sops.secrets.ssh-key
+          |> lib.mapAttrs (name: _: { identityFile = config.sops.secrets."ssh-key/${name}".path; });
       };
 
       lazygit.enable = true;
