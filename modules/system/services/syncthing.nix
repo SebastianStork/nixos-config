@@ -7,6 +7,8 @@
 let
   cfg = config.custom.services.syncthing;
   tailscaleCfg = config.custom.services.tailscale;
+
+  useStaticTls = config.custom.sops.secrets |> lib.hasAttr "syncthing";
 in
 {
   options.custom.services.syncthing = {
@@ -53,6 +55,11 @@ in
       ];
     };
 
+    sops.secrets = lib.mkIf useStaticTls {
+      "syncthing/cert".owner = config.services.syncthing.user;
+      "syncthing/key".owner = config.services.syncthing.user;
+    };
+
     services.syncthing = {
       enable = true;
 
@@ -61,6 +68,9 @@ in
       dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
 
       guiAddress = lib.mkIf cfg.isServer "127.0.0.1:${toString cfg.gui.port}";
+
+      cert = lib.mkIf useStaticTls config.sops.secrets."syncthing/cert".path;
+      key = lib.mkIf useStaticTls config.sops.secrets."syncthing/key".path;
 
       settings = {
         # Get the devices and their ids from the configs of the other hosts
