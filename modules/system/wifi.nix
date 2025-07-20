@@ -5,18 +5,18 @@
   ...
 }:
 let
-  networks = [
-    "EW90N.psk"
-    "Fairphone4.psk"
-    "WLAN-233151.psk"
-    "DSL_EXT.psk"
-    "eduroam.8021x"
-  ];
+  cfg = config.custom.wifi;
 in
 {
-  options.custom.wifi.enable = lib.mkEnableOption "";
+  options.custom.wifi = {
+    enable = lib.mkEnableOption "";
+    networks = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = config.custom.sops.secrets.iwd |> lib.attrNames;
+    };
+  };
 
-  config = lib.mkIf config.custom.wifi.enable {
+  config = lib.mkIf cfg.enable {
     networking.wireless.iwd = {
       enable = true;
       settings = {
@@ -28,7 +28,7 @@ in
     environment.systemPackages = [ pkgs.iwgtk ];
 
     sops.secrets =
-      networks
+      cfg.networks
       |> lib.map (name: {
         name = "iwd/${name}";
         value = { };
@@ -36,7 +36,7 @@ in
       |> lib.listToAttrs;
 
     systemd.tmpfiles.rules =
-      networks
+      cfg.networks
       |> lib.map (name: "C /var/lib/iwd/${name} - - - - ${config.sops.secrets."iwd/${name}".path}");
   };
 }
