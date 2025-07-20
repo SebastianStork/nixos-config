@@ -13,7 +13,7 @@
   config = lib.mkIf config.custom.sops.enable {
     sops = {
       age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-      defaultSopsFile = "${self}/hosts/${config.networking.hostName}/secrets.yaml";
+      defaultSopsFile = "${self}/hosts/${config.networking.hostName}/secrets.json";
     };
   };
 }

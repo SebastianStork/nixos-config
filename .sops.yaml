@@ -14,39 +14,39 @@ keys:
 
 creation_rules:
   # Hosts
-  - path_regex: hosts/alto/secrets.yaml$
+  - path_regex: hosts/alto/secrets.json$
     key_groups:
       - age:
           - *admin
           - *alto
-  - path_regex: hosts/cirrus/secrets.yaml$
+  - path_regex: hosts/cirrus/secrets.json$
     key_groups:
       - age:
           - *admin
           - *cirrus
-  - path_regex: hosts/cumulus/secrets.yaml$
+  - path_regex: hosts/cumulus/secrets.json$
     key_groups:
       - age:
           - *admin
           - *cumulus
-  - path_regex: hosts/fern/secrets.yaml$
+  - path_regex: hosts/fern/secrets.json$
     key_groups:
       - age:
           - *admin
           - *fern
-  - path_regex: hosts/north/secrets.yaml$
+  - path_regex: hosts/north/secrets.json$
     key_groups:
       - age:
           - *admin
           - *north
 
   # Users
-  - path_regex: users/seb/@fern/secrets.yaml$
+  - path_regex: users/seb/@fern/secrets.json$
     key_groups:
       - age:
           - *admin
           - *seb-fern
-  - path_regex: users/seb/@north/secrets.yaml$
+  - path_regex: users/seb/@north/secrets.json$
     key_groups:
       - age:
           - *admin

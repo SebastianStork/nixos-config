@@ -22,7 +22,7 @@ in
   config = lib.mkIf cfg.enable {
     sops = {
       age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
-      defaultSopsFile = "${self}/users/${config.home.username}/@${cfg.hostName}/secrets.yaml";
+      defaultSopsFile = "${self}/users/${config.home.username}/@${cfg.hostName}/secrets.json";
     };
   };
 }
