@@ -5,8 +5,9 @@
   ...
 }:
 let
-  mkHost = hostName: {
-    ${hostName} = inputs.nixpkgs.lib.nixosSystem {
+  mkHost =
+    hostName:
+    inputs.nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs self; };
       modules =
         let
@@ -21,17 +22,14 @@ let
         ]
         ++ hostFiles;
     };
-  };
 
-  mkDeployNode = hostName: {
-    ${hostName} = {
-      hostname = hostName;
-      user = "root";
-      interactiveSudo = true;
-      profiles.system.path =
-        inputs.deploy-rs.lib.x86_64-linux.activate.nixos
-          self.nixosConfigurations.${hostName};
-    };
+  mkDeployNode = hostname: {
+    inherit hostname;
+    user = "root";
+    interactiveSudo = true;
+    profiles.system.path =
+      inputs.deploy-rs.lib.x86_64-linux.activate.nixos
+        self.nixosConfigurations.${hostname};
   };
 in
 {
@@ -40,13 +38,13 @@ in
       "${self}/hosts"
       |> builtins.readDir
       |> lib.filterAttrs (_: type: type == "directory")
-      |> lib.concatMapAttrs (name: _: mkHost name);
+      |> lib.mapAttrs (name: _: mkHost name);
 
     deploy.nodes =
       "${self}/hosts"
       |> builtins.readDir
       |> lib.filterAttrs (_: type: type == "directory")
-      |> lib.concatMapAttrs (name: _: mkDeployNode name);
+      |> lib.mapAttrs (name: _: mkDeployNode name);
 
     checks = builtins.mapAttrs (_: deployLib: deployLib.deployChecks self.deploy) inputs.deploy-rs.lib;
   };
