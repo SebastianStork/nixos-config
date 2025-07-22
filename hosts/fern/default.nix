@@ -4,12 +4,14 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   custom = {
-    sops.enable = true;
+    sops = {
+      enable = true;
+      agePublicKey = "age1sywwrwse76x8yskrsfpwk38fu2cmyx5s9qkf2pgc68cta0vj9psql7dp6e";
+    };
     boot = {
       loader.systemdBoot.enable = true;
       silent = true;
     };
-
     users.seb = {
       enable = true;
       zsh.enable = true;

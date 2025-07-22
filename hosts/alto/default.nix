@@ -8,9 +8,11 @@
   };
 
   custom = {
-    sops.enable = true;
+    sops = {
+      enable = true;
+      agePublicKey = "age1qz04yg4h4g22wxqca2pd5k0z574223f6m5c9jy5ny37nlgcd6u4styf06t";
+    };
     boot.loader.systemdBoot.enable = true;
-
     users.seb.enable = true;
 
     services = {

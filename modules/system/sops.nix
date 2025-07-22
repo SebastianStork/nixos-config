@@ -7,26 +7,32 @@
 }:
 let
   cfg = config.custom.sops;
+
+  absoluteSecretsPath = "${self}/" + cfg.secretsFile;
 in
 {
   imports = [ inputs.sops-nix.nixosModules.sops ];
 
   options.custom.sops = {
     enable = lib.mkEnableOption "";
-    defaultSopsFile = lib.mkOption {
-      type = lib.types.path;
-      default = "${self}/hosts/${config.networking.hostName}/secrets.json";
+    agePublicKey = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "";
+    };
+    secretsFile = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "hosts/${config.networking.hostName}/secrets.json";
     };
     secrets = lib.mkOption {
       type = lib.types.anything;
-      default = cfg.defaultSopsFile |> builtins.readFile |> builtins.fromJSON;
+      default = absoluteSecretsPath |> builtins.readFile |> builtins.fromJSON;
     };
   };
 
   config = lib.mkIf cfg.enable {
     sops = {
       age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-      inherit (cfg) defaultSopsFile;
+      defaultSopsFile = absoluteSecretsPath;
     };
   };
 }

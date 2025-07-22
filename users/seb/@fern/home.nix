@@ -4,6 +4,7 @@ _: {
   home.stateVersion = "24.11";
 
   custom = {
+    sops.agePublicKey = "age190mf9wx4ct7qvne3ly9j3cj9740z5wnfhsl6vsc5wtfyc5pueuas9hnjtr";
     theme = "light";
     programs.brightnessctl.enable = true;
   };
