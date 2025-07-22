@@ -28,7 +28,7 @@ in
 
     services.static-web-server = {
       enable = true;
-      listen = "[::]:${toString cfg.port}";
+      listen = "[::]:${builtins.toString cfg.port}";
       root = "${pkgs.it-tools}/lib";
       configuration.general.health = true;
     };

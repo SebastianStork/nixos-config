@@ -67,7 +67,7 @@ in
       group = lib.mkIf (!cfg.isServer) "users";
       dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
 
-      guiAddress = lib.mkIf cfg.isServer "127.0.0.1:${toString cfg.gui.port}";
+      guiAddress = lib.mkIf cfg.isServer "127.0.0.1:${builtins.toString cfg.gui.port}";
 
       cert = lib.mkIf useStaticTls config.sops.secrets."syncthing/cert".path;
       key = lib.mkIf useStaticTls config.sops.secrets."syncthing/key".path;
@@ -81,7 +81,7 @@ in
           |> lib.mapAttrs (
             name: value: {
               id = value.config.custom.services.syncthing.deviceId;
-              addresses = [ "tcp://${name}.${tailscaleCfg.domain}:${toString cfg.syncPort}" ];
+              addresses = [ "tcp://${name}.${tailscaleCfg.domain}:${builtins.toString cfg.syncPort}" ];
             }
           );
 
@@ -105,7 +105,7 @@ in
           ];
 
         options = {
-          listenAddress = "tcp://0.0.0.0:${toString cfg.syncPort}";
+          listenAddress = "tcp://0.0.0.0:${builtins.toString cfg.syncPort}";
           globalAnnounceEnabled = false;
           localAnnounceEnabled = false;
           relaysEnabled = false;

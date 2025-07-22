@@ -23,12 +23,12 @@ in
           options.meta.ports.list.definitionsWithLocations
           |> lib.concatMap (
             entry:
-            map (port: {
+            lib.map (port: {
               inherit (entry) file;
               inherit port;
             }) entry.value
           )
-          |> lib.groupBy (entry: toString entry.port)
+          |> lib.groupBy (entry: builtins.toString entry.port)
           |> lib.filterAttrs (port: entries: lib.length entries > 1);
 
         errorMessage =

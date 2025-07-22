@@ -33,12 +33,12 @@ in
           |> lib.concatLists
           |> lib.concatMap (
             entry:
-            map (domain: {
+            lib.map (domain: {
               file = entry.file;
               inherit domain;
             }) entry.value
           )
-          |> lib.groupBy (entry: toString entry.domain)
+          |> lib.groupBy (entry: builtins.toString entry.domain)
           |> lib.filterAttrs (domain: entries: lib.length entries > 1);
 
         errorMessage =

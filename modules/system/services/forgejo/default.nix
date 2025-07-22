@@ -60,7 +60,7 @@ in
         database.SQLITE_JOURNAL_MODE = "WAL";
         cache = {
           ADAPTER = "twoqueue";
-          HOST = builtins.toJSON {
+          HOST = lib.strings.toJSON {
             size = 100;
             recent_ratio = 0.25;
             ghost_ratio = 0.5;

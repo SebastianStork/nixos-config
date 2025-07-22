@@ -27,7 +27,7 @@
             |> lib.filterAttrs (_: value: value.config.home-manager.users.seb.custom.sops.enable or false)
             |> lib.mapAttrsToList (_: value: mkCreationRule value.config.home-manager.users.seb.custom.sops);
 
-          jsonConfig = { creation_rules = hostCreationRules ++ userCreationRules; } |> builtins.toJSON;
+          jsonConfig = { creation_rules = hostCreationRules ++ userCreationRules; } |> lib.strings.toJSON;
         in
         pkgs.runCommand "sops-config" { buildInputs = [ pkgs.yj ]; } ''
           mkdir $out

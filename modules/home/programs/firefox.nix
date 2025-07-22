@@ -35,7 +35,7 @@
             "sidebar.revamp" = false;
           };
 
-        extraConfig = builtins.readFile "${inputs.betterfox}/user.js";
+        extraConfig = lib.readFile "${inputs.betterfox}/user.js";
       };
 
       policies.ExtensionSettings =

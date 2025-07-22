@@ -51,8 +51,8 @@
 
       # Switch workspace
       ${lib.concatMapStringsSep "\n" (n: ''
-        bind = SUPER, ${toString n}, focusworkspaceoncurrentmonitor, ${toString n}
-        bind = SUPER SHIFT, ${toString n}, movetoworkspacesilent, ${toString n}
+        bind = SUPER, ${builtins.toString n}, focusworkspaceoncurrentmonitor, ${builtins.toString n}
+        bind = SUPER SHIFT, ${builtins.toString n}, movetoworkspacesilent, ${builtins.toString n}
       '') (lib.range 1 9)}
 
       # Manage session

@@ -25,7 +25,7 @@ in
     };
     secrets = lib.mkOption {
       type = lib.types.anything;
-      default = absoluteSecretsPath |> builtins.readFile |> builtins.fromJSON;
+      default = absoluteSecretsPath |> lib.readFile |> lib.strings.fromJSON;
     };
   };
 

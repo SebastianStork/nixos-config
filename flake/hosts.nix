@@ -14,7 +14,7 @@ let
           hostFiles =
             "${self}/hosts/${hostName}"
             |> lib.filesystem.listFilesRecursive
-            |> builtins.filter (lib.hasSuffix ".nix");
+            |> lib.filter (lib.hasSuffix ".nix");
         in
         [
           { networking = { inherit hostName; }; }
@@ -46,6 +46,6 @@ in
       |> lib.filterAttrs (_: type: type == "directory")
       |> lib.mapAttrs (name: _: mkDeployNode name);
 
-    checks = builtins.mapAttrs (_: deployLib: deployLib.deployChecks self.deploy) inputs.deploy-rs.lib;
+    checks = lib.mapAttrs (_: deployLib: deployLib.deployChecks self.deploy) inputs.deploy-rs.lib;
   };
 }
