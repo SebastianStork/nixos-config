@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, self, ... }:
 {
   perSystem =
     { pkgs, system, ... }:
@@ -13,6 +13,7 @@
         };
 
         sops = pkgs.mkShell {
+          SOPS_CONFIG = self.packages.${system}.sops-config;
           packages = [
             pkgs.sops
             pkgs.age
