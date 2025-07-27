@@ -9,7 +9,7 @@
       agePublicKey = "age18x6herevmcuhcmeh47ll6p9ck9zk4ga6gfxwlc8yl49rwjxm7qusylwfgc";
     };
     boot = {
-      loader.systemdBoot.enable = true;
+      loader.systemd-boot.enable = true;
       silent = true;
     };
     users.seb = {

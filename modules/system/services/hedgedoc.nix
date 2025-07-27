@@ -10,7 +10,7 @@ let
   user = config.users.users.hedgedoc.name;
   dataDir = "/var/lib/hedgedoc";
 
-  manage_users = "CMD_CONFIG_FILE=/run/hedgedoc/config.json NODE_ENV=production ${lib.getExe' pkgs.hedgedoc "manage_users"}";
+  manageUsers = "CMD_CONFIG_FILE=/run/hedgedoc/config.json NODE_ENV=production ${lib.getExe' pkgs.hedgedoc "manage_users"}";
 in
 {
   options.custom.services.hedgedoc = {
@@ -76,14 +76,14 @@ in
         let
           manageUserSeb =
             mode:
-            "${manage_users} --${mode} sebastian.stork@pm.me --pass \"$(cat ${
+            "${manageUsers} --${mode} sebastian.stork@pm.me --pass \"$(cat ${
               config.sops.secrets."hedgedoc/seb-password".path
             })\"";
         in
         "${manageUserSeb "add"} || ${manageUserSeb "reset"}";
     };
 
-    environment.shellAliases.hedgedoc-manage-users = "sudo --user=${user} ${manage_users}";
+    environment.shellAliases.hedgedoc-manage-users = "sudo --user=${user} ${manageUsers}";
 
     custom.services.resticBackups.hedgedoc = lib.mkIf cfg.doBackups {
       conflictingService = "hedgedoc.service";

@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  resticBackups = lib.filterAttrs (_: value: value.enable) config.custom.services.resticBackups;
+  resticBackups = config.custom.services.resticBackups |> lib.filterAttrs (_: value: value.enable);
 in
 {
   options.custom.services.resticBackups = lib.mkOption {

@@ -13,7 +13,7 @@
 
       settings =
         let
-          theme-name =
+          themeName =
             {
               dark = "default";
               light = "GitHub_Light";
@@ -21,7 +21,7 @@
             .${config.custom.theme};
         in
         {
-          include = "${pkgs.kitty-themes}/share/kitty-themes/themes/${theme-name}.conf";
+          include = "${pkgs.kitty-themes}/share/kitty-themes/themes/${themeName}.conf";
           font_family = "JetBrainsMono Nerd Font";
           background_opacity = "0.85";
           cursor_shape = "beam";
