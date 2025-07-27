@@ -25,13 +25,11 @@
     pkgs.obsidian
     pkgs.anki
     pkgs.discord
-    pkgs.brave
 
     pkgs.jetbrains.idea-community
     pkgs.jetbrains.goland
     pkgs.jetbrains.clion
     pkgs.qtcreator
-    pkgs.logisim-evolution
 
     pkgs.libreoffice
     pkgs.hunspell
