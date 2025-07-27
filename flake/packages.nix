@@ -30,7 +30,7 @@
           jsonConfig = { creation_rules = hostCreationRules ++ userCreationRules; } |> lib.strings.toJSON;
         in
         pkgs.runCommand "sops.yaml" { buildInputs = [ pkgs.yj ]; } ''
-          echo '${jsonConfig}' | yj -jy > $out^
+          echo '${jsonConfig}' | yj -jy > $out
         '';
     };
 }
