@@ -15,7 +15,7 @@ in
                 default = name;
               };
               group = lib.mkOption {
-                type = lib.types.nullOr lib.types.str;
+                type = lib.types.nullOr lib.types.nonEmptyStr;
                 default = null;
               };
               url = lib.mkOption {

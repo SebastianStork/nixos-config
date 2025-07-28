@@ -11,7 +11,7 @@ in
   options.custom.wifi = {
     enable = lib.mkEnableOption "";
     networks = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
+      type = lib.types.listOf lib.types.nonEmptyStr;
       default = config.custom.sops.secrets.iwd |> lib.attrNames;
     };
   };
