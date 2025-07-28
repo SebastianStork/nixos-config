@@ -1,7 +1,12 @@
 { self, ... }:
 {
   perSystem =
-    { pkgs, lib, ... }:
+    {
+      self',
+      pkgs,
+      lib,
+      ...
+    }:
     {
       packages.sops-config =
         let
@@ -32,5 +37,14 @@
         pkgs.runCommand "sops.yaml" { buildInputs = [ pkgs.yj ]; } ''
           echo '${jsonConfig}' | yj -jy > $out
         '';
+
+      devShells.sops = pkgs.mkShellNoCC {
+        SOPS_CONFIG = self'.packages.sops-config;
+        packages = [
+          pkgs.sops
+          pkgs.age
+          pkgs.ssh-to-age
+        ];
+      };
     };
 }

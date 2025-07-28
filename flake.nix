@@ -70,11 +70,11 @@
       systems = [ "x86_64-linux" ];
 
       imports = [
-        ./flake/dev-shells.nix
+        ./flake/dev-shell.nix
         ./flake/formatter.nix
         ./flake/hosts.nix
         ./flake/modules.nix
-        ./flake/packages.nix
+        ./flake/sops.nix
       ];
     };
 }
