@@ -179,7 +179,7 @@ in
                 ];
               };
           in
-          cfg.finalEndpoints |> lib.mapAttrsToList (_: value: value) |> lib.map (entry: mkEndpoint entry);
+          cfg.finalEndpoints |> lib.attrValues |> lib.map (entry: mkEndpoint entry);
       };
     };
 
