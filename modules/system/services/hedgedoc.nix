@@ -6,11 +6,6 @@
 }:
 let
   cfg = config.custom.services.hedgedoc;
-
-  user = config.users.users.hedgedoc.name;
-  dataDir = "/var/lib/hedgedoc";
-
-  manageUsers = "CMD_CONFIG_FILE=/run/hedgedoc/config.json NODE_ENV=production ${lib.getExe' pkgs.hedgedoc "manage_users"}";
 in
 {
   options.custom.services.hedgedoc = {
@@ -32,58 +27,51 @@ in
       ports.list = [ cfg.port ];
     };
 
-    sops = {
-      secrets = {
-        "hedgedoc/seb-password".owner = user;
-        # "hedgedoc/gitlab-auth-secret".owner = user;
+    sops =
+      let
+        owner = config.users.users.hedgedoc.name;
+      in
+      {
+        secrets = {
+          "hedgedoc/seb-password".owner = owner;
+          "hedgedoc/gitlab-auth-secret".owner = owner;
+        };
+        templates."hedgedoc/environment" = {
+          inherit owner;
+          content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
+        };
       };
-
-      # templates."hedgedoc/environment" = {
-      #   owner = user;
-      #   content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
-      # };
-    };
 
     services.hedgedoc = {
       enable = true;
 
-      # environmentFile = config.sops.templates."hedgedoc/environment".path;
+      environmentFile = config.sops.templates."hedgedoc/environment".path;
       settings = {
         inherit (cfg) domain port;
         protocolUseSSL = true;
         allowAnonymous = false;
-        allowEmailRegister = false;
+        email = false;
         defaultPermission = "limited";
         sessionSecret = "$SESSION_SECRET";
-        # gitlab = {
-        #   baseURL = "https://code.fbi.h-da.de";
-        #   clientID = "dc71d7ec1525ce3b425d7d41d602f67e1a06cef981259605a87841a6be62cc58";
-        #   clientSecret = "$GITLAB_CLIENTSECRET";
-        # };
+        gitlab = {
+          baseURL = "https://code.fbi.h-da.de";
+          clientID = "dc71d7ec1525ce3b425d7d41d602f67e1a06cef981259605a87841a6be62cc58";
+          clientSecret = "$GITLAB_CLIENTSECRET";
+        };
       };
     };
 
-    systemd.services.hedgedoc = {
-      # Ensure session-secret
-      preStart = lib.mkBefore ''
-        if [ ! -f ${dataDir}/session-secret ]; then
-          ${lib.getExe pkgs.pwgen} -s 64 1 > ${dataDir}/session-secret
+    # Ensure session-secret
+    systemd.services.hedgedoc.preStart =
+      let
+        sessionSecret = "/var/lib/hedgedoc/session-secret";
+      in
+      lib.mkBefore ''
+        if [ ! -f ${sessionSecret} ]; then
+          ${lib.getExe pkgs.pwgen} -s 64 1 > ${sessionSecret}
         fi
-        export SESSION_SECRET=$(cat ${dataDir}/session-secret)
+        export SESSION_SECRET=$(cat ${sessionSecret})
       '';
-
-      postStart =
-        let
-          manageUserSeb =
-            mode:
-            "${manageUsers} --${mode} sebastian.stork@pm.me --pass \"$(cat ${
-              config.sops.secrets."hedgedoc/seb-password".path
-            })\"";
-        in
-        "${manageUserSeb "add"} || ${manageUserSeb "reset"}";
-    };
-
-    environment.shellAliases.hedgedoc-manage-users = "sudo --user=${user} ${manageUsers}";
 
     custom.services.resticBackups.hedgedoc = lib.mkIf cfg.doBackups {
       conflictingService = "hedgedoc.service";
