@@ -1,10 +1,16 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs-unstable,
+  lib,
+  ...
+}:
 {
   options.custom.services.hypridle.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.hypridle.enable {
     services.hypridle = {
       enable = true;
+      package = pkgs-unstable.hypridle;
 
       settings = {
         general = {

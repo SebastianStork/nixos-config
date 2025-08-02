@@ -1,4 +1,9 @@
-{ config, lib, ... }@moduleArgs:
+{
+  config,
+  pkgs-unstable,
+  lib,
+  ...
+}@moduleArgs:
 let
   cfg = config.custom.programs.hyprlock;
 in
@@ -13,6 +18,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.hyprlock = {
       enable = true;
+      package = pkgs-unstable.hyprlock;
 
       settings = {
         general.hide_cursor = true;
