@@ -32,10 +32,7 @@ in
         owner = config.users.users.hedgedoc.name;
       in
       {
-        secrets = {
-          "hedgedoc/seb-password".owner = owner;
-          "hedgedoc/gitlab-auth-secret".owner = owner;
-        };
+        secrets."hedgedoc/gitlab-auth-secret".owner = owner;
         templates."hedgedoc/environment" = {
           inherit owner;
           content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
