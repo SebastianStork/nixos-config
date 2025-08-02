@@ -1,15 +1,11 @@
 {
   config,
-  pkgs,
+  pkgs-unstable,
   lib,
   ...
 }:
 let
   cfg = config.custom.services.forgejo;
-  originalCfg = config.services.forgejo;
-
-  user = config.users.users.forgejo.name;
-  inherit (config.users.users.forgejo) group;
 in
 {
   options.custom.services.forgejo = {
@@ -31,12 +27,13 @@ in
       ports.list = [ cfg.port ];
     };
 
-    sops.secrets."forgejo/admin-password".owner = user;
+    sops.secrets."forgejo/admin-password".owner = config.users.users.forgejo.name;
 
     services.forgejo = {
       enable = true;
-      lfs.enable = true;
+      package = pkgs-unstable.forgejo;
 
+      lfs.enable = true;
       settings = {
         server = {
           DOMAIN = cfg.domain;
@@ -74,7 +71,7 @@ in
     systemd = {
       services.forgejo.preStart =
         let
-          userCmd = "${lib.getExe originalCfg.package} admin user";
+          userCmd = "${lib.getExe config.services.forgejo.package} admin user";
           credentials = lib.concatStringsSep " " [
             "--username SebastianStork"
             "--password \"$PASSWORD\""
@@ -86,23 +83,11 @@ in
           ${userCmd} create ${credentials} --email "sebastian.stork@pm.me" --admin \
             || ${userCmd} change-password ${credentials} --must-change-password=false
         '';
-
-      tmpfiles.rules =
-        let
-          disallow-all-robots = pkgs.writeText "disallow-all-robots.txt" ''
-            User-agent: *
-            Disallow: /
-          '';
-        in
-        [
-          "d ${originalCfg.customDir}/public 750 ${user} ${group} - -"
-          "L+ ${originalCfg.customDir}/public/robots.txt 750 - - - ${disallow-all-robots}"
-        ];
     };
 
     custom.services.resticBackups.forgejo = lib.mkIf cfg.doBackups {
       conflictingService = "forgejo.service";
-      extraConfig.paths = [ originalCfg.stateDir ];
+      extraConfig.paths = [ config.services.forgejo.stateDir ];
     };
   };
 }
