@@ -92,7 +92,7 @@ in
               lib.genAttrs folders (name: {
                 path = "${config.services.syncthing.dataDir}/${name}";
                 ignorePerms = false;
-                devices = lib.attrNames config.services.syncthing.settings.devices;
+                devices = config.services.syncthing.settings.devices |> lib.attrNames;
               });
           in
           genFolders [

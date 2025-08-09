@@ -15,8 +15,10 @@ let
 
   isTailscaleDomain = domain: domain |> lib.hasSuffix config.custom.services.tailscale.domain;
 
-  tailscaleHostsExist = lib.any (v: isTailscaleDomain v.domain) (lib.attrValues virtualHosts);
-  nonTailscaleHostsExist = lib.any (v: !isTailscaleDomain v.domain) (lib.attrValues virtualHosts);
+  tailscaleHostsExist =
+    virtualHosts |> lib.attrValues |> lib.any (value: isTailscaleDomain value.domain);
+  nonTailscaleHostsExist =
+    virtualHosts |> lib.attrValues |> lib.any (value: !isTailscaleDomain value.domain);
 
   getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
 

@@ -158,7 +158,7 @@ in
             mkEndpoint =
               value:
               let
-                isPrivate = lib.hasInfix config.custom.services.tailscale.domain value.url;
+                isPrivate = value.url |> lib.hasInfix config.custom.services.tailscale.domain;
                 deducedGroup = if isPrivate then "Private" else "Public";
               in
               {

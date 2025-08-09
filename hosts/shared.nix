@@ -11,12 +11,12 @@
 
   nix =
     let
-      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+      flakeInputs = inputs |> lib.filterAttrs (_: lib.isType "flake");
     in
     {
       channel.enable = false;
-      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+      registry = flakeInputs |> lib.mapAttrs (_: flake: { inherit flake; });
+      nixPath = flakeInputs |> lib.mapAttrsToList (name: _: "${name}=flake:${name}");
 
       settings = {
         flake-registry = "";
