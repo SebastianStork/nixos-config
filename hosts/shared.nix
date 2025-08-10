@@ -33,7 +33,7 @@
           "root"
           "@wheel"
         ];
-        commit-lock-file-summary = "flake.lock: update";
+        commit-lock-file-summary = "flake.lock: Update";
       };
     };
 
