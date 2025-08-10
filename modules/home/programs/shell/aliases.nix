@@ -13,35 +13,46 @@
       pkgs.bat
     ];
 
-    home.shellAliases = 
+    home.shellAliases =
       let
-        lsAliases = 
+        lsAliases =
           let
-            aliasList = lib.mapCartesianProduct ({ a, b, c }: a + b + c) { a = ["ll" "lt" "l"]; b = ["" "a"]; c = ["" "d" "f"]; };
-            eza = "eza --header --group --time-style=long-iso --group-directories-first --sort=name --icons=auto --git --git-repos-no-status --binary ";
-            convertAliasToCmd = str: eza + (lib.replaceStrings ["ll" "lt" "l" "a" "d" "f"] ["--long " "--tree " "--oneline --dereference " "--all " "--only-dirs " "--only-files "] str);
+            eza = [ "eza" "--header" "--group" "--time-style=long-iso" "--group-directories-first" "--sort=name" "--icons=auto" "--git" "--git-repos-no-status" "--binary" ];
+            aliasPartsToCommand =
+              aliasParts:
+              aliasParts
+              |> lib.filter (aliasPart: aliasPart != "")
+              |> lib.map (aliasPart:
+                {
+                  "l" = "--oneline --dereference";
+                  "ll" = "--long";
+                  "lt" = "--tree";
+                  "a" = "--all";
+                  "d" = "--only-dirs";
+                  "f" = "--only-files";
+                }
+                .${aliasPart})
+              |> (flags: eza ++ flags)
+              |> lib.concatStringsSep " ";
           in
-          (lib.genAttrs aliasList convertAliasToCmd) // { ls = "l"; };
-
-        catAlias =
+            { format = [ "l" "ll" "lt" ]; visibility = [ "" "a" ]; restriction = [ "" "d" "f" ]; }
+            |> lib.mapCartesianProduct ({ format, visibility, restriction, }: [ format visibility restriction ])
+            |> lib.map (aliasParts: lib.nameValuePair (lib.concatStrings aliasParts) (aliasPartsToCommand aliasParts))
+            |> lib.listToAttrs;
+      in 
+      lsAliases // {
+        ls = "l";
+        btm = "btm --group_processes";
+        cat =
           let
-            theme = 
+            theme =
               {
                 dark = "";
                 light = "GitHub";
               }
               .${config.custom.theme};
           in
-          {
-            cat = "bat --plain --theme=${theme}";
-          };
-
-          bottomAlias.btm = "btm --group_processes";
-      in
-      lib.mkMerge [
-        lsAliases
-        catAlias
-        bottomAlias
-      ];
+          "bat --plain --theme=${theme}";
+      };
   };
 }
