@@ -53,6 +53,8 @@ in
         cron.ENABLED = true;
         "cron.git_gc_repos".ENABLED = true;
 
+        repository.ENABLE_PUSH_CREATE_USER = true;
+
         # https://forgejo.org/docs/latest/admin/recommendations
         database.SQLITE_JOURNAL_MODE = "WAL";
         cache = {
