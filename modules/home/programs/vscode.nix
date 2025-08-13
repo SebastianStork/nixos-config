@@ -15,18 +15,13 @@
       package = pkgs-unstable.vscodium;
       profiles.default.extensions =
         let
-          inherit (inputs.nix-vscode-extensions.extensions.${pkgs.system}) open-vsx vscode-marketplace;
+          inherit (inputs.nix-vscode-extensions.extensions.${pkgs.system}) open-vsx;
         in
         [
           # Language Servers
           open-vsx.jnoortheen.nix-ide
           open-vsx.llvm-vs-code-extensions.vscode-clangd
           open-vsx.rust-lang.rust-analyzer
-          open-vsx.nefrob.vscode-just-syntax
-
-          # Utilities
-          open-vsx.aaron-bond.better-comments
-          vscode-marketplace.pdconsec.vscode-print
 
           # Theming
           open-vsx.github.github-vscode-theme
