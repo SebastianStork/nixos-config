@@ -18,12 +18,17 @@
           inherit (inputs.nix-vscode-extensions.extensions.${pkgs.system}) open-vsx vscode-marketplace;
         in
         [
+          # Language Servers
           open-vsx.jnoortheen.nix-ide
-          open-vsx.aaron-bond.better-comments
           open-vsx.llvm-vs-code-extensions.vscode-clangd
+          open-vsx.rust-lang.rust-analyzer
           open-vsx.nefrob.vscode-just-syntax
+
+          # Utilities
+          open-vsx.aaron-bond.better-comments
           vscode-marketplace.pdconsec.vscode-print
 
+          # Theming
           open-vsx.github.github-vscode-theme
           open-vsx.pkief.material-icon-theme
         ];
