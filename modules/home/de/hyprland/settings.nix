@@ -68,7 +68,7 @@
         # No border when only one window
         "w[1], bordersize:0"
         # No gaps and no rounding on regular workspaces when only one window
-        "w[1]s[false], gapsout:0, gapsin:0, rounding:0"
+        "w[t1]s[false], gapsout:0, gapsin:0, rounding:0"
         # Large gaps on special workspaces
         "s[true], gapsout:30"
 
