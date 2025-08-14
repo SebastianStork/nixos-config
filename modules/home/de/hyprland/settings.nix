@@ -65,32 +65,20 @@
       binds.hide_special_on_workspace_change = true;
 
       workspace = [
-        # No gaps when only one window
-        "w[tv1], gapsout:0, gapsin:0"
-        "f[1], gapsout:0, gapsin:0"
-
-        "special:music, gapsout:30, on-created-empty:spotify"
-        "special:chat, gapsout:30, on-created-empty:discord"
-        "special:flake, gapsout:30, on-created-empty:kitty --directory ${config.home.sessionVariables.NH_FLAKE}"
-        "special:monitor, gapsout:30, on-created-empty:kitty btm"
-        "special:files, gapsout:30, on-created-empty:nemo"
-      ];
-      windowrulev2 = [
         # No border when only one window
-        "bordersize 0, floating:0, onworkspace:w[tv1]"
-        "rounding 0, floating:0, onworkspace:w[tv1]"
-        "bordersize 0, floating:0, onworkspace:f[1]"
-        "rounding 0,  floating:0, onworkspace:f[1]"
+        "w[1], bordersize:0"
+        # No gaps and no rounding on regular workspaces when only one window
+        "w[1]s[false], gapsout:0, gapsin:0, rounding:0"
+        # Large gaps on special workspaces
+        "s[true], gapsout:30"
 
-        "rounding 6, floating:0, onworkspace:special:music"
-        "rounding 6, floating:0, onworkspace:special:chat"
-        "rounding 6, floating:0, onworkspace:special:monitor"
-        "rounding 6, floating:0, onworkspace:special:files"
-        "rounding 6, floating:0, onworkspace:special:flake"
-        "noblur, class:(kitty), onworkspace:special:flake"
-
-        "idleinhibit fullscreen, class:.*"
+        "special:music, on-created-empty:spotify"
+        "special:chat, on-created-empty:discord"
+        "special:flake, on-created-empty:kitty --directory ${config.home.sessionVariables.NH_FLAKE}"
+        "special:monitor, on-created-empty:kitty btm"
+        "special:files, on-created-empty:nemo"
       ];
+      windowrule = [ "idleinhibit fullscreen, class:.*" ];
     };
   };
 }
