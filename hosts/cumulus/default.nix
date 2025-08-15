@@ -47,12 +47,20 @@
         domain = "alerts.${config.custom.services.tailscale.domain}";
       };
 
+      grafana = {
+        enable = true;
+        domain = "grafana.${config.custom.services.tailscale.domain}";
+      };
+
       caddy.virtualHosts = {
         gatus = {
           inherit (config.custom.services.gatus) domain port;
         };
         ntfy = {
           inherit (config.custom.services.ntfy) domain port;
+        };
+        grafana = {
+          inherit (config.custom.services.grafana) domain port;
         };
       };
     };
