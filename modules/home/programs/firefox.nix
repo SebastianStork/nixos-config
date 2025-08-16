@@ -33,6 +33,7 @@
             "browser.tabs.groups.enabled" = true;
             "browser.uidensity" = 1;
             "sidebar.revamp" = false;
+            "media.eme.enabled" = true;
           };
 
         extraConfig = lib.readFile "${inputs.betterfox}/user.js";
