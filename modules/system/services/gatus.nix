@@ -118,8 +118,6 @@ in
         storage = {
           type = "sqlite";
           path = "/var/lib/gatus/data.db";
-          maximum-number-of-results = 1000;
-          maximum-number-of-events = 100;
         };
 
         connectivity.checker.target = "1.1.1.1:53"; # Cloudflare DNS
