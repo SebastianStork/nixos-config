@@ -39,12 +39,21 @@
         '';
 
       devShells.sops = pkgs.mkShellNoCC {
-        SOPS_CONFIG = self'.packages.sops-config;
         packages = [
           pkgs.sops
           pkgs.age
           pkgs.ssh-to-age
         ];
+
+        nativeBuildInputs = [
+          pkgs.bitwarden-cli
+          pkgs.jq
+        ];
+        shellHook = ''
+          export BW_SESSION=$(bw login | awk -F'"' '/export BW_SESSION/ {print $2}')
+          export SOPS_AGE_KEY=$(bw get item 'admin age-key' | jq -r '.notes')
+          export SOPS_CONFIG=${self'.packages.sops-config}
+        '';
       };
     };
 }
