@@ -12,8 +12,8 @@
       enable = true;
       agePublicKey = "age1dnpwfwh0h95r63e5qfjc2gvffw2tr2tx4new7sq2h3qs90kx9fmq322mx4";
     };
+
     boot.loader.grub.enable = true;
-    users.seb.enable = true;
 
     services = {
       resolved.enable = true;

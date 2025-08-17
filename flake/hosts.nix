@@ -15,12 +15,21 @@ let
             "${self}/hosts/${hostName}"
             |> lib.filesystem.listFilesRecursive
             |> lib.filter (lib.hasSuffix ".nix");
+
+          userFiles =
+            "${self}/users"
+            |> builtins.readDir
+            |> lib.filterAttrs (_: type: type == "directory")
+            |> builtins.attrNames
+            |> map (user: "${self}/users/${user}/@${hostName}")
+            |> builtins.filter (path: builtins.pathExists path);
         in
         [
           { networking = { inherit hostName; }; }
           "${self}/hosts/shared.nix"
         ]
-        ++ hostFiles;
+        ++ hostFiles
+        ++ userFiles;
     };
 
   mkDeployNode = hostname: {
