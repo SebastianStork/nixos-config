@@ -5,7 +5,6 @@ in
 {
   options.custom.services.grafana = {
     enable = lib.mkEnableOption "";
-    doBackups = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
