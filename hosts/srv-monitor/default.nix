@@ -52,6 +52,11 @@
         domain = "grafana.${config.custom.services.tailscale.domain}";
       };
 
+      victorialogs = {
+        enable = true;
+        domain = "logs.${config.custom.services.tailscale.domain}";
+      };
+
       caddy.virtualHosts = {
         gatus = {
           inherit (config.custom.services.gatus) domain port;
@@ -61,6 +66,9 @@
         };
         grafana = {
           inherit (config.custom.services.grafana) domain port;
+        };
+        victorialogs = {
+          inherit (config.custom.services.victorialogs) domain port;
         };
       };
     };
