@@ -15,7 +15,7 @@
       package = pkgs-unstable.vscodium;
       profiles.default.extensions =
         let
-          inherit (inputs.nix-vscode-extensions.extensions.${pkgs.system}) open-vsx;
+          inherit (inputs.vscode-extensions.extensions.${pkgs.system}) open-vsx;
         in
         [
           # Language Servers

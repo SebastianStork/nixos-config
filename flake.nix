@@ -13,7 +13,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    sops-nix = {
+    sops = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -28,7 +28,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    treefmt-nix = {
+    treefmt = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -38,7 +38,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-vscode-extensions = {
+    vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
     };

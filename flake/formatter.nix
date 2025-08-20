@@ -4,7 +4,7 @@
     { pkgs, ... }:
     {
       formatter =
-        (inputs.treefmt-nix.lib.evalModule pkgs {
+        (inputs.treefmt.lib.evalModule pkgs {
           projectRootFile = "flake.nix";
           programs = {
             nixfmt.enable = true;

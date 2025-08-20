@@ -11,7 +11,7 @@ let
   absoluteSecretsPath = "${self}/" + cfg.secretsFile;
 in
 {
-  imports = [ inputs.sops-nix.nixosModules.sops ];
+  imports = [ inputs.sops.nixosModules.sops ];
 
   options.custom.sops = {
     enable = lib.mkEnableOption "";

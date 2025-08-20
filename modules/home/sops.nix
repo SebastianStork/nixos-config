@@ -11,7 +11,7 @@ let
   absoluteSecretsPath = "${self}/" + cfg.secretsFile;
 in
 {
-  imports = [ inputs.sops-nix.homeManagerModules.sops ];
+  imports = [ inputs.sops.homeManagerModules.sops ];
 
   options.custom.sops = {
     enable = lib.mkEnableOption "";

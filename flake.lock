@@ -205,27 +205,6 @@
         "url": "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.1/twofactor_totp-v6.4.1.tar.gz"
       }
     },
-    "nix-vscode-extensions": {
-      "inputs": {
-        "flake-utils": "flake-utils_2",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1755568911,
-        "narHash": "sha256-3hukAjjalnsIpH1N8jkacT5xHA0Z3f+TTW3O63mQWC0=",
-        "owner": "nix-community",
-        "repo": "nix-vscode-extensions",
-        "rev": "8bb1109dab2a4477e226144ba139066b7720af61",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nix-vscode-extensions",
-        "type": "github"
-      }
-    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1755330281,
@@ -299,15 +278,15 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "nextcloud-twofactor-totp": "nextcloud-twofactor-totp",
-        "nix-vscode-extensions": "nix-vscode-extensions",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "sops-nix": "sops-nix",
-        "treefmt-nix": "treefmt-nix"
+        "sops": "sops",
+        "treefmt": "treefmt",
+        "vscode-extensions": "vscode-extensions"
       }
     },
-    "sops-nix": {
+    "sops": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -372,7 +351,7 @@
         "type": "github"
       }
     },
-    "treefmt-nix": {
+    "treefmt": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -407,6 +386,27 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "vscode-extensions": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1755655217,
+        "narHash": "sha256-S6Eaz7L+0Iyh/LyipHNk7+QSReFj8xbZAr4g+G5Pf0Q=",
+        "owner": "nix-community",
+        "repo": "nix-vscode-extensions",
+        "rev": "283b5d15f1b1bfa5e745b9a90793b49fbd6239b0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-vscode-extensions",
         "type": "github"
       }
     }
