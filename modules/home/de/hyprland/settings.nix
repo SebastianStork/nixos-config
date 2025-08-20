@@ -65,10 +65,8 @@
       binds.hide_special_on_workspace_change = true;
 
       workspace = [
-        # No border when only one window
-        "w[1], bordersize:0"
-        # No gaps and no rounding on regular workspaces when only one window
-        "w[t1]s[false], gapsout:0, gapsin:0, rounding:0"
+        # No gaps when only one window
+        "w[t1]s[false], gapsout:0, gapsin:0"
         # Large gaps on special workspaces
         "s[true], gapsout:30"
 
@@ -78,7 +76,13 @@
         "special:monitor, on-created-empty:kitty btm"
         "special:files, on-created-empty:nemo"
       ];
-      windowrule = [ "idleinhibit fullscreen, class:.*" ];
+      windowrule = [
+        # No borders when only one window
+        "bordersize 0, floating:0, onworkspace:w[t1]"
+        "rounding 0, floating:0, onworkspace:w[t1]s[false]"
+
+        "idleinhibit fullscreen, class:.*"
+      ];
     };
   };
 }
