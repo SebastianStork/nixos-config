@@ -65,9 +65,9 @@
       binds.hide_special_on_workspace_change = true;
 
       workspace = [
-        # No gaps when only one window
-        "w[t1]s[false], gapsout:0, gapsin:0"
-        # Large gaps on special workspaces
+        # No outer gaps when only one tiled window on normal workspaces
+        "w[t1]s[false], gapsout:0"
+        # Large outer gaps on special workspaces
         "s[true], gapsout:30"
 
         "special:music, on-created-empty:spotify"
@@ -77,8 +77,11 @@
         "special:files, on-created-empty:nemo"
       ];
       windowrule = [
-        # No borders when only one window
+        # No borders on floating window when it's the only window
+        "bordersize 0, floating:1, onworkspace:w[1]"
+        # No borders on tiled window when it's the only tiled window
         "bordersize 0, floating:0, onworkspace:w[t1]"
+        # No rounding on tiled window when it's the only tiled window on a normal workspace
         "rounding 0, floating:0, onworkspace:w[t1]s[false]"
 
         "idleinhibit fullscreen, class:.*"
