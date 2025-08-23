@@ -38,26 +38,13 @@ in
         )
       );
 
-      defaultDomainEndpoints =
+      defaultEndpoints =
         let
           getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
         in
         cfg.domainsToMonitor
         |> lib.filter (domain: domain != cfg.domain)
         |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { url = "https://${domain}"; })
-        |> lib.listToAttrs;
-
-      defaultHostEndpoints =
-        cfg.hostsToMonitor
-        |> lib.filter (hostName: hostName != config.networking.hostName)
-        |> lib.map (
-          hostName:
-          lib.nameValuePair hostName {
-            group = "Hosts";
-            url = "icmp://${hostName}.${config.custom.services.tailscale.domain}";
-            enableAlerts = false;
-          }
-        )
         |> lib.listToAttrs;
     in
     {
@@ -74,17 +61,13 @@ in
         type = lib.types.listOf lib.types.nonEmptyStr;
         default = [ ];
       };
-      hostsToMonitor = lib.mkOption {
-        type = lib.types.listOf lib.types.nonEmptyStr;
-        default = [ ];
-      };
       customEndpoints = lib.mkOption {
         type = endpointType;
         default = { };
       };
       finalEndpoints = lib.mkOption {
         type = endpointType;
-        default = defaultDomainEndpoints // defaultHostEndpoints // cfg.customEndpoints;
+        default = defaultEndpoints // cfg.customEndpoints;
         readOnly = true;
       };
     };
@@ -180,7 +163,5 @@ in
           cfg.finalEndpoints |> lib.attrValues |> lib.map (entry: mkEndpoint entry);
       };
     };
-
-    systemd.services.gatus.serviceConfig.AmbientCapabilities = "CAP_NET_RAW"; # Allow icmp/pings
   };
 }
