@@ -37,15 +37,22 @@
         doBackups = true;
         domain = "docs.sprouted.cloud";
       };
+
       it-tools = {
         enable = true;
         domain = "tools.sprouted.cloud";
       };
+
       forgejo = {
         enable = true;
         doBackups = true;
         domain = "git.sstork.dev";
         ssh.enable = true;
+      };
+
+      openspeedtest = {
+        enable = true;
+        domain = "speedtest.sprouted.cloud";
       };
 
       caddy.virtualHosts = {
@@ -57,6 +64,15 @@
         };
         forgejo = {
           inherit (config.custom.services.forgejo) domain port;
+        };
+        openspeedtest = {
+          inherit (config.custom.services.openspeedtest) domain port;
+          protocol = "http";
+          extraReverseProxyConfig = ''
+            request_buffers 35MiB
+            response_buffers 35MiB
+            flush_interval -1
+          '';
         };
       };
     };

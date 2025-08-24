@@ -33,6 +33,7 @@
             extraConditions = [ "[BODY].healthy == true" ];
           };
           "git ssh".url = "ssh://git.sstork.dev";
+          "speedtest".url = "http://speedtest.sprouted.cloud";
         };
       };
 
