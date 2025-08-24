@@ -22,13 +22,15 @@ let
 
   getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
 
-  mkVirtualHostConfig = domain: port: {
-    logFormat = "output file ${config.services.caddy.logDir}/access-${domain}.log { mode 640 }";
-    extraConfig = ''
-      ${lib.optionalString (isTailscaleDomain domain) "bind tailscale/${getSubdomain domain}"}
-      reverse_proxy localhost:${builtins.toString port}
-    '';
-  };
+  mkVirtualHostConfig =
+    { domain, port, ... }:
+    {
+      logFormat = "output file ${config.services.caddy.logDir}/access-${domain}.log { mode 640 }";
+      extraConfig = ''
+        ${lib.optionalString (isTailscaleDomain domain) "bind tailscale/${getSubdomain domain}"}
+        reverse_proxy localhost:${builtins.toString port}
+      '';
+    };
 
   ports = [
     80
@@ -54,6 +56,17 @@ in
               type = lib.types.port;
               default = null;
             };
+            protocol = lib.mkOption {
+              type = lib.types.enum [
+                "https"
+                "http"
+              ];
+              default = "https";
+            };
+            extraReverseProxyConfig = lib.mkOption {
+              type = lib.types.lines;
+              default = "";
+            };
           };
         }
       )
@@ -75,7 +88,7 @@ in
           virtualHosts =
             virtualHosts
             |> lib.mapAttrs' (
-              _: value: lib.nameValuePair value.domain (mkVirtualHostConfig value.domain value.port)
+              _: value: lib.nameValuePair "${value.protocol}://${value.domain}" (mkVirtualHostConfig value)
             );
         };
       }
