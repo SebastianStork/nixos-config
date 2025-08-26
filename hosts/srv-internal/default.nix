@@ -30,15 +30,22 @@
         deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
         gui.domain = "syncthing.${config.custom.services.tailscale.domain}";
       };
+
       nextcloud = {
         enable = true;
         doBackups = true;
         domain = "cloud.${config.custom.services.tailscale.domain}";
       };
+
       actualbudget = {
         enable = true;
         doBackups = true;
         domain = "budget.${config.custom.services.tailscale.domain}";
+      };
+
+      radicale = {
+        enable = true;
+        domain = "calendar.${config.custom.services.tailscale.domain}";
       };
 
       caddy.virtualHosts = {
@@ -50,6 +57,9 @@
         };
         actualbudget = {
           inherit (config.custom.services.actualbudget) domain port;
+        };
+        radicale = {
+          inherit (config.custom.services.radicale) domain port;
         };
       };
     };
