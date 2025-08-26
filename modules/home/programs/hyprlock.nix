@@ -23,15 +23,18 @@ in
       settings = {
         general.hide_cursor = true;
         auth."fingerprint:enabled" = cfg.fprintAuth;
-
         animations.enabled = false;
         input-field.monitor = "";
-        background = {
-          monitor = "";
-          path = "screenshot";
-          blur_passes = 2;
-          brightness = 0.5;
-        };
+
+        background =
+          [
+            "DP-1"
+            "eDP-1"
+          ]
+          |> lib.map (monitor: {
+            inherit monitor;
+            path = "~/.local/state/wpaperd/wallpapers/${monitor}";
+          });
       };
     };
   };
