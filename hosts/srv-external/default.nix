@@ -32,6 +32,13 @@
         ];
       };
 
+      forgejo = {
+        enable = true;
+        doBackups = true;
+        domain = "git.sstork.dev";
+        ssh.enable = true;
+      };
+
       hedgedoc = {
         enable = true;
         doBackups = true;
@@ -43,31 +50,25 @@
         domain = "tools.sprouted.cloud";
       };
 
-      forgejo = {
-        enable = true;
-        doBackups = true;
-        domain = "git.sstork.dev";
-        ssh.enable = true;
-      };
-
       openspeedtest = {
         enable = true;
         domain = "speedtest.sprouted.cloud";
       };
 
       caddy.virtualHosts = {
+        forgejo = {
+          inherit (config.custom.services.forgejo) domain port;
+        };
         hedgedoc = {
           inherit (config.custom.services.hedgedoc) domain port;
         };
         it-tools = {
           inherit (config.custom.services.it-tools) domain port;
         };
-        forgejo = {
-          inherit (config.custom.services.forgejo) domain port;
-        };
         openspeedtest = {
           inherit (config.custom.services.openspeedtest) domain port;
-          protocol = "http";
+          tls = false;
+          
           extraReverseProxyConfig = ''
             request_buffers 35MiB
             response_buffers 35MiB

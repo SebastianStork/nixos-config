@@ -63,12 +63,9 @@ in
               type = lib.types.port;
               default = null;
             };
-            protocol = lib.mkOption {
-              type = lib.types.enum [
-                "https"
-                "http"
-              ];
-              default = "https";
+            tls = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
             };
             extraReverseProxyConfig = lib.mkOption {
               type = lib.types.lines;
@@ -95,7 +92,10 @@ in
           virtualHosts =
             virtualHosts
             |> lib.mapAttrs' (
-              _: value: lib.nameValuePair "${value.protocol}://${value.domain}" (mkVirtualHostConfig value)
+              _: value:
+              lib.nameValuePair (lib.optionalString (!value.tls) "http://" + value.domain) (
+                mkVirtualHostConfig value
+              )
             );
         };
       }
