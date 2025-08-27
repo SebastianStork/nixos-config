@@ -11,7 +11,7 @@ in
     };
     port = lib.mkOption {
       type = lib.types.port;
-      default = 3001;
+      default = 4479;
     };
   };
 
@@ -23,7 +23,7 @@ in
 
     virtualisation.oci-containers.containers.openspeedtest = {
       image = "openspeedtest/latest";
-      ports = [ "${builtins.toString cfg.port}:3000" ];
+      ports = [ "127.0.0.1:${builtins.toString cfg.port}:3000" ];
       pull = "newer";
     };
   };
