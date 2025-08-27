@@ -27,17 +27,13 @@ in
       ports.list = [ cfg.port ];
     };
 
-    sops =
-      let
+    sops = {
+      secrets."hedgedoc/gitlab-auth-secret" = { };
+      templates."hedgedoc/environment" = {
         owner = config.users.users.hedgedoc.name;
-      in
-      {
-        secrets."hedgedoc/gitlab-auth-secret".owner = owner;
-        templates."hedgedoc/environment" = {
-          inherit owner;
-          content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
-        };
+        content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
       };
+    };
 
     services.hedgedoc = {
       enable = true;
