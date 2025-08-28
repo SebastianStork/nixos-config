@@ -3,8 +3,8 @@
   system.stateVersion = "24.11";
 
   meta = {
-    domains.assertUnique = true;
-    ports.assertUnique = true;
+    domains.validate = true;
+    ports.validate = true;
   };
 
   custom = {

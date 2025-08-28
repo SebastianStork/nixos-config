@@ -21,10 +21,10 @@ in
         |> lib.concatLists;
       readOnly = true;
     };
-    assertUnique = lib.mkEnableOption "";
+    validate = lib.mkEnableOption "";
   };
 
-  config = lib.mkIf cfg.assertUnique {
+  config = lib.mkIf cfg.validate {
     assertions =
       let
         duplicateDomains =

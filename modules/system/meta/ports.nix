@@ -18,10 +18,10 @@ in
       type = lib.types.listOf lib.types.port;
       default = [ ];
     };
-    assertUnique = lib.mkEnableOption "";
+    validate = lib.mkEnableOption "";
   };
 
-  config = lib.mkIf cfg.assertUnique {
+  config = lib.mkIf cfg.validate {
     assertions =
       let
         findDuplicatePorts =
