@@ -49,10 +49,13 @@ in
 
     meta = {
       domains.list = lib.mkIf cfg.isServer [ cfg.gui.domain ];
-      ports.list = [
-        cfg.syncPort
-        cfg.gui.port
-      ];
+      ports = {
+        tcp.list = [
+          cfg.syncPort
+          cfg.gui.port
+        ];
+        udp.list = [ cfg.syncPort ];
+      };
     };
 
     sops.secrets = lib.mkIf useStaticTls {

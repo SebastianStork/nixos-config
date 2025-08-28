@@ -36,7 +36,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.ports.list = [
+    meta.ports.tcp.list = [
       cfg.apiPort
       cfg.prometheusPort
     ];

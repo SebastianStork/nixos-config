@@ -14,7 +14,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.ports.list = [ config.services.tailscale.port ];
+    meta.ports.udp.list = lib.mkIf config.services.tailscale.openFirewall [
+      config.services.tailscale.port
+    ];
 
     sops.secrets."tailscale/auth-key" = { };
 

@@ -24,7 +24,7 @@ in
   config = lib.mkIf cfg.enable {
     meta = {
       domains.list = [ cfg.domain ];
-      ports.list = [ cfg.port ];
+      ports.tcp.list = [ cfg.port ];
     };
 
     sops = {

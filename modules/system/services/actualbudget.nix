@@ -12,14 +12,14 @@ in
     };
     port = lib.mkOption {
       type = lib.types.port;
-      default = 8888;
+      default = 5006;
     };
   };
 
   config = lib.mkIf cfg.enable {
     meta = {
       domains.list = [ cfg.domain ];
-      ports.list = [ cfg.port ];
+      ports.tcp.list = [ cfg.port ];
     };
 
     services.actual = {

@@ -12,7 +12,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.ports.list = [ cfg.port ];
+    meta.ports.tcp.list = [ cfg.port ];
 
     services.forgejo.settings.server.SSH_PORT = cfg.port;
 

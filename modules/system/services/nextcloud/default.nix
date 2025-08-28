@@ -27,7 +27,10 @@ in
   config = lib.mkIf cfg.enable {
     meta = {
       domains.list = [ cfg.domain ];
-      ports.list = [ cfg.port ];
+      ports = {
+        tcp.list = [ cfg.port ];
+        udp.list = [ config.services.postgresql.settings.port ];
+      };
     };
 
     sops.secrets."nextcloud/admin-password".owner = user;

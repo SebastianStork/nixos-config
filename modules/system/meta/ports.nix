@@ -10,7 +10,11 @@ let
 in
 {
   options.meta.ports = {
-    list = lib.mkOption {
+    tcp.list = lib.mkOption {
+      type = lib.types.listOf lib.types.port;
+      default = [ ];
+    };
+    udp.list = lib.mkOption {
       type = lib.types.listOf lib.types.port;
       default = [ ];
     };
@@ -20,8 +24,9 @@ in
   config = lib.mkIf cfg.assertUnique {
     assertions =
       let
-        duplicatePorts =
-          options.meta.ports.list.definitionsWithLocations
+        findDuplicatePorts =
+          protocol:
+          options.meta.ports.${protocol}.list.definitionsWithLocations
           |> lib.concatMap (
             entry:
             entry.value
@@ -33,7 +38,8 @@ in
           |> lib.groupBy (entry: builtins.toString entry.port)
           |> lib.filterAttrs (_: entries: lib.length entries > 1);
 
-        errorMessage =
+        mkErrorMessage =
+          duplicatePorts:
           duplicatePorts
           |> lib.mapAttrsToList (
             port: entries:
@@ -41,11 +47,19 @@ in
             + (entries |> lib.map (entry: "  - ${entry.file}") |> lib.concatLines)
           )
           |> lib.concatStrings;
+
+        duplicateTcpPorts = findDuplicatePorts "tcp";
+
+        duplicateUdpPorts = findDuplicatePorts "udp";
       in
       [
         {
-          assertion = duplicatePorts == { };
-          message = errorMessage;
+          assertion = duplicateTcpPorts == { };
+          message = mkErrorMessage duplicateTcpPorts;
+        }
+        {
+          assertion = duplicateUdpPorts == { };
+          message = mkErrorMessage duplicateUdpPorts;
         }
       ];
   };
