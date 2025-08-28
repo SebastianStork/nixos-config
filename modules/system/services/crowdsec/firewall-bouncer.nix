@@ -19,7 +19,7 @@ in
       package = inputs.crowdsec.packages.${pkgs.system}.crowdsec-firewall-bouncer;
       settings = {
         api_key = "cs-firewall-bouncer";
-        api_url = "http://127.0.0.1:${builtins.toString cfg.apiPort}";
+        api_url = "http://localhost:${builtins.toString cfg.apiPort}";
       };
     };
 

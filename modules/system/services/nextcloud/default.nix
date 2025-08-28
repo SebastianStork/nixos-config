@@ -50,7 +50,7 @@ in
       https = true;
       settings = {
         overwriteProtocol = "https";
-        trusted_proxies = [ "127.0.0.1" ];
+        trusted_proxies = [ "localhost" ];
         log_type = "file";
         default_phone_region = "DE";
         maintenance_window_start = "2"; # UTC

@@ -70,7 +70,7 @@ in
       group = lib.mkIf (!cfg.isServer) "users";
       dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
 
-      guiAddress = lib.mkIf cfg.isServer "127.0.0.1:${builtins.toString cfg.gui.port}";
+      guiAddress = lib.mkIf cfg.isServer "localhost:${builtins.toString cfg.gui.port}";
 
       cert = lib.mkIf useStaticTls config.sops.secrets."syncthing/cert".path;
       key = lib.mkIf useStaticTls config.sops.secrets."syncthing/key".path;

@@ -52,8 +52,8 @@ in
       package = inputs.crowdsec.packages.${pkgs.system}.crowdsec;
       enrollKeyFile = config.sops.secrets."crowdsec/enrollment-key".path;
       settings = {
-        api.server.listen_uri = "127.0.0.1:${builtins.toString cfg.apiPort}";
-        cscli.prometheus_uri = "http://127.0.0.1:${builtins.toString cfg.prometheusPort}";
+        api.server.listen_uri = "localhost:${builtins.toString cfg.apiPort}";
+        cscli.prometheus_uri = "http://localhost:${builtins.toString cfg.prometheusPort}";
       };
 
       allowLocalJournalAccess = true;

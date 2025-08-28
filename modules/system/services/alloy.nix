@@ -24,7 +24,7 @@ in
     services.alloy = {
       enable = true;
       extraFlags = [
-        "--server.http.listen-addr=127.0.0.1:${builtins.toString cfg.port}"
+        "--server.http.listen-addr=localhost:${builtins.toString cfg.port}"
         "--disable-reporting"
       ];
     };

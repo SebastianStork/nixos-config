@@ -96,7 +96,10 @@ in
 
       environmentFile = config.sops.templates."gatus.env".path;
       settings = {
-        web.port = cfg.port;
+        web = {
+          address = "localhost";
+          port = cfg.port;
+        };
 
         storage = {
           type = "sqlite";

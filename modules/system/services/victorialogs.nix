@@ -34,7 +34,7 @@ in
       enable = true;
       package = pkgs-unstable.victorialogs;
 
-      listenAddress = ":${builtins.toString cfg.port}";
+      listenAddress = "localhost:${builtins.toString cfg.port}";
       extraOptions = [ "-retention.maxDiskSpaceUsageBytes=${cfg.maxDiskSpaceUsage}" ];
     };
   };

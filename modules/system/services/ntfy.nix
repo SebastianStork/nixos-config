@@ -25,7 +25,7 @@ in
       enable = true;
       settings = {
         base-url = "https://${cfg.domain}";
-        listen-http = ":${builtins.toString cfg.port}";
+        listen-http = "localhost:${builtins.toString cfg.port}";
         behind-proxy = true;
         web-root = "disable";
       };
