@@ -68,7 +68,7 @@
         openspeedtest = {
           inherit (config.custom.services.openspeedtest) domain port;
           tls = false;
-          
+
           extraReverseProxyConfig = ''
             request_buffers 35MiB
             response_buffers 35MiB

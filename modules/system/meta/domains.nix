@@ -33,20 +33,21 @@ in
           |> lib.concatLists
           |> lib.concatMap (
             entry:
-            lib.map (domain: {
-              file = entry.file;
+            entry.value
+            |> lib.map (domain: {
+              file = entry.file |> lib.removePrefix "${self}/";
               inherit domain;
-            }) entry.value
+            })
           )
           |> lib.groupBy (entry: builtins.toString entry.domain)
-          |> lib.filterAttrs (domain: entries: lib.length entries > 1);
+          |> lib.filterAttrs (_: entries: lib.length entries > 1);
 
         errorMessage =
           duplicateDomains
           |> lib.mapAttrsToList (
             domain: entries:
             "Duplicate domain \"${domain}\" found in:\n"
-            + lib.concatMapStrings (entry: "  - ${entry.file}\n") entries
+            + (entries |> lib.map (entry: "  - ${entry.file}") |> lib.concatLines)
           )
           |> lib.concatStrings;
       in

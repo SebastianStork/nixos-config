@@ -1,6 +1,7 @@
 {
   config,
   options,
+  self,
   lib,
   ...
 }:
@@ -23,19 +24,21 @@ in
           options.meta.ports.list.definitionsWithLocations
           |> lib.concatMap (
             entry:
-            lib.map (port: {
-              inherit (entry) file;
+            entry.value
+            |> lib.map (port: {
+              file = entry.file |> lib.removePrefix "${self}/";
               inherit port;
-            }) entry.value
+            })
           )
           |> lib.groupBy (entry: builtins.toString entry.port)
-          |> lib.filterAttrs (port: entries: lib.length entries > 1);
+          |> lib.filterAttrs (_: entries: lib.length entries > 1);
 
         errorMessage =
           duplicatePorts
           |> lib.mapAttrsToList (
             port: entries:
-            "Duplicate port ${port} found in:\n" + lib.concatMapStrings (entry: "  - ${entry.file}\n") entries
+            "Duplicate port ${port} found in:\n"
+            + (entries |> lib.map (entry: "  - ${entry.file}") |> lib.concatLines)
           )
           |> lib.concatStrings;
       in
