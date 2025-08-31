@@ -51,8 +51,7 @@ in
         { name, ... }:
         {
           options = {
-            enable = lib.mkOption {
-              type = lib.types.bool;
+            enable = lib.mkEnableOption "" // {
               default = true;
             };
             domain = lib.mkOption {
@@ -63,8 +62,7 @@ in
               type = lib.types.port;
               default = null;
             };
-            tls = lib.mkOption {
-              type = lib.types.bool;
+            tls = lib.mkEnableOption "" // {
               default = true;
             };
             extraReverseProxyConfig = lib.mkOption {
