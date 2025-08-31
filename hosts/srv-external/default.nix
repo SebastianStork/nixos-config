@@ -50,6 +50,11 @@
         domain = "tools.sprouted.cloud";
       };
 
+      stirling-pdf = {
+        enable = true;
+        domain = "pdf.sprouted.cloud";
+      };
+
       openspeedtest = {
         enable = true;
         domain = "speedtest.sprouted.cloud";
@@ -65,10 +70,12 @@
         it-tools = {
           inherit (config.custom.services.it-tools) domain port;
         };
+        stirling-pdf = {
+          inherit (config.custom.services.stirling-pdf) domain port;
+        };
         openspeedtest = {
           inherit (config.custom.services.openspeedtest) domain port;
           tls = false;
-
           extraReverseProxyConfig = ''
             request_buffers 35MiB
             response_buffers 35MiB
