@@ -23,6 +23,8 @@
     ];
   };
 
+  zramSwap.enable = true;
+
   services = {
     fwupd.enable = true;
     fprintd.enable = true;
