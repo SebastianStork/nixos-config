@@ -1,4 +1,9 @@
-{ config, pkgs-unstable, lib, ... }:
+{
+  config,
+  pkgs-unstable,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.services.tailscale;
 in
@@ -23,9 +28,11 @@ in
     services.tailscale = {
       enable = true;
       package = pkgs-unstable.tailscale;
+
       authKeyFile = config.sops.secrets."tailscale/auth-key".path;
       openFirewall = true;
       useRoutingFeatures = if cfg.exitNode.enable then "server" else "client";
+
       extraUpFlags = [ "--reset=true" ];
       extraSetFlags = [
         "--ssh=${lib.boolToString cfg.ssh.enable}"
