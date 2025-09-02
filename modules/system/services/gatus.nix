@@ -1,7 +1,7 @@
 { config, lib, ... }:
 let
   cfg = config.custom.services.gatus;
-  tailscaleCfg = config.custom.services.tailscale;
+  tailscaleDomain = config.custom.services.tailscale.domain;
 in
 {
   options.custom.services.gatus = {
@@ -30,11 +30,7 @@ in
               };
               group = lib.mkOption {
                 type = lib.types.nonEmptyStr;
-                default =
-                  let
-                    isTailscale = config.domain |> lib.hasSuffix tailscaleCfg.domain;
-                  in
-                  if isTailscale then "Private" else "Public";
+                default = if config.domain |> lib.hasSuffix tailscaleDomain then "Private" else "Public";
               };
               protocol = lib.mkOption {
                 type = lib.types.nonEmptyStr;
@@ -87,13 +83,12 @@ in
         defaultEndpoints =
           cfg.domainsToMonitor
           |> lib.filter (domain: domain != cfg.domain)
-          |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { domain = lib.mkDefault domain; })
+          |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { inherit domain; })
           |> lib.listToAttrs;
       in
       {
         "healthchecks.io" = {
           group = "Monitoring";
-          protocol = "https";
           domain = "hc-ping.com";
           path = "/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
           interval = "2h";
