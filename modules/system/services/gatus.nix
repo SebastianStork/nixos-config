@@ -1,13 +1,27 @@
 { config, lib, ... }:
 let
   cfg = config.custom.services.gatus;
+  tailscaleCfg = config.custom.services.tailscale;
 in
 {
-  options.custom.services.gatus =
-    let
-      endpointType = lib.types.attrsOf (
+  options.custom.services.gatus = {
+    enable = lib.mkEnableOption "";
+    domain = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "";
+    };
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 8080;
+    };
+    domainsToMonitor = lib.mkOption {
+      type = lib.types.listOf lib.types.nonEmptyStr;
+      default = [ ];
+    };
+    endpoints = lib.mkOption {
+      type = lib.types.attrsOf (
         lib.types.submodule (
-          { name, ... }:
+          { name, config, ... }:
           {
             options = {
               name = lib.mkOption {
@@ -15,11 +29,23 @@ in
                 default = name;
               };
               group = lib.mkOption {
-                type = lib.types.nullOr lib.types.nonEmptyStr;
-                default = null;
-              };
-              url = lib.mkOption {
                 type = lib.types.nonEmptyStr;
+                default =
+                  let
+                    isTailscale = config.domain |> lib.hasSuffix tailscaleCfg.domain;
+                  in
+                  if isTailscale then "Private" else "Public";
+              };
+              protocol = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "https";
+              };
+              domain = lib.mkOption {
+                type = lib.types.nonEmptyStr;
+                default = "";
+              };
+              path = lib.mkOption {
+                type = lib.types.str;
                 default = "";
               };
               interval = lib.mkOption {
@@ -37,40 +63,9 @@ in
           }
         )
       );
-
-      defaultEndpoints =
-        let
-          getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
-        in
-        cfg.domainsToMonitor
-        |> lib.filter (domain: domain != cfg.domain)
-        |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { url = "https://${domain}"; })
-        |> lib.listToAttrs;
-    in
-    {
-      enable = lib.mkEnableOption "";
-      domain = lib.mkOption {
-        type = lib.types.nonEmptyStr;
-        default = "";
-      };
-      port = lib.mkOption {
-        type = lib.types.port;
-        default = 8080;
-      };
-      domainsToMonitor = lib.mkOption {
-        type = lib.types.listOf lib.types.nonEmptyStr;
-        default = [ ];
-      };
-      customEndpoints = lib.mkOption {
-        type = endpointType;
-        default = { };
-      };
-      finalEndpoints = lib.mkOption {
-        type = endpointType;
-        default = defaultEndpoints // cfg.customEndpoints;
-        readOnly = true;
-      };
+      default = { };
     };
+  };
 
   config = lib.mkIf cfg.enable {
     meta = {
@@ -85,11 +80,26 @@ in
       '';
     };
 
-    custom.services.gatus.customEndpoints."healthchecks.io" = {
-      group = "Monitoring";
-      url = "https://hc-ping.com/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
-      interval = "2h";
-    };
+    custom.services.gatus.endpoints =
+      let
+        getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
+
+        defaultEndpoints =
+          cfg.domainsToMonitor
+          |> lib.filter (domain: domain != cfg.domain)
+          |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { domain = lib.mkDefault domain; })
+          |> lib.listToAttrs;
+      in
+      {
+        "healthchecks.io" = {
+          group = "Monitoring";
+          protocol = "https";
+          domain = "hc-ping.com";
+          path = "/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
+          interval = "2h";
+        };
+      }
+      // defaultEndpoints;
 
     services.gatus = {
       enable = true;
@@ -100,14 +110,11 @@ in
           address = "localhost";
           port = cfg.port;
         };
-
         storage = {
           type = "sqlite";
           path = "/var/lib/gatus/data.db";
         };
-
         connectivity.checker.target = "1.1.1.1:53"; # Cloudflare DNS
-
         alerting.ntfy = {
           topic = "uptime";
           url = "https://alerts.${config.custom.services.tailscale.domain}";
@@ -130,7 +137,6 @@ in
             }
           ];
         };
-
         maintenance = {
           start = "03:00";
           duration = "1h";
@@ -139,31 +145,29 @@ in
 
         endpoints =
           let
-            mkEndpoint =
-              value:
-              let
-                isPrivate = value.url |> lib.hasInfix config.custom.services.tailscale.domain;
-                deducedGroup = if isPrivate then "Private" else "Public";
-              in
-              {
-                inherit (value) name url interval;
-                group = if value.group != null then value.group else deducedGroup;
-                alerts = lib.mkIf value.enableAlerts [ { type = "ntfy"; } ];
-                ssh = lib.mkIf (lib.hasPrefix "ssh" value.url) {
-                  username = "";
-                  password = "";
-                };
-                conditions = lib.concatLists [
-                  value.extraConditions
-                  (lib.optional (lib.hasPrefix "http" value.url) "[STATUS] == 200")
-                  (lib.optional (lib.hasPrefix "tcp" value.url) "[CONNECTED] == true")
-                  (lib.optional (lib.hasPrefix "ssh" value.url) "[CONNECTED] == true")
-                  (lib.optional (lib.hasPrefix "icmp" value.url) "[CONNECTED] == true")
-
-                ];
+            mkEndpoint = value: {
+              inherit (value) name group interval;
+              url = "${value.protocol}://${value.domain}${value.path}";
+              alerts = lib.mkIf value.enableAlerts [ { type = "ntfy"; } ];
+              ssh = lib.mkIf (value.protocol == "ssh") {
+                username = "";
+                password = "";
               };
+              conditions = lib.concatLists [
+                value.extraConditions
+                (lib.optional (lib.elem value.protocol [
+                  "http"
+                  "https"
+                ]) "[STATUS] == 200")
+                (lib.optional (lib.elem value.protocol [
+                  "tcp"
+                  "ssh"
+                  "icmp"
+                ]) "[CONNECTED] == true")
+              ];
+            };
           in
-          cfg.finalEndpoints |> lib.attrValues |> lib.map (entry: mkEndpoint entry);
+          cfg.endpoints |> lib.attrValues |> lib.map (entry: mkEndpoint entry);
       };
     };
   };

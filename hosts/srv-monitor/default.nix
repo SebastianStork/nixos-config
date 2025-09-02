@@ -26,14 +26,19 @@
         enable = true;
         domain = "status.${config.custom.services.tailscale.domain}";
         domainsToMonitor = config.meta.domains.globalList;
-        customEndpoints = {
+        endpoints = {
           "alerts" = {
             group = "Monitoring";
-            url = "https://${config.custom.services.ntfy.domain}/v1/health";
+            path = "/v1/health";
             extraConditions = [ "[BODY].healthy == true" ];
           };
-          "git ssh".url = "ssh://git.sstork.dev";
-          "speedtest".url = "http://speedtest.sprouted.cloud";
+          "grafana".group = "Monitoring";
+          "logs".group = "Monitoring";
+          "git ssh" = {
+            protocol = "ssh";
+            domain = "git.sstork.dev";
+          };
+          "speedtest".protocol = "http";
         };
       };
 
