@@ -39,6 +39,7 @@
 
       filebrowser = {
         enable = true;
+        doBackups = true;
         domain = "files.${config.custom.services.tailscale.domain}";
       };
 
