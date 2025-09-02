@@ -14,6 +14,10 @@ in
             type = lib.types.nullOr lib.types.nonEmptyStr;
             default = null;
           };
+          paths = lib.mkOption {
+            type = lib.types.listOf lib.types.path;
+            default = [ ];
+          };
           extraConfig = lib.mkOption {
             type = lib.types.attrsOf lib.types.anything;
             default = { };
@@ -47,6 +51,7 @@ in
         name: value:
         lib.mkMerge [
           {
+            inherit (value) paths;
             initialize = true;
             repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
             environmentFile = config.sops.templates."restic/environment".path;

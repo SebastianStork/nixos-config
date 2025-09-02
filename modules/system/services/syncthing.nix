@@ -121,7 +121,7 @@ in
 
     custom.services.resticBackups.syncthing = lib.mkIf cfg.doBackups {
       conflictingService = "syncthing.service";
-      extraConfig.paths = [ config.services.syncthing.dataDir ];
+      paths = [ config.services.syncthing.dataDir ];
     };
   };
 }

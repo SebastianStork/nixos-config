@@ -89,7 +89,7 @@ in
 
     custom.services.resticBackups.forgejo = lib.mkIf cfg.doBackups {
       conflictingService = "forgejo.service";
-      extraConfig.paths = [ config.services.forgejo.stateDir ];
+      paths = [ config.services.forgejo.stateDir ];
     };
   };
 }

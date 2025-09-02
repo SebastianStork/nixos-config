@@ -17,17 +17,18 @@ in
 
   config = lib.mkIf cfg.doBackups {
     custom.services.resticBackups.nextcloud = {
+      paths = [
+        "${dataDir}/data"
+        "${dataDir}/config/config.php"
+        "${dataDir}/db.dump"
+      ];
+
       extraConfig = {
         backupPrepareCommand = ''
           ${nextcloud-occ} maintenance:mode --on
           ${lib.getExe pkgs.sudo} --user=${user} ${lib.getExe' config.services.postgresql.package "pg_dump"} nextcloud --format=custom --file=${dataDir}/db.dump
         '';
         backupCleanupCommand = "${nextcloud-occ} maintenance:mode --off";
-        paths = [
-          "${dataDir}/data"
-          "${dataDir}/config/config.php"
-          "${dataDir}/db.dump"
-        ];
       };
 
       restoreCommand = {

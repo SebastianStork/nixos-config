@@ -32,7 +32,7 @@ in
 
     custom.services.resticBackups.actual = lib.mkIf cfg.doBackups {
       conflictingService = "actual.service";
-      extraConfig.paths = [ config.services.actual.settings.dataDir ];
+      paths = [ config.services.actual.settings.dataDir ];
     };
   };
 }

@@ -39,7 +39,7 @@ in
 
     custom.services.resticBackups.filebrowser = lib.mkIf cfg.doBackups {
       conflictingService = "filebrowser.service";
-      extraConfig.paths = with config.services.filebrowser.settings; [
+      paths = with config.services.filebrowser.settings; [
         database
         root
       ];
