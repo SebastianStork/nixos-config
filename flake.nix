@@ -57,6 +57,11 @@
       url = "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.1/twofactor_totp-v6.4.1.tar.gz";
       flake = false;
     };
+
+    radicale-birthday-calendar = {
+      url = "github:iBigQ/radicale-birthday-calendar";
+      flake = false;
+    };
   };
 
   outputs =

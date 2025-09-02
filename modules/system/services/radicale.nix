@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   pkgs,
   lib,
   ...
@@ -43,9 +44,12 @@ in
           htpasswd_filename = config.sops.templates."radicale/htpasswd".path;
           htpasswd_encryption = "plain";
         };
+        storage.filesystem_folder = "/var/lib/radicale/collections";
 
         storage.hook =
           let
+            createBirthdayCalendar = "${inputs.radicale-birthday-calendar}/create_birthday_calendar.py";
+
             hookScript = pkgs.writeShellApplication {
               name = "radicale-git-hook";
               runtimeInputs = [
@@ -60,6 +64,8 @@ in
               ];
               text = ''
                 readonly username="$1"
+
+                git status --porcelain | awk '{print $2}' | python3 ${createBirthdayCalendar}
 
                 git add -A
                 if ! git diff --cached --quiet; then

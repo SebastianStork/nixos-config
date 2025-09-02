@@ -268,6 +268,22 @@
         "type": "github"
       }
     },
+    "radicale-birthday-calendar": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1738694693,
+        "narHash": "sha256-X/tahL01rGyc6eg1UqXhINi0mbuhwdzi4cYN8B0K+5c=",
+        "owner": "iBigQ",
+        "repo": "radicale-birthday-calendar",
+        "rev": "535ae54ef6464b1aba825af794ecc4c4dbf3d3c3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "iBigQ",
+        "repo": "radicale-birthday-calendar",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "betterfox": "betterfox",
@@ -281,6 +297,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "radicale-birthday-calendar": "radicale-birthday-calendar",
         "sops": "sops",
         "treefmt": "treefmt",
         "vscode-extensions": "vscode-extensions"
