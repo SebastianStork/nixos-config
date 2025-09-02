@@ -31,12 +31,6 @@
         gui.domain = "syncthing.${config.custom.services.tailscale.domain}";
       };
 
-      nextcloud = {
-        enable = true;
-        doBackups = true;
-        domain = "cloud.${config.custom.services.tailscale.domain}";
-      };
-
       filebrowser = {
         enable = true;
         doBackups = true;
@@ -58,9 +52,6 @@
       caddy.virtualHosts = {
         syncthing-gui = {
           inherit (config.custom.services.syncthing.gui) domain port;
-        };
-        nextcloud = {
-          inherit (config.custom.services.nextcloud) domain port;
         };
         filebrowser = {
           inherit (config.custom.services.filebrowser) domain port;
