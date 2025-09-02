@@ -45,6 +45,7 @@
 
       radicale = {
         enable = true;
+        doBackups = true;
         domain = "calendar.${config.custom.services.tailscale.domain}";
       };
 

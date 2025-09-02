@@ -11,6 +11,7 @@ in
 {
   options.custom.services.radicale = {
     enable = lib.mkEnableOption "";
+    doBackups = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
@@ -92,6 +93,7 @@ in
           runtimeInputs = [ pkgs.git ];
           text = ''
             cd ${config.services.radicale.settings.storage.filesystem_folder}
+
             if [[ ! -e .git ]]; then
               git init --initial-branch main
             fi
@@ -107,5 +109,10 @@ in
           '';
         }
       );
+
+    custom.services.resticBackups.radicale = lib.mkIf cfg.doBackups {
+      conflictingService = "radicale.service";
+      paths = [ config.services.radicale.settings.storage.filesystem_folder ];
+    };
   };
 }
