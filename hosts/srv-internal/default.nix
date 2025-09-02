@@ -37,15 +37,20 @@
         domain = "cloud.${config.custom.services.tailscale.domain}";
       };
 
-      actualbudget = {
+      filebrowser = {
         enable = true;
-        doBackups = true;
-        domain = "budget.${config.custom.services.tailscale.domain}";
+        domain = "files.${config.custom.services.tailscale.domain}";
       };
 
       radicale = {
         enable = true;
         domain = "calendar.${config.custom.services.tailscale.domain}";
+      };
+
+      actualbudget = {
+        enable = true;
+        doBackups = true;
+        domain = "budget.${config.custom.services.tailscale.domain}";
       };
 
       caddy.virtualHosts = {
@@ -55,11 +60,14 @@
         nextcloud = {
           inherit (config.custom.services.nextcloud) domain port;
         };
-        actualbudget = {
-          inherit (config.custom.services.actualbudget) domain port;
+        filebrowser = {
+          inherit (config.custom.services.filebrowser) domain port;
         };
         radicale = {
           inherit (config.custom.services.radicale) domain port;
+        };
+        actualbudget = {
+          inherit (config.custom.services.actualbudget) domain port;
         };
       };
     };
