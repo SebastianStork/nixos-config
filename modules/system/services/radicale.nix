@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.services.radicale;
 in
@@ -38,7 +43,63 @@ in
           htpasswd_filename = config.sops.templates."radicale/htpasswd".path;
           htpasswd_encryption = "plain";
         };
+
+        storage.hook =
+          let
+            hookScript = pkgs.writeShellApplication {
+              name = "radicale-git-hook";
+              runtimeInputs = [
+                pkgs.git
+                pkgs.gawk
+                (pkgs.python3.withPackages (
+                  python-pkgs: with python-pkgs; [
+                    dateutil
+                    vobject
+                  ]
+                ))
+              ];
+              text = ''
+                readonly username="$1"
+
+                git add -A
+                if ! git diff --cached --quiet; then
+                  git commit --message "Changes by $username"
+                fi
+              '';
+            };
+          in
+          "${lib.getExe hookScript} %(user)s";
       };
     };
+
+    systemd.services.radicale.serviceConfig.ExecStartPre =
+      let
+        gitignore = builtins.toFile "radicale-collection-gitignore" ''
+          .Radicale.cache
+          .Radicale.lock
+          .Radicale.tmp-*
+        '';
+      in
+      lib.getExe (
+        pkgs.writeShellApplication {
+          name = "radicale-git-init";
+          runtimeInputs = [ pkgs.git ];
+          text = ''
+            cd ${config.services.radicale.settings.storage.filesystem_folder}
+            if [[ ! -e .git ]]; then
+              git init --initial-branch main
+            fi
+
+            git config user.name "Radicale"
+            git config user.email "radicale@${config.networking.hostName}"
+
+            cat ${gitignore} > .gitignore
+            git add .gitignore
+            if ! git diff --cached --quiet; then
+              git commit --message "Update .gitignore"
+            fi
+          '';
+        }
+      );
   };
 }
