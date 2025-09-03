@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.wifi;
+  cfg = config.custom.services.wlan;
 in
 {
-  options.custom.wifi = {
+  options.custom.services.wlan = {
     enable = lib.mkEnableOption "";
     networks = lib.mkOption {
       type = lib.types.listOf lib.types.nonEmptyStr;

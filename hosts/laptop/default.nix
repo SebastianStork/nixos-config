@@ -20,13 +20,12 @@
     };
     de.hyprland.enable = true;
 
-    wifi.enable = true;
-    bluetooth.enable = true;
-    sound.enable = true;
-
     services = {
       resolved.enable = true;
       gc.enable = true;
+      wlan.enable = true;
+      bluetooth.enable = true;
+      sound.enable = true;
       geoclue.enable = true;
       tailscale = {
         enable = true;

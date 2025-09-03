@@ -20,11 +20,10 @@
     };
     de.hyprland.enable = true;
 
-    sound.enable = true;
-
     services = {
       resolved.enable = true;
       gc.enable = true;
+      sound.enable = true;
       geoclue.enable = true;
       tailscale = {
         enable = true;
