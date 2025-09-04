@@ -57,20 +57,24 @@
         domain = "logs.${config.custom.services.tailscale.domain}";
       };
 
-      caddy.virtualHosts = {
-        gatus = {
-          inherit (config.custom.services.gatus) domain port;
+      caddy.virtualHosts =
+        let
+          inherit (config.custom) services;
+        in
+        {
+          gatus = {
+            inherit (services.gatus) domain port;
+          };
+          ntfy = {
+            inherit (services.ntfy) domain port;
+          };
+          grafana = {
+            inherit (services.grafana) domain port;
+          };
+          victorialogs = {
+            inherit (services.victorialogs) domain port;
+          };
         };
-        ntfy = {
-          inherit (config.custom.services.ntfy) domain port;
-        };
-        grafana = {
-          inherit (config.custom.services.grafana) domain port;
-        };
-        victorialogs = {
-          inherit (config.custom.services.victorialogs) domain port;
-        };
-      };
     };
   };
 }

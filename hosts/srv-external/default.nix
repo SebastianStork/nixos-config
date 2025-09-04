@@ -60,29 +60,33 @@
         domain = "speedtest.sprouted.cloud";
       };
 
-      caddy.virtualHosts = {
-        forgejo = {
-          inherit (config.custom.services.forgejo) domain port;
+      caddy.virtualHosts =
+        let
+          inherit (config.custom) services;
+        in
+        {
+          forgejo = {
+            inherit (services.forgejo) domain port;
+          };
+          hedgedoc = {
+            inherit (services.hedgedoc) domain port;
+          };
+          it-tools = {
+            inherit (services.it-tools) domain port;
+          };
+          stirling-pdf = {
+            inherit (services.stirling-pdf) domain port;
+          };
+          openspeedtest = {
+            inherit (services.openspeedtest) domain port;
+            tls = false;
+            extraReverseProxyConfig = ''
+              request_buffers 35MiB
+              response_buffers 35MiB
+              flush_interval -1
+            '';
+          };
         };
-        hedgedoc = {
-          inherit (config.custom.services.hedgedoc) domain port;
-        };
-        it-tools = {
-          inherit (config.custom.services.it-tools) domain port;
-        };
-        stirling-pdf = {
-          inherit (config.custom.services.stirling-pdf) domain port;
-        };
-        openspeedtest = {
-          inherit (config.custom.services.openspeedtest) domain port;
-          tls = false;
-          extraReverseProxyConfig = ''
-            request_buffers 35MiB
-            response_buffers 35MiB
-            flush_interval -1
-          '';
-        };
-      };
     };
   };
 }

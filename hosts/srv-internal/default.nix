@@ -49,20 +49,24 @@
         domain = "budget.${config.custom.services.tailscale.domain}";
       };
 
-      caddy.virtualHosts = {
-        syncthing-gui = {
-          inherit (config.custom.services.syncthing.gui) domain port;
+      caddy.virtualHosts =
+        let
+          inherit (config.custom) services;
+        in
+        {
+          syncthing-gui = {
+            inherit (services.syncthing.gui) domain port;
+          };
+          filebrowser = {
+            inherit (services.filebrowser) domain port;
+          };
+          radicale = {
+            inherit (services.radicale) domain port;
+          };
+          actualbudget = {
+            inherit (services.actualbudget) domain port;
+          };
         };
-        filebrowser = {
-          inherit (config.custom.services.filebrowser) domain port;
-        };
-        radicale = {
-          inherit (config.custom.services.radicale) domain port;
-        };
-        actualbudget = {
-          inherit (config.custom.services.actualbudget) domain port;
-        };
-      };
     };
   };
 }
