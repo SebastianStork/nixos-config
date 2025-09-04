@@ -55,6 +55,11 @@
         domain = "pdf.sprouted.cloud";
       };
 
+      privatebin = {
+        enable = true;
+        domain = "pastebin.sprouted.cloud";
+      };
+
       openspeedtest = {
         enable = true;
         domain = "speedtest.sprouted.cloud";
@@ -76,6 +81,9 @@
           };
           stirling-pdf = {
             inherit (services.stirling-pdf) domain port;
+          };
+          privatebin = {
+            inherit (services.privatebin) domain port;
           };
           openspeedtest = {
             inherit (services.openspeedtest) domain port;
