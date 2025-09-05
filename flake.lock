@@ -192,19 +192,6 @@
         "type": "github"
       }
     },
-    "nextcloud-twofactor-totp": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1665648151,
-        "narHash": "sha256-zAPNugbvngXcpgWJLD78YAg4G1QtGaphx1bhhg7mLKE=",
-        "type": "tarball",
-        "url": "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.1/twofactor_totp-v6.4.1.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.1/twofactor_totp-v6.4.1.tar.gz"
-      }
-    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1756750488,
@@ -293,7 +280,6 @@
         "firefox-addons": "firefox-addons",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
-        "nextcloud-twofactor-totp": "nextcloud-twofactor-totp",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
