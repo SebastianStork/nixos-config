@@ -16,9 +16,6 @@ fmt:
 check:
     nix flake check --no-build
 
-dev shell='default':
-    nix develop .#{{ shell }} --command $SHELL
-
 deploy +hosts:
     deploy --skip-checks --targets $(echo {{ hosts }} | sed 's/[^ ]*/\.#&/g')
 
@@ -30,3 +27,15 @@ repair:
 
 repl host='$(hostname)':
     nix repl .#nixosConfigurations.{{ host }}
+
+_sops-do command:
+    -if command -v sops >/dev/null 2>&1; then {{ command }}; else nix develop .#sops --command bash -c "{{ command }}; exec zsh"; fi
+
+sops-edit path:
+    just _sops-do "sops edit {{ path }}"
+
+sops-update:
+    just _sops-do "find . -type f -name 'secrets.json' -exec sops updatekeys --yes {} \;"
+
+sops-rotate:
+    just _sops-do "find . -type f -name 'secrets.json' -exec sops rotate --in-place {} \;"
