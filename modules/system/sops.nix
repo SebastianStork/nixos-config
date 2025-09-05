@@ -8,7 +8,7 @@
 let
   cfg = config.custom.sops;
 
-  absoluteSecretsPath = "${self}/" + cfg.secretsFile;
+  absoluteSecretsPath = "${self}/${cfg.secretsFile}";
 in
 {
   imports = [ inputs.sops.nixosModules.sops ];
