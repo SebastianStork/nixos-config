@@ -17,7 +17,7 @@ check:
     nix flake check --no-build
 
 dev shell='default':
-    nix develop .#{{ shell }} --command zsh
+    nix develop .#{{ shell }} --command $SHELL
 
 deploy +hosts:
     deploy --skip-checks --targets $(echo {{ hosts }} | sed 's/[^ ]*/\.#&/g')
