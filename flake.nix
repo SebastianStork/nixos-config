@@ -70,8 +70,8 @@
         ./flake/dev-shell.nix
         ./flake/formatter.nix
         ./flake/hosts.nix
-        ./flake/install-anywhere.nix
         ./flake/modules.nix
+        ./flake/scripts.nix
         ./flake/sops.nix
       ];
     };
