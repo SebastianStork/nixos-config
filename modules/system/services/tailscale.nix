@@ -41,5 +41,7 @@ in
     };
 
     systemd.services.tailscaled-set.after = [ "tailscaled-autoconnect.service" ];
+
+    custom.persist.directories = [ "/var/lib/tailscale" ];
   };
 }

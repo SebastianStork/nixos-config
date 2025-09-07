@@ -96,6 +96,8 @@ in
               )
             );
         };
+
+        custom.persist.directories = [ "/var/lib/caddy" ];
       }
 
       (lib.mkIf tailscaleHostsExist {

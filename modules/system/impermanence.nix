@@ -6,13 +6,17 @@
 }:
 let
   cfg = config.custom.impermanence;
-
-  inherit (config.custom) services;
 in
 {
   imports = [ inputs.impermanence.nixosModules.impermanence ];
 
-  options.custom.impermanence.enable = lib.mkEnableOption "";
+  options.custom = {
+    impermanence.enable = lib.mkEnableOption "";
+    persist.directories = lib.mkOption {
+      type = lib.types.listOf lib.types.path;
+      default = [ ];
+    };
+  };
 
   config = lib.mkIf cfg.enable {
     fileSystems."/persist".neededForBoot = true;
@@ -25,10 +29,7 @@ in
         "/var/lib/nixos"
         "/var/lib/systemd"
         "/var/log"
-
-        (lib.optionalString services.tailscale.enable "/var/lib/tailscale")
       ];
-    
       files = [
         "/etc/machine-id"
         "/etc/ssh/ssh_host_ed25519_key"

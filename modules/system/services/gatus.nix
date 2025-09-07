@@ -165,5 +165,7 @@ in
           cfg.endpoints |> lib.attrValues |> lib.map (entry: mkEndpoint entry);
       };
     };
+
+    custom.persist.directories = [ "/var/lib/private/gatus" ];
   };
 }
