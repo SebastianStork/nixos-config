@@ -8,6 +8,8 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    impermanence.url = "github:nix-community/impermanence";
+
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -68,6 +70,7 @@
         ./flake/dev-shell.nix
         ./flake/formatter.nix
         ./flake/hosts.nix
+        ./flake/install-anywhere.nix
         ./flake/modules.nix
         ./flake/sops.nix
       ];
