@@ -106,6 +106,7 @@ in
           globalConfig = ''
             tailscale {
               auth_key {file.${config.sops.secrets."tailscale/service-auth-key".path}}
+              ephemeral true
             }
           '';
         };
