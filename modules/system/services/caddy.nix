@@ -91,7 +91,7 @@ in
             virtualHosts
             |> lib.mapAttrs' (
               _: value:
-              lib.nameValuePair (lib.optionalString (!value.tls) "http://${value.domain}") (
+              lib.nameValuePair ((lib.optionalString (!value.tls) "http://") + value.domain) (
                 mkVirtualHostConfig value
               )
             );
