@@ -24,7 +24,7 @@ in
       directories = [
         "/var/lib/nixos"
         "/var/lib/systemd"
-        "/var/log/journal"
+        "/var/log"
 
         (lib.optionalString services.tailscale.enable "/var/lib/tailscale")
       ];
