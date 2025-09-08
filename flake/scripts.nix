@@ -2,8 +2,8 @@ _: {
   perSystem =
     { pkgs, ... }:
     {
-      packages.provision-keys = pkgs.writeShellApplication {
-        name = "provision-keys";
+      packages.install-anywhere = pkgs.writeShellApplication {
+        name = "install-anywhere";
 
         runtimeInputs = [
           pkgs.sops
@@ -16,34 +16,43 @@ _: {
         excludeShellChecks = [ "SC2155" ];
 
         text = ''
-          if [[ $# -ne 1 ]]; then
-            echo "Usage: $0 <host>"
+          if [[ $# -ne 2 ]]; then
+            echo "Usage: $0 <host> <destination>"
             exit 1
           fi
 
           host="$1"
+          destination="$2"
+          root="/tmp/anywhere/$host"
 
-          impermanence=$(nixos-option --flake ".#$host" custom.impermanence.enable | awk '/^Value:/ {getline; print $1}')
-
-          if [ "$impermanence" = "true" ]; then
-            root="/tmp/anywhere/$host/persist"
+          impermanence=$(nix eval ".#nixosConfigurations.$host.config.custom.impermanence.enable")
+          if [ "$impermanence" = true ]; then
+            ssh_dir="$root/persist/etc/ssh"
           else
-            root="/tmp/anywhere/$host"
+            ssh_dir="$root/etc/ssh"
           fi
 
-          mkdir --parents "$root/etc/ssh"
-          ssh-keygen -C "root@$host" -f "$root/etc/ssh/ssh_host_ed25519_key" -N "" -q
+          if [ ! -f "$ssh_dir/ssh_host_ed25519_key" ]; then
+            echo "==> Generating new SSH host keys..."
+            mkdir --parents "$ssh_dir"
+            ssh-keygen -C "root@$host" -f "$ssh_dir/ssh_host_ed25519_key" -N "" -q
 
-          new_age_key=$(ssh-to-age -i "$root/etc/ssh/ssh_host_ed25519_key.pub")
+            echo "==> Replacing old age key with new age key..."
+            new_age_key=$(ssh-to-age -i "$ssh_dir/ssh_host_ed25519_key.pub")
+            sed -i -E "s|(agePublicKey\s*=\s*\")[^\"]*(\";)|\1$new_age_key\2|" "hosts/$host/default.nix"
 
-          # Replace old age key with new age key
-          sed -i -E "s|(agePublicKey\s*=\s*\")[^\"]*(\";)|\1$new_age_key\2|" "hosts/$host/default.nix"
+            echo "==> Updating SOPS secrets..."
+            export BW_SESSION=$(bw login --raw)
+            export SOPS_AGE_KEY=$(bw get item 'admin age-key' | jq -r '.notes')
+            export SOPS_CONFIG=$(nix build .#sops-config --print-out-paths)
+            sops updatekeys --yes "hosts/$host/secrets.json"
+          fi
 
-          export BW_SESSION=$(bw login | awk -F'"' '/export BW_SESSION/ {print $2}')
-          export SOPS_AGE_KEY=$(bw get item 'admin age-key' | jq -r '.notes')
-          export SOPS_CONFIG=$(nix build .#sops-config --print-out-paths)
-
-          sops updatekeys --yes "hosts/$host/secrets.json"
+          echo "==> Installing system..."
+          nix run github:nix-community/nixos-anywhere -- \
+            --extra-files "$root" \
+            --flake ".#$host" \
+            --target-host "$destination"
         '';
       };
     };

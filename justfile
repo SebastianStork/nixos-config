@@ -20,8 +20,7 @@ deploy +hosts:
     deploy --skip-checks --targets $(echo {{ hosts }} | sed 's/[^ ]*/\.#&/g')
 
 install host destination='root@installer':
-    nix run .#provision-keys -- {{ host }}
-    nix run github:nix-community/nixos-anywhere -- --extra-files /tmp/anywhere/{{ host }} --flake .#{{ host }} --target-host {{ destination }}
+    nix run .#install-anywhere -- {{ host }} {{ destination }}
 
 repair:
     nix-store --verify --check-contents --repair

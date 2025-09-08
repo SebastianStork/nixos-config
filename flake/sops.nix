@@ -50,7 +50,7 @@
           pkgs.jq
         ];
         shellHook = ''
-          export BW_SESSION=$(bw login | awk -F'"' '/export BW_SESSION/ {print $2}')
+          export BW_SESSION=$(bw login --raw)
           export SOPS_AGE_KEY=$(bw get item 'admin age-key' | jq -r '.notes')
           export SOPS_CONFIG=${self'.packages.sops-config}
         '';
