@@ -21,6 +21,8 @@ in
   config = lib.mkIf cfg.enable {
     fileSystems."/persist".neededForBoot = true;
 
+    security.sudo.extraConfig = "Defaults lecture=never";
+
     environment.persistence."/persist" = {
       hideMounts = true;
 
