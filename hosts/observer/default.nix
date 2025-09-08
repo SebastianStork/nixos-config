@@ -12,7 +12,7 @@
 
     sops = {
       enable = true;
-      agePublicKey = "age1f5hav97datm0s687ew5dnhtaderr6xu0hn0e60jgdkms3tfk84mq263qpe";
+      agePublicKey = "age1tfhhyf9vsjfx5kmzeczx8sp4zxsskx9myghyjh83lag2mcp7seasg2cxkx";
     };
 
     boot.loader.grub.enable = true;
