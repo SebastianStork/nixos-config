@@ -34,8 +34,14 @@ _sops-do command:
 sops-edit path:
     just _sops-do "sops edit {{ path }}"
 
-sops-update:
+sops-update path:
+    just _sops-do "sops updatekeys {{ path }}"
+
+sops-update-all:
     just _sops-do "find . -type f -name 'secrets.json' -exec sops updatekeys --yes {} \;"
 
-sops-rotate:
+sops-rotate path:
+    just _sops-do "sops rotate --in-place {{ path }}"
+
+sops-rotate-all:
     just _sops-do "find . -type f -name 'secrets.json' -exec sops rotate --in-place {} \;"
