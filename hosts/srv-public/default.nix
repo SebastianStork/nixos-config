@@ -29,7 +29,7 @@
           sshd = true;
           caddy = true;
         };
-        bouncer.firewall = true;
+        bouncers.firewall = true;
       };
 
       forgejo = {

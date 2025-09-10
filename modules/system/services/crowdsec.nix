@@ -11,9 +11,9 @@ let
   user = config.users.users.crowdsec.name;
 in
 {
-  imports = [
-    inputs.crowdsec.nixosModules.crowdsec
-    inputs.crowdsec.nixosModules.crowdsec-firewall-bouncer
+  imports = with inputs.crowdsec.nixosModules; [
+    crowdsec
+    crowdsec-firewall-bouncer
   ];
 
   options.custom.services.crowdsec = {
@@ -31,7 +31,7 @@ in
       caddy = lib.mkEnableOption "";
       sshd = lib.mkEnableOption "";
     };
-    bouncer.firewall = lib.mkEnableOption "";
+    bouncers.firewall = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -77,7 +77,7 @@ in
           ];
       };
 
-      crowdsec-firewall-bouncer = {
+      crowdsec-firewall-bouncer = lib.mkIf cfg.bouncers.firewall {
         enable = true;
         package = inputs.crowdsec.packages.${pkgs.system}.crowdsec-firewall-bouncer;
         settings = {
@@ -120,9 +120,11 @@ in
           fi
         '';
       in
-      lib.mkAfter [
-        collectionsScript
-        bouncerScript
-      ];
+      lib.mkAfter (
+        lib.concatLists [
+          (lib.singleton collectionsScript)
+          (lib.optional cfg.bouncers.firewall bouncerScript)
+        ]
+      );
   };
 }
