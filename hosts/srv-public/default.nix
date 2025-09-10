@@ -24,12 +24,12 @@
 
       crowdsec = {
         enable = true;
-        firewallBouncer.enable = true;
-        sources = [
-          "sshd"
-          "iptables"
-          "caddy"
-        ];
+        sources = {
+          iptables = true;
+          sshd = true;
+          caddy = true;
+        };
+        bouncer.firewall = true;
       };
 
       forgejo = {
