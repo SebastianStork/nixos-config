@@ -23,7 +23,7 @@ in
 
     services.ntfy-sh = {
       enable = true;
-      settings = {
+      settings = lib.mkForce {
         base-url = "https://${cfg.domain}";
         listen-http = "localhost:${builtins.toString cfg.port}";
         behind-proxy = true;
