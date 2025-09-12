@@ -70,22 +70,33 @@ in
       };
     };
 
-    systemd = {
-      services.forgejo.preStart =
-        let
-          userCmd = "${lib.getExe config.services.forgejo.package} admin user";
-          credentials = lib.concatStringsSep " " [
-            "--username SebastianStork"
-            "--password \"$PASSWORD\""
-          ];
-        in
-        ''
-          PASSWORD="$(< ${config.sops.secrets."forgejo/admin-password".path})"
+    systemd.services.forgejo.preStart =
+      let
+        userCmd = "${lib.getExe config.services.forgejo.package} admin user";
+      in
+      ''
+        username="SebastianStork"
+        password="$(cat ${config.sops.secrets."forgejo/admin-password".path})"
 
-          ${userCmd} create ${credentials} --email "sebastian.stork@pm.me" --admin \
-            || ${userCmd} change-password ${credentials} --must-change-password=false
-        '';
-    };
+        create_user() {
+          ${userCmd} create \
+            --username "$username" \
+            --password "$password" \
+            --email "sebastian.stork@pm.me" \
+            --admin
+        }
+
+        reset_password() {
+          ${userCmd} change-password \
+            --username "$username" \
+            --password "$password" \
+            --must-change-password=false
+        }
+
+        if ! create_user; then
+          reset_password
+        fi
+      '';
 
     custom.services.resticBackups.forgejo = lib.mkIf cfg.doBackups {
       conflictingService = "forgejo.service";

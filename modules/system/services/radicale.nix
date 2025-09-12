@@ -49,8 +49,6 @@ in
 
         storage.hook =
           let
-            createBirthdayCalendar = "${inputs.radicale-birthday-calendar}/create_birthday_calendar.py";
-
             hookScript = pkgs.writeShellApplication {
               name = "radicale-git-hook";
               runtimeInputs = [
@@ -64,9 +62,10 @@ in
                 ))
               ];
               text = ''
-                readonly username="$1"
+                username="$1"
+                create_birthday_calendar="${inputs.radicale-birthday-calendar}/create_birthday_calendar.py"
 
-                git status --porcelain | awk '{print $2}' | python3 ${createBirthdayCalendar}
+                git status --porcelain | awk '{print $2}' | python3 $create_birthday_calendar
 
                 git add -A
                 if ! git diff --cached --quiet; then

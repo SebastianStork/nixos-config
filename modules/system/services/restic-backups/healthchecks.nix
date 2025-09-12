@@ -31,9 +31,15 @@ in
           serviceConfig.Type = "oneshot";
           scriptArgs = "%i";
           script = ''
-            ${lib.getExe pkgs.curl} --fail --silent --show-error --max-time 10 --retry 5  https://hc-ping.com/$(cat ${
-              config.sops.secrets."healthchecks/ping-key".path
-            })/$(echo $1 | tr _ /)
+            ping_key="$(cat ${config.sops.secrets."healthchecks/ping-key".path})"
+            slug="$(echo "$1" | tr _ /)"
+
+            ${lib.getExe pkgs.curl} \
+              --fail \
+              --silent \
+              --show-error \
+              --max-time 10 \
+              --retry 5 "https://hc-ping.com/$ping_key/$slug"
           '';
         };
       }

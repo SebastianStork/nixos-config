@@ -13,8 +13,6 @@ _: {
           pkgs.jq
         ];
 
-        excludeShellChecks = [ "SC2155" ];
-
         text = ''
           if [[ $# -ne 2 ]]; then
             echo "Usage: $0 <host> <destination>"
@@ -25,7 +23,7 @@ _: {
           destination="$2"
           root="/tmp/anywhere/$host"
 
-          impermanence=$(nix eval ".#nixosConfigurations.$host.config.custom.impermanence.enable")
+          impermanence="$(nix eval ".#nixosConfigurations.$host.config.custom.impermanence.enable")"
           if [ "$impermanence" = true ]; then
             ssh_dir="$root/persist/etc/ssh"
           else
@@ -38,13 +36,16 @@ _: {
             ssh-keygen -C "root@$host" -f "$ssh_dir/ssh_host_ed25519_key" -N "" -q
 
             echo "==> Replacing old age key with new age key..."
-            new_age_key=$(ssh-to-age -i "$ssh_dir/ssh_host_ed25519_key.pub")
+            new_age_key="$(ssh-to-age -i "$ssh_dir/ssh_host_ed25519_key.pub")"
             sed -i -E "s|(agePublicKey\s*=\s*\")[^\"]*(\";)|\1$new_age_key\2|" "hosts/$host/default.nix"
 
             echo "==> Updating SOPS secrets..."
-            export BW_SESSION=$(bw login --raw)
-            export SOPS_AGE_KEY=$(bw get item 'admin age-key' | jq -r '.notes')
-            export SOPS_CONFIG=$(nix build .#sops-config --print-out-paths)
+            BW_SESSION="$(bw login --raw)"
+            export BW_SESSION
+            SOPS_AGE_KEY="$(bw get item 'admin age-key' | jq -r '.notes')"
+            export SOPS_AGE_KEY
+            SOPS_CONFIG="$(nix build .#sops-config --print-out-paths)"
+            export SOPS_CONFIG
             sops updatekeys --yes "hosts/$host/secrets.json"
           fi
 

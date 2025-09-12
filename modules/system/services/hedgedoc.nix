@@ -55,16 +55,16 @@ in
     };
 
     # Ensure session-secret
-    systemd.services.hedgedoc.preStart =
-      let
-        sessionSecret = "/var/lib/hedgedoc/session-secret";
-      in
-      lib.mkBefore ''
-        if [ ! -f ${sessionSecret} ]; then
-          ${lib.getExe pkgs.pwgen} -s 64 1 > ${sessionSecret}
-        fi
-        export SESSION_SECRET=$(cat ${sessionSecret})
-      '';
+    systemd.services.hedgedoc.preStart = lib.mkBefore ''
+      secret_file="/var/lib/hedgedoc/session-secret"
+
+      if [ ! -f $secret_file ]; then
+        ${lib.getExe pkgs.pwgen} -s 64 1 > $secret_file
+      fi
+
+      SESSION_SECRET="$(cat $secret_file)"
+      export SESSION_SECRET
+    '';
 
     custom.services.resticBackups.hedgedoc = lib.mkIf cfg.doBackups {
       conflictingService = "hedgedoc.service";

@@ -50,9 +50,12 @@
           pkgs.jq
         ];
         shellHook = ''
-          export BW_SESSION=$(bw login --raw)
-          export SOPS_AGE_KEY=$(bw get item 'admin age-key' | jq -r '.notes')
-          export SOPS_CONFIG=${self'.packages.sops-config}
+          BW_SESSION="$(bw login --raw)"
+          export BW_SESSION
+          SOPS_AGE_KEY="$(bw get item 'admin age-key' | jq -r '.notes')"
+          export SOPS_AGE_KEY
+          SOPS_CONFIG="${self'.packages.sops-config}"
+          export SOPS_CONFIG
         '';
       };
     };
