@@ -27,11 +27,23 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
-    sops.secrets."forgejo/admin-password".owner = config.users.users.forgejo.name;
+    sops.secrets."forgejo/admin-password".owner = config.users.users.git.name;
+
+    users = {
+      users.git = {
+        isSystemUser = true;
+        useDefaultShell = true;
+        group = config.users.groups.git.name;
+        home = config.services.forgejo.stateDir;
+      };
+      groups.git = { };
+    };
 
     services.forgejo = {
       enable = true;
       package = pkgs-unstable.forgejo;
+      user = "git";
+      group = "git";
 
       lfs.enable = true;
       settings = {

@@ -24,7 +24,7 @@ in
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
         PermitRootLogin = "no";
-        AllowUsers = [ config.users.users.forgejo.name ];
+        AllowUsers = [ config.services.forgejo.user ];
       };
     };
   };
