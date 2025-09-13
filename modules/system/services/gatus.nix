@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs-unstable,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.services.gatus;
   tailscaleDomain = config.custom.services.tailscale.domain;
@@ -98,8 +103,9 @@ in
 
     services.gatus = {
       enable = true;
-
+      package = pkgs-unstable.gatus; # Unstable for the new UI
       environmentFile = config.sops.templates."gatus.env".path;
+
       settings = {
         web = {
           address = "localhost";
