@@ -40,8 +40,9 @@ _: {
             sed -i -E "s|(agePublicKey\s*=\s*\")[^\"]*(\";)|\1$new_age_key\2|" "hosts/$host/default.nix"
 
             echo "==> Updating SOPS secrets..."
-            BW_SESSION="$(bw login --raw)"
-            export BW_SESSION
+            if BW_SESSION="$(bw login --raw)"; then
+              export BW_SESSION
+            fi
             SOPS_AGE_KEY="$(bw get item 'admin age-key' | jq -r '.notes')"
             export SOPS_AGE_KEY
             SOPS_CONFIG="$(nix build .#sops-config --print-out-paths)"
