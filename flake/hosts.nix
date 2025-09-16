@@ -26,7 +26,7 @@ let
         in
         [
           { networking = { inherit hostName; }; }
-          "${self}/hosts/shared.nix"
+          "${self}/hosts/common.nix"
         ]
         ++ hostFiles
         ++ userFiles;

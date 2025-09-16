@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  imports = [ ../shared-home.nix ];
+  imports = [ ../common-home.nix ];
 
   home.sessionVariables.NH_FLAKE = "~/Projects/nixos-config";
 
