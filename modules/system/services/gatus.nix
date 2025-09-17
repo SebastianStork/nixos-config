@@ -76,9 +76,10 @@ in
 
     sops = {
       secrets."healthchecks/ping-key" = { };
-      templates."gatus.env".content = ''
-        HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks/ping-key"}
-      '';
+      templates."gatus.env" = {
+        content = "HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks/ping-key"}";
+        restartUnits = [ "gatus.service" ];
+      };
     };
 
     custom.services.gatus.endpoints =

@@ -31,7 +31,7 @@ in
       cfg.networks
       |> lib.map (name: {
         name = "iwd/${name}";
-        value = { };
+        value.restartUnits = [ "iwd.service" ];
       })
       |> lib.listToAttrs;
 

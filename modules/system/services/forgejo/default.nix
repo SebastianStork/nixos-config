@@ -27,7 +27,10 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
-    sops.secrets."forgejo/admin-password".owner = config.users.users.git.name;
+    sops.secrets."forgejo/admin-password" = {
+      owner = config.users.users.git.name;
+      restartUnits = [ "forgejo.service" ];
+    };
 
     users = {
       users.git = {

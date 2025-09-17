@@ -32,6 +32,7 @@ in
       templates."hedgedoc/environment" = {
         owner = config.users.users.hedgedoc.name;
         content = "GITLAB_CLIENTSECRET=${config.sops.placeholder."hedgedoc/gitlab-auth-secret"}";
+        restartUnits = [ "hedgedoc.service" ];
       };
     };
 

@@ -21,7 +21,10 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
-    sops.secrets."grafana/admin-password".owner = config.users.users.grafana.name;
+    sops.secrets."grafana/admin-password" = {
+      owner = config.users.users.grafana.name;
+      restartUnits = [ "grafana.service" ];
+    };
 
     services.grafana = {
       enable = true;

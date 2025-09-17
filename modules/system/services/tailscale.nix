@@ -18,7 +18,7 @@ in
       config.services.tailscale.port
     ];
 
-    sops.secrets."tailscale/auth-key" = { };
+    sops.secrets."tailscale/auth-key".restartUnits = [ "tailscaled.service" ];
 
     services.tailscale = {
       enable = true;

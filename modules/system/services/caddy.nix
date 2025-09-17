@@ -101,7 +101,10 @@ in
       }
 
       (lib.mkIf tailscaleHostsExist {
-        sops.secrets."tailscale/service-auth-key".owner = config.services.caddy.user;
+        sops.secrets."tailscale/service-auth-key" = {
+          owner = config.services.caddy.user;
+          restartUnits = [ "caddy.service" ];
+        };
 
         services.caddy = {
           package = caddyWithTailscale;

@@ -59,8 +59,14 @@ in
     };
 
     sops.secrets = lib.mkIf useStaticTls {
-      "syncthing/cert".owner = config.services.syncthing.user;
-      "syncthing/key".owner = config.services.syncthing.user;
+      "syncthing/cert" = {
+        owner = config.services.syncthing.user;
+        restartUnits = [ "syncthing.service" ];
+      };
+      "syncthing/key" = {
+        owner = config.services.syncthing.user;
+        restartUnits = [ "syncthing.service" ];
+      };
     };
 
     services.syncthing = {

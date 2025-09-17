@@ -36,7 +36,10 @@ in
       cfg.prometheusPort
     ];
 
-    sops.secrets."crowdsec/enrollment-key".owner = user;
+    sops.secrets."crowdsec/enrollment-key" = {
+      owner = user;
+      restartUnits = [ "crowdsec.service" ];
+    };
 
     users.groups.caddy.members = lib.mkIf cfg.sources.caddy [ user ];
 

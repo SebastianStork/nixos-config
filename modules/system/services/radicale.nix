@@ -33,6 +33,7 @@ in
       templates."radicale/htpasswd" = {
         owner = config.users.users.radicale.name;
         content = "seb:${config.sops.placeholder."radicale/admin-password"}";
+        restartUnits = [ "radicale.service" ];
       };
     };
 
