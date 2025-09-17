@@ -102,5 +102,7 @@ in
           |> mkScript "crowdsec-install-collections";
       in
       lib.mkAfter collectionsScript;
+
+    custom.persist.directories = [ config.services.crowdsec.settings.config_paths.data_dir ];
   };
 }

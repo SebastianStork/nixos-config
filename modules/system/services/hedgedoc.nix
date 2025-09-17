@@ -74,5 +74,7 @@ in
         db.storage
       ];
     };
+
+    custom.persist.directories = [ "/var/lib/hedgedoc" ];
   };
 }

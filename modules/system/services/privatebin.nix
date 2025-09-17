@@ -42,5 +42,7 @@ in
         }
       ];
     };
+
+    custom.persist.directories = [ config.services.privatebin.dataDir ];
   };
 }

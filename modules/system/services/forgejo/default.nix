@@ -117,5 +117,7 @@ in
       conflictingService = "forgejo.service";
       paths = [ config.services.forgejo.stateDir ];
     };
+
+    custom.persist.directories = [ config.services.forgejo.stateDir ];
   };
 }
