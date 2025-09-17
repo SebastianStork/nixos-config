@@ -10,7 +10,7 @@
   custom = {
     sops = {
       enable = true;
-      agePublicKey = "age1dnpwfwh0h95r63e5qfjc2gvffw2tr2tx4new7sq2h3qs90kx9fmq322mx4";
+      agePublicKey = "age1g9fm9w3j2ep7qrqmq9wx09p3ynn3xm7elp36eursj2fvh6yw5q6st448jz";
     };
 
     boot.loader.grub.enable = true;
