@@ -35,8 +35,9 @@ in
       })
       |> lib.listToAttrs;
 
-    systemd.tmpfiles.rules =
-      cfg.networks
-      |> lib.map (name: "C /var/lib/iwd/${name} - - - - ${config.sops.secrets."iwd/${name}".path}");
+    systemd.services.iwd.preStart = ''
+      rm --force /var/lib/iwd/*.{psk,8021x}
+      install -m 600 /run/secrets/iwd/* /var/lib/iwd
+    '';
   };
 }
