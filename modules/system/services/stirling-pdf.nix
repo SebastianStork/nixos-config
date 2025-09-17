@@ -21,15 +21,14 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
-    virtualisation.oci-containers.containers.stirling-pdf = {
-      image = "docker.stirlingpdf.com/stirlingtools/stirling-pdf";
+    services.stirling-pdf = {
+      enable = true;
       environment = {
-        DISABLE_ADDITIONAL_FEATURES = "false";
+        SERVER_ADDRESS = "127.0.0.1";
+        SERVER_PORT = cfg.port;
         SYSTEM_ENABLEANALYTICS = "false";
         LANGS = "de_DE";
       };
-      ports = [ "127.0.0.1:${builtins.toString cfg.port}:8080" ];
-      pull = "newer";
     };
   };
 }
