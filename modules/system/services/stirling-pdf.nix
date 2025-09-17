@@ -22,7 +22,7 @@ in
     };
 
     virtualisation.oci-containers.containers.stirling-pdf = {
-      image = "stirlingtools/stirling-pdf";
+      image = "docker.stirlingpdf.com/stirlingtools/stirling-pdf";
       environment = {
         DISABLE_ADDITIONAL_FEATURES = "false";
         SYSTEM_ENABLEANALYTICS = "false";
