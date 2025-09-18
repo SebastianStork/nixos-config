@@ -45,6 +45,11 @@
         domain = "docs.sprouted.cloud";
       };
 
+      outline = {
+        enable = true;
+        domain = "outline.sprouted.cloud";
+      };
+
       it-tools = {
         enable = true;
         domain = "tools.sprouted.cloud";
@@ -75,6 +80,9 @@
           };
           hedgedoc = {
             inherit (services.hedgedoc) domain port;
+          };
+          outline = {
+            inherit (services.outline) domain port;
           };
           it-tools = {
             inherit (services.it-tools) domain port;
