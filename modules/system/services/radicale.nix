@@ -29,10 +29,10 @@ in
     };
 
     sops = {
-      secrets."radicale/admin-password" = { };
+      secrets."radicale/seb-password" = { };
       templates."radicale/htpasswd" = {
         owner = config.users.users.radicale.name;
-        content = "seb:${config.sops.placeholder."radicale/admin-password"}";
+        content = "seb:${config.sops.placeholder."radicale/seb-password"}";
         restartUnits = [ "radicale.service" ];
       };
     };
@@ -44,7 +44,7 @@ in
         auth = {
           type = "htpasswd";
           htpasswd_filename = config.sops.templates."radicale/htpasswd".path;
-          htpasswd_encryption = "plain";
+          htpasswd_encryption = "bcrypt";
         };
         storage.filesystem_folder = "/var/lib/radicale/collections";
 
