@@ -45,7 +45,7 @@ in
           baseURL = "https://code.fbi.h-da.de/oauth";
         in
         {
-          clientId = "0cb1f65501ea59bcafb3d7d7cb66235926635a3f52cf719a919c87984997002d";
+          clientId = "7b9f51553d695616888a945f74c31f35b58d0963955253e404ca6fc9a99e5cff";
           clientSecretFile = config.sops.secrets."outline/gitlab-auth-secret".path;
           authUrl = "${baseURL}/authorize";
           tokenUrl = "${baseURL}/token";
