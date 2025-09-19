@@ -58,6 +58,11 @@
           domain = "grafana.${tailscaleDomain}";
         };
 
+        victoriametrics = {
+          enable = true;
+          domain = "metrics.${tailscaleDomain}";
+        };
+
         victorialogs = {
           enable = true;
           domain = "logs.${tailscaleDomain}";
@@ -76,6 +81,9 @@
             };
             grafana = {
               inherit (services.grafana) domain port;
+            };
+            victoriametrics = {
+              inherit (services.victoriametrics) domain port;
             };
             victorialogs = {
               inherit (services.victorialogs) domain port;
