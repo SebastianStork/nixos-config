@@ -6,7 +6,9 @@
 }:
 let
   cfg = config.custom.services.gatus;
+
   tailscaleDomain = config.custom.services.tailscale.domain;
+  dataDir = "/var/lib/gatus";
 in
 {
   options.custom.services.gatus = {
@@ -78,8 +80,25 @@ in
       secrets."healthchecks/ping-key" = { };
       templates."gatus.env" = {
         content = "HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks/ping-key"}";
+        owner = config.users.users.gatus.name;
         restartUnits = [ "gatus.service" ];
       };
+    };
+
+    users = {
+      users.gatus = {
+        isSystemUser = true;
+        group = config.users.groups.gatus.name;
+      };
+      groups.gatus = { };
+    };
+
+    systemd.services.gatus.serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      ProtectSystem = "strict";
+      ProtectHome = "read-only";
+      PrivateTmp = true;
+      RemoveIPC = true;
     };
 
     custom.services.gatus.endpoints =
@@ -114,7 +133,7 @@ in
         };
         storage = {
           type = "sqlite";
-          path = "/var/lib/gatus/data.db";
+          path = "${dataDir}/data.db";
         };
         connectivity.checker.target = "1.1.1.1:53"; # Cloudflare DNS
         alerting.ntfy = {
@@ -173,6 +192,6 @@ in
       };
     };
 
-    custom.persist.directories = [ "/var/lib/private/gatus" ];
+    custom.persist.directories = [ dataDir ];
   };
 }
