@@ -5,22 +5,18 @@
   ...
 }:
 let
-  cfg = config.custom.services.victorialogs;
+  cfg = config.custom.services.victoriametrics;
 in
 {
-  options.custom.services.victorialogs = {
+  options.custom.services.victoriametrics = {
     enable = lib.mkEnableOption "";
-    maxDiskSpaceUsage = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "10GiB";
-    };
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
     };
     port = lib.mkOption {
       type = lib.types.port;
-      default = 9428;
+      default = 8428;
     };
   };
 
@@ -30,11 +26,11 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
-    services.victorialogs = {
+    services.victoriametrics = {
       enable = true;
-      package = pkgs-unstable.victorialogs;
+      package = pkgs-unstable.victoriametrics;
       listenAddress = "localhost:${builtins.toString cfg.port}";
-      extraOptions = [ "-retention.maxDiskSpaceUsageBytes=${cfg.maxDiskSpaceUsage}" ];
+      extraOptions = [ "-selfScrapeInterval=10s" ];
     };
   };
 }
