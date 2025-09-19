@@ -15,94 +15,98 @@
 
     boot.loader.grub.enable = true;
 
-    services = {
-      resolved.enable = true;
-      tailscale = {
-        enable = true;
-        ssh.enable = true;
-      };
-
-      crowdsec = {
-        enable = true;
-        sources = {
-          iptables = true;
-          sshd = true;
-          caddy = true;
+    services =
+      let
+        sproutedDomain = "sprouted.cloud";
+      in
+      {
+        resolved.enable = true;
+        tailscale = {
+          enable = true;
+          ssh.enable = true;
         };
-        bouncers.firewall = true;
-      };
 
-      forgejo = {
-        enable = true;
-        doBackups = true;
-        domain = "git.sstork.dev";
-        ssh.enable = true;
-      };
-
-      hedgedoc = {
-        enable = true;
-        doBackups = true;
-        domain = "docs.sprouted.cloud";
-      };
-
-      outline = {
-        enable = true;
-        domain = "outline.sprouted.cloud";
-      };
-
-      it-tools = {
-        enable = true;
-        domain = "tools.sprouted.cloud";
-      };
-
-      stirling-pdf = {
-        enable = true;
-        domain = "pdf.sprouted.cloud";
-      };
-
-      privatebin = {
-        enable = true;
-        domain = "pastebin.sprouted.cloud";
-      };
-
-      openspeedtest = {
-        enable = true;
-        domain = "speedtest.sprouted.cloud";
-      };
-
-      caddy.virtualHosts =
-        let
-          inherit (config.custom) services;
-        in
-        {
-          forgejo = {
-            inherit (services.forgejo) domain port;
+        crowdsec = {
+          enable = true;
+          sources = {
+            iptables = true;
+            sshd = true;
+            caddy = true;
           };
-          hedgedoc = {
-            inherit (services.hedgedoc) domain port;
-          };
-          outline = {
-            inherit (services.outline) domain port;
-          };
-          it-tools = {
-            inherit (services.it-tools) domain port;
-          };
-          stirling-pdf = {
-            inherit (services.stirling-pdf) domain port;
-          };
-          privatebin = {
-            inherit (services.privatebin) domain port;
-          };
-          openspeedtest = {
-            inherit (services.openspeedtest) domain port;
-            tls = false;
-            extraReverseProxyConfig = ''
-              request_buffers 35MiB
-              response_buffers 35MiB
-              flush_interval -1
-            '';
-          };
+          bouncers.firewall = true;
         };
-    };
+
+        forgejo = {
+          enable = true;
+          doBackups = true;
+          domain = "git.sstork.dev";
+          ssh.enable = true;
+        };
+
+        hedgedoc = {
+          enable = true;
+          doBackups = true;
+          domain = "docs.${sproutedDomain}";
+        };
+
+        outline = {
+          enable = true;
+          domain = "outline.${sproutedDomain}";
+        };
+
+        it-tools = {
+          enable = true;
+          domain = "tools.${sproutedDomain}";
+        };
+
+        stirling-pdf = {
+          enable = true;
+          domain = "pdf.${sproutedDomain}";
+        };
+
+        privatebin = {
+          enable = true;
+          domain = "pastebin.${sproutedDomain}";
+        };
+
+        openspeedtest = {
+          enable = true;
+          domain = "speedtest.${sproutedDomain}";
+        };
+
+        caddy.virtualHosts =
+          let
+            inherit (config.custom) services;
+          in
+          {
+            forgejo = {
+              inherit (services.forgejo) domain port;
+            };
+            hedgedoc = {
+              inherit (services.hedgedoc) domain port;
+            };
+            outline = {
+              inherit (services.outline) domain port;
+            };
+            it-tools = {
+              inherit (services.it-tools) domain port;
+            };
+            stirling-pdf = {
+              inherit (services.stirling-pdf) domain port;
+            };
+            privatebin = {
+              inherit (services.privatebin) domain port;
+            };
+            openspeedtest = {
+              inherit (services.openspeedtest) domain port;
+              tls = false;
+              extraReverseProxyConfig = ''
+                request_buffers 35MiB
+                response_buffers 35MiB
+                flush_interval -1
+              '';
+            };
+          };
+      };
   };
 }
