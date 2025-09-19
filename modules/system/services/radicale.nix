@@ -28,13 +28,9 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
-    sops = {
-      secrets."radicale/seb-password" = { };
-      templates."radicale/htpasswd" = {
-        owner = config.users.users.radicale.name;
-        content = "seb:${config.sops.placeholder."radicale/seb-password"}";
-        restartUnits = [ "radicale.service" ];
-      };
+    sops.secrets."radicale/htpasswd" = {
+      owner = config.users.users.radicale.name;
+      restartUnits = [ "radicale.service" ];
     };
 
     services.radicale = {
@@ -43,7 +39,7 @@ in
         server.hosts = "localhost:${builtins.toString cfg.port}";
         auth = {
           type = "htpasswd";
-          htpasswd_filename = config.sops.templates."radicale/htpasswd".path;
+          htpasswd_filename = config.sops.secrets."radicale/htpasswd".path;
           htpasswd_encryption = "bcrypt";
         };
         storage.filesystem_folder = "/var/lib/radicale/collections";
