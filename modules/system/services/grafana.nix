@@ -42,8 +42,9 @@ in
       };
     };
     dashboards = {
-      nodeExporter.enable = lib.mkEnableOption "";
-      victoriametrics.enable = lib.mkEnableOption "";
+      nodeExporter = lib.mkEnableOption "";
+      victoriametrics = lib.mkEnableOption "";
+      victorialogs = lib.mkEnableOption "";
     };
   };
 
@@ -122,7 +123,7 @@ in
 
     environment.etc = {
       "grafana-dashboards/node-exporter-full.json" = {
-        enable = cfg.dashboards.nodeExporter.enable;
+        enable = cfg.dashboards.nodeExporter;
         source = pkgs.fetchurl {
           name = "node-exporter-full.json";
           url = "https://grafana.com/api/dashboards/1860/revisions/41/download";
@@ -130,11 +131,19 @@ in
         };
       };
       "grafana-dashboards/victoriametrics-single-node.json" = {
-        enable = cfg.dashboards.victoriametrics.enable;
+        enable = cfg.dashboards.victoriametrics;
         source = pkgs.fetchurl {
           name = "victoriametrics-single-node.json";
           url = "https://grafana.com/api/dashboards/10229/revisions/41/download";
           hash = "sha256-mwtah8A2w81WZjf5bUXoTJfS1R9UX+tua2PiDrBKJCQ=";
+        };
+      };
+      "grafana-dashboards/victorialogs-single-node.json" = {
+        enable = cfg.dashboards.victorialogs;
+        source = pkgs.fetchurl {
+          name = "victorialogs-single-node.json";
+          url = "https://grafana.com/api/dashboards/22084/revisions/8/download";
+          hash = "sha256-/a3Rbp/6oyiLBnQtGupyFZW+fIHQfkyKRRTyfofxVTM=";
         };
       };
     };

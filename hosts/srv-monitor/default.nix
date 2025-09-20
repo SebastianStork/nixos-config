@@ -63,8 +63,9 @@
             victorialogs.enable = true;
           };
           dashboards = {
-            nodeExporter.enable = true;
-            victoriametrics.enable = true;
+            nodeExporter = true;
+            victoriametrics = true;
+            victorialogs = true;
           };
         };
 
@@ -81,7 +82,10 @@
         alloy = {
           enable = true;
           domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
-          collect.hostMetrics = true;
+          collect = {
+            hostMetrics = true;
+            victorialogsMetrics = true;
+          };
         };
 
         caddy.virtualHosts =

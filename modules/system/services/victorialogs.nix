@@ -46,7 +46,12 @@ in
 
     services.victorialogs = {
       enable = true;
-      package = pkgs-unstable.victorialogs;
+      package = pkgs-unstable.victorialogs.overrideAttrs (
+        _: previousAttrs: {
+          version = "victoria-logs-" + previousAttrs.version;
+          __intentionallyOverridingVersion = true;
+        }
+      );
       listenAddress = "localhost:${builtins.toString cfg.port}";
       extraOptions = [ "-retention.maxDiskSpaceUsageBytes=${cfg.maxDiskSpaceUsage}" ];
     };

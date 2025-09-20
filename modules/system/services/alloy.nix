@@ -23,6 +23,7 @@ in
     };
     collect = {
       hostMetrics = lib.mkEnableOption "";
+      victorialogsMetrics = lib.mkEnableOption "";
       sshdLogs = lib.mkEnableOption "";
     };
   };
@@ -56,14 +57,26 @@ in
         }
       '';
 
-      "alloy/node-exporter.alloy" = lib.mkIf cfg.collect.hostMetrics {
+      "alloy/host-metrics.alloy" = lib.mkIf cfg.collect.hostMetrics {
         text = ''
           prometheus.exporter.unix "default" {
-            enable_collectors = [ "systemd" ]
+            enable_collectors = ["systemd"]
           }
 
           prometheus.scrape "node_exporter" {
             targets = prometheus.exporter.unix.default.targets
+            forward_to = [prometheus.remote_write.default.receiver]
+            scrape_interval = "15s"
+          }
+        '';
+      };
+
+      "alloy/victorialogs-metrics.alloy" = lib.mkIf cfg.collect.victorialogsMetrics {
+        text = ''
+          prometheus.scrape "victorialogs" {
+            targets = [{
+              __address__ = "localhost:${builtins.toString config.custom.services.victorialogs.port}",
+            }]
             forward_to = [prometheus.remote_write.default.receiver]
             scrape_interval = "15s"
           }
