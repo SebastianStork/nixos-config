@@ -51,7 +51,7 @@
 
         outline = {
           enable = true;
-          domain = "outline.${sproutedDomain}";
+          domain = "wiki.${sproutedDomain}";
         };
 
         it-tools = {
