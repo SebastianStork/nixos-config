@@ -39,6 +39,7 @@
               extraConditions = [ "[BODY].healthy == true" ];
             };
             "grafana".group = "Monitoring";
+            "metrics".group = "Monitoring";
             "logs".group = "Monitoring";
             "git ssh" = {
               protocol = "ssh";
