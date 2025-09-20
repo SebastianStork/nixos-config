@@ -20,9 +20,9 @@ let
             "${self}/users"
             |> builtins.readDir
             |> lib.filterAttrs (_: type: type == "directory")
-            |> builtins.attrNames
+            |> lib.attrNames
             |> map (user: "${self}/users/${user}/@${hostName}")
-            |> builtins.filter (path: builtins.pathExists path);
+            |> lib.filter (path: lib.pathExists path);
         in
         [
           { networking = { inherit hostName; }; }

@@ -31,7 +31,7 @@
 
     systemd.user.tmpfiles.rules =
       let
-        settings = builtins.replaceStrings [ "," ] [ ",\\n" ] (
+        settings = lib.replaceStrings [ "," ] [ ",\\n" ] (
           builtins.toJSON {
             "workbench.colorTheme" =
               {

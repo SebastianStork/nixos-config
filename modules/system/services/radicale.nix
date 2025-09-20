@@ -77,7 +77,7 @@ in
 
     systemd.services.radicale.serviceConfig.ExecStartPre =
       let
-        gitignore = builtins.toFile "radicale-collection-gitignore" ''
+        gitignore = pkgs.writeText "radicale-collection-gitignore" ''
           .Radicale.cache
           .Radicale.lock
           .Radicale.tmp-*
