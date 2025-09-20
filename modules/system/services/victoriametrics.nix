@@ -30,7 +30,7 @@ in
       enable = true;
       package = pkgs-unstable.victoriametrics;
       listenAddress = "localhost:${builtins.toString cfg.port}";
-      extraOptions = [ "-selfScrapeInterval=10s" ];
+      extraOptions = [ "-selfScrapeInterval=15s" ];
     };
   };
 }
