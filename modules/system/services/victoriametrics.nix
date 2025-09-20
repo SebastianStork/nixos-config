@@ -26,11 +26,27 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
+    users = {
+      users.victoriametrics = {
+        isSystemUser = true;
+        group = config.users.groups.victoriametrics.name;
+      };
+      groups.victoriametrics = { };
+    };
+
+    systemd.services.victoriametrics.serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      User = config.users.users.victoriametrics.name;
+      Group = config.users.groups.victoriametrics.name;
+    };
+
     services.victoriametrics = {
       enable = true;
       package = pkgs-unstable.victoriametrics;
       listenAddress = "localhost:${builtins.toString cfg.port}";
       extraOptions = [ "-selfScrapeInterval=15s" ];
     };
+
+    custom.persist.directories = [ "/var/lib/${config.services.victoriametrics.stateDir}" ];
   };
 }

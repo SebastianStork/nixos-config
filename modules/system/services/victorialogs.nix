@@ -30,11 +30,27 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
+    users = {
+      users.victorialogs = {
+        isSystemUser = true;
+        group = config.users.groups.victoriametrics.name;
+      };
+      groups.victorialogs = { };
+    };
+
+    systemd.services.victorialogs.serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      User = config.users.users.victorialogs.name;
+      Group = config.users.groups.victorialogs.name;
+    };
+
     services.victorialogs = {
       enable = true;
       package = pkgs-unstable.victorialogs;
       listenAddress = "localhost:${builtins.toString cfg.port}";
       extraOptions = [ "-retention.maxDiskSpaceUsageBytes=${cfg.maxDiskSpaceUsage}" ];
     };
+
+    custom.persist.directories = [ "/var/lib/${config.services.victorialogs.stateDir}" ];
   };
 }
