@@ -50,7 +50,11 @@ in
         }
       );
       listenAddress = "localhost:${builtins.toString cfg.port}";
-      extraOptions = [ "-selfScrapeInterval=15s" ];
+      extraOptions = [
+        "-selfScrapeInterval=15s"
+        "-selfScrapeJob=victoriametrics"
+        "-selfScrapeInstance=${config.networking.hostName}"
+      ];
     };
 
     custom.persist.directories = [ "/var/lib/${config.services.victoriametrics.stateDir}" ];

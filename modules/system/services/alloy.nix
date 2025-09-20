@@ -64,8 +64,8 @@ in
           }
 
           prometheus.scrape "node_exporter" {
-            targets = prometheus.exporter.unix.default.targets
-            forward_to = [prometheus.remote_write.default.receiver]
+            targets         = prometheus.exporter.unix.default.targets
+            forward_to      = [prometheus.remote_write.default.receiver]
             scrape_interval = "15s"
           }
         '';
@@ -76,8 +76,10 @@ in
           prometheus.scrape "victorialogs" {
             targets = [{
               __address__ = "localhost:${builtins.toString config.custom.services.victorialogs.port}",
+              job         = "victorialogs",
+              instance    = constants.hostname,
             }]
-            forward_to = [prometheus.remote_write.default.receiver]
+            forward_to      = [prometheus.remote_write.default.receiver]
             scrape_interval = "15s"
           }
         '';
@@ -86,7 +88,7 @@ in
       "alloy/sshd-logs.alloy" = lib.mkIf cfg.collect.sshdLogs {
         text = ''
           loki.source.journal "sshd" {
-            matches = "_SYSTEMD_UNIT=sshd.service"
+            matches    = "_SYSTEMD_UNIT=sshd.service"
             forward_to = [loki.write.default.receiver]
           }
         '';
