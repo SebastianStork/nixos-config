@@ -56,6 +56,11 @@
         grafana = {
           enable = true;
           domain = "grafana.${tailscaleDomain}";
+          datasources = {
+            victoriametrics.enable = true;
+            victorialogs.enable = true;
+          };
+          dashboards.node-exporter-full.enable = true;
         };
 
         victoriametrics = {
