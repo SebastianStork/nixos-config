@@ -53,6 +53,12 @@
           domain = "budget.${tailscaleDomain}";
         };
 
+        alloy = {
+          enable = true;
+          domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
+          collect.hostMetrics = true;
+        };
+
         caddy.virtualHosts =
           let
             inherit (config.custom) services;
@@ -69,6 +75,9 @@
             };
             actualbudget = {
               inherit (services.actualbudget) domain port;
+            };
+            alloy = {
+              inherit (services.alloy) domain port;
             };
           };
       };

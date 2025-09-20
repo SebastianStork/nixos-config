@@ -74,6 +74,15 @@
           domain = "speedtest.${sproutedDomain}";
         };
 
+        alloy = {
+          enable = true;
+          domain = "alloy-${config.networking.hostName}.${config.custom.services.tailscale.domain}";
+          collect = {
+            hostMetrics = true;
+            sshdLogs = true;
+          };
+        };
+
         caddy.virtualHosts =
           let
             inherit (config.custom) services;
@@ -105,6 +114,9 @@
                 response_buffers 35MiB
                 flush_interval -1
               '';
+            };
+            alloy = {
+              inherit (services.alloy) domain port;
             };
           };
       };

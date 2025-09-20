@@ -73,6 +73,12 @@
           domain = "logs.${tailscaleDomain}";
         };
 
+        alloy = {
+          enable = true;
+          domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
+          collect.hostMetrics = true;
+        };
+
         caddy.virtualHosts =
           let
             inherit (config.custom) services;
@@ -92,6 +98,9 @@
             };
             victorialogs = {
               inherit (services.victorialogs) domain port;
+            };
+            alloy = {
+              inherit (services.alloy) domain port;
             };
           };
       };
