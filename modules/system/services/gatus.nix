@@ -1,13 +1,12 @@
 {
   config,
+  self,
   pkgs-unstable,
   lib,
   ...
 }:
 let
   cfg = config.custom.services.gatus;
-
-  tailscaleDomain = config.custom.services.tailscale.domain;
   dataDir = "/var/lib/gatus";
 in
 {
@@ -21,14 +20,11 @@ in
       type = lib.types.port;
       default = 8080;
     };
-    domainsToMonitor = lib.mkOption {
-      type = lib.types.listOf lib.types.nonEmptyStr;
-      default = [ ];
-    };
+    generateDefaultEndpoints = lib.mkEnableOption "";
     endpoints = lib.mkOption {
       type = lib.types.attrsOf (
         lib.types.submodule (
-          { name, config, ... }:
+          { name, ... }:
           {
             options = {
               name = lib.mkOption {
@@ -37,7 +33,7 @@ in
               };
               group = lib.mkOption {
                 type = lib.types.nonEmptyStr;
-                default = if config.domain |> lib.hasSuffix tailscaleDomain then "Private" else "Public";
+                default = "";
               };
               protocol = lib.mkOption {
                 type = lib.types.nonEmptyStr;
@@ -106,20 +102,33 @@ in
         getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
 
         defaultEndpoints =
-          cfg.domainsToMonitor
-          |> lib.filter (domain: domain != cfg.domain)
-          |> lib.map (domain: lib.nameValuePair (getSubdomain domain) { inherit domain; })
-          |> lib.listToAttrs;
+          self.nixosConfigurations
+          |> lib.mapAttrs (_: value: value.config.meta.domains.list)
+          |> lib.concatMapAttrs (
+            hostName: domains:
+            domains
+            |> lib.filter (domain: domain != cfg.domain)
+            |> lib.map (
+              domain:
+              lib.nameValuePair (getSubdomain domain) {
+                inherit domain;
+                group = hostName;
+              }
+            )
+            |> lib.listToAttrs
+          );
       in
-      {
-        "healthchecks.io" = {
-          group = "Monitoring";
-          domain = "hc-ping.com";
-          path = "/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
-          interval = "2h";
-        };
-      }
-      // defaultEndpoints;
+      lib.mkIf cfg.generateDefaultEndpoints (
+        defaultEndpoints
+        // {
+          "healthchecks.io" = {
+            group = "external";
+            domain = "hc-ping.com";
+            path = "/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
+            interval = "2h";
+          };
+        }
+      );
 
     services.gatus = {
       enable = true;

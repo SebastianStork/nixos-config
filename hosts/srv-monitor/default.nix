@@ -31,17 +31,14 @@
         gatus = {
           enable = true;
           domain = "status.${tailscaleDomain}";
-          domainsToMonitor = config.meta.domains.globalList;
+          generateDefaultEndpoints = true;
           endpoints = {
             "alerts" = {
-              group = "Monitoring";
               path = "/v1/health";
               extraConditions = [ "[BODY].healthy == true" ];
             };
-            "grafana".group = "Monitoring";
-            "metrics".group = "Monitoring";
-            "logs".group = "Monitoring";
             "git ssh" = {
+              group = "srv-public";
               protocol = "ssh";
               domain = "git.sstork.dev";
             };
