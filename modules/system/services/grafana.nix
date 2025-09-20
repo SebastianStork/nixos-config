@@ -19,6 +19,13 @@ in
       default = 3000;
     };
     datasources = {
+      prometheus = {
+        enable = lib.mkEnableOption "";
+        url = lib.mkOption {
+          type = lib.types.nonEmptyStr;
+          default = "https://metrics.${config.custom.services.tailscale.domain}";
+        };
+      };
       victoriametrics = {
         enable = lib.mkEnableOption "";
         url = lib.mkOption {
@@ -69,34 +76,36 @@ in
         dashboards.settings = {
           # TODO: Uncomment when upgrading to 25.11
           # prune = true;
-          providers = [
-            {
-              name = "Dashboards";
-              disableDeletion = true;
-              options = {
-                path = "/etc/grafana-dashboards";
-                foldersFromFilesStructure = true;
-              };
-            }
-          ];
+          providers = lib.singleton {
+            name = "Dashboards";
+            options.path = "/etc/grafana-dashboards";
+          };
         };
 
         datasources.settings = {
           # TODO: Uncomment when upgrading to 25.11
           # prune = true;
           datasources =
-            (lib.optional cfg.datasources.victoriametrics.enable {
+            (lib.optional cfg.datasources.prometheus.enable {
+              name = "Prometheus";
+              type = "prometheus";
+              inherit (cfg.datasources.prometheus) url;
+              isDefault = true;
+              jsonData = {
+                prometheusType = "Prometheus";
+                prometheusVersion = "2.50.0";
+              };
+            })
+            ++ (lib.optional cfg.datasources.victoriametrics.enable {
               name = "VictoriaMetrics";
               type = "victoriametrics-metrics-datasource";
-              access = "proxy";
-              url = "https://metrics.${config.custom.services.tailscale.domain}";
-              isDefault = true;
+              inherit (cfg.datasources.victoriametrics) url;
+              isDefault = false;
             })
             ++ (lib.optional cfg.datasources.victorialogs.enable {
               name = "VictoriaLogs";
               type = "victoriametrics-logs-datasource";
-              access = "proxy";
-              url = "https://logs.${config.custom.services.tailscale.domain}";
+              inherit (cfg.datasources.victorialogs) url;
               isDefault = false;
             });
         };
@@ -108,19 +117,13 @@ in
         ++ (lib.optional cfg.datasources.victorialogs.enable victoriametrics-logs-datasource);
     };
 
-    environment.etc."grafana-dashboards/node-exporter-full.json".source =
-      lib.mkIf cfg.dashboards.node-exporter-full.enable
-        (
-          pkgs.fetchurl {
-            name = "node-exporter-full.json";
-            url = "https://grafana.com/api/dashboards/1860/revisions/41/download";
-            hash = "sha256-A6/4QjcMzkry68fSPwNdHq8i6SGwaKwZXVKDZB5h71A=";
-            downloadToTemp = true;
-            postFetch = ''
-              patch $downloadedFile < ${./patches/node-exporter-full.patch}
-              mv $downloadedFile $out
-            '';
-          }
-        );
+    environment.etc."grafana-dashboards/node-exporter-full.json" = {
+      enable = cfg.dashboards.node-exporter-full.enable;
+      source = pkgs.fetchurl {
+        name = "node-exporter-full.json";
+        url = "https://grafana.com/api/dashboards/1860/revisions/41/download";
+        hash = "sha256-EywgxEayjwNIGDvSmA/S56Ld49qrTSbIYFpeEXBJlTs=";
+      };
+    };
   };
 }

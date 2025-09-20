@@ -58,6 +58,7 @@
           enable = true;
           domain = "grafana.${tailscaleDomain}";
           datasources = {
+            prometheus.enable = true;
             victoriametrics.enable = true;
             victorialogs.enable = true;
           };
