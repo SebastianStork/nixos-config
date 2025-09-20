@@ -62,7 +62,10 @@
             victoriametrics.enable = true;
             victorialogs.enable = true;
           };
-          dashboards.node-exporter-full.enable = true;
+          dashboards = {
+            nodeExporter.enable = true;
+            victoriametrics.enable = true;
+          };
         };
 
         victoriametrics = {

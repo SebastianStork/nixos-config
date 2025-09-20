@@ -42,7 +42,13 @@ in
 
     services.victoriametrics = {
       enable = true;
-      package = pkgs-unstable.victoriametrics;
+      # The victoriametrics grafana-dashboard expects the version label to have the format `victoria-metrics-*`
+      package = pkgs-unstable.victoriametrics.overrideAttrs (
+        _: previousAttrs: {
+          version = "victoria-metrics-" + previousAttrs.version;
+          __intentionallyOverridingVersion = true;
+        }
+      );
       listenAddress = "localhost:${builtins.toString cfg.port}";
       extraOptions = [ "-selfScrapeInterval=15s" ];
     };
