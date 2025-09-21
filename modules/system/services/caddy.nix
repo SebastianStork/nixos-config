@@ -39,7 +39,7 @@ let
       '';
     };
 
-  ports = [
+  webPorts = [
     80
     443
   ];
@@ -79,14 +79,15 @@ in
   config = lib.mkIf (virtualHosts != { }) (
     lib.mkMerge [
       {
-        meta.ports.tcp.list = lib.mkIf nonTailscaleHostsExist ports;
+        meta.ports.tcp.list = lib.mkIf nonTailscaleHostsExist webPorts;
 
-        networking.firewall.allowedTCPPorts = lib.mkIf nonTailscaleHostsExist ports;
+        networking.firewall.allowedTCPPorts = [ 2019 ] ++ lib.optionals nonTailscaleHostsExist webPorts;
 
         services.caddy = {
           enable = true;
-          enableReload = false;
-          globalConfig = "admin off";
+          globalConfig = ''
+            metrics { per_host }
+          '';
           virtualHosts =
             virtualHosts
             |> lib.mapAttrs' (
