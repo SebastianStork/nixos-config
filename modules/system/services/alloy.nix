@@ -29,6 +29,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.collect.victorialogsMetrics -> config.services.victorialogs.enable;
+        message = "Collecting VictoriaLogs metrics requires the VictoriaLogs service to be enabled.";
+      }
+      {
+        assertion = cfg.collect.sshdLogs -> config.services.openssh.enable;
+        message = "Collecting OpenSSH logs requires the OpenSSH service to be enabled.";
+      }
+    ];
+
     meta = {
       domains.list = [ cfg.domain ];
       ports.tcp.list = [ cfg.port ];
