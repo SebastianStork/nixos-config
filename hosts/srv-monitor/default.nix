@@ -79,9 +79,9 @@
         alloy = {
           enable = true;
           domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
-          collect = {
-            hostMetrics = true;
-            victorialogsMetrics = true;
+          collect.metrics = {
+            system = true;
+            victorialogs = true;
           };
         };
 

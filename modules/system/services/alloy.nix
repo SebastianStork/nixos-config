@@ -22,20 +22,22 @@ in
       default = "https://logs.${config.custom.services.tailscale.domain}/insert/loki/api/v1/push";
     };
     collect = {
-      hostMetrics = lib.mkEnableOption "";
-      victorialogsMetrics = lib.mkEnableOption "";
-      sshdLogs = lib.mkEnableOption "";
+      metrics = {
+        system = lib.mkEnableOption "";
+        victorialogs = lib.mkEnableOption "";
+      };
+      logs.sshd = lib.mkEnableOption "";
     };
   };
 
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = cfg.collect.victorialogsMetrics -> config.services.victorialogs.enable;
+        assertion = cfg.collect.metrics.victorialogs -> config.services.victorialogs.enable;
         message = "Collecting VictoriaLogs metrics requires the VictoriaLogs service to be enabled.";
       }
       {
-        assertion = cfg.collect.sshdLogs -> config.services.openssh.enable;
+        assertion = cfg.collect.logs.sshd -> config.services.openssh.enable;
         message = "Collecting OpenSSH logs requires the OpenSSH service to be enabled.";
       }
     ];
@@ -53,57 +55,69 @@ in
       ];
     };
 
-    environment.etc = {
-      "alloy/endpoints.alloy".text = ''
-        prometheus.remote_write "default" {
-          endpoint {
-            url = "${cfg.metricsEndpoint}"
-          }
-        }
+    environment.etc =
+      let
+        isTrue = x: x;
+        anyIsTrue = attrs: attrs |> lib.attrValues |> lib.any isTrue;
+      in
+      {
+        "alloy/metrics-endpoint.alloy" = {
+          enable = cfg.collect.metrics |> anyIsTrue;
+          text = ''
+            prometheus.remote_write "default" {
+              endpoint {
+                url = "${cfg.metricsEndpoint}"
+              }
+            }
+          '';
+        };
+        "alloy/logs-endpoint.alloy" = {
+          enable = cfg.collect.logs |> anyIsTrue;
+          text = ''
+            loki.write "default" {
+              endpoint {
+                url = "${cfg.logsEndpoint}"
+              }
+            }
+          '';
+        };
+        "alloy/system-metrics.alloy" = {
+          enable = cfg.collect.metrics.system;
+          text = ''
+            prometheus.exporter.unix "default" {
+              enable_collectors = ["systemd"]
+            }
 
-        loki.write "default" {
-          endpoint {
-            url = "${cfg.logsEndpoint}"
-          }
-        }
-      '';
-
-      "alloy/host-metrics.alloy" = lib.mkIf cfg.collect.hostMetrics {
-        text = ''
-          prometheus.exporter.unix "default" {
-            enable_collectors = ["systemd"]
-          }
-
-          prometheus.scrape "node_exporter" {
-            targets         = prometheus.exporter.unix.default.targets
-            forward_to      = [prometheus.remote_write.default.receiver]
-            scrape_interval = "15s"
-          }
-        '';
+            prometheus.scrape "node_exporter" {
+              targets         = prometheus.exporter.unix.default.targets
+              forward_to      = [prometheus.remote_write.default.receiver]
+              scrape_interval = "15s"
+            }
+          '';
+        };
+        "alloy/victorialogs-metrics.alloy" = {
+          enable = cfg.collect.metrics.victorialogs;
+          text = ''
+            prometheus.scrape "victorialogs" {
+              targets = [{
+                __address__ = "localhost:${builtins.toString config.custom.services.victorialogs.port}",
+                job         = "victorialogs",
+                instance    = constants.hostname,
+              }]
+              forward_to      = [prometheus.remote_write.default.receiver]
+              scrape_interval = "15s"
+            }
+          '';
+        };
+        "alloy/sshd-logs.alloy" = {
+          enable = cfg.collect.logs.sshd;
+          text = ''
+            loki.source.journal "sshd" {
+              matches    = "_SYSTEMD_UNIT=sshd.service"
+              forward_to = [loki.write.default.receiver]
+            }
+          '';
+        };
       };
-
-      "alloy/victorialogs-metrics.alloy" = lib.mkIf cfg.collect.victorialogsMetrics {
-        text = ''
-          prometheus.scrape "victorialogs" {
-            targets = [{
-              __address__ = "localhost:${builtins.toString config.custom.services.victorialogs.port}",
-              job         = "victorialogs",
-              instance    = constants.hostname,
-            }]
-            forward_to      = [prometheus.remote_write.default.receiver]
-            scrape_interval = "15s"
-          }
-        '';
-      };
-
-      "alloy/sshd-logs.alloy" = lib.mkIf cfg.collect.sshdLogs {
-        text = ''
-          loki.source.journal "sshd" {
-            matches    = "_SYSTEMD_UNIT=sshd.service"
-            forward_to = [loki.write.default.receiver]
-          }
-        '';
-      };
-    };
   };
 }
