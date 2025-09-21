@@ -46,9 +46,10 @@ in
 
     services.victorialogs = {
       enable = true;
+      # The victorialogs grafana-dashboard expects the version label to have the format `victoria-logs-*`
       package = pkgs-unstable.victorialogs.overrideAttrs (
         _: previousAttrs: {
-          version = "victoria-logs-" + previousAttrs.version;
+          version = "victoria-logs-${previousAttrs.version}";
           __intentionallyOverridingVersion = true;
         }
       );

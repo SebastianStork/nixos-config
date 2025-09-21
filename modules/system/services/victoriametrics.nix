@@ -45,7 +45,7 @@ in
       # The victoriametrics grafana-dashboard expects the version label to have the format `victoria-metrics-*`
       package = pkgs-unstable.victoriametrics.overrideAttrs (
         _: previousAttrs: {
-          version = "victoria-metrics-" + previousAttrs.version;
+          version = "victoria-metrics-${previousAttrs.version}";
           __intentionallyOverridingVersion = true;
         }
       );
