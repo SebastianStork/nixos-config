@@ -82,6 +82,7 @@
           collect.metrics = {
             system = true;
             victorialogs = true;
+            caddy = true;
           };
         };
 

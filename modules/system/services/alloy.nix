@@ -25,6 +25,7 @@ in
       metrics = {
         system = lib.mkEnableOption "";
         victorialogs = lib.mkEnableOption "";
+        caddy = lib.mkEnableOption "";
       };
       logs.sshd = lib.mkEnableOption "";
     };
@@ -35,6 +36,10 @@ in
       {
         assertion = cfg.collect.metrics.victorialogs -> config.services.victorialogs.enable;
         message = "Collecting VictoriaLogs metrics requires the VictoriaLogs service to be enabled.";
+      }
+      {
+        assertion = cfg.collect.metrics.caddy -> config.services.caddy.enable;
+        message = "Collecting Caddy metrics requires the Caddy service to be enabled.";
       }
       {
         assertion = cfg.collect.logs.sshd -> config.services.openssh.enable;
@@ -101,7 +106,19 @@ in
             prometheus.scrape "victorialogs" {
               targets = [{
                 __address__ = "localhost:${builtins.toString config.custom.services.victorialogs.port}",
-                job         = "victorialogs",
+                instance    = constants.hostname,
+              }]
+              forward_to      = [prometheus.remote_write.default.receiver]
+              scrape_interval = "15s"
+            }
+          '';
+        };
+        "alloy/caddy-metrics.alloy" = {
+          enable = cfg.collect.metrics.caddy;
+          text = ''
+            prometheus.scrape "caddy" {
+              targets = [{
+                __address__ = "localhost:2019",
                 instance    = constants.hostname,
               }]
               forward_to      = [prometheus.remote_write.default.receiver]

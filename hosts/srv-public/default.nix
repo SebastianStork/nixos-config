@@ -78,7 +78,10 @@
           enable = true;
           domain = "alloy-${config.networking.hostName}.${config.custom.services.tailscale.domain}";
           collect = {
-            metrics.system = true;
+            metrics = {
+              system = true;
+              caddy = true;
+            };
             logs.sshd = true;
           };
         };
