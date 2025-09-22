@@ -23,11 +23,19 @@ in
     };
     collect = {
       metrics = {
-        system = lib.mkEnableOption "";
-        victorialogs = lib.mkEnableOption "";
-        caddy = lib.mkEnableOption "";
+        system = lib.mkEnableOption "" // {
+          default = true;
+        };
+        victorialogs = lib.mkEnableOption "" // {
+          default = config.services.victorialogs.enable;
+        };
+        caddy = lib.mkEnableOption "" // {
+          default = config.services.caddy.enable;
+        };
       };
-      logs.sshd = lib.mkEnableOption "";
+      logs.sshd = lib.mkEnableOption "" // {
+        default = config.services.openssh.enable;
+      };
     };
   };
 

@@ -79,11 +79,6 @@
         alloy = {
           enable = true;
           domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
-          collect.metrics = {
-            system = true;
-            victorialogs = true;
-            caddy = true;
-          };
         };
 
         caddy.virtualHosts =
