@@ -11,7 +11,7 @@
     assertions = [
       {
         assertion = config.custom.programs.rofi.enable;
-        message = "cliphist requires rofi";
+        message = "Cliphist requires Rofi.";
       }
     ];
 

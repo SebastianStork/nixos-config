@@ -39,11 +39,11 @@ in
     assertions = [
       {
         assertion = tailscaleCfg.enable;
-        message = "syncthing requires tailscale";
+        message = "Syncthing requires tailscale.";
       }
       {
         assertion = cfg.doBackups -> cfg.isServer;
-        message = "syncthing backups can only be performed on a server";
+        message = "Syncthing backups can only be performed on a server.";
       }
     ];
 

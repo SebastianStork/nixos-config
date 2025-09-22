@@ -10,7 +10,7 @@
             inherit (moduleArgs.osConfig.services) geoclue2;
           in
           geoclue2.enable or true && geoclue2.appConfig.gammastep.isAllowed or true;
-        message = "gammastep requires geoclue";
+        message = "Gammastep requires Geoclue2";
       }
     ];
 
