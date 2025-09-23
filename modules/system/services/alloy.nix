@@ -114,6 +114,7 @@ in
             prometheus.scrape "victorialogs" {
               targets = [{
                 __address__ = "localhost:${builtins.toString config.custom.services.victorialogs.port}",
+                job         = "victorialogs",
                 instance    = constants.hostname,
               }]
               forward_to      = [prometheus.remote_write.default.receiver]
@@ -127,6 +128,7 @@ in
             prometheus.scrape "caddy" {
               targets = [{
                 __address__ = "localhost:${builtins.toString config.custom.services.caddy.metrics.port}",
+                job         = "caddy",
                 instance    = constants.hostname,
               }]
               forward_to      = [prometheus.remote_write.default.receiver]
