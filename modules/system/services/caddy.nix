@@ -13,18 +13,14 @@ let
   isTailscaleDomain = domain: domain |> lib.hasSuffix config.custom.services.tailscale.domain;
 
   tailscaleHosts = virtualHosts |> lib.filter (value: isTailscaleDomain value.domain);
-  tailscaleHostsExist = tailscaleHosts != [ ];
-
   nonTailscaleHosts = virtualHosts |> lib.filter (value: !isTailscaleDomain value.domain);
-  nonTailscaleHostsExist = nonTailscaleHosts != [ ];
-
-  getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
-  getRootDomain = domain: domain |> lib.splitString "." |> lib.tail |> lib.concatStringsSep ".";
 
   webPorts = [
     80
     443
   ];
+
+  getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
 in
 {
   options.custom.services.caddy = {
@@ -95,7 +91,7 @@ in
         custom.persist.directories = [ "/var/lib/caddy" ];
       }
 
-      (lib.mkIf nonTailscaleHostsExist {
+      (lib.mkIf (nonTailscaleHosts != [ ]) {
         sops = {
           secrets."porkbun/api-key" = {
             owner = user;
@@ -127,6 +123,7 @@ in
           '';
           virtualHosts =
             let
+              getRootDomain = domain: domain |> lib.splitString "." |> lib.tail |> lib.concatStringsSep ".";
               mkWildCardDomain = name: values: {
                 name = "*.${name}";
                 value = {
@@ -147,11 +144,13 @@ in
                 };
               };
             in
-            nonTailscaleHosts |> lib.groupBy (x: x.domain |> getRootDomain) |> lib.mapAttrs' mkWildCardDomain;
+            nonTailscaleHosts
+            |> lib.groupBy (value: getRootDomain value.domain)
+            |> lib.mapAttrs' mkWildCardDomain;
         };
       })
 
-      (lib.mkIf tailscaleHostsExist {
+      (lib.mkIf (tailscaleHosts != [ ]) {
         sops.secrets."tailscale/service-auth-key" = {
           owner = user;
           restartUnits = [ "caddy.service" ];
