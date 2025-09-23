@@ -21,7 +21,7 @@ in
     validate = lib.mkEnableOption "";
   };
 
-  config = lib.mkIf cfg.validate {
+  config = {
     assertions =
       let
         findDuplicatePorts =
@@ -49,10 +49,9 @@ in
           |> lib.concatStrings;
 
         duplicateTcpPorts = findDuplicatePorts "tcp";
-
         duplicateUdpPorts = findDuplicatePorts "udp";
       in
-      [
+      lib.mkIf cfg.validate [
         {
           assertion = duplicateTcpPorts == { };
           message = mkErrorMessage duplicateTcpPorts;
@@ -62,5 +61,18 @@ in
           message = mkErrorMessage duplicateUdpPorts;
         }
       ];
+
+    meta.ports =
+      let
+        resolvedPorts = lib.mkIf config.services.resolved.enable [
+          53
+          5353
+          5355
+        ];
+      in
+      {
+        tcp.list = resolvedPorts;
+        udp.list = resolvedPorts;
+      };
   };
 }

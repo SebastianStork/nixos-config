@@ -21,7 +21,6 @@
     de.hyprland.enable = true;
 
     services = {
-      resolved.enable = true;
       gc.enable = true;
       wlan.enable = true;
       bluetooth.enable = true;

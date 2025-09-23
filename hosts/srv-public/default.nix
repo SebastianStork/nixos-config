@@ -20,7 +20,6 @@
         sproutedDomain = "sprouted.cloud";
       in
       {
-        resolved.enable = true;
         tailscale = {
           enable = true;
           ssh.enable = true;

@@ -22,7 +22,6 @@
         tailscaleDomain = config.custom.services.tailscale.domain;
       in
       {
-        resolved.enable = true;
         tailscale = {
           enable = true;
           ssh.enable = true;
