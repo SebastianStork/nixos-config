@@ -46,4 +46,10 @@
   ];
 
   fonts.fontconfig.enable = true;
+
+  home.file."Projects/.stignore".text = ''
+    (?d)target/
+    (?d).direnv/
+    (?d)result
+  '';
 }
