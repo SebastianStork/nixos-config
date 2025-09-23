@@ -31,6 +31,10 @@ in
     enable = lib.mkEnableOption "" // {
       default = virtualHosts != { };
     };
+    metrics.port = lib.mkOption {
+      type = lib.types.port;
+      default = 49514;
+    };
     virtualHosts = lib.mkOption {
       type = lib.types.attrsOf (
         lib.types.submodule (
@@ -63,9 +67,11 @@ in
     };
   };
 
-  config = lib.mkIf (virtualHosts != { }) (
+  config = lib.mkIf (virtualHosts != [ ]) (
     lib.mkMerge [
       {
+        meta.ports.tcp.list = [ cfg.metrics.port ];
+
         services.caddy = {
           enable = true;
           package = pkgs.caddy.withPlugins {
@@ -75,9 +81,15 @@ in
             ];
             hash = "sha256-117vurf98sK/4o3JU3rBwNBUjnZZyFRJ1mq5T1S1IxY=";
           };
+          enableReload = false;
           globalConfig = ''
+            admin off
             metrics { per_host }
           '';
+          virtualHosts.":${builtins.toString cfg.metrics.port}" = {
+            logFormat = "";
+            extraConfig = "metrics /metrics";
+          };
         };
 
         custom.persist.directories = [ "/var/lib/caddy" ];

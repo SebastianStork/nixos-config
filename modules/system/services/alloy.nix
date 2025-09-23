@@ -126,7 +126,7 @@ in
           text = ''
             prometheus.scrape "caddy" {
               targets = [{
-                __address__ = "localhost:2019",
+                __address__ = "localhost:${builtins.toString config.custom.services.caddy.metrics.port}",
                 instance    = constants.hostname,
               }]
               forward_to      = [prometheus.remote_write.default.receiver]
