@@ -10,10 +10,6 @@ in
 {
   options.custom.services.victorialogs = {
     enable = lib.mkEnableOption "";
-    maxDiskSpaceUsage = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "10GiB";
-    };
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
@@ -21,6 +17,10 @@ in
     port = lib.mkOption {
       type = lib.types.port;
       default = 9428;
+    };
+    maxDiskSpaceUsage = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "10GiB";
     };
   };
 

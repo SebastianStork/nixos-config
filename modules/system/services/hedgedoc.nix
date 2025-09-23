@@ -10,7 +10,6 @@ in
 {
   options.custom.services.hedgedoc = {
     enable = lib.mkEnableOption "";
-    doBackups = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
@@ -19,6 +18,7 @@ in
       type = lib.types.port;
       default = 3000;
     };
+    doBackups = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
