@@ -67,12 +67,12 @@
       systems = [ "x86_64-linux" ];
 
       imports = [
-        ./flake/dev-shell.nix
-        ./flake/formatter.nix
-        ./flake/hosts.nix
-        ./flake/modules.nix
-        ./flake/scripts.nix
-        ./flake/sops.nix
+        ./flake-parts/dev-shell.nix
+        ./flake-parts/formatter.nix
+        ./flake-parts/hosts.nix
+        ./flake-parts/modules.nix
+        ./flake-parts/scripts.nix
+        ./flake-parts/sops.nix
       ];
     };
 }
