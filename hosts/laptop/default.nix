@@ -25,7 +25,6 @@
       wlan.enable = true;
       bluetooth.enable = true;
       sound.enable = true;
-      geoclue.enable = true;
       tailscale = {
         enable = true;
         ssh.enable = true;

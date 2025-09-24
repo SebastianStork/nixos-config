@@ -27,7 +27,6 @@
         hypridle.enable = true;
         waybar.enable = true;
         cliphist.enable = true;
-        gammastep.enable = true;
       };
 
       programs = {
