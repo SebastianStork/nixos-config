@@ -50,6 +50,10 @@ in
       settings = {
         api.server.listen_uri = "localhost:${builtins.toString cfg.apiPort}";
         cscli.prometheus_uri = "http://localhost:${builtins.toString cfg.prometheusPort}";
+        prometheus = {
+          listen_addr = "localhost";
+          listen_port = cfg.prometheusPort;
+        };
       };
 
       allowLocalJournalAccess = true;
