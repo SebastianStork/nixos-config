@@ -18,6 +18,7 @@
     services.cliphist = {
       enable = true;
       allowImages = false;
+      extraOptions = [ ];
     };
 
     systemd.user.services.cliphist.Service.ExecStopPost =
