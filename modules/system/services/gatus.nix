@@ -67,6 +67,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    warnings = lib.optional (lib.versionAtLeast lib.version "25.11") "TODO: Use gatus package from stable nixpkgs";
+
     meta = {
       domains.list = [ cfg.domain ];
       ports.tcp.list = [ cfg.port ];

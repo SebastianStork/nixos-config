@@ -1,5 +1,6 @@
 {
   config,
+  modulesPath,
   inputs,
   lib,
   ...
@@ -24,6 +25,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    warnings = lib.optional (lib.pathExists "${modulesPath}/services/web-apps/filebrowser.nix") "TODO: Use filebrowser module from stable nixpkgs";
+
     meta = {
       domains.list = [ cfg.domain ];
       ports.tcp.list = [ cfg.port ];

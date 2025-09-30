@@ -25,6 +25,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    warnings = lib.optional (
+      (lib.versionAtLeast pkgs.forgejo.version pinnedVersion) && (pkgs.forgejo.version != pinnedVersion)
+    ) "TODO: Use forgejo package from stable nixpkgs";
+
     meta = {
       domains.list = [ cfg.domain ];
       ports.tcp.list = [ cfg.port ];
