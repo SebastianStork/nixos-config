@@ -37,20 +37,21 @@
 
         forgejo = {
           enable = true;
-          doBackups = true;
           domain = "git.sstork.dev";
+          doBackups = true;
           ssh.enable = true;
         };
 
         hedgedoc = {
           enable = true;
-          doBackups = true;
           domain = "docs.${sproutedDomain}";
+          doBackups = true;
         };
 
         outline = {
           enable = true;
           domain = "wiki.${sproutedDomain}";
+          doBackups = true;
         };
 
         it-tools = {
