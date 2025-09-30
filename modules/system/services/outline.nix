@@ -79,6 +79,9 @@ in
       restoreCommand.postRestore = "sudo --user=${user} pg_restore --clean --if-exists --dbname outline ${dataDir}/db.dump";
     };
 
-    custom.persist.directories = [ dataDir ];
+    custom.persist.directories = [
+      dataDir
+      config.services.postgresql.dataDir
+    ];
   };
 }
