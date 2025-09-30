@@ -1,6 +1,6 @@
 { config, ... }:
 {
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 
   meta = {
     domains.validate = true;
@@ -8,9 +8,11 @@
   };
 
   custom = {
+    impermanence.enable = true;
+
     sops = {
       enable = true;
-      agePublicKey = "age1g9fm9w3j2ep7qrqmq9wx09p3ynn3xm7elp36eursj2fvh6yw5q6st448jz";
+      agePublicKey = "age1tfgn62qe9264yzsw5svdppz57e3dhlzfcf043ecpg82mgny88gwsdxg9vz";
     };
 
     boot.loader.grub.enable = true;
