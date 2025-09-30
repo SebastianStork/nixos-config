@@ -78,8 +78,6 @@ in
         enable = true;
 
         dashboards.settings = {
-          # TODO: Uncomment when upgrading to 25.11
-          # prune = true;
           providers = lib.singleton {
             name = "Dashboards";
             options.path = "/etc/grafana-dashboards";
