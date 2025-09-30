@@ -1,11 +1,14 @@
 {
   config,
+  pkgs,
   pkgs-unstable,
   lib,
   ...
 }:
 let
   cfg = config.custom.services.forgejo;
+
+  pinnedVersion = "12.0.4";
 in
 {
   options.custom.services.forgejo = {
@@ -44,7 +47,17 @@ in
 
     services.forgejo = {
       enable = true;
-      package = pkgs-unstable.forgejo;
+      package = pkgs-unstable.forgejo.overrideAttrs {
+        version = pinnedVersion;
+        src = pkgs.fetchFromGitea {
+          domain = "codeberg.org";
+          owner = "forgejo";
+          repo = "forgejo";
+          rev = "refs/tags/v${pinnedVersion}";
+          hash = "sha256-g6PNJYiGR7tUpurVL1gvGzJzDoMCLmkGiLLsSZfkbYQ=";
+        };
+      };
+
       user = "git";
       group = "git";
 
