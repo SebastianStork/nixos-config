@@ -85,8 +85,7 @@ in
         };
 
         datasources.settings = {
-          # TODO: Uncomment when upgrading to 25.11
-          # prune = true;
+          prune = true;
           datasources =
             (lib.optional cfg.datasources.prometheus.enable {
               name = "Prometheus";
