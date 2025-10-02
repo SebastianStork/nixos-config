@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.custom.services.hedgedoc;
+  dataDir = "/var/lib/hedgedoc";
 in
 {
   options.custom.services.hedgedoc = {
@@ -57,7 +58,7 @@ in
 
     # Ensure session-secret
     systemd.services.hedgedoc.preStart = lib.mkBefore ''
-      secret_file="/var/lib/hedgedoc/session-secret"
+      secret_file="${dataDir}/session-secret"
 
       if [ ! -f $secret_file ]; then
         ${lib.getExe pkgs.pwgen} -s 64 1 > $secret_file
@@ -67,14 +68,16 @@ in
       export SESSION_SECRET
     '';
 
-    custom.services.resticBackups.hedgedoc = lib.mkIf cfg.doBackups {
-      conflictingService = "hedgedoc.service";
-      paths = with config.services.hedgedoc.settings; [
-        uploadsPath
-        db.storage
-      ];
-    };
+    custom = {
+      services.resticBackups.hedgedoc = lib.mkIf cfg.doBackups {
+        conflictingService = "hedgedoc.service";
+        paths = with config.services.hedgedoc.settings; [
+          uploadsPath
+          db.storage
+        ];
+      };
 
-    custom.persist.directories = [ "/var/lib/hedgedoc" ];
+      persist.directories = [ dataDir ];
+    };
   };
 }

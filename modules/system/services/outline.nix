@@ -6,9 +6,6 @@
 }:
 let
   cfg = config.custom.services.outline;
-
-  dataDir = "/var/lib/outline";
-  inherit (config.services.outline) user;
 in
 {
   options.custom.services.outline = {
@@ -70,18 +67,25 @@ in
 
     systemd.services.outline.enableStrictShellChecks = false;
 
-    custom.services.resticBackups.outline = lib.mkIf cfg.doBackups {
-      conflictingService = "outline.service";
-      paths = [ dataDir ];
-      extraConfig.backupPrepareCommand = ''
-        ${lib.getExe pkgs.sudo} --user=${user} ${lib.getExe' config.services.postgresql.package "pg_dump"} outline --format=custom --file=${dataDir}/db.dump
-      '';
-      restoreCommand.postRestore = "sudo --user=${user} pg_restore --clean --if-exists --dbname outline ${dataDir}/db.dump";
-    };
+    custom =
+      let
+        dataDir = "/var/lib/outline";
+        inherit (config.services.outline) user;
+      in
+      {
+        services.resticBackups.outline = lib.mkIf cfg.doBackups {
+          conflictingService = "outline.service";
+          paths = [ dataDir ];
+          extraConfig.backupPrepareCommand = ''
+            ${lib.getExe pkgs.sudo} --user=${user} ${lib.getExe' config.services.postgresql.package "pg_dump"} outline --format=custom --file=${dataDir}/db.dump
+          '';
+          restoreCommand.postRestore = "sudo --user=${user} pg_restore --clean --if-exists --dbname outline ${dataDir}/db.dump";
+        };
 
-    custom.persist.directories = [
-      dataDir
-      config.services.postgresql.dataDir
-    ];
+        persist.directories = [
+          dataDir
+          config.services.postgresql.dataDir
+        ];
+      };
   };
 }

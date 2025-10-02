@@ -107,6 +107,6 @@ in
       in
       lib.mkAfter collectionsScript;
 
-    custom.persist.directories = [ config.services.crowdsec.settings.config_paths.data_dir ];
+    custom.persist.directories = [ "/var/lib/crowdsec" ];
   };
 }

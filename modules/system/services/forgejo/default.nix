@@ -130,11 +130,13 @@ in
         fi
       '';
 
-    custom.services.resticBackups.forgejo = lib.mkIf cfg.doBackups {
-      conflictingService = "forgejo.service";
-      paths = [ config.services.forgejo.stateDir ];
-    };
+    custom = {
+      services.resticBackups.forgejo = lib.mkIf cfg.doBackups {
+        conflictingService = "forgejo.service";
+        paths = [ config.services.forgejo.stateDir ];
+      };
 
-    custom.persist.directories = [ config.services.forgejo.stateDir ];
+      persist.directories = [ config.services.forgejo.stateDir ];
+    };
   };
 }
