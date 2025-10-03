@@ -46,6 +46,11 @@
           domain = "calendar.${tailscaleDomain}";
         };
 
+        memos = {
+          enable = true;
+          domain = "memos.${tailscaleDomain}";
+        };
+
         actualbudget = {
           enable = true;
           doBackups = true;
@@ -70,6 +75,9 @@
             };
             radicale = {
               inherit (services.radicale) domain port;
+            };
+            memos = {
+              inherit (services.memos) domain port;
             };
             actualbudget = {
               inherit (services.actualbudget) domain port;
