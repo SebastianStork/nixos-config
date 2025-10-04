@@ -134,7 +134,7 @@ in
           text = ''
             prometheus.scrape "caddy" {
               targets = [{
-                __address__ = "localhost:${builtins.toString config.custom.services.caddy.metrics.port}",
+                __address__ = "localhost:${builtins.toString config.custom.services.caddy.metricsPort}",
                 job         = "caddy",
                 instance    = constants.hostname,
               }]

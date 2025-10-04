@@ -27,7 +27,7 @@ in
     enable = lib.mkEnableOption "" // {
       default = virtualHosts != { };
     };
-    metrics.port = lib.mkOption {
+    metricsPort = lib.mkOption {
       type = lib.types.port;
       default = 49514;
     };
@@ -66,7 +66,7 @@ in
   config = lib.mkIf (virtualHosts != [ ]) (
     lib.mkMerge [
       {
-        meta.ports.tcp.list = [ cfg.metrics.port ];
+        meta.ports.tcp.list = [ cfg.metricsPort ];
 
         services.caddy = {
           enable = true;
@@ -82,7 +82,7 @@ in
             admin off
             metrics { per_host }
           '';
-          virtualHosts.":${builtins.toString cfg.metrics.port}" = {
+          virtualHosts.":${builtins.toString cfg.metricsPort}" = {
             logFormat = "";
             extraConfig = "metrics /metrics";
           };
@@ -171,8 +171,8 @@ in
                 value = {
                   logFormat = "output file ${config.services.caddy.logDir}/${value.domain}.log { mode 640 }";
                   extraConfig = ''
-                    bind tailscale/${getSubdomain value.domain}
                     encode
+                    bind tailscale/${getSubdomain value.domain}
                     reverse_proxy localhost:${builtins.toString value.port} ${
                       lib.optionalString (value.extraReverseProxyConfig != "") "{ ${value.extraReverseProxyConfig} }"
                     }
