@@ -2,7 +2,6 @@
   config,
   inputs,
   pkgs,
-  pkgs-unstable,
   lib,
   ...
 }:
@@ -12,7 +11,7 @@
   config = lib.mkIf config.custom.programs.vscode.enable {
     programs.vscode = {
       enable = true;
-      package = pkgs-unstable.vscodium;
+      package = pkgs.vscodium;
       profiles.default.extensions =
         let
           inherit (inputs.vscode-extensions.extensions.${pkgs.system}) open-vsx;
