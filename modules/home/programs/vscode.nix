@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  osConfig,
   pkgs,
   pkgs-unstable,
   lib,
@@ -33,31 +34,34 @@
       let
         settings = lib.replaceStrings [ "," ] [ ",\\n" ] (
           builtins.toJSON {
+            "extensions.autoCheckUpdates" = false;
+            "editor.fontFamily" = "JetBrainsMono Nerd Font";
+            "workbench.iconTheme" = "material-icon-theme";
             "workbench.colorTheme" =
               {
                 dark = "GitHub Dark";
                 light = "GitHub Light";
               }
               .${config.custom.theme};
-            "workbench.iconTheme" = "material-icon-theme";
-            "editor.fontFamily" = "JetBrainsMono Nerd Font";
-            "explorer.confirmDelete" = false;
-            "explorer.confirmDragAndDrop" = false;
-            "extensions.autoCheckUpdates" = false;
-            "files.autoSave" = "afterDelay";
-            "git.autofetch" = true;
-            "git.confirmSync" = false;
-            "nix.enableLanguageServer" = true;
-            "nix.serverPath" = "${lib.getExe pkgs.nixd}";
-            "update.mode" = "none";
-            "git.suggestSmartCommit" = false;
             "workbench.sideBar.location" = "right";
+            "workbench.editor.decorations.colors" = false;
             "editor.renderWhitespace" = "none";
             "editor.minimap.enabled" = false;
+            "editor.formatOnSave" = true;
+            "explorer.confirmDelete" = false;
+            "explorer.confirmDragAndDrop" = false;
+            "files.autoSave" = "afterDelay";
+            "update.mode" = "none";
             "window.menuBarVisibility" = "toggle";
-            "workbench.editor.decorations.colors" = false;
             "window.titleBarStyle" = "native";
             "window.customTitleBarVisibility" = "never";
+            "git.autofetch" = true;
+            "git.confirmSync" = false;
+            "git.suggestSmartCommit" = false;
+            "nix.enableLanguageServer" = true;
+            "nix.serverPath" = lib.getExe pkgs.nixd;
+            "nix.formatterPath" = lib.getExe pkgs.nixfmt-rfc-style;
+            "nix.serverSettings.nixd.formatting.command" = [ (lib.getExe pkgs.nixfmt-rfc-style) ];
           }
         );
       in
