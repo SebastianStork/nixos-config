@@ -1,7 +1,6 @@
 {
   config,
   inputs,
-  osConfig,
   pkgs,
   pkgs-unstable,
   lib,
