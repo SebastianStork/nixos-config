@@ -69,5 +69,7 @@
         "f+ %h/.config/VSCodium/User/settings.json - - - - ${settings}"
         "f+ %h/.config/VSCodium/User/settings-default.json - - - - ${settings}"
       ];
+
+    home.shellAliases.code = "codium";
   };
 }
