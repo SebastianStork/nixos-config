@@ -36,31 +36,32 @@ in
           default = config.services.crowdsec.enable;
         };
       };
-      logs.sshd = lib.mkEnableOption "" // {
+      logs.openssh = lib.mkEnableOption "" // {
         default = config.services.openssh.enable;
       };
     };
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = cfg.collect.metrics.victorialogs -> config.services.victorialogs.enable;
-        message = "Collecting VictoriaLogs metrics requires the VictoriaLogs service to be enabled.";
-      }
-      {
-        assertion = cfg.collect.metrics.caddy -> config.services.caddy.enable;
-        message = "Collecting Caddy metrics requires the Caddy service to be enabled.";
-      }
-      {
-        assertion = cfg.collect.metrics.crowdsec -> config.services.crowdsec.enable;
-        message = "Collecting CrowdSec metrics requires the CrowdSec service to be enabled.";
-      }
-      {
-        assertion = cfg.collect.logs.sshd -> config.services.openssh.enable;
-        message = "Collecting OpenSSH logs requires the OpenSSH service to be enabled.";
-      }
-    ];
+    assertions =
+      let
+        metricsAssertions =
+          cfg.collect.metrics
+          |> lib.attrNames
+          |> lib.filter (name: name != "system")
+          |> lib.map (name: {
+            assertion = cfg.collect.metrics.${name} -> config.services.${name}.enable;
+            message = "Collecting ${name} metrics requires the ${name} service to be enabled.";
+          });
+        logsAssertions =
+          cfg.collect.logs
+          |> lib.attrNames
+          |> lib.map (name: {
+            assertion = cfg.collect.logs.${name} -> config.services.${name}.enable;
+            message = "Collecting ${name} logs requires the ${name} service to be enabled.";
+          });
+      in
+      metricsAssertions ++ logsAssertions;
 
     meta = {
       domains.list = [ cfg.domain ];
@@ -158,7 +159,7 @@ in
           '';
         };
         "alloy/sshd-logs.alloy" = {
-          enable = cfg.collect.logs.sshd;
+          enable = cfg.collect.logs.openssh;
           text = ''
             loki.source.journal "sshd" {
               matches    = "_SYSTEMD_UNIT=sshd.service"
