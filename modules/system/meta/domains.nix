@@ -42,14 +42,15 @@ in
             })
           )
           |> lib.groupBy (entry: builtins.toString entry.domain)
-          |> lib.filterAttrs (_: entries: lib.length entries > 1);
+          |> lib.mapAttrs (_: values: values |> lib.map (value: value.file))
+          |> lib.filterAttrs (_: files: lib.length files > 1);
 
         errorMessage =
           duplicateDomains
           |> lib.mapAttrsToList (
-            domain: entries:
-            "Duplicate domain \"${domain}\" found in:\n"
-            + (entries |> lib.map (entry: "  - ${entry.file}") |> lib.concatLines)
+            domain: files:
+            "Duplicate domain `${domain}` found in:\n"
+            + (files |> lib.map (file: "  - ${file}") |> lib.concatLines)
           )
           |> lib.concatStrings;
       in

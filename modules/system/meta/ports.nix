@@ -36,15 +36,15 @@ in
             })
           )
           |> lib.groupBy (entry: builtins.toString entry.port)
-          |> lib.filterAttrs (_: entries: lib.length entries > 1);
+          |> lib.mapAttrs (_: values: values |> lib.map (value: value.file))
+          |> lib.filterAttrs (_: files: lib.length files > 1);
 
         mkErrorMessage =
           duplicatePorts:
           duplicatePorts
           |> lib.mapAttrsToList (
-            port: entries:
-            "Duplicate port ${port} found in:\n"
-            + (entries |> lib.map (entry: "  - ${entry.file}") |> lib.concatLines)
+            port: files:
+            "Duplicate port `${port}` found in:\n" + (files |> lib.map (file: "  - ${file}") |> lib.concatLines)
           )
           |> lib.concatStrings;
 
