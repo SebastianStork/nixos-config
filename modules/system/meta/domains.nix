@@ -17,7 +17,8 @@ in
       type = lib.types.listOf lib.types.nonEmptyStr;
       default =
         self.nixosConfigurations
-        |> lib.mapAttrsToList (_: value: value.config.meta.domains.list)
+        |> lib.attrValues
+        |> lib.map (value: value.config.meta.domains.list)
         |> lib.concatLists;
       readOnly = true;
     };
@@ -29,7 +30,8 @@ in
       let
         duplicateDomains =
           self.nixosConfigurations
-          |> lib.mapAttrsToList (_: value: value.options.meta.domains.list.definitionsWithLocations)
+          |> lib.attrValues
+          |> lib.map (value: value.options.meta.domains.list.definitionsWithLocations)
           |> lib.concatLists
           |> lib.concatMap (
             entry:

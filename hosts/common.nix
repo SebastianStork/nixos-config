@@ -16,7 +16,7 @@
     {
       channel.enable = false;
       registry = flakeInputs |> lib.mapAttrs (_: flake: { inherit flake; });
-      nixPath = flakeInputs |> lib.mapAttrsToList (name: _: "${name}=flake:${name}");
+      nixPath = flakeInputs |> lib.attrNames |> lib.map (name: "${name}=flake:${name}");
 
       settings = {
         flake-registry = "";

@@ -43,7 +43,7 @@ in
     };
 
     systemd.tmpfiles.rules =
-      resticBackups |> lib.mapAttrsToList (name: _: "d /var/cache/restic-backups-${name} 700 - - -");
+      resticBackups |> lib.attrNames |> lib.map (name: "d /var/cache/restic-backups-${name} 700 - - -");
 
     services.restic.backups =
       resticBackups

@@ -24,13 +24,15 @@
 
           hostCreationRules =
             self.nixosConfigurations
-            |> lib.filterAttrs (_: value: value.config.custom.sops.enable or false)
-            |> lib.mapAttrsToList (_: value: mkCreationRule value.config.custom.sops);
+            |> lib.attrValues
+            |> lib.filter (value: value.config.custom.sops.enable or false)
+            |> lib.map (value: mkCreationRule value.config.custom.sops);
 
           userCreationRules =
             self.nixosConfigurations
-            |> lib.filterAttrs (_: value: value.config.home-manager.users.seb.custom.sops.enable or false)
-            |> lib.mapAttrsToList (_: value: mkCreationRule value.config.home-manager.users.seb.custom.sops);
+            |> lib.attrValues
+            |> lib.filter (value: value.config.home-manager.users.seb.custom.sops.enable or false)
+            |> lib.map (value: mkCreationRule value.config.home-manager.users.seb.custom.sops);
 
           jsonConfig = { creation_rules = hostCreationRules ++ userCreationRules; } |> lib.strings.toJSON;
         in
