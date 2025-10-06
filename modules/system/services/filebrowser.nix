@@ -7,6 +7,11 @@
 }:
 let
   cfg = config.custom.services.filebrowser;
+
+  dataDirs = with config.services.filebrowser.settings; [
+    database
+    root
+  ];
 in
 {
   imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/web-apps/filebrowser.nix" ];
@@ -40,12 +45,13 @@ in
       };
     };
 
-    custom.services.resticBackups.filebrowser = lib.mkIf cfg.doBackups {
-      conflictingService = "filebrowser.service";
-      paths = with config.services.filebrowser.settings; [
-        database
-        root
-      ];
+    custom = {
+      services.resticBackups.filebrowser = lib.mkIf cfg.doBackups {
+        conflictingService = "filebrowser.service";
+        paths = dataDirs;
+      };
+      
+      persist.directories = dataDirs;
     };
   };
 }

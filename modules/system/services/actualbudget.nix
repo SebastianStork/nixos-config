@@ -1,6 +1,8 @@
 { config, lib, ... }:
 let
   cfg = config.custom.services.actualbudget;
+
+  inherit (config.services.actual.settings) dataDir;
 in
 {
   options.custom.services.actualbudget = {
@@ -30,9 +32,13 @@ in
       };
     };
 
-    custom.services.resticBackups.actual = lib.mkIf cfg.doBackups {
-      conflictingService = "actual.service";
-      paths = [ config.services.actual.settings.dataDir ];
+    custom = {
+      services.resticBackups.actual = lib.mkIf cfg.doBackups {
+        conflictingService = "actual.service";
+        paths = [ dataDir ];
+      };
+
+      persist.directories = [ dataDir ];
     };
   };
 }

@@ -8,6 +8,8 @@ let
   cfg = config.custom.services.syncthing;
   tailscaleCfg = config.custom.services.tailscale;
 
+  inherit (config.services.syncthing) dataDir;
+
   useStaticTls = config.custom.sops.secrets |> lib.hasAttr "syncthing";
 in
 {
@@ -99,7 +101,7 @@ in
             genFolders =
               folders:
               lib.genAttrs folders (name: {
-                path = "${config.services.syncthing.dataDir}/${name}";
+                path = "${dataDir}/${name}";
                 ignorePerms = false;
                 devices = config.services.syncthing.settings.devices |> lib.attrNames;
               });
@@ -125,9 +127,13 @@ in
       };
     };
 
-    custom.services.resticBackups.syncthing = lib.mkIf cfg.doBackups {
-      conflictingService = "syncthing.service";
-      paths = [ config.services.syncthing.dataDir ];
+    custom = {
+      services.resticBackups.syncthing = lib.mkIf cfg.doBackups {
+        conflictingService = "syncthing.service";
+        paths = [ dataDir ];
+      };
+
+      persist.directories = [ dataDir ];
     };
   };
 }

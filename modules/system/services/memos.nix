@@ -43,5 +43,7 @@ in
         MEMOS_INSTANCE_URL = "https://${cfg.domain}";
       };
     };
+
+    custom.persist.directories = [ config.services.memos.settings.MEMOS_DATA ];
   };
 }

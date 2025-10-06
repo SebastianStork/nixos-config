@@ -7,6 +7,8 @@
 }:
 let
   cfg = config.custom.services.radicale;
+
+  dataDir = config.services.radicale.settings.storage.filesystem_folder;
 in
 {
   options.custom.services.radicale = {
@@ -88,7 +90,7 @@ in
           name = "radicale-git-init";
           runtimeInputs = [ pkgs.git ];
           text = ''
-            cd ${config.services.radicale.settings.storage.filesystem_folder}
+            cd ${dataDir}
 
             if [[ ! -e .git ]]; then
               git init --initial-branch main
@@ -106,9 +108,12 @@ in
         }
       );
 
-    custom.services.resticBackups.radicale = lib.mkIf cfg.doBackups {
-      conflictingService = "radicale.service";
-      paths = [ config.services.radicale.settings.storage.filesystem_folder ];
+    custom = {
+      services.resticBackups.radicale = lib.mkIf cfg.doBackups {
+        conflictingService = "radicale.service";
+        paths = [ dataDir ];
+      };
+      persist.directories = [ dataDir ];
     };
   };
 }
