@@ -8,11 +8,12 @@
   nixpkgs.hostPlatform = "x86_64-linux";
 
   boot.initrd.availableKernelModules = [
-    "ata_piix"
-    "uhci_hcd"
+    "ahci"
+    "xhci_pci"
     "virtio_pci"
+    "virtio_scsi"
+    "sd_mod"
     "sr_mod"
-    "virtio_blk"
   ];
 
   zramSwap.enable = true;
@@ -20,23 +21,27 @@
   networking.useDHCP = false;
   systemd.network = {
     enable = true;
-    networks."10-ens3" = {
-      matchConfig.Name = "ens3";
+    networks."10-enp1s0" = {
+      matchConfig.Name = "enp1s0";
+      linkConfig.RequiredForOnline = "routable";
+      networkConfig.DHCP = "no";
       address = [
-        "152.53.85.193/22"
-        "2a0a:4cc0:c0:23bd::1/64"
+        "138.199.200.104/32"
+        "2a01:4f8:1c1a:732c::1/64"
       ];
       routes = [
-        { Gateway = "152.53.84.1"; }
+        {
+          Gateway = "172.31.1.1";
+          GatewayOnLink = true;
+        }
         { Gateway = "fe80::1"; }
       ];
       dns = [
-        "46.38.225.230"
-        "46.38.252.230"
-        "2a03:4000:0:1::e1e6"
-        "2a03:4000:8000::fce6"
+        "1.1.1.1"
+        "8.8.8.8"
+        "2606:4700:4700::1111"
+        "2001:4860:4860::8888"
       ];
-      linkConfig.RequiredForOnline = "routable";
     };
   };
 }

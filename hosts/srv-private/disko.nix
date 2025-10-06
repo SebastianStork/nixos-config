@@ -1,41 +1,52 @@
 {
   disko.devices = {
-    disk.disk1 = {
-      device = "/dev/vda";
+    disk.main = {
+      device = "/dev/sda";
       type = "disk";
       content = {
         type = "gpt";
         partitions = {
+          boot = {
+            size = "1M";
+            type = "EF02";
+          };
           ESP = {
-            type = "EF00";
             size = "512M";
+            type = "EF00";
             content = {
               type = "filesystem";
               format = "vfat";
               mountpoint = "/boot";
+              mountOptions = [ "umask=0077" ];
             };
           };
-          root = {
+          nix = {
+            size = "20G";
+            content = {
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/nix";
+              mountOptions = [ "noatime" ];
+            };
+          };
+          persist = {
             size = "100%";
             content = {
-              type = "lvm_pv";
-              vg = "pool";
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/persist";
+              mountOptions = [ "noatime" ];
             };
           };
         };
       };
     };
-    lvm_vg.pool = {
-      type = "lvm_vg";
-      lvs.root = {
-        size = "100%FREE";
-        content = {
-          type = "filesystem";
-          format = "ext4";
-          mountpoint = "/";
-          mountOptions = [ "defaults" ];
-        };
-      };
+    nodev."/" = {
+      fsType = "tmpfs";
+      mountOptions = [
+        "defaults"
+        "mode=755"
+      ];
     };
   };
 }

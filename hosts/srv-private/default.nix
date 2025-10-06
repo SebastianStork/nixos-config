@@ -1,6 +1,6 @@
 { config, ... }:
 {
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 
   meta = {
     domains.validate = true;
@@ -8,9 +8,11 @@
   };
 
   custom = {
+    impermanence.enable = true;
+
     sops = {
       enable = true;
-      agePublicKey = "age1qz04yg4h4g22wxqca2pd5k0z574223f6m5c9jy5ny37nlgcd6u4styf06t";
+      agePublicKey = "age1rp7lrakhlnnhzcgjtut8ncamem6wjrtna3e9mgdkt3dqd9dvk3usa5tzk5";
     };
 
     boot.loader.systemd-boot.enable = true;
