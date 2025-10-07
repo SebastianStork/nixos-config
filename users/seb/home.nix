@@ -19,7 +19,6 @@
   home.packages = [
     pkgs.bottom
     pkgs.fastfetch
-    pkgs.dust
 
     pkgs.nemo-with-extensions
     pkgs.celluloid

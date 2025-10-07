@@ -78,6 +78,7 @@
     pkgs.git
     pkgs.just
     pkgs.nh
+    pkgs.dust
     (lib.hiPrio pkgs.uutils-coreutils-noprefix)
   ];
 
