@@ -9,10 +9,11 @@
 
     programs = {
       shell.zsh.enable = true;
-      kitty.enable = true;
-      firefox.enable = true;
       git.enable = true;
+      kitty.enable = true;
       vscode.enable = true;
+      firefox.enable = true;
+      libreoffice.enable = true;
     };
   };
 
@@ -26,11 +27,6 @@
     pkgs.obsidian
     pkgs.anki
     pkgs.discord
-
-    pkgs.libreoffice
-    pkgs.hunspell
-    pkgs.hunspellDicts.de_DE
-    pkgs.hunspellDicts.en_US
 
     pkgs.corefonts
     pkgs.roboto
