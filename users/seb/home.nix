@@ -2,7 +2,7 @@
 {
   imports = [ ../common-home.nix ];
 
-  home.sessionVariables.FLAKE = "~/Projects/nixos-config";
+  home.sessionVariables.NH_FLAKE = "~/Projects/nixos-config";
 
   custom = {
     sops.enable = true;
