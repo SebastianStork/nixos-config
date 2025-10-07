@@ -8,7 +8,11 @@
     sops.enable = true;
 
     programs = {
-      shell.zsh.enable = true;
+      shell = {
+        zsh.enable = true;
+        aliases.enable = true;
+        direnv.enable = true;
+      };
       git.enable = true;
       kitty.enable = true;
       vscode.enable = true;
