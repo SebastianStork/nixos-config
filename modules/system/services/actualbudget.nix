@@ -29,7 +29,7 @@ in
         isSystemUser = true;
         group = config.users.groups.actual.name;
       };
-      groups.actual = {};
+      groups.actual = { };
     };
 
     systemd.services.actual.serviceConfig = {
