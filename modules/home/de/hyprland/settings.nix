@@ -72,7 +72,7 @@
 
         "special:music, on-created-empty:spotify"
         "special:chat, on-created-empty:discord"
-        "special:flake, on-created-empty:kitty --directory ${config.home.sessionVariables.NH_FLAKE}"
+        "special:flake, on-created-empty:kitty --directory ${config.home.sessionVariables.FLAKE}"
         "special:monitor, on-created-empty:kitty btm"
         "special:files, on-created-empty:nemo"
       ];
