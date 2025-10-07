@@ -9,6 +9,8 @@
 }:
 let
   cfg = config.custom.services.memos;
+
+  dataDir = config.services.memos.settings.MEMOS_DATA;
 in
 {
   imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/misc/memos.nix" ];
@@ -23,6 +25,7 @@ in
       type = lib.types.port;
       default = 5230;
     };
+    doBackups = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -44,6 +47,13 @@ in
       };
     };
 
-    custom.persist.directories = [ config.services.memos.settings.MEMOS_DATA ];
+    custom = {
+      services.resticBackups.memos = lib.mkIf cfg.doBackups {
+        conflictingService = "memos.service";
+        paths = [ dataDir ];
+      };
+
+      persist.directories = [ dataDir ];
+    };
   };
 }

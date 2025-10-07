@@ -38,25 +38,26 @@
 
         filebrowser = {
           enable = true;
-          doBackups = true;
           domain = "files.${tailscaleDomain}";
+          doBackups = true;
         };
 
         radicale = {
           enable = true;
-          doBackups = true;
           domain = "calendar.${tailscaleDomain}";
+          doBackups = true;
         };
 
         memos = {
           enable = true;
           domain = "memos.${tailscaleDomain}";
+          doBackups = true;
         };
 
         actualbudget = {
           enable = true;
-          doBackups = true;
           domain = "budget.${tailscaleDomain}";
+          doBackups = true;
         };
 
         alloy = {
