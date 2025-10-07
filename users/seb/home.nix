@@ -28,11 +28,6 @@
     pkgs.anki
     pkgs.discord
 
-    pkgs.jetbrains.idea-community
-    pkgs.jetbrains.goland
-    pkgs.jetbrains.clion
-    pkgs.qtcreator
-
     pkgs.libreoffice
     pkgs.hunspell
     pkgs.hunspellDicts.de_DE
