@@ -44,12 +44,6 @@
           ssh.enable = true;
         };
 
-        hedgedoc = {
-          enable = true;
-          domain = "docs.${sproutedDomain}";
-          doBackups = true;
-        };
-
         outline = {
           enable = true;
           domain = "wiki.${sproutedDomain}";
@@ -88,9 +82,6 @@
           {
             forgejo = {
               inherit (services.forgejo) domain port;
-            };
-            hedgedoc = {
-              inherit (services.hedgedoc) domain port;
             };
             outline = {
               inherit (services.outline) domain port;
