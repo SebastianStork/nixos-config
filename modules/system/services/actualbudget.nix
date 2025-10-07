@@ -24,6 +24,20 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
+    users = {
+      users.actual = {
+        isSystemUser = true;
+        group = config.users.groups.actual.name;
+      };
+      groups.actual = {};
+    };
+
+    systemd.services.actual.serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      PrivateTmp = true;
+      RemoveIPC = true;
+    };
+
     services.actual = {
       enable = true;
       settings = {
