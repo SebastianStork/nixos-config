@@ -113,9 +113,14 @@ in
       };
 
       declarativePlugins =
-        with pkgs.grafanaPlugins;
-        (lib.optional cfg.datasources.victoriametrics.enable victoriametrics-metrics-datasource)
-        ++ (lib.optional cfg.datasources.victorialogs.enable victoriametrics-logs-datasource);
+        let
+          plugins = pkgs.grafanaPlugins;
+        in
+        [
+          (lib.optional cfg.datasources.victoriametrics.enable plugins.victoriametrics-metrics-datasource)
+          (lib.optional cfg.datasources.victorialogs.enable plugins.victoriametrics-logs-datasource)
+        ]
+        |> lib.concatLists;
     };
 
     environment.etc = {

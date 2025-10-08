@@ -71,10 +71,14 @@ in
     custom = {
       services.resticBackups.hedgedoc = lib.mkIf cfg.doBackups {
         conflictingService = "hedgedoc.service";
-        paths = with config.services.hedgedoc.settings; [
-          uploadsPath
-          db.storage
-        ];
+        paths =
+          let
+            inherit (config.services.hedgedoc) settings;
+          in
+          [
+            settings.uploadsPath
+            settings.db.storage
+          ];
       };
 
       persist.directories = [ dataDir ];

@@ -53,12 +53,10 @@ in
               runtimeInputs = [
                 pkgs.git
                 pkgs.gawk
-                (pkgs.python3.withPackages (
-                  python-pkgs: with python-pkgs; [
-                    dateutil
-                    vobject
-                  ]
-                ))
+                (pkgs.python3.withPackages (python-pkgs: [
+                  python-pkgs.dateutil
+                  python-pkgs.vobject
+                ]))
               ];
               text = ''
                 username="$1"
