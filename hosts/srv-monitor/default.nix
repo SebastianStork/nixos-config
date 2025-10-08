@@ -41,7 +41,6 @@
               protocol = "ssh";
               domain = "git.sstork.dev";
             };
-            "speedtest".protocol = "http";
           };
         };
 

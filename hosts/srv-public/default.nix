@@ -70,11 +70,6 @@
           branding.name = "SproutedBin";
         };
 
-        openspeedtest = {
-          enable = true;
-          domain = "speedtest.${sproutedDomain}";
-        };
-
         alloy = {
           enable = true;
           domain = "alloy-${config.networking.hostName}.${config.custom.services.tailscale.domain}";
@@ -99,15 +94,6 @@
             };
             privatebin = {
               inherit (services.privatebin) domain port;
-            };
-            openspeedtest = {
-              inherit (services.openspeedtest) domain port;
-              tls = false;
-              extraReverseProxyConfig = ''
-                request_buffers 35MiB
-                response_buffers 35MiB
-                flush_interval -1
-              '';
             };
             alloy = {
               inherit (services.alloy) domain port;
