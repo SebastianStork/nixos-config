@@ -140,7 +140,12 @@ in
                         }
                       '';
                     in
-                    values |> lib.map (value: mkHostConfig value) |> lib.concatLines;
+                    (values |> lib.map (value: mkHostConfig value) |> lib.concatLines)
+                    + ''
+                      handle {
+                        respond 404
+                      }
+                    '';
                 };
               };
             in
