@@ -131,7 +131,6 @@ in
                   extraConfig =
                     let
                       mkHostConfig = value: ''
-                        encode
                         import subdomain-log ${value.domain}
                         @${value.domain |> getSubdomain} host ${(lib.optionalString (!value.tls) "http://") + value.domain}
                         handle @${value.domain |> getSubdomain} {
@@ -171,7 +170,6 @@ in
                 value = {
                   logFormat = "output file ${config.services.caddy.logDir}/${value.domain}.log { mode 640 }";
                   extraConfig = ''
-                    encode
                     bind tailscale/${getSubdomain value.domain}
                     reverse_proxy localhost:${builtins.toString value.port} ${
                       lib.optionalString (value.extraReverseProxyConfig != "") "{ ${value.extraReverseProxyConfig} }"
