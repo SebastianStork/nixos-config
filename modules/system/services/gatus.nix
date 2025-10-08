@@ -169,6 +169,7 @@ in
             }
           ];
         };
+        ui.default-sort-by = "group";
         maintenance = {
           start = "03:00";
           duration = "1h";
