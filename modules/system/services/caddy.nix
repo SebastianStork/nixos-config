@@ -132,8 +132,8 @@ in
                     let
                       mkHostConfig = value: ''
                         import subdomain-log ${value.domain}
-                        @${value.domain |> getSubdomain} host ${(lib.optionalString (!value.tls) "http://") + value.domain}
-                        handle @${value.domain |> getSubdomain} {
+                        @${getSubdomain value.domain} host ${(lib.optionalString (!value.tls) "http://") + value.domain}
+                        handle @${getSubdomain value.domain} {
                           reverse_proxy localhost:${builtins.toString value.port} ${
                             lib.optionalString (value.extraReverseProxyConfig != "") "{ ${value.extraReverseProxyConfig} }"
                           }
