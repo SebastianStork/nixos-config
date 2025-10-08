@@ -153,8 +153,8 @@ in
           click = "https://${cfg.domain}";
           default-alert = {
             enable = true;
-            failure-threshold = 4;
-            success-threshold = 2;
+            failure-threshold = 8;
+            success-threshold = 4;
             send-on-resolved = true;
           };
           overrides = [
@@ -163,8 +163,8 @@ in
               topic = "stork-atlas";
               url = "https://ntfy.sh";
               default-alert = {
-                failure-threshold = 1;
-                success-threshold = 1;
+                failure-threshold = 4;
+                success-threshold = 2;
               };
             }
           ];
@@ -203,6 +203,8 @@ in
           cfg.endpoints |> lib.attrValues |> lib.map (entry: mkEndpoint entry);
       };
     };
+
+    systemd.services.gatus.environment.GATUS_DELAY_START_SECONDS = "5";
 
     custom.persist.directories = [ dataDir ];
   };
