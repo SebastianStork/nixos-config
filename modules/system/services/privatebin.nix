@@ -18,6 +18,10 @@ in
       type = lib.types.port;
       default = 61009;
     };
+    branding.name = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "PrivateBin";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -34,7 +38,10 @@ in
         package = pkgs-unstable.privatebin; # Unstable to get version 2.0
         enableNginx = true;
         virtualHost = "privatebin";
-        settings.main.basepath = "https://${cfg.domain}";
+        settings.main = {
+          basepath = "https://${cfg.domain}";
+          inherit (cfg.branding) name;
+        };
       };
 
       nginx.virtualHosts.privatebin.listen = [

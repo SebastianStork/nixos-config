@@ -67,6 +67,7 @@
         privatebin = {
           enable = true;
           domain = "pastebin.${sproutedDomain}";
+          branding.name = "SproutedBin";
         };
 
         openspeedtest = {
