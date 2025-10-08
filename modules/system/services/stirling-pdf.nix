@@ -13,6 +13,16 @@ in
       type = lib.types.port;
       default = 56191;
     };
+    branding = {
+      name = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "Stirling PDF";
+      };
+      description = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "Your locally hosted one-stop-shop for all your PDF needs.";
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -28,6 +38,10 @@ in
         SERVER_PORT = cfg.port;
         SYSTEM_ENABLEANALYTICS = "false";
         LANGS = "de_DE";
+
+        UI_APPNAME = cfg.branding.name;
+        UI_APPNAVBARNAME = cfg.branding.name;
+        UI_HOMEDESCRIPTION = cfg.branding.description;
       };
     };
   };

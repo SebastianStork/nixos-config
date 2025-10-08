@@ -58,6 +58,10 @@
         stirling-pdf = {
           enable = true;
           domain = "pdf.${sproutedDomain}";
+          branding = {
+            name = "Sprouted PDF";
+            description = "Sprouted's one-stop-shop for all your PDF needs.";
+          };
         };
 
         privatebin = {
