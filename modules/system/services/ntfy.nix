@@ -25,7 +25,7 @@ in
       enable = true;
       settings = lib.mkForce {
         base-url = "https://${cfg.domain}";
-        listen-http = "localhost:${builtins.toString cfg.port}";
+        listen-http = "localhost:${toString cfg.port}";
         behind-proxy = true;
         web-root = "disable";
       };

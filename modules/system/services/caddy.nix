@@ -35,7 +35,7 @@ let
               import subdomain-log ${domain}
               @${subdomainOf domain} host ${domain}
               handle @${subdomainOf domain} {
-                reverse_proxy localhost:${builtins.toString port}
+                reverse_proxy localhost:${toString port}
               }
             '';
         in
@@ -48,7 +48,7 @@ let
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
       extraConfig = ''
         bind tailscale/${subdomainOf domain}
-        reverse_proxy localhost:${builtins.toString port}
+        reverse_proxy localhost:${toString port}
       '';
     };
 in
@@ -109,7 +109,7 @@ in
             admin off
             metrics { per_host }
           '';
-          virtualHosts.":${builtins.toString cfg.metricsPort}" = {
+          virtualHosts.":${toString cfg.metricsPort}" = {
             logFormat = "";
             extraConfig = "metrics /metrics";
           };

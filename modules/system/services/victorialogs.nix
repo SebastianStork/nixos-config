@@ -55,7 +55,7 @@ in
           __intentionallyOverridingVersion = true;
         }
       );
-      listenAddress = "localhost:${builtins.toString cfg.port}";
+      listenAddress = "localhost:${toString cfg.port}";
       extraOptions = [ "-retention.maxDiskSpaceUsageBytes=${cfg.maxDiskSpaceUsage}" ];
     };
 

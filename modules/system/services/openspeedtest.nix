@@ -23,7 +23,7 @@ in
 
     virtualisation.oci-containers.containers.openspeedtest = {
       image = "openspeedtest/latest";
-      ports = [ "127.0.0.1:${builtins.toString cfg.port}:3000" ];
+      ports = [ "127.0.0.1:${toString cfg.port}:3000" ];
       pull = "newer";
     };
   };

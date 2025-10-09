@@ -42,7 +42,7 @@ in
       enable = true;
       package = pkgs-unstable.memos;
       settings = options.services.memos.settings.default // {
-        MEMOS_PORT = builtins.toString cfg.port;
+        MEMOS_PORT = toString cfg.port;
         MEMOS_INSTANCE_URL = "https://${cfg.domain}";
       };
     };

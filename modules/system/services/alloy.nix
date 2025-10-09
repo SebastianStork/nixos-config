@@ -71,7 +71,7 @@ in
     services.alloy = {
       enable = true;
       extraFlags = [
-        "--server.http.listen-addr=localhost:${builtins.toString cfg.port}"
+        "--server.http.listen-addr=localhost:${toString cfg.port}"
         "--disable-reporting"
       ];
     };
@@ -121,7 +121,7 @@ in
           text = ''
             prometheus.scrape "victorialogs" {
               targets = [{
-                __address__ = "localhost:${builtins.toString config.custom.services.victorialogs.port}",
+                __address__ = "localhost:${toString config.custom.services.victorialogs.port}",
                 job         = "victorialogs",
                 instance    = constants.hostname,
               }]
@@ -135,7 +135,7 @@ in
           text = ''
             prometheus.scrape "caddy" {
               targets = [{
-                __address__ = "localhost:${builtins.toString config.custom.services.caddy.metricsPort}",
+                __address__ = "localhost:${toString config.custom.services.caddy.metricsPort}",
                 job         = "caddy",
                 instance    = constants.hostname,
               }]
@@ -149,7 +149,7 @@ in
           text = ''
             prometheus.scrape "crowdsec" {
               targets = [{
-                __address__ = "localhost:${builtins.toString config.custom.services.crowdsec.prometheusPort}",
+                __address__ = "localhost:${toString config.custom.services.crowdsec.prometheusPort}",
                 job         = "crowdsec",
                 instance    = constants.hostname,
               }]

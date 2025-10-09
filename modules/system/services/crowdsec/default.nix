@@ -48,8 +48,8 @@ in
       package = inputs.crowdsec.packages.${pkgs.system}.crowdsec;
       enrollKeyFile = config.sops.secrets."crowdsec/enrollment-key".path;
       settings = {
-        api.server.listen_uri = "localhost:${builtins.toString cfg.apiPort}";
-        cscli.prometheus_uri = "http://localhost:${builtins.toString cfg.prometheusPort}";
+        api.server.listen_uri = "localhost:${toString cfg.apiPort}";
+        cscli.prometheus_uri = "http://localhost:${toString cfg.prometheusPort}";
         prometheus = {
           listen_addr = "localhost";
           listen_port = cfg.prometheusPort;

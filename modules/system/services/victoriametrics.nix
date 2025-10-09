@@ -51,7 +51,7 @@ in
           __intentionallyOverridingVersion = true;
         }
       );
-      listenAddress = "localhost:${builtins.toString cfg.port}";
+      listenAddress = "localhost:${toString cfg.port}";
       extraOptions = [
         "-selfScrapeInterval=15s"
         "-selfScrapeJob=victoriametrics"

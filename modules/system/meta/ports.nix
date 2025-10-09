@@ -35,7 +35,7 @@ in
               inherit port;
             })
           )
-          |> lib.groupBy (entry: builtins.toString entry.port)
+          |> lib.groupBy (entry: toString entry.port)
           |> lib.mapAttrs (_: values: values |> lib.map (value: value.file))
           |> lib.filterAttrs (_: files: lib.length files > 1);
 
