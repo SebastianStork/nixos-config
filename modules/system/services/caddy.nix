@@ -48,13 +48,6 @@ in
                 type = lib.types.port;
                 default = null;
               };
-              tls = lib.mkEnableOption "" // {
-                default = true;
-              };
-              extraReverseProxyConfig = lib.mkOption {
-                type = lib.types.lines;
-                default = "";
-              };
             };
           }
         )
@@ -132,20 +125,13 @@ in
                     let
                       mkHostConfig = value: ''
                         import subdomain-log ${value.domain}
-                        @${getSubdomain value.domain} host ${(lib.optionalString (!value.tls) "http://") + value.domain}
+                          @${getSubdomain value.domain} host ${value.domain}
                         handle @${getSubdomain value.domain} {
-                          reverse_proxy localhost:${builtins.toString value.port} ${
-                            lib.optionalString (value.extraReverseProxyConfig != "") "{ ${value.extraReverseProxyConfig} }"
-                          }
+                            reverse_proxy localhost:${builtins.toString value.port}
                         }
                       '';
                     in
-                    (values |> lib.map (value: mkHostConfig value) |> lib.concatLines)
-                    + ''
-                      handle {
-                        respond 404
-                      }
-                    '';
+                    (values |> lib.map (value: mkHostConfig value) |> lib.concatLines) + "handle { respond 404 }";
                 };
               };
             in
@@ -171,14 +157,12 @@ in
           virtualHosts =
             let
               mkHostConfig = value: {
-                name = (lib.optionalString (!value.tls) "http://") + value.domain;
+                name = value.domain;
                 value = {
                   logFormat = "output file ${config.services.caddy.logDir}/${value.domain}.log { mode 640 }";
                   extraConfig = ''
                     bind tailscale/${getSubdomain value.domain}
-                    reverse_proxy localhost:${builtins.toString value.port} ${
-                      lib.optionalString (value.extraReverseProxyConfig != "") "{ ${value.extraReverseProxyConfig} }"
-                    }
+                    reverse_proxy localhost:${builtins.toString value.port}
                   '';
                 };
               };
