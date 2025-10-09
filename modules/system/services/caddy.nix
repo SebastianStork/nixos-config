@@ -20,7 +20,37 @@ let
     443
   ];
 
-  getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
+  subdomainOf = domain: domain |> lib.splitString "." |> lib.head;
+  rootDomainOf = domain: domain |> lib.splitString "." |> lib.tail |> lib.concatStringsSep ".";
+
+  mkWildCardDomain =
+    rootDomain: values:
+    lib.nameValuePair "*.${rootDomain}" {
+      logFormat = "";
+      extraConfig =
+        let
+          mkSubdomain =
+            { domain, port, ... }:
+            ''
+              import subdomain-log ${domain}
+              @${subdomainOf domain} host ${domain}
+              handle @${subdomainOf domain} {
+                reverse_proxy localhost:${builtins.toString port}
+              }
+            '';
+        in
+        (values |> lib.map mkSubdomain |> lib.concatLines) + "handle { respond 404 }";
+    };
+
+  mkTailscaleHost =
+    { domain, port, ... }:
+    lib.nameValuePair domain {
+      logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
+      extraConfig = ''
+        bind tailscale/${subdomainOf domain}
+        reverse_proxy localhost:${builtins.toString port}
+      '';
+    };
 in
 {
   options.custom.services.caddy = {
@@ -47,6 +77,10 @@ in
               port = lib.mkOption {
                 type = lib.types.port;
                 default = null;
+              };
+              redirectFrom = lib.mkOption {
+                type = lib.types.listOf lib.types.nonEmptyStr;
+                default = [ ];
               };
             };
           }
@@ -115,28 +149,8 @@ in
             }
           '';
           virtualHosts =
-            let
-              getRootDomain = domain: domain |> lib.splitString "." |> lib.tail |> lib.concatStringsSep ".";
-              mkWildCardDomain = name: values: {
-                name = "*.${name}";
-                value = {
-                  logFormat = "";
-                  extraConfig =
-                    let
-                      mkHostConfig = value: ''
-                        import subdomain-log ${value.domain}
-                          @${getSubdomain value.domain} host ${value.domain}
-                        handle @${getSubdomain value.domain} {
-                            reverse_proxy localhost:${builtins.toString value.port}
-                        }
-                      '';
-                    in
-                    (values |> lib.map (value: mkHostConfig value) |> lib.concatLines) + "handle { respond 404 }";
-                };
-              };
-            in
             nonTailscaleHosts
-            |> lib.groupBy (value: getRootDomain value.domain)
+            |> lib.groupBy (value: rootDomainOf value.domain)
             |> lib.mapAttrs' mkWildCardDomain;
         };
       })
@@ -154,20 +168,7 @@ in
               ephemeral true
             }
           '';
-          virtualHosts =
-            let
-              mkHostConfig = value: {
-                name = value.domain;
-                value = {
-                  logFormat = "output file ${config.services.caddy.logDir}/${value.domain}.log { mode 640 }";
-                  extraConfig = ''
-                    bind tailscale/${getSubdomain value.domain}
-                    reverse_proxy localhost:${builtins.toString value.port}
-                  '';
-                };
-              };
-            in
-            tailscaleHosts |> lib.map (value: mkHostConfig value) |> lib.listToAttrs;
+          virtualHosts = tailscaleHosts |> lib.map mkTailscaleHost |> lib.listToAttrs;
         };
       })
     ]
