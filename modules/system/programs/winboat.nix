@@ -10,7 +10,7 @@
 
   config = lib.mkIf config.custom.programs.winboat.enable {
     virtualisation.docker.enable = true;
-    users.users.seb.extraGroups = [ config.users.group.docker.name ];
+    users.users.seb.extraGroups = [ config.users.groups.docker.name ];
 
     environment.systemPackages = [
       pkgs.docker-compose
