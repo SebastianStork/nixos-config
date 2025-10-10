@@ -302,7 +302,8 @@
         "radicale-birthday-calendar": "radicale-birthday-calendar",
         "sops": "sops",
         "treefmt": "treefmt",
-        "vscode-extensions": "vscode-extensions"
+        "vscode-extensions": "vscode-extensions",
+        "winboat": "winboat"
       }
     },
     "sops": {
@@ -426,6 +427,26 @@
       "original": {
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
+        "type": "github"
+      }
+    },
+    "winboat": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1759967818,
+        "narHash": "sha256-IdUo5sdrvr4TUbdtrmFzPzG6mMDCt0WKDd1cOmUpcIU=",
+        "owner": "TibixDev",
+        "repo": "winboat",
+        "rev": "3c8c4d711b1b466433d85f14b973d5de24ffc554",
+        "type": "github"
+      },
+      "original": {
+        "owner": "TibixDev",
+        "repo": "winboat",
         "type": "github"
       }
     }
