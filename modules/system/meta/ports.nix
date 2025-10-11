@@ -61,18 +61,5 @@ in
           message = mkErrorMessage duplicateUdpPorts;
         }
       ];
-
-    meta.ports =
-      let
-        resolvedPorts = lib.mkIf config.services.resolved.enable [
-          53
-          5353
-          5355
-        ];
-      in
-      {
-        tcp.list = resolvedPorts;
-        udp.list = resolvedPorts;
-      };
   };
 }
