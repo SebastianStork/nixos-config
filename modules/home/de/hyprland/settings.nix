@@ -66,6 +66,11 @@
 
       cursor.inactive_timeout = 10;
 
+      ecosystem = {
+        no_update_news = true;
+        no_donation_nag = true;
+      };
+
       workspace = [
         # No outer gaps when only one tiled window on normal workspaces
         "w[t1]s[false], gapsout:0"
