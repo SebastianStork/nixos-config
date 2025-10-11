@@ -27,6 +27,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.domain |> lib.hasSuffix config.custom.services.tailscale.domain;
+        message = "Filebrowser isn't yet configured with access controll.";
+      }
+    ];
+
     warnings = lib.optional (lib.pathExists "${modulesPath}/services/web-apps/filebrowser.nix") "TODO: Use filebrowser module from stable nixpkgs";
 
     meta = {

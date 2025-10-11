@@ -45,7 +45,11 @@ in
       }
       {
         assertion = cfg.doBackups -> cfg.isServer;
-        message = "Syncthing backups can only be performed on a server.";
+        message = "Syncthing backups should only be performed on a server.";
+      }
+      {
+        assertion = cfg.gui.domain |> lib.hasSuffix tailscaleCfg.domain;
+        message = "The syncthing gui isn't yet configured with access controll.";
       }
     ];
 
