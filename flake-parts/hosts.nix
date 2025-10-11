@@ -21,12 +21,13 @@ let
             |> builtins.readDir
             |> lib.filterAttrs (_: type: type == "directory")
             |> lib.attrNames
-            |> map (user: "${self}/users/${user}/@${hostName}")
+            |> map (user: "${self}/users/${user}/@${hostName}/default.nix")
             |> lib.filter (path: lib.pathExists path);
         in
         [
           { networking = { inherit hostName; }; }
           "${self}/hosts/common.nix"
+          "${self}/users/seb/default.nix"
         ]
         ++ hostFiles
         ++ userFiles;

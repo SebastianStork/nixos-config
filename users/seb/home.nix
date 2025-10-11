@@ -1,6 +1,20 @@
-{ pkgs, ... }:
 {
-  imports = [ ../common-home.nix ];
+  config,
+  self,
+  pkgs,
+  ...
+}:
+{
+  imports = [ self.homeManagerModules.default ];
+
+  xdg = {
+    enable = true;
+    userDirs = {
+      enable = true;
+      createDirectories = true;
+      extraConfig.XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
+    };
+  };
 
   home.sessionVariables.NH_FLAKE = "~/Projects/nixos-config";
 
