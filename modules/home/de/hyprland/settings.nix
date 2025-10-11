@@ -75,7 +75,7 @@
         # No outer gaps when only one tiled window on normal workspaces
         "w[t1]s[false], gapsout:0"
         # Large outer gaps on special workspaces
-        "s[true], gapsout:30"
+        "s[true], gapsout:60"
 
         "special:music, on-created-empty:spotify"
         "special:chat, on-created-empty:discord"
