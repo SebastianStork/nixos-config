@@ -9,28 +9,13 @@ let
     hostName:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs self; };
-      modules =
-        let
-          hostFiles =
-            "${self}/hosts/${hostName}"
-            |> lib.filesystem.listFilesRecursive
-            |> lib.filter (lib.hasSuffix ".nix");
-
-          userFiles =
-            "${self}/users"
-            |> builtins.readDir
-            |> lib.filterAttrs (_: type: type == "directory")
-            |> lib.attrNames
-            |> map (user: "${self}/users/${user}/@${hostName}/default.nix")
-            |> lib.filter (path: lib.pathExists path);
-        in
-        [
-          { networking = { inherit hostName; }; }
-          "${self}/hosts/common.nix"
-          "${self}/users/seb/default.nix"
-        ]
-        ++ hostFiles
-        ++ userFiles;
+      modules = [
+        { networking = { inherit hostName; }; }
+        "${self}/hosts/common.nix"
+        "${self}/hosts/${hostName}"
+        "${self}/users/seb"
+      ]
+      ++ lib.optional (lib.pathExists "${self}/users/seb/@${hostName}") "${self}/users/seb/@${hostName}";
     };
 
   mkDeployNode = hostname: {

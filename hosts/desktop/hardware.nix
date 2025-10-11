@@ -1,7 +1,4 @@
-{ inputs, ... }:
-{
-  imports = [ inputs.disko.nixosModules.default ];
-
+_: {
   nixpkgs.hostPlatform = "x86_64-linux";
 
   hardware = {

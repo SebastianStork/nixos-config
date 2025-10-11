@@ -1,5 +1,11 @@
-{ config, ... }:
+{ config, inputs, ... }:
 {
+  imports = [
+    ./hardware.nix
+    ./disko.nix
+    inputs.disko.nixosModules.default
+  ];
+
   system.stateVersion = "25.05";
 
   meta = {

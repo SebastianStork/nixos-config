@@ -1,5 +1,11 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 {
+  imports = [
+    ./hardware.nix
+    ./disko.nix
+    inputs.disko.nixosModules.default
+  ];
+
   system.stateVersion = "23.11";
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
