@@ -75,8 +75,8 @@
         ./flake-parts/dev-shell.nix
         ./flake-parts/formatter.nix
         ./flake-parts/hosts.nix
+        ./flake-parts/install-anywhere.nix
         ./flake-parts/modules.nix
-        ./flake-parts/scripts.nix
         ./flake-parts/sops.nix
       ];
     };
