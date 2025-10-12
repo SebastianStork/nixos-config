@@ -1,14 +1,15 @@
 {
   inputs,
   self,
-  lib,
   ...
 }:
 let
+  lib = inputs.nixpkgs.lib.extend (_: _: { custom = import ../lib inputs.nixpkgs.lib; });
+
   mkHost =
     hostName:
     inputs.nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs self; };
+      specialArgs = { inherit inputs self lib; };
       modules = [
         { networking = { inherit hostName; }; }
         "${self}/hosts/common.nix"

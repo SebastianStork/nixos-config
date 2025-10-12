@@ -1,10 +1,11 @@
 { self, lib, ... }:
 let
-  modulesOf = dir: dir |> lib.filesystem.listFilesRecursive |> lib.filter (lib.hasSuffix ".nix");
+  listNixFilesRecursive =
+    dir: dir |> lib.filesystem.listFilesRecursive |> lib.filter (lib.hasSuffix ".nix");
 in
 {
   flake = {
-    nixosModules.default.imports = modulesOf "${self}/modules/system";
-    homeManagerModules.default.imports = modulesOf "${self}/modules/home";
+    nixosModules.default.imports = listNixFilesRecursive "${self}/modules/system";
+    homeManagerModules.default.imports = listNixFilesRecursive "${self}/modules/home";
   };
 }

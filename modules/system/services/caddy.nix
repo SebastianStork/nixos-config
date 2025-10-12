@@ -10,7 +10,7 @@ let
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (value: value.enable);
 
-  isTailscaleDomain = domain: domain |> lib.hasSuffix config.custom.services.tailscale.domain;
+  isTailscaleDomain = domain: lib.custom.isTailscaleDomain domain;
 
   tailscaleHosts = virtualHosts |> lib.filter (value: isTailscaleDomain value.domain);
   nonTailscaleHosts = virtualHosts |> lib.filter (value: !isTailscaleDomain value.domain);

@@ -6,7 +6,6 @@
 }:
 let
   cfg = config.custom.services.syncthing;
-  tailscaleCfg = config.custom.services.tailscale;
 
   inherit (config.services.syncthing) dataDir;
 
@@ -40,7 +39,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = tailscaleCfg.enable;
+        assertion = config.custom.services.tailscale.enable;
         message = "Syncthing requires tailscale.";
       }
       {
@@ -52,7 +51,7 @@ in
         message = "Running syncthing on a server requires `gui.domain` to be set.";
       }
       {
-        assertion = (cfg.gui.domain != null) -> (cfg.gui.domain |> lib.hasSuffix tailscaleCfg.domain);
+        assertion = (cfg.gui.domain != null) -> (lib.custom.isTailscaleDomain cfg.gui.domain);
         message = "The syncthing gui should only be exposed on a private network as it isn't yet configured with access controll.";
       }
     ];
@@ -100,7 +99,7 @@ in
           |> lib.mapAttrs (
             name: value: {
               id = value.config.custom.services.syncthing.deviceId;
-              addresses = [ "tcp://${name}.${tailscaleCfg.domain}:${toString cfg.syncPort}" ];
+              addresses = [ "tcp://${name}.${config.custom.services.tailscale.domain}:${toString cfg.syncPort}" ];
             }
           );
 

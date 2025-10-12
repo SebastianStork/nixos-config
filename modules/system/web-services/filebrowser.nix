@@ -29,7 +29,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = cfg.domain |> lib.hasSuffix config.custom.services.tailscale.domain;
+        assertion = lib.custom.isTailscaleDomain cfg.domain;
         message = "Filebrowser isn't yet configured with access controll.";
       }
     ];
