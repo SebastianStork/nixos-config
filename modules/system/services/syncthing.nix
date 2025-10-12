@@ -27,8 +27,8 @@ in
     };
     gui = {
       domain = lib.mkOption {
-        type = lib.types.nonEmptyStr;
-        default = "";
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default = null;
       };
       port = lib.mkOption {
         type = lib.types.port;
@@ -48,13 +48,17 @@ in
         message = "Syncthing backups should only be performed on a server.";
       }
       {
-        assertion = cfg.gui.domain |> lib.hasSuffix tailscaleCfg.domain;
-        message = "The syncthing gui isn't yet configured with access controll.";
+        assertion = cfg.isServer -> (cfg.gui.domain != null);
+        message = "Running syncthing on a server requires `gui.domain` to be set.";
+      }
+      {
+        assertion = (cfg.gui.domain != null) -> (cfg.gui.domain |> lib.hasSuffix tailscaleCfg.domain);
+        message = "The syncthing gui should only be exposed on a private network as it isn't yet configured with access controll.";
       }
     ];
 
     meta = {
-      domains.list = lib.mkIf cfg.isServer [ cfg.gui.domain ];
+      domains.list = lib.mkIf (cfg.gui.domain != null) [ cfg.gui.domain ];
       ports = {
         tcp.list = [
           cfg.syncPort
@@ -82,7 +86,7 @@ in
       group = lib.mkIf (!cfg.isServer) "users";
       dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
 
-      guiAddress = lib.mkIf cfg.isServer "localhost:${toString cfg.gui.port}";
+      guiAddress = "localhost:${toString cfg.gui.port}";
 
       cert = lib.mkIf useStaticTls config.sops.secrets."syncthing/cert".path;
       key = lib.mkIf useStaticTls config.sops.secrets."syncthing/key".path;
