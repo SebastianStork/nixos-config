@@ -101,8 +101,6 @@ in
 
     custom.services.gatus.endpoints =
       let
-        getSubdomain = domain: domain |> lib.splitString "." |> lib.head;
-
         defaultEndpoints =
           self.nixosConfigurations
           |> lib.mapAttrs (_: value: value.config.meta.domains.list)
@@ -112,7 +110,7 @@ in
             |> lib.filter (domain: domain != cfg.domain)
             |> lib.map (
               domain:
-              lib.nameValuePair (getSubdomain domain) {
+              lib.nameValuePair (lib.custom.subdomainOf domain) {
                 inherit domain;
                 group = hostName;
               }

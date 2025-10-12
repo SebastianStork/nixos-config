@@ -20,9 +20,6 @@ let
     443
   ];
 
-  subdomainOf = domain: domain |> lib.splitString "." |> lib.head;
-  rootDomainOf = domain: domain |> lib.splitString "." |> lib.tail |> lib.concatStringsSep ".";
-
   mkWildCardDomain =
     rootDomain: values:
     lib.nameValuePair "*.${rootDomain}" {
@@ -33,8 +30,8 @@ let
             { domain, port, ... }:
             ''
               import subdomain-log ${domain}
-              @${subdomainOf domain} host ${domain}
-              handle @${subdomainOf domain} {
+              @${lib.custom.subdomainOf domain} host ${domain}
+              handle @${lib.custom.subdomainOf domain} {
                 reverse_proxy localhost:${toString port}
               }
             '';
@@ -47,7 +44,7 @@ let
     lib.nameValuePair domain {
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
       extraConfig = ''
-        bind tailscale/${subdomainOf domain}
+        bind tailscale/${lib.custom.subdomainOf domain}
         reverse_proxy localhost:${toString port}
       '';
     };
@@ -150,7 +147,7 @@ in
           '';
           virtualHosts =
             nonTailscaleHosts
-            |> lib.groupBy (value: rootDomainOf value.domain)
+            |> lib.groupBy (value: lib.custom.rootDomainOf value.domain)
             |> lib.mapAttrs' mkWildCardDomain;
         };
       })
