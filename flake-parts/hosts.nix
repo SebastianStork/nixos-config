@@ -4,7 +4,7 @@
   ...
 }:
 let
-  lib = inputs.nixpkgs.lib.extend (_: _: { custom = import ../lib inputs.nixpkgs.lib; });
+  lib = inputs.nixpkgs.lib.extend (_: _: { custom = import "${self}/lib" inputs.nixpkgs.lib; });
 
   mkHost =
     hostName:
