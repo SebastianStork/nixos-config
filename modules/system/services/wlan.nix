@@ -29,11 +29,10 @@ in
 
     sops.secrets =
       cfg.networks
-      |> lib.map (name: {
-        name = "iwd/${name}";
-        value.restartUnits = [ "iwd.service" ];
-      })
-      |> lib.listToAttrs;
+      |> lib.map (name: "iwd/${name}")
+      |> lib.custom.genAttrs (_: {
+        restartUnits = [ "iwd.service" ];
+      });
 
     systemd.services.iwd.preStart = ''
       rm --force /var/lib/iwd/*.{psk,8021x}

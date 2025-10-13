@@ -107,7 +107,8 @@ in
           let
             genFolders =
               folders:
-              lib.genAttrs folders (name: {
+              folders
+              |> lib.custom.genAttrs (name: {
                 path = "${dataDir}/${name}";
                 ignorePerms = false;
                 devices = config.services.syncthing.settings.devices |> lib.attrNames;

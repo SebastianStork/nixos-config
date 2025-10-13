@@ -1,11 +1,10 @@
-{ self, lib, ... }:
+{ self, inputs, ... }:
 let
-  listNixFilesRecursive =
-    dir: dir |> lib.filesystem.listFilesRecursive |> lib.filter (lib.hasSuffix ".nix");
+  lib = inputs.nixpkgs.lib.extend (_: _: { custom = import "${self}/lib" inputs.nixpkgs.lib; });
 in
 {
   flake = {
-    nixosModules.default.imports = listNixFilesRecursive "${self}/modules/system";
-    homeManagerModules.default.imports = listNixFilesRecursive "${self}/modules/home";
+    nixosModules.default.imports = lib.custom.listNixFilesRecursive "${self}/modules/system";
+    homeManagerModules.default.imports = lib.custom.listNixFilesRecursive "${self}/modules/home";
   };
 }
