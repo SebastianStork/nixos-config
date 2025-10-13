@@ -10,10 +10,8 @@ let
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (value: value.enable);
 
-  isTailscaleDomain = domain: lib.custom.isTailscaleDomain domain;
-
-  tailscaleHosts = virtualHosts |> lib.filter (value: isTailscaleDomain value.domain);
-  nonTailscaleHosts = virtualHosts |> lib.filter (value: !isTailscaleDomain value.domain);
+  tailscaleHosts = virtualHosts |> lib.filter (value: lib.custom.isTailscaleDomain value.domain);
+  nonTailscaleHosts = virtualHosts |> lib.filter (value: !lib.custom.isTailscaleDomain value.domain);
 
   webPorts = [
     80
