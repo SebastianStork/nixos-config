@@ -66,6 +66,11 @@
           doBackups = true;
         };
 
+        freshrss = {
+          enable = true;
+          domain = "rss.${tailscaleDomain}";
+        };
+
         alloy = {
           enable = true;
           domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
@@ -90,6 +95,9 @@
             };
             actualbudget = {
               inherit (services.actualbudget) domain port;
+            };
+            freshrss = {
+              inherit (services.freshrss) domain port;
             };
             alloy = {
               inherit (services.alloy) domain port;
