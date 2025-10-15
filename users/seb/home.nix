@@ -46,6 +46,8 @@
     pkgs.anki
     pkgs.discord
 
+    pkgs.jetbrains.clion
+
     pkgs.corefonts
     pkgs.roboto
     pkgs.open-sans
