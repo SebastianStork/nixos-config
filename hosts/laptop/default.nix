@@ -42,6 +42,9 @@
       };
     };
 
-    programs.winboat.enable = true;
+    programs = {
+      winboat.enable = true;
+      wireshark.enable = true;
+    };
   };
 }
