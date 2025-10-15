@@ -73,10 +73,6 @@ in
                 type = lib.types.port;
                 default = null;
               };
-              redirectFrom = lib.mkOption {
-                type = lib.types.listOf lib.types.nonEmptyStr;
-                default = [ ];
-              };
             };
           }
         )
