@@ -57,55 +57,56 @@ in
       };
 
       allowLocalJournalAccess = true;
-      acquisitions =
-        let
-          mkJournalAcquisition = unit: {
-            source = "journalctl";
-            journalctl_filter = [ "_SYSTEMD_UNIT=${unit}" ];
-            labels.type = "syslog";
-          };
-        in
-        [
-          (lib.mkIf cfg.sources.iptables {
-            source = "journalctl";
-            journalctl_filter = [ "-k" ];
-            labels.type = "syslog";
-          })
-          (lib.mkIf cfg.sources.caddy {
-            filenames = [ "${config.services.caddy.logDir}/*.log" ];
-            labels.type = "caddy";
-          })
-          (lib.mkIf cfg.sources.sshd (mkJournalAcquisition "sshd.service"))
-        ];
+      acquisitions = [
+        (lib.mkIf cfg.sources.iptables {
+          source = "journalctl";
+          journalctl_filter = [ "-k" ];
+          labels.type = "syslog";
+        })
+        (lib.mkIf cfg.sources.caddy {
+          filenames = [ "${config.services.caddy.logDir}/*.log" ];
+          labels.type = "caddy";
+        })
+        (lib.mkIf cfg.sources.sshd {
+          source = "journalctl";
+          journalctl_filter = [ "_SYSTEMD_UNIT=sshd.service" ];
+          labels.type = "syslog";
+        })
+      ];
     };
 
-    systemd.services.crowdsec.serviceConfig.ExecStartPre =
-      let
-        installCollection = collection: ''
-          if ! cscli collections list | grep -q "${collection}"; then
-            cscli collections install ${collection}
-          fi
-        '';
-        mkScript =
-          name: text:
-          lib.getExe (
-            pkgs.writeShellApplication {
-              inherit name text;
-            }
-          );
-        collectionsScript =
-          [
-            (lib.singleton "crowdsecurity/linux")
-            (lib.optional cfg.sources.iptables "crowdsecurity/iptables")
-            (lib.optional cfg.sources.caddy "crowdsecurity/caddy")
-            (lib.optional cfg.sources.sshd "crowdsecurity/sshd")
-          ]
-          |> lib.concatLists
-          |> lib.map installCollection
-          |> lib.concatLines
-          |> mkScript "crowdsec-install-collections";
-      in
-      lib.mkAfter collectionsScript;
+    systemd.services.crowdsec.serviceConfig = {
+      # Fix journalctl acquisitions
+      PrivateUsers = false;
+
+      ExecStartPre =
+        let
+          installCollection = collection: ''
+            if ! cscli collections list | grep -q "${collection}"; then
+              cscli collections install ${collection}
+            fi
+          '';
+          mkScript =
+            name: text:
+            lib.getExe (
+              pkgs.writeShellApplication {
+                inherit name text;
+              }
+            );
+          collectionsScript =
+            [
+              (lib.singleton "crowdsecurity/linux")
+              (lib.optional cfg.sources.iptables "crowdsecurity/iptables")
+              (lib.optional cfg.sources.caddy "crowdsecurity/caddy")
+              (lib.optional cfg.sources.sshd "crowdsecurity/sshd")
+            ]
+            |> lib.concatLists
+            |> lib.map installCollection
+            |> lib.concatLines
+            |> mkScript "crowdsec-install-collections";
+        in
+        lib.mkAfter collectionsScript;
+    };
 
     custom.persist.directories = [ "/var/lib/crowdsec" ];
   };
