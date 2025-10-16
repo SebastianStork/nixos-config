@@ -65,7 +65,6 @@ in
       user = "git";
       group = "git";
 
-      lfs.enable = true;
       settings = {
         server = {
           DOMAIN = cfg.domain;
