@@ -40,7 +40,7 @@
     pkgs.fastfetch
 
     pkgs.nemo-with-extensions
-    pkgs.celluloid
+    pkgs.vlc
     pkgs.spotify
     pkgs.obsidian
     pkgs.anki
