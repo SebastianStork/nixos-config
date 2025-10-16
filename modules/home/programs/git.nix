@@ -17,6 +17,12 @@
         userEmail = "sebastian.stork@pm.me";
         extraConfig.init.defaultBranch = "main";
 
+        signing = {
+          format = "ssh";
+          key = "~/.ssh/git.sstork.dev";
+          signByDefault = true;
+        };
+
         includes = [
           {
             condition = "gitdir:~/Projects/h-da/**";
@@ -24,8 +30,8 @@
               user = {
                 name = "Sebastian Stork";
                 email = "sebastian.stork@stud.h-da.de";
+                signingkey = "~/.ssh/code.fbi.h-da.de";
               };
-              init.defaultBranch = "main";
             };
           }
         ];
