@@ -24,7 +24,7 @@
 
   services = {
     fwupd.enable = true;
-    fprintd.enable = true;
+    fprintd.enable = true; # fwupdmgr refresh && fwupdmgr update
     upower = {
       enable = true;
       criticalPowerAction = "Hibernate";
