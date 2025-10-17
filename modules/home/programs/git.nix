@@ -19,7 +19,7 @@
 
         signing = {
           format = "ssh";
-          key = "~/.ssh/git.sstork.dev";
+          key = config.sops.secrets."ssh-key/git.sstork.dev".path;
           signByDefault = true;
         };
 
@@ -30,7 +30,7 @@
               user = {
                 name = "Sebastian Stork";
                 email = "sebastian.stork@stud.h-da.de";
-                signingkey = "~/.ssh/code.fbi.h-da.de";
+                signingkey = config.sops.secrets."ssh-key/code.fbi.h-da.de".path;
               };
             };
           }
