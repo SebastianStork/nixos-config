@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  lib',
   ...
 }:
 let
@@ -10,8 +11,8 @@ let
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (value: value.enable);
 
-  tailscaleHosts = virtualHosts |> lib.filter (value: lib.custom.isTailscaleDomain value.domain);
-  nonTailscaleHosts = virtualHosts |> lib.filter (value: !lib.custom.isTailscaleDomain value.domain);
+  tailscaleHosts = virtualHosts |> lib.filter (value: lib'.isTailscaleDomain value.domain);
+  nonTailscaleHosts = virtualHosts |> lib.filter (value: !lib'.isTailscaleDomain value.domain);
 
   webPorts = [
     80
@@ -28,8 +29,8 @@ let
             { domain, port, ... }:
             ''
               import subdomain-log ${domain}
-              @${lib.custom.subdomainOf domain} host ${domain}
-              handle @${lib.custom.subdomainOf domain} {
+              @${lib'.subdomainOf domain} host ${domain}
+              handle @${lib'.subdomainOf domain} {
                 reverse_proxy localhost:${toString port}
               }
             '';
@@ -42,7 +43,7 @@ let
     lib.nameValuePair domain {
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
       extraConfig = ''
-        bind tailscale/${lib.custom.subdomainOf domain}
+        bind tailscale/${lib'.subdomainOf domain}
         reverse_proxy localhost:${toString port}
       '';
     };
@@ -141,7 +142,7 @@ in
           '';
           virtualHosts =
             nonTailscaleHosts
-            |> lib.groupBy (value: lib.custom.rootDomainOf value.domain)
+            |> lib.groupBy (value: lib'.rootDomainOf value.domain)
             |> lib.mapAttrs' mkWildCardDomain;
         };
       })

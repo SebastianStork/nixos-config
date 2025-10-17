@@ -3,6 +3,7 @@
   self,
   pkgs-unstable,
   lib,
+  lib',
   ...
 }:
 let
@@ -110,7 +111,7 @@ in
             |> lib.filter (domain: domain != cfg.domain)
             |> lib.map (
               domain:
-              lib.nameValuePair (lib.custom.subdomainOf domain) {
+              lib.nameValuePair (lib'.subdomainOf domain) {
                 inherit domain;
                 group = hostName;
               }

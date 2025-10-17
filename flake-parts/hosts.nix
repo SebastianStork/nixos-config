@@ -1,11 +1,16 @@
-{ inputs, self, ... }:
+{
+  inputs,
+  self,
+  lib,
+  ...
+}:
 let
-  lib = inputs.nixpkgs.lib.extend (_: _: { custom = import "${self}/lib" inputs.nixpkgs.lib; });
+  inherit (self) lib';
 
   mkHost =
     hostName:
     inputs.nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs self lib; };
+      specialArgs = { inherit inputs self lib'; };
       modules = [
         { networking = { inherit hostName; }; }
         "${self}/hosts/common.nix"
@@ -25,9 +30,9 @@ let
 in
 {
   flake = {
-    nixosConfigurations = "${self}/hosts" |> lib.custom.listDirectories |> lib.custom.genAttrs mkHost;
+    nixosConfigurations = "${self}/hosts" |> lib'.listDirectories |> lib'.genAttrs mkHost;
 
-    deploy.nodes = "${self}/hosts" |> lib.custom.listDirectories |> lib.custom.genAttrs mkDeployNode;
+    deploy.nodes = "${self}/hosts" |> lib'.listDirectories |> lib'.genAttrs mkDeployNode;
 
     checks = inputs.deploy-rs.lib |> lib.mapAttrs (_: deployLib: deployLib.deployChecks self.deploy);
   };

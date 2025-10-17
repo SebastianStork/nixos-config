@@ -2,6 +2,7 @@
   config,
   self,
   lib,
+  lib',
   ...
 }:
 let
@@ -51,7 +52,7 @@ in
         message = "Running syncthing on a server requires `gui.domain` to be set.";
       }
       {
-        assertion = (cfg.gui.domain != null) -> (lib.custom.isTailscaleDomain cfg.gui.domain);
+        assertion = (cfg.gui.domain != null) -> (lib'.isTailscaleDomain cfg.gui.domain);
         message = "The syncthing gui should only be exposed on a private network as it isn't yet configured with access controll.";
       }
     ];
@@ -108,7 +109,7 @@ in
             genFolders =
               folders:
               folders
-              |> lib.custom.genAttrs (name: {
+              |> lib'.genAttrs (name: {
                 path = "${dataDir}/${name}";
                 ignorePerms = false;
                 devices = config.services.syncthing.settings.devices |> lib.attrNames;

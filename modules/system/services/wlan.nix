@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  lib',
   ...
 }:
 let
@@ -30,7 +31,7 @@ in
     sops.secrets =
       cfg.networks
       |> lib.map (name: "iwd/${name}")
-      |> lib.custom.genAttrs (_: {
+      |> lib'.genAttrs (_: {
         restartUnits = [ "iwd.service" ];
       });
 

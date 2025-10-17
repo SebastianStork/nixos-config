@@ -3,6 +3,7 @@
   modulesPath,
   inputs,
   lib,
+  lib',
   ...
 }:
 let
@@ -29,7 +30,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = lib.custom.isTailscaleDomain cfg.domain;
+        assertion = lib'.isTailscaleDomain cfg.domain;
         message = "Filebrowser isn't yet configured with access controll.";
       }
     ];

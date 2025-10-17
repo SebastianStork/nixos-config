@@ -71,13 +71,10 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
 
-      imports = [
-        ./flake-parts/dev-shell.nix
-        ./flake-parts/formatter.nix
-        ./flake-parts/hosts.nix
-        ./flake-parts/install-anywhere.nix
-        ./flake-parts/modules.nix
-        ./flake-parts/sops.nix
-      ];
+      imports =
+        ./flake-parts
+        |> builtins.readDir
+        |> builtins.attrNames
+        |> builtins.map (name: ./flake-parts + "/${name}");
     };
 }

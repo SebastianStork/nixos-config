@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  lib',
   ...
 }:
 let
@@ -24,7 +25,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = lib.custom.isTailscaleDomain cfg.domain;
+        assertion = lib'.isTailscaleDomain cfg.domain;
         message = "FreshRSS isn't configured with access controll.";
       }
     ];
