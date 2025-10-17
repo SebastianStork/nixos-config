@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (self) lib';
+  lib' = self.lib;
 
   mkHost =
     hostName:
