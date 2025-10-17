@@ -139,7 +139,7 @@ in
       settings = {
         web = {
           address = "localhost";
-          port = cfg.port;
+          inherit (cfg) port;
         };
         storage = {
           type = "sqlite";
@@ -199,7 +199,7 @@ in
               ];
             };
           in
-          cfg.endpoints |> lib.attrValues |> lib.map (entry: mkEndpoint entry);
+          cfg.endpoints |> lib.attrValues |> lib.map mkEndpoint;
       };
     };
 
