@@ -142,7 +142,7 @@ in
           '';
           virtualHosts =
             nonTailscaleHosts
-            |> lib.groupBy (value: lib'.rootDomainOf value.domain)
+            |> builtins.groupBy (value: lib'.rootDomainOf value.domain)
             |> lib.mapAttrs' mkWildCardDomain;
         };
       })

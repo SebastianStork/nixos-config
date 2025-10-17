@@ -41,7 +41,7 @@ in
               inherit domain;
             })
           )
-          |> lib.groupBy (entry: toString entry.domain)
+          |> builtins.groupBy (entry: toString entry.domain)
           |> lib.mapAttrs (_: values: values |> lib.map (value: value.file))
           |> lib.filterAttrs (_: files: lib.length files > 1);
 
