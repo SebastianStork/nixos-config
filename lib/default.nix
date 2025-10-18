@@ -8,7 +8,7 @@ lib: {
   listNixFilesRecursive =
     dir: dir |> lib.filesystem.listFilesRecursive |> lib.filter (lib.hasSuffix ".nix");
 
-  listDirectories =
+  listDirectoryNames =
     path: path |> builtins.readDir |> lib.filterAttrs (_: type: type == "directory") |> lib.attrNames;
 
   genAttrs = f: names: lib.genAttrs names f;

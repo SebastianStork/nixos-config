@@ -30,9 +30,9 @@ let
 in
 {
   flake = {
-    nixosConfigurations = "${self}/hosts" |> lib'.listDirectories |> lib'.genAttrs mkHost;
+    nixosConfigurations = "${self}/hosts" |> lib'.listDirectoryNames |> lib'.genAttrs mkHost;
 
-    deploy.nodes = "${self}/hosts" |> lib'.listDirectories |> lib'.genAttrs mkDeployNode;
+    deploy.nodes = "${self}/hosts" |> lib'.listDirectoryNames |> lib'.genAttrs mkDeployNode;
 
     checks = inputs.deploy-rs.lib |> lib.mapAttrs (_: deployLib: deployLib.deployChecks self.deploy);
   };
