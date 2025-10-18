@@ -5,7 +5,7 @@ lib: {
 
   rootDomainOf = domain: domain |> lib.splitString "." |> lib.tail |> lib.concatStringsSep ".";
 
-  listNixFilesRecursive =
+  listNixFilesRecursively =
     dir: dir |> lib.filesystem.listFilesRecursive |> lib.filter (lib.hasSuffix ".nix");
 
   listDirectoryNames =
