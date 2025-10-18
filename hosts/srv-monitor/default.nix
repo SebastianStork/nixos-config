@@ -67,6 +67,7 @@
             nodeExporter = true;
             victoriametrics = true;
             victorialogs = true;
+            crowdsec = true;
           };
         };
 

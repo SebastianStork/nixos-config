@@ -45,6 +45,7 @@ in
       nodeExporter = lib.mkEnableOption "";
       victoriametrics = lib.mkEnableOption "";
       victorialogs = lib.mkEnableOption "";
+      crowdsec = lib.mkEnableOption "";
     };
   };
 
@@ -125,6 +126,7 @@ in
     };
 
     environment.etc = {
+      # https://grafana.com/grafana/dashboards/1860-node-exporter-full/
       "grafana-dashboards/node-exporter-full.json" = {
         enable = cfg.dashboards.nodeExporter;
         source = pkgs.fetchurl {
@@ -133,6 +135,7 @@ in
           hash = "sha256-EywgxEayjwNIGDvSmA/S56Ld49qrTSbIYFpeEXBJlTs=";
         };
       };
+      # https://grafana.com/grafana/dashboards/10229-victoriametrics-single-node/
       "grafana-dashboards/victoriametrics-single-node.json" = {
         enable = cfg.dashboards.victoriametrics;
         source = pkgs.fetchurl {
@@ -141,6 +144,7 @@ in
           hash = "sha256-mwtah8A2w81WZjf5bUXoTJfS1R9UX+tua2PiDrBKJCQ=";
         };
       };
+      # https://grafana.com/grafana/dashboards/22084-victorialogs-single-node/
       "grafana-dashboards/victorialogs-single-node.json" = {
         enable = cfg.dashboards.victorialogs;
         source = pkgs.fetchurl {
@@ -148,6 +152,22 @@ in
           url = "https://grafana.com/api/dashboards/22084/revisions/8/download";
           hash = "sha256-/a3Rbp/6oyiLBnQtGupyFZW+fIHQfkyKRRTyfofxVTM=";
         };
+      };
+      # https://grafana.com/grafana/dashboards/19012-crowdsec-details-per-instance/
+      "grafana-dashboards/crowdsec-details-per-instance.json" = {
+        enable = cfg.dashboards.crowdsec;
+        source =
+          pkgs.fetchurl {
+            name = "crowdsec-details-per-instance.json";
+            url = "https://grafana.com/api/dashboards/19012/revisions/1/download";
+            hash = "sha256-VRPWAbPRgp+2pqfmey53wMqaOhLBzXVKUZs/pJ28Ikk=";
+          }
+          |> (
+            src:
+            pkgs.runCommand "crowdsec-details-per-instance-patched.json" { buildInputs = [ pkgs.gnused ]; } ''
+              sed 's/''${DS_PROMETHEUS}/Prometheus/g' ${src} > $out
+            ''
+          );
       };
     };
   };
