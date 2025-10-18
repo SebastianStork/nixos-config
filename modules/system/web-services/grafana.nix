@@ -42,10 +42,10 @@ in
       };
     };
     dashboards = {
-      nodeExporter = lib.mkEnableOption "";
-      victoriametrics = lib.mkEnableOption "";
-      victorialogs = lib.mkEnableOption "";
-      crowdsec = lib.mkEnableOption "";
+      nodeExporter.enable = lib.mkEnableOption "";
+      victoriametrics.enable = lib.mkEnableOption "";
+      victorialogs.enable = lib.mkEnableOption "";
+      crowdsec.enable = lib.mkEnableOption "";
     };
   };
 
@@ -128,7 +128,7 @@ in
     environment.etc = {
       # https://grafana.com/grafana/dashboards/1860-node-exporter-full/
       "grafana-dashboards/node-exporter-full.json" = {
-        enable = cfg.dashboards.nodeExporter;
+        enable = cfg.dashboards.nodeExporter.enable;
         source = pkgs.fetchurl {
           name = "node-exporter-full.json";
           url = "https://grafana.com/api/dashboards/1860/revisions/41/download";
@@ -137,7 +137,7 @@ in
       };
       # https://grafana.com/grafana/dashboards/10229-victoriametrics-single-node/
       "grafana-dashboards/victoriametrics-single-node.json" = {
-        enable = cfg.dashboards.victoriametrics;
+        enable = cfg.dashboards.victoriametrics.enable;
         source = pkgs.fetchurl {
           name = "victoriametrics-single-node.json";
           url = "https://grafana.com/api/dashboards/10229/revisions/41/download";
@@ -146,7 +146,7 @@ in
       };
       # https://grafana.com/grafana/dashboards/22084-victorialogs-single-node/
       "grafana-dashboards/victorialogs-single-node.json" = {
-        enable = cfg.dashboards.victorialogs;
+        enable = cfg.dashboards.victorialogs.enable;
         source = pkgs.fetchurl {
           name = "victorialogs-single-node.json";
           url = "https://grafana.com/api/dashboards/22084/revisions/8/download";
@@ -155,7 +155,7 @@ in
       };
       # https://grafana.com/grafana/dashboards/19012-crowdsec-details-per-instance/
       "grafana-dashboards/crowdsec-details-per-instance.json" = {
-        enable = cfg.dashboards.crowdsec;
+        enable = cfg.dashboards.crowdsec.enable;
         source =
           pkgs.fetchurl {
             name = "crowdsec-details-per-instance.json";

@@ -64,10 +64,10 @@
             victorialogs.enable = true;
           };
           dashboards = {
-            nodeExporter = true;
-            victoriametrics = true;
-            victorialogs = true;
-            crowdsec = true;
+            nodeExporter.enable = true;
+            victoriametrics.enable = true;
+            victorialogs.enable = true;
+            crowdsec.enable = true;
           };
         };
 
