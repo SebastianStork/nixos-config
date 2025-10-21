@@ -31,7 +31,7 @@ in
     assertions = [
       {
         assertion = lib'.isTailscaleDomain cfg.domain;
-        message = "Filebrowser isn't yet configured with access controll.";
+        message = lib'.mkUnprotectedMessage "Filebrowser";
       }
       {
         assertion = !lib.pathExists "${modulesPath}/services/web-apps/filebrowser.nix";

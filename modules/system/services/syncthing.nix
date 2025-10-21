@@ -44,16 +44,12 @@ in
         message = "Syncthing requires tailscale.";
       }
       {
-        assertion = cfg.doBackups -> cfg.isServer;
-        message = "Syncthing backups should only be performed on a server.";
-      }
-      {
         assertion = cfg.isServer -> (cfg.gui.domain != null);
         message = "Running syncthing on a server requires `gui.domain` to be set.";
       }
       {
         assertion = (cfg.gui.domain != null) -> (lib'.isTailscaleDomain cfg.gui.domain);
-        message = "The syncthing gui should only be exposed on a private network as it isn't yet configured with access controll.";
+        message = lib'.mkUnprotectedMessage "Syncthing-GUI";
       }
     ];
 

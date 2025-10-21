@@ -12,4 +12,7 @@ lib: {
     path: path |> builtins.readDir |> lib.filterAttrs (_: type: type == "directory") |> lib.attrNames;
 
   genAttrs = f: names: lib.genAttrs names f;
+
+  mkUnprotectedMessage =
+    name: "${name} should only be exposed on private networks; access control isn't yet configured";
 }

@@ -25,7 +25,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
       assertion = lib'.isTailscaleDomain cfg.domain;
-      message = "FreshRSS isn't configured with access controll.";
+      message = lib'.mkUnprotectedMessage "FreshRSS";
     };
 
     meta = {
