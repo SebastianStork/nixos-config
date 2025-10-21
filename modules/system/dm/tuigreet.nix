@@ -33,7 +33,7 @@ in
             "--remember-user-session"
             "--sessions '${sessionData}/share/wayland-sessions:${sessionData}/share/xsessions'"
           ];
-        initial_session = lib.mkIf cfg.autoLogin {
+        initial_session = lib.mkIf (cfg.autoLogin && config.custom.de.hyprland.enable) {
           command = lib.getExe pkgs.hyprland;
           user = "seb";
         };
