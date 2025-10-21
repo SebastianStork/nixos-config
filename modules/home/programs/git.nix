@@ -23,18 +23,16 @@
           signByDefault = true;
         };
 
-        includes = [
-          {
-            condition = "gitdir:~/Projects/h-da/**";
-            contents = {
-              user = {
-                name = "Sebastian Stork";
-                email = "sebastian.stork@stud.h-da.de";
-                signingkey = config.sops.secrets."ssh-key/code.fbi.h-da.de".path;
-              };
+        includes = lib.singleton {
+          condition = "gitdir:~/Projects/h-da/**";
+          contents = {
+            user = {
+              name = "Sebastian Stork";
+              email = "sebastian.stork@stud.h-da.de";
+              signingkey = config.sops.secrets."ssh-key/code.fbi.h-da.de".path;
             };
-          }
-        ];
+          };
+        };
       };
 
       ssh = {

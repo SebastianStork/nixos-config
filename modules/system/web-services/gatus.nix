@@ -159,17 +159,15 @@ in
             success-threshold = 4;
             send-on-resolved = true;
           };
-          overrides = [
-            {
-              group = "Monitoring";
-              topic = "stork-atlas";
-              url = "https://ntfy.sh";
-              default-alert = {
-                failure-threshold = 4;
-                success-threshold = 2;
-              };
-            }
-          ];
+          overrides = lib.singleton {
+            group = "Monitoring";
+            topic = "stork-atlas";
+            url = "https://ntfy.sh";
+            default-alert = {
+              failure-threshold = 4;
+              success-threshold = 2;
+            };
+          };
         };
         ui.default-sort-by = "group";
         maintenance = {

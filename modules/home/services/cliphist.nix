@@ -8,12 +8,10 @@
   options.custom.services.cliphist.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.cliphist.enable {
-    assertions = [
-      {
-        assertion = config.custom.programs.rofi.enable;
-        message = "Cliphist requires Rofi.";
-      }
-    ];
+    assertions = lib.singleton {
+      assertion = config.custom.programs.rofi.enable;
+      message = "Cliphist requires Rofi.";
+    };
 
     services.cliphist = {
       enable = true;

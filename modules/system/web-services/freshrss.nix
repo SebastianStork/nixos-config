@@ -23,12 +23,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = lib'.isTailscaleDomain cfg.domain;
-        message = "FreshRSS isn't configured with access controll.";
-      }
-    ];
+    assertions = lib.singleton {
+      assertion = lib'.isTailscaleDomain cfg.domain;
+      message = "FreshRSS isn't configured with access controll.";
+    };
 
     meta = {
       domains.list = [ cfg.domain ];

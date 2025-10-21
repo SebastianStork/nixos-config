@@ -54,11 +54,9 @@ in
           )
           |> lib.concatStrings;
       in
-      [
-        {
-          assertion = duplicateDomains == { };
-          message = errorMessage;
-        }
-      ];
+      lib.singleton {
+        assertion = duplicateDomains == { };
+        message = errorMessage;
+      };
   };
 }

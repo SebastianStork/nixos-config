@@ -47,12 +47,10 @@ in
         };
       };
 
-      nginx.virtualHosts.privatebin.listen = [
-        {
-          addr = "localhost";
-          inherit (cfg) port;
-        }
-      ];
+      nginx.virtualHosts.privatebin.listen = lib.singleton {
+        addr = "localhost";
+        inherit (cfg) port;
+      };
     };
 
     custom.persist.directories = [ config.services.privatebin.dataDir ];
