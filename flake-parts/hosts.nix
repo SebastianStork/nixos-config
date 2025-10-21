@@ -27,12 +27,14 @@ let
       inputs.deploy-rs.lib.x86_64-linux.activate.nixos
         self.nixosConfigurations.${hostname};
   };
+
+  hostNames = "${self}/hosts" |> lib'.listDirectoryNames;
 in
 {
   flake = {
-    nixosConfigurations = "${self}/hosts" |> lib'.listDirectoryNames |> lib'.genAttrs mkHost;
+    nixosConfigurations = hostNames |> lib'.genAttrs mkHost;
 
-    deploy.nodes = "${self}/hosts" |> lib'.listDirectoryNames |> lib'.genAttrs mkDeployNode;
+    deploy.nodes = hostNames |> lib'.genAttrs mkDeployNode;
 
     checks = inputs.deploy-rs.lib |> lib.mapAttrs (_: deployLib: deployLib.deployChecks self.deploy);
   };
