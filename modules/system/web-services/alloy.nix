@@ -51,14 +51,14 @@ in
           |> lib.filter (name: name != "system")
           |> lib.map (name: {
             assertion = cfg.collect.metrics.${name} -> config.services.${name}.enable;
-            message = "Collecting ${name} metrics requires the ${name} service to be enabled.";
+            message = "Collecting ${name} metrics requires the ${name} service to be enabled";
           });
         logsAssertions =
           cfg.collect.logs
           |> lib.attrNames
           |> lib.map (name: {
             assertion = cfg.collect.logs.${name} -> config.services.${name}.enable;
-            message = "Collecting ${name} logs requires the ${name} service to be enabled.";
+            message = "Collecting ${name} logs requires the ${name} service to be enabled";
           });
       in
       metricsAssertions ++ logsAssertions;

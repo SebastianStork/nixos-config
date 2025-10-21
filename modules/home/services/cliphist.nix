@@ -10,7 +10,7 @@
   config = lib.mkIf config.custom.services.cliphist.enable {
     assertions = lib.singleton {
       assertion = config.custom.programs.rofi.enable;
-      message = "Cliphist requires Rofi.";
+      message = "Cliphist requires Rofi";
     };
 
     services.cliphist = {

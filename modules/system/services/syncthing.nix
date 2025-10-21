@@ -41,11 +41,11 @@ in
     assertions = [
       {
         assertion = config.custom.services.tailscale.enable;
-        message = "Syncthing requires tailscale.";
+        message = "Syncthing requires tailscale";
       }
       {
         assertion = cfg.isServer -> (cfg.gui.domain != null);
-        message = "Running syncthing on a server requires `gui.domain` to be set.";
+        message = "Running syncthing on a server requires `gui.domain` to be set";
       }
       {
         assertion = (cfg.gui.domain != null) -> (lib'.isTailscaleDomain cfg.gui.domain);
