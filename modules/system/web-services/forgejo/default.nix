@@ -60,6 +60,7 @@ in
           rev = "refs/tags/v${pinnedVersion}";
           hash = "sha256-g6PNJYiGR7tUpurVL1gvGzJzDoMCLmkGiLLsSZfkbYQ=";
         };
+        vendorHash = "sha256-GE3trnaWuAVSEfi11tZo5JXedWOYOMzcHQ3GFyISVTQ=";
       };
 
       user = "git";
