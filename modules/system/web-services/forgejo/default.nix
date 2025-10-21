@@ -26,8 +26,7 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
-      assertion =
-        (lib.versionOlder pkgs.forgejo.version pinnedVersion) || (pkgs.forgejo.version == pinnedVersion);
+      assertion = lib.versionOlder lib.version "25.11";
       message = "TODO: Use forgejo package from stable nixpkgs";
     };
 
