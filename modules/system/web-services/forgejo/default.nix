@@ -25,9 +25,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    warnings = lib.optional (
-      (lib.versionAtLeast pkgs.forgejo.version pinnedVersion) && (pkgs.forgejo.version != pinnedVersion)
-    ) "TODO: Use forgejo package from stable nixpkgs";
+    assertions = lib.singleton {
+      assertion =
+        (lib.versionOlder pkgs.forgejo.version pinnedVersion) || (pkgs.forgejo.version == pinnedVersion);
+      message = "TODO: Use forgejo package from stable nixpkgs";
+    };
 
     meta = {
       domains.list = [ cfg.domain ];

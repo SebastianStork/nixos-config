@@ -25,7 +25,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    warnings = lib.optional (lib.versionAtLeast lib.version "25.11") "TODO: Use privatebin package from stable nixpkgs";
+    assertions = lib.singleton {
+      assertion = lib.versionOlder lib.version "25.11";
+      message = "TODO: Use privatebin package from stable nixpkgs";
+    };
 
     meta = {
       domains.list = [ cfg.domain ];

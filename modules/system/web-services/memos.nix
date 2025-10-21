@@ -29,9 +29,15 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    warnings = lib.concatLists [
-      (lib.optional (lib.pathExists "${modulesPath}/services/misc/memos.nix") "TODO: Use memos module from stable nixpkgs")
-      (lib.optional (lib.versionAtLeast lib.version "25.11") "TODO: Use memos package from stable nixpkgs")
+    assertions = [
+      {
+        assertion = !lib.pathExists "${modulesPath}/services/misc/memos.nix";
+        message = "TODO: Use memos module from stable nixpkgs";
+      }
+      {
+        assertion = lib.versionOlder lib.version "25.11";
+        message = "TODO: Use memos package from stable nixpkgs";
+      }
     ];
 
     meta = {

@@ -14,9 +14,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    warnings = lib.optional (
-      config.services.greetd ? useTextGreeter
-    ) "TODO: Replace tuigreet tty fix with `useTextGreeter` option";
+    assertions = lib.singleton {
+      assertion = !config.services.greetd ? useTextGreeter;
+      message = "TODO: Replace tuigreet tty fix with `useTextGreeter` option";
+    };
 
     services.greetd = {
       enable = true;

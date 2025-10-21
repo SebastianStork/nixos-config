@@ -33,9 +33,11 @@ in
         assertion = lib'.isTailscaleDomain cfg.domain;
         message = "Filebrowser isn't yet configured with access controll.";
       }
+      {
+        assertion = !lib.pathExists "${modulesPath}/services/web-apps/filebrowser.nix";
+        message = "TODO: Use filebrowser module from stable nixpkgs";
+      }
     ];
-
-    warnings = lib.optional (lib.pathExists "${modulesPath}/services/web-apps/filebrowser.nix") "TODO: Use filebrowser module from stable nixpkgs";
 
     meta = {
       domains.list = [ cfg.domain ];
