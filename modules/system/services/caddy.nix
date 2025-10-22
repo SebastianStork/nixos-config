@@ -19,31 +19,12 @@ let
     443
   ];
 
-  mkWildCardDomain =
-    rootDomain: values:
-    lib.nameValuePair "*.${rootDomain}" {
-      logFormat = "";
-      extraConfig =
-        let
-          mkSubdomain =
-            { domain, port, ... }:
-            ''
-              import subdomain-log ${domain}
-              @${lib'.subdomainOf domain} host ${domain}
-              handle @${lib'.subdomainOf domain} {
-                reverse_proxy localhost:${toString port}
-              }
-            '';
-        in
-        (values |> lib.map mkSubdomain |> lib.concatLines) + "handle { respond 404 }";
-    };
-
-  mkTailscaleHost =
+  mkVirtualHost =
     { domain, port, ... }:
     lib.nameValuePair domain {
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
       extraConfig = ''
-        bind tailscale/${lib'.subdomainOf domain}
+        ${lib.optionalString (lib'.isTailscaleDomain domain) "bind tailscale/${lib'.subdomainOf domain}"}
         reverse_proxy localhost:${toString port}
       '';
     };
@@ -90,61 +71,24 @@ in
         services.caddy = {
           enable = true;
           package = pkgs.caddy.withPlugins {
-            plugins = [
-              "github.com/tailscale/caddy-tailscale@v0.0.0-20250508175905-642f61fea3cc"
-              "github.com/caddy-dns/porkbun@v0.3.1"
-            ];
-            hash = "sha256-117vurf98sK/4o3JU3rBwNBUjnZZyFRJ1mq5T1S1IxY=";
+            plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20250508175905-642f61fea3cc" ];
+            hash = "sha256-bw2ZH+XTQlyYw5LgkVr+oEeL8Nf4j/KO2XQIUrsVpiU=";
           };
           enableReload = false;
           globalConfig = ''
             admin off
             metrics { per_host }
           '';
-          virtualHosts.":${toString cfg.metricsPort}" = {
-            logFormat = "";
-            extraConfig = "metrics /metrics";
-          };
+          extraConfig = ":49514 { metrics /metrics }";
+          virtualHosts = virtualHosts |> lib.map mkVirtualHost |> lib.listToAttrs;
         };
 
         custom.persist.directories = [ "/var/lib/caddy" ];
       }
 
       (lib.mkIf (nonTailscaleHosts != [ ]) {
-        sops = {
-          secrets."porkbun/api-key" = {
-            owner = user;
-            restartUnits = [ "caddy.service" ];
-          };
-          secrets."porkbun/api-secret-key" = {
-            owner = user;
-            restartUnits = [ "caddy.service" ];
-          };
-        };
-
         meta.ports.tcp.list = webPorts;
         networking.firewall.allowedTCPPorts = webPorts;
-
-        services.caddy = {
-          globalConfig = ''
-            acme_dns porkbun {
-              api_key {file.${config.sops.secrets."porkbun/api-key".path}}
-              api_secret_key {file.${config.sops.secrets."porkbun/api-secret-key".path}}
-            }
-          '';
-          extraConfig = ''
-            (subdomain-log) {
-              log {
-                hostnames {args[0]}
-                output file ${config.services.caddy.logDir}/{args[0]}.log { mode 640 }
-              }
-            }
-          '';
-          virtualHosts =
-            nonTailscaleHosts
-            |> builtins.groupBy (value: lib'.rootDomainOf value.domain)
-            |> lib.mapAttrs' mkWildCardDomain;
-        };
       })
 
       (lib.mkIf (tailscaleHosts != [ ]) {
@@ -153,15 +97,12 @@ in
           restartUnits = [ "caddy.service" ];
         };
 
-        services.caddy = {
-          globalConfig = ''
-            tailscale {
-              auth_key {file.${config.sops.secrets."tailscale/service-auth-key".path}}
-              ephemeral true
-            }
-          '';
-          virtualHosts = tailscaleHosts |> lib.map mkTailscaleHost |> lib.listToAttrs;
-        };
+        services.caddy.globalConfig = ''
+          tailscale {
+            auth_key {file.${config.sops.secrets."tailscale/service-auth-key".path}}
+            ephemeral true
+          }
+        '';
       })
     ]
   );
