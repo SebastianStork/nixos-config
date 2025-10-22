@@ -37,7 +37,7 @@ in
 
     systemd.services.iwd = {
       preStart = "install -m 600 /run/secrets/iwd/* /var/lib/iwd";
-      postStop = "rm --force /var/lib/iwd/*.{psk,8021x}";
+      postStop = "rm --force /var/lib/iwd/*.{open,psk,8021x}";
     };
   };
 }
