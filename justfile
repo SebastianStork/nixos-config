@@ -24,7 +24,7 @@ rebuild mode='switch':
 
 [group('rebuild')]
 switch:
-    rebuild switch
+    just rebuild switch
 
 [group('rebuild')]
 test:
