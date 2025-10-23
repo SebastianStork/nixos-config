@@ -6,12 +6,12 @@
 }:
 let
   backupsWithRestoreCommand =
-    config.custom.services.resticBackups
+    config.custom.services.restic.backups
     |> lib.filterAttrs (_: value: value.enable)
     |> lib.filterAttrs (_: value: value.restoreCommand.enable);
 in
 {
-  options.custom.services.resticBackups = lib.mkOption {
+  options.custom.services.restic.backups = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
         options.restoreCommand = {

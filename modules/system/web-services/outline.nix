@@ -73,7 +73,7 @@ in
         inherit (config.services.outline) user;
       in
       {
-        services.resticBackups.outline = lib.mkIf cfg.doBackups {
+        services.restic.backups.outline = lib.mkIf cfg.doBackups {
           conflictingService = "outline.service";
           paths = [ dataDir ];
           extraConfig.backupPrepareCommand = ''

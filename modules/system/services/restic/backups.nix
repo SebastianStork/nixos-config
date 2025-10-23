@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  resticBackups = config.custom.services.resticBackups |> lib.filterAttrs (_: value: value.enable);
+  backups = config.custom.services.restic.backups |> lib.filterAttrs (_: value: value.enable);
 in
 {
-  options.custom.services.resticBackups = lib.mkOption {
+  options.custom.services.restic.backups = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
         options = {
@@ -28,7 +28,7 @@ in
     default = { };
   };
 
-  config = lib.mkIf (resticBackups != { }) {
+  config = lib.mkIf (backups != { }) {
     sops = {
       secrets = {
         "backblaze/key-id" = { };
@@ -43,10 +43,10 @@ in
     };
 
     systemd.tmpfiles.rules =
-      resticBackups |> lib.attrNames |> lib.map (name: "d /var/cache/restic-backups-${name} 700 - - -");
+      backups |> lib.attrNames |> lib.map (name: "d /var/cache/restic-backups-${name} 700 - - -");
 
     services.restic.backups =
-      resticBackups
+      backups
       |> lib.mapAttrs (
         name: value:
         lib.mkMerge [
@@ -71,7 +71,7 @@ in
       );
 
     systemd.services =
-      resticBackups
+      backups
       |> lib.mapAttrs' (
         name: value:
         lib.nameValuePair "restic-backups-${name}" (

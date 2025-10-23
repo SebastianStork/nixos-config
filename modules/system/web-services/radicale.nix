@@ -107,7 +107,7 @@ in
       );
 
     custom = {
-      services.resticBackups.radicale = lib.mkIf cfg.doBackups {
+      services.restic.backups.radicale = lib.mkIf cfg.doBackups {
         conflictingService = "radicale.service";
         paths = [ dataDir ];
       };

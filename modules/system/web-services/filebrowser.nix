@@ -53,7 +53,7 @@ in
     };
 
     custom = {
-      services.resticBackups.filebrowser = lib.mkIf cfg.doBackups {
+      services.restic.backups.filebrowser = lib.mkIf cfg.doBackups {
         conflictingService = "filebrowser.service";
         paths = [ dataDir ];
       };

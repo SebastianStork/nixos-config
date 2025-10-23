@@ -133,7 +133,7 @@ in
     };
 
     custom = {
-      services.resticBackups.syncthing = lib.mkIf cfg.doBackups {
+      services.restic.backups.syncthing = lib.mkIf cfg.doBackups {
         conflictingService = "syncthing.service";
         paths = [ dataDir ];
       };
