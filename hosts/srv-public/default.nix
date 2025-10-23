@@ -25,6 +25,7 @@
 
     services =
       let
+        sstorkDomain = "sstork.dev";
         sproutedDomain = "sprouted.cloud";
       in
       {
@@ -43,9 +44,14 @@
           bouncers.firewall = true;
         };
 
+        personal-blog = {
+          enable = true;
+          domain = sstorkDomain;
+        };
+
         forgejo = {
           enable = true;
-          domain = "git.sstork.dev";
+          domain = "git.${sstorkDomain}";
           doBackups = true;
           ssh.enable = true;
         };
@@ -86,6 +92,9 @@
             inherit (config.custom) services;
           in
           {
+            personal-blog = {
+              inherit (services.personal-blog) domain port;
+            };
             forgejo = {
               inherit (services.forgejo) domain port;
             };
