@@ -20,6 +20,7 @@ in
       type = lib.types.port;
       default = 22055;
     };
+    doBackups = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -42,6 +43,13 @@ in
       authType = "none";
     };
 
-    custom.persist.directories = [ dataDir ];
+    custom = {
+      services.restic.backups.freshrss = lib.mkIf cfg.doBackups {
+        conflictingService = "freshrss-updater.service";
+        paths = [ dataDir ];
+      };
+
+      persist.directories = [ dataDir ];
+    };
   };
 }

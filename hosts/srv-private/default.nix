@@ -69,6 +69,7 @@
         freshrss = {
           enable = true;
           domain = "rss.${tailscaleDomain}";
+          doBackups = true;
         };
 
         alloy = {
