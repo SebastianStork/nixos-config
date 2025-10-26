@@ -39,7 +39,7 @@ in
               --silent \
               --show-error \
               --max-time 10 \
-              --retry 5 "https://hc-ping.com/$ping_key/$slug"
+              --retry 5 "https://hc-ping.com/$ping_key/$slug?create=1"
           '';
         };
       }
