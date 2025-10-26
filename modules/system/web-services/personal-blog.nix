@@ -28,19 +28,12 @@ in
       ports.tcp.list = [ cfg.port ];
     };
 
-    systemd.services = {
-      generate-blog = {
-        serviceConfig.Type = "oneshot";
-        before = [ "caddy.service" ];
-        startAt = "*:0/5"; # Every 5 minutes
-        path = [
-          pkgs.nix
-          pkgs.git
-        ];
-        script = "nix build git+https://git.sstork.dev/SebastianStork/blog?ref=main --out-link ${dataDir} --refresh";
-      };
-
-      caddy.after = [ "generate-blog.service" ];
+    systemd.services.generate-blog = {
+      serviceConfig.Type = "oneshot";
+      wantedBy = [ "multi-user.target" ];
+      startAt = "*:0/5"; # Every 5 minutes
+      path = [ pkgs.nix ];
+      script = "nix build github:SebastianStork/blog --out-link ${dataDir} --refresh";
     };
 
     services.caddy.virtualHosts.":${toString cfg.port}".extraConfig = ''
