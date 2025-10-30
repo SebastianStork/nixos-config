@@ -52,7 +52,5 @@ in
         inherit (cfg) port;
       };
     };
-
-    custom.persist.directories = [ config.services.privatebin.dataDir ];
   };
 }
