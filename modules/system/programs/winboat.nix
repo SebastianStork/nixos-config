@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   pkgs-unstable,
   lib,
   ...
@@ -12,10 +11,6 @@
     virtualisation.docker.enable = true;
     users.users.seb.extraGroups = [ config.users.groups.docker.name ];
 
-    environment.systemPackages = [
-      pkgs-unstable.winboat
-      pkgs.docker-compose
-      pkgs.freerdp
-    ];
+    environment.systemPackages = [ pkgs-unstable.winboat ];
   };
 }
