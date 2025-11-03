@@ -1,5 +1,5 @@
 # This is a placeholder.
-# The real .sops.yaml is generated via: nix build .#sops-config
-# See flake/sops.nix for details.
+# The real .sops.yaml is generated via `nix build .#sops-config`
+# See flake-parts/sops.nix for details.
 
 creation_rules: []
