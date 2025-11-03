@@ -19,7 +19,7 @@ repl host='$(hostname)':
     nix repl .#nixosConfigurations.{{ host }}
 
 [group('rebuild')]
-rebuild mode='switch':
+rebuild mode:
     nh os {{ mode }} .
 
 [group('rebuild')]
