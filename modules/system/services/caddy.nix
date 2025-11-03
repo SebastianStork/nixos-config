@@ -70,10 +70,6 @@ in
 
         services.caddy = {
           enable = true;
-          package = pkgs.caddy.withPlugins {
-            plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20250508175905-642f61fea3cc" ];
-            hash = "sha256-bw2ZH+XTQlyYw5LgkVr+oEeL8Nf4j/KO2XQIUrsVpiU=";
-          };
           enableReload = false;
           globalConfig = ''
             admin off
@@ -97,12 +93,18 @@ in
           restartUnits = [ "caddy.service" ];
         };
 
-        services.caddy.globalConfig = ''
-          tailscale {
-            auth_key {file.${config.sops.secrets."tailscale/service-auth-key".path}}
-            ephemeral true
-          }
-        '';
+        services.caddy = {
+          package = pkgs.caddy.withPlugins {
+            plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20250508175905-642f61fea3cc" ];
+            hash = "sha256-bw2ZH+XTQlyYw5LgkVr+oEeL8Nf4j/KO2XQIUrsVpiU=";
+          };
+          globalConfig = ''
+            tailscale {
+              auth_key {file.${config.sops.secrets."tailscale/service-auth-key".path}}
+              ephemeral true
+            }
+          '';
+        };
       })
     ]
   );
