@@ -1,7 +1,7 @@
 {
   config,
-  inputs,
   pkgs,
+  pkgs-unstable,
   lib,
   ...
 }:
@@ -13,9 +13,9 @@
     users.users.seb.extraGroups = [ config.users.groups.docker.name ];
 
     environment.systemPackages = [
+      pkgs-unstable.winboat
       pkgs.docker-compose
       pkgs.freerdp
-      inputs.winboat.packages.${pkgs.system}.winboat
     ];
   };
 }
