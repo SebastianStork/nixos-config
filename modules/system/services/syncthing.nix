@@ -10,7 +10,7 @@ let
 
   inherit (config.services.syncthing) dataDir;
 
-  useStaticTls = config.custom.sops.secrets |> lib.hasAttr "syncthing";
+  useSopsSecrets = config.custom.sops.secrets |> lib.hasAttr "syncthing";
 in
 {
   options.custom.services.syncthing = {
@@ -64,7 +64,7 @@ in
       };
     };
 
-    sops.secrets = lib.mkIf useStaticTls {
+    sops.secrets = lib.mkIf useSopsSecrets {
       "syncthing/cert" = {
         owner = config.services.syncthing.user;
         restartUnits = [ "syncthing.service" ];
@@ -84,8 +84,8 @@ in
 
       guiAddress = "localhost:${toString cfg.gui.port}";
 
-      cert = lib.mkIf useStaticTls config.sops.secrets."syncthing/cert".path;
-      key = lib.mkIf useStaticTls config.sops.secrets."syncthing/key".path;
+      cert = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/cert".path;
+      key = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/key".path;
 
       settings = {
         # Get the devices and their ids from the configs of the other hosts
