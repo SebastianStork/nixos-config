@@ -11,8 +11,8 @@ let
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (value: value.enable);
 
-  tailscaleHosts = virtualHosts |> lib.filter (value: lib'.isTailscaleDomain value.domain);
-  nonTailscaleHosts = virtualHosts |> lib.filter (value: !lib'.isTailscaleDomain value.domain);
+  publicHostsExist = virtualHosts |> lib.any (value: !lib'.isTailscaleDomain value.domain);
+  tailscaleHostsExist = virtualHosts |> lib.any (value: lib'.isTailscaleDomain value.domain);
 
   webPorts = [
     80
@@ -86,12 +86,12 @@ in
         custom.persist.directories = [ "/var/lib/caddy" ];
       }
 
-      (lib.mkIf (nonTailscaleHosts != [ ]) {
+      (lib.mkIf publicHostsExist {
         meta.ports.tcp.list = webPorts;
         networking.firewall.allowedTCPPorts = webPorts;
       })
 
-      (lib.mkIf (tailscaleHosts != [ ]) {
+      (lib.mkIf tailscaleHostsExist {
         sops.secrets."tailscale/service-auth-key" = {
           owner = user;
           restartUnits = [ "caddy.service" ];
