@@ -96,7 +96,7 @@ in
         services.caddy = {
           package = pkgs.caddy.withPlugins {
             plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20250508175905-642f61fea3cc" ];
-            hash = "sha256-bw2ZH+XTQlyYw5LgkVr+oEeL8Nf4j/KO2XQIUrsVpiU=";
+            hash = "sha256-o9/ueYS1yD8H4j9uKu/wDGw02r8gEPzI80Hxs70tsL8=";
           };
           globalConfig = ''
             tailscale {
