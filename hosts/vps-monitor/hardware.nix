@@ -23,8 +23,8 @@
       linkConfig.RequiredForOnline = "routable";
       networkConfig.DHCP = "no";
       address = [
-        "49.13.231.235/32"
-        "2a01:4f8:1c1e:76fe::1/64"
+        "188.245.223.145/32"
+        "2a01:4f8:1c1b:468f::1/64"
       ];
       routes = [
         {
