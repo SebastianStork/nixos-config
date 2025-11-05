@@ -18,10 +18,6 @@ in
       type = lib.types.port;
       default = 9428;
     };
-    maxDiskSpaceUsage = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "10GiB";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -59,7 +55,6 @@ in
         }
       );
       listenAddress = "localhost:${toString cfg.port}";
-      extraOptions = [ "-retention.maxDiskSpaceUsageBytes=${cfg.maxDiskSpaceUsage}" ];
     };
 
     custom.persist.directories = [ "/var/lib/${config.services.victorialogs.stateDir}" ];
