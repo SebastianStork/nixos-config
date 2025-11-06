@@ -11,21 +11,25 @@
   config = lib.mkIf config.custom.programs.vscode.enable {
     programs.vscode = {
       enable = true;
-      package = pkgs.vscodium;
-      profiles.default.extensions =
-        let
-          inherit (inputs.vscode-extensions.extensions.${pkgs.system}) open-vsx;
-        in
-        [
-          # Language Servers
-          open-vsx.jnoortheen.nix-ide
-          open-vsx.llvm-vs-code-extensions.vscode-clangd
-          open-vsx.rust-lang.rust-analyzer
+      profiles.default = {
+        extensions =
+          let
+            vscode-extensions =
+              inputs.vscode-extensions.extensions.${pkgs.system}.forVSCodeVersion
+                config.programs.vscode.package.version;
+            inherit (vscode-extensions) open-vsx;
+          in
+          [
+            # Theming
+            open-vsx.github.github-vscode-theme
+            open-vsx.pkief.material-icon-theme
 
-          # Theming
-          open-vsx.github.github-vscode-theme
-          open-vsx.pkief.material-icon-theme
-        ];
+            # Language Servers
+            open-vsx.jnoortheen.nix-ide
+            open-vsx.llvm-vs-code-extensions.vscode-clangd
+            open-vsx.rust-lang.rust-analyzer
+          ];
+      };
     };
 
     systemd.user.tmpfiles.rules =
@@ -64,10 +68,8 @@
         );
       in
       [
-        "f+ %h/.config/VSCodium/User/settings.json - - - - ${settings}"
-        "f+ %h/.config/VSCodium/User/settings-default.json - - - - ${settings}"
+        "f+ %h/.config/Code/User/settings.json - - - - ${settings}"
+        "f+ %h/.config/Code/User/settings-default.json - - - - ${settings}"
       ];
-
-    home.shellAliases.code = "codium";
   };
 }
