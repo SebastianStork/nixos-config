@@ -36,8 +36,8 @@
         commit-lock-file-summary = "flake.lock: Update";
         allow-import-from-derivation = false;
 
-        min-free = "1G";
-        max-free = "10G";
+        min-free = "100M";
+        max-free = "1G";
       };
     };
 
