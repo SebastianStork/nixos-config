@@ -26,7 +26,7 @@
       bind = SUPER, RETURN, exec, kitty
       bind = SUPER, V, exec, rofi-clipboard
       bind = SUPER, B, exec, firefox
-      bind = SUPER, C, exec, codium
+      bind = SUPER, C, exec, code
 
       # Move focus
       bind = SUPER, left, movefocus, l
