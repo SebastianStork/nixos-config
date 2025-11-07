@@ -54,9 +54,7 @@
             "explorer.confirmDragAndDrop" = false;
             "files.autoSave" = "afterDelay";
             "update.mode" = "none";
-            "window.menuBarVisibility" = "toggle";
-            "window.titleBarStyle" = "native";
-            "window.customTitleBarVisibility" = "never";
+            "window.titleBarStyle" = "custom";
             "git.autofetch" = true;
             "git.confirmSync" = false;
             "git.suggestSmartCommit" = false;
