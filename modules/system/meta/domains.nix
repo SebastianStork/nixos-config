@@ -2,6 +2,7 @@
   config,
   self,
   lib,
+  lib',
   ...
 }:
 let
@@ -34,10 +35,10 @@ in
           |> lib.map (value: value.options.meta.domains.list.definitionsWithLocations)
           |> lib.concatLists
           |> lib.concatMap (
-            entry:
-            entry.value
+            { file, value }:
+            value
             |> lib.map (domain: {
-              file = entry.file |> lib.removePrefix "${self}/";
+              file = lib'.relativePath file;
               inherit domain;
             })
           )

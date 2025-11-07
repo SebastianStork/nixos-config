@@ -1,8 +1,8 @@
 {
   config,
   options,
-  self,
   lib,
+  lib',
   ...
 }:
 let
@@ -28,10 +28,10 @@ in
           protocol:
           options.meta.ports.${protocol}.list.definitionsWithLocations
           |> lib.concatMap (
-            entry:
-            entry.value
+            { file, value }:
+            value
             |> lib.map (port: {
-              file = entry.file |> lib.removePrefix "${self}/";
+              file = lib'.relativePath file;
               inherit port;
             })
           )

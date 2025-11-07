@@ -1,4 +1,8 @@
-lib: {
+{
+  lib,
+  self,
+}:
+{
   isTailscaleDomain = domain: domain |> lib.hasSuffix ".ts.net";
 
   subdomainOf = domain: domain |> lib.splitString "." |> lib.head;
@@ -15,4 +19,6 @@ lib: {
 
   mkUnprotectedMessage =
     name: "${name} should only be exposed on private networks; access control isn't yet configured";
+
+  relativePath = path: path |> toString |> lib.removePrefix "${self}/";
 }

@@ -1,4 +1,7 @@
 { self, inputs, ... }:
 {
-  flake.lib = import "${self}/lib" inputs.nixpkgs.lib;
+  flake.lib = import "${self}/lib" {
+    inherit (inputs.nixpkgs) lib;
+    inherit self;
+  };
 }
