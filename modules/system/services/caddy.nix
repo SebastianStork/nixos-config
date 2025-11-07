@@ -75,7 +75,7 @@ in
             admin off
             metrics { per_host }
           '';
-          extraConfig = ":49514 { metrics /metrics }";
+          extraConfig = ":${toString cfg.metricsPort} { metrics /metrics }";
           virtualHosts = virtualHosts |> lib.map mkVirtualHost |> lib.listToAttrs;
         };
 
