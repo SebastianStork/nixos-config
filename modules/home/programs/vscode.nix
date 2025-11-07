@@ -62,6 +62,9 @@
             "nix.serverPath" = lib.getExe pkgs.nixd;
             "nix.formatterPath" = lib.getExe pkgs.nixfmt-rfc-style;
             "nix.serverSettings.nixd.formatting.command" = [ (lib.getExe pkgs.nixfmt-rfc-style) ];
+            "github.copilot.enable" = {
+              "*" = false;
+            };
           }
         );
       in
