@@ -31,9 +31,6 @@ let
 in
 {
   options.custom.services.caddy = {
-    enable = lib.mkEnableOption "" // {
-      default = virtualHosts != { };
-    };
     metricsPort = lib.mkOption {
       type = lib.types.port;
       default = 49514;
