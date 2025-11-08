@@ -44,5 +44,7 @@ in
         UI_HOMEDESCRIPTION = cfg.branding.description;
       };
     };
+
+    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
   };
 }

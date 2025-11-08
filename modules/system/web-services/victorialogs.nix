@@ -57,6 +57,10 @@ in
       listenAddress = "localhost:${toString cfg.port}";
     };
 
-    custom.persist.directories = [ "/var/lib/${config.services.victorialogs.stateDir}" ];
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+      persist.directories = [ "/var/lib/${config.services.victorialogs.stateDir}" ];
+    };
   };
 }

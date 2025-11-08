@@ -30,5 +30,7 @@ in
         web-root = "disable";
       };
     };
+
+    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
   };
 }

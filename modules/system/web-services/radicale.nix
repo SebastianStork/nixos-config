@@ -107,10 +107,15 @@ in
       );
 
     custom = {
-      services.restic.backups.radicale = lib.mkIf cfg.doBackups {
-        conflictingService = "radicale.service";
-        paths = [ dataDir ];
+      services = {
+        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+        restic.backups.radicale = lib.mkIf cfg.doBackups {
+          conflictingService = "radicale.service";
+          paths = [ dataDir ];
+        };
       };
+
       persist.directories = [ dataDir ];
     };
   };

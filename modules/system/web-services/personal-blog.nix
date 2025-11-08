@@ -16,17 +16,10 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
-    port = lib.mkOption {
-      type = lib.types.port;
-      default = 3890;
-    };
   };
 
   config = lib.mkIf cfg.enable {
-    meta = {
-      domains.list = [ cfg.domain ];
-      ports.tcp.list = [ cfg.port ];
-    };
+    meta.domains.list = [ cfg.domain ];
 
     systemd.services.generate-blog = {
       serviceConfig.Type = "oneshot";
@@ -36,9 +29,6 @@ in
       script = "nix build github:SebastianStork/blog --out-link ${dataDir} --refresh";
     };
 
-    services.caddy.virtualHosts.":${toString cfg.port}".extraConfig = ''
-      root * ${dataDir}
-      file_server
-    '';
+    custom.services.caddy.virtualHosts.${cfg.domain}.files = dataDir;
   };
 }

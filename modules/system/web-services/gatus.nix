@@ -103,37 +103,6 @@ in
       RemoveIPC = true;
     };
 
-    custom.services.gatus.endpoints =
-      let
-        defaultEndpoints =
-          self.nixosConfigurations
-          |> lib.mapAttrs (_: value: value.config.meta.domains.list)
-          |> lib.concatMapAttrs (
-            hostName: domains:
-            domains
-            |> lib.filter (domain: domain != cfg.domain)
-            |> lib.map (
-              domain:
-              lib.nameValuePair (lib'.subdomainOf domain) {
-                inherit domain;
-                group = hostName;
-              }
-            )
-            |> lib.listToAttrs
-          );
-      in
-      lib.mkIf cfg.generateDefaultEndpoints (
-        defaultEndpoints
-        // {
-          "healthchecks.io" = {
-            group = "external";
-            domain = "hc-ping.com";
-            path = "/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
-            interval = "2h";
-          };
-        }
-      );
-
     services.gatus = {
       enable = true;
       package = pkgs-unstable.gatus; # Unstable for the new UI
@@ -206,6 +175,43 @@ in
 
     systemd.services.gatus.environment.GATUS_DELAY_START_SECONDS = "5";
 
-    custom.persist.directories = [ dataDir ];
+    custom = {
+      services = {
+        gatus.endpoints =
+          let
+            defaultEndpoints =
+              self.nixosConfigurations
+              |> lib.mapAttrs (_: value: value.config.meta.domains.list)
+              |> lib.concatMapAttrs (
+                hostName: domains:
+                domains
+                |> lib.filter (domain: domain != cfg.domain)
+                |> lib.map (
+                  domain:
+                  lib.nameValuePair (lib'.subdomainOf domain) {
+                    inherit domain;
+                    group = hostName;
+                  }
+                )
+                |> lib.listToAttrs
+              );
+          in
+          lib.mkIf cfg.generateDefaultEndpoints (
+            defaultEndpoints
+            // {
+              "healthchecks.io" = {
+                group = "external";
+                domain = "hc-ping.com";
+                path = "/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";
+                interval = "2h";
+              };
+            }
+          );
+
+        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      };
+
+      persist.directories = [ dataDir ];
+    };
   };
 }

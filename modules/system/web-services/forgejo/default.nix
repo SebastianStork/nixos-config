@@ -119,9 +119,13 @@ in
       '';
 
     custom = {
-      services.restic.backups.forgejo = lib.mkIf cfg.doBackups {
-        conflictingService = "forgejo.service";
-        paths = [ config.services.forgejo.stateDir ];
+      services = {
+        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+        restic.backups.forgejo = lib.mkIf cfg.doBackups {
+          conflictingService = "forgejo.service";
+          paths = [ config.services.forgejo.stateDir ];
+        };
       };
 
       persist.directories = [ config.services.forgejo.stateDir ];

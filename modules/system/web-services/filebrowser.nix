@@ -53,9 +53,13 @@ in
     };
 
     custom = {
-      services.restic.backups.filebrowser = lib.mkIf cfg.doBackups {
-        conflictingService = "filebrowser.service";
-        paths = [ dataDir ];
+      services = {
+        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+        restic.backups.filebrowser = lib.mkIf cfg.doBackups {
+          conflictingService = "filebrowser.service";
+          paths = [ dataDir ];
+        };
       };
 
       persist.directories = [ dataDir ];

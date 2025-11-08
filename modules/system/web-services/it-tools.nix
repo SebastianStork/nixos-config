@@ -14,23 +14,11 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
-    port = lib.mkOption {
-      type = lib.types.port;
-      default = 8787;
-    };
   };
 
   config = lib.mkIf cfg.enable {
-    meta = {
-      domains.list = [ cfg.domain ];
-      ports.tcp.list = [ cfg.port ];
-    };
+    meta.domains.list = [ cfg.domain ];
 
-    services.static-web-server = {
-      enable = true;
-      listen = "[::]:${toString cfg.port}";
-      root = "${pkgs.it-tools}/lib";
-      configuration.general.health = true;
-    };
+    custom.services.caddy.virtualHosts.${cfg.domain}.files = "${pkgs.it-tools}/lib";
   };
 }

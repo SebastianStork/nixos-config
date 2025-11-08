@@ -62,6 +62,10 @@ in
       ];
     };
 
-    custom.persist.directories = [ "/var/lib/${config.services.victoriametrics.stateDir}" ];
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+      persist.directories = [ "/var/lib/${config.services.victoriametrics.stateDir}" ];
+    };
   };
 }

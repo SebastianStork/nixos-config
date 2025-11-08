@@ -26,5 +26,7 @@ in
       ports = [ "127.0.0.1:${toString cfg.port}:3000" ];
       pull = "newer";
     };
+
+    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
   };
 }

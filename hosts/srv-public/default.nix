@@ -86,34 +86,6 @@
           enable = true;
           domain = "alloy-${config.networking.hostName}.${config.custom.services.tailscale.domain}";
         };
-
-        caddy.virtualHosts =
-          let
-            inherit (config.custom) services;
-          in
-          {
-            personal-blog = {
-              inherit (services.personal-blog) domain port;
-            };
-            forgejo = {
-              inherit (services.forgejo) domain port;
-            };
-            outline = {
-              inherit (services.outline) domain port;
-            };
-            it-tools = {
-              inherit (services.it-tools) domain port;
-            };
-            stirling-pdf = {
-              inherit (services.stirling-pdf) domain port;
-            };
-            privatebin = {
-              inherit (services.privatebin) domain port;
-            };
-            alloy = {
-              inherit (services.alloy) domain port;
-            };
-          };
       };
   };
 }

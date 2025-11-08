@@ -44,9 +44,13 @@ in
     };
 
     custom = {
-      services.restic.backups.freshrss = lib.mkIf cfg.doBackups {
-        conflictingService = "freshrss-updater.service";
-        paths = [ dataDir ];
+      services = {
+        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+        restic.backups.freshrss = lib.mkIf cfg.doBackups {
+          conflictingService = "freshrss-updater.service";
+          paths = [ dataDir ];
+        };
       };
 
       persist.directories = [ dataDir ];

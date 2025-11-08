@@ -76,34 +76,6 @@
           enable = true;
           domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
         };
-
-        caddy.virtualHosts =
-          let
-            inherit (config.custom) services;
-          in
-          {
-            syncthing-gui = {
-              inherit (services.syncthing.gui) domain port;
-            };
-            filebrowser = {
-              inherit (services.filebrowser) domain port;
-            };
-            radicale = {
-              inherit (services.radicale) domain port;
-            };
-            memos = {
-              inherit (services.memos) domain port;
-            };
-            actualbudget = {
-              inherit (services.actualbudget) domain port;
-            };
-            freshrss = {
-              inherit (services.freshrss) domain port;
-            };
-            alloy = {
-              inherit (services.alloy) domain port;
-            };
-          };
       };
   };
 }

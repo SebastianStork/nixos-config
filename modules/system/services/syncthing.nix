@@ -133,9 +133,13 @@ in
     };
 
     custom = {
-      services.restic.backups.syncthing = lib.mkIf cfg.doBackups {
-        conflictingService = "syncthing.service";
-        paths = [ dataDir ];
+      services = {
+        caddy.virtualHosts.${cfg.gui.domain}.port = lib.mkIf (cfg.gui.domain != null) cfg.gui.port;
+
+        restic.backups.syncthing = lib.mkIf cfg.doBackups {
+          conflictingService = "syncthing.service";
+          paths = [ dataDir ];
+        };
       };
 
       persist.directories = [ dataDir ];

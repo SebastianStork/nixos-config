@@ -85,31 +85,6 @@
           enable = true;
           domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
         };
-
-        caddy.virtualHosts =
-          let
-            inherit (config.custom) services;
-          in
-          {
-            gatus = {
-              inherit (services.gatus) domain port;
-            };
-            ntfy = {
-              inherit (services.ntfy) domain port;
-            };
-            grafana = {
-              inherit (services.grafana) domain port;
-            };
-            victoriametrics = {
-              inherit (services.victoriametrics) domain port;
-            };
-            victorialogs = {
-              inherit (services.victorialogs) domain port;
-            };
-            alloy = {
-              inherit (services.alloy) domain port;
-            };
-          };
       };
   };
 }

@@ -73,13 +73,17 @@ in
         inherit (config.services.outline) user;
       in
       {
-        services.restic.backups.outline = lib.mkIf cfg.doBackups {
-          conflictingService = "outline.service";
-          paths = [ dataDir ];
-          extraConfig.backupPrepareCommand = ''
-            ${lib.getExe pkgs.sudo} --user=${user} ${lib.getExe' config.services.postgresql.package "pg_dump"} outline --format=custom --file=${dataDir}/db.dump
-          '';
-          restoreCommand.postRestore = "sudo --user=${user} pg_restore --clean --if-exists --dbname outline ${dataDir}/db.dump";
+        services = {
+          caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+          restic.backups.outline = lib.mkIf cfg.doBackups {
+            conflictingService = "outline.service";
+            paths = [ dataDir ];
+            extraConfig.backupPrepareCommand = ''
+              ${lib.getExe pkgs.sudo} --user=${user} ${lib.getExe' config.services.postgresql.package "pg_dump"} outline --format=custom --file=${dataDir}/db.dump
+            '';
+            restoreCommand.postRestore = "sudo --user=${user} pg_restore --clean --if-exists --dbname outline ${dataDir}/db.dump";
+          };
         };
 
         persist.directories = [

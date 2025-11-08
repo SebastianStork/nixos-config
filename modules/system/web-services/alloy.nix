@@ -168,5 +168,7 @@ in
           '';
         };
       };
+
+    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
   };
 }

@@ -26,6 +26,10 @@ in
       settings.PORT = toString cfg.port;
     };
 
-    custom.persist.directories = [ config.services.uptime-kuma.settings.DATA_DIR ];
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+      persist.directories = [ config.services.uptime-kuma.settings.DATA_DIR ];
+    };
   };
 }
