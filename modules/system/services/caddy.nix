@@ -20,13 +20,23 @@ let
   ];
 
   mkVirtualHost =
-    { domain, port, ... }:
+    {
+      domain,
+      port,
+      files,
+      ...
+    }:
     lib.nameValuePair domain {
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
-      extraConfig = ''
-        ${lib.optionalString (lib'.isTailscaleDomain domain) "bind tailscale/${lib'.subdomainOf domain}"}
-        reverse_proxy localhost:${toString port}
-      '';
+      extraConfig = lib.concatLines [
+        (lib.optionalString (lib'.isTailscaleDomain domain) "bind tailscale/${lib'.subdomainOf domain}")
+        (lib.optionalString (port != null) "reverse_proxy localhost:${toString port}")
+        (lib.optionalString (files != null) ''
+          root * ${files}
+          encode
+          file_server
+        '')
+      ];
     };
 in
 {
@@ -49,7 +59,11 @@ in
                 default = name;
               };
               port = lib.mkOption {
-                type = lib.types.port;
+                type = lib.types.nullOr lib.types.port;
+                default = null;
+              };
+              files = lib.mkOption {
+                type = lib.types.nullOr lib.types.path;
                 default = null;
               };
             };
@@ -63,6 +77,11 @@ in
   config = lib.mkIf (virtualHosts != [ ]) (
     lib.mkMerge [
       {
+        assertions = lib.singleton {
+          assertion = virtualHosts |> lib.all ({ port, files, ... }: lib.xor (port != null) (files != null));
+          message = "Each caddy virtual host must set exactly one of `port` or `files`";
+        };
+
         meta.ports.tcp.list = [ cfg.metricsPort ];
 
         services.caddy = {
