@@ -24,9 +24,15 @@ in
       default = 6060;
     };
     sources = {
-      iptables = lib.mkEnableOption "";
-      caddy = lib.mkEnableOption "";
-      sshd = lib.mkEnableOption "";
+      iptables = lib.mkEnableOption "" // {
+        default = true;
+      };
+      caddy = lib.mkEnableOption "" // {
+        default = config.services.caddy.enable;
+      };
+      sshd = lib.mkEnableOption "" // {
+        default = config.services.openssh.enable;
+      };
     };
   };
 

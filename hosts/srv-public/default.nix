@@ -36,11 +36,6 @@
 
         crowdsec = {
           enable = true;
-          sources = {
-            iptables = true;
-            sshd = true;
-            caddy = true;
-          };
           bouncers.firewall = true;
         };
 
