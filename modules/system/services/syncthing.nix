@@ -56,11 +56,11 @@ in
     meta = {
       domains.local = lib.mkIf (cfg.gui.domain != null) [ cfg.gui.domain ];
       ports = {
-        tcp.list = [
+        tcp = [
           cfg.syncPort
           cfg.gui.port
         ];
-        udp.list = [ cfg.syncPort ];
+        udp = [ cfg.syncPort ];
       };
     };
 

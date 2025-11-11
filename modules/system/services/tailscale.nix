@@ -14,7 +14,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.ports.udp.list = lib.mkIf config.services.tailscale.openFirewall [
+    meta.ports.udp = lib.mkIf config.services.tailscale.openFirewall [
       config.services.tailscale.port
     ];
 

@@ -75,7 +75,7 @@ in
 
     meta = {
       domains.local = [ cfg.domain ];
-      ports.tcp.list = [ cfg.port ];
+      ports.tcp = [ cfg.port ];
     };
 
     sops = {

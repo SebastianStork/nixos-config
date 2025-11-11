@@ -10,11 +10,11 @@ let
 in
 {
   options.meta.ports = {
-    tcp.list = lib.mkOption {
+    tcp = lib.mkOption {
       type = lib.types.listOf lib.types.port;
       default = [ ];
     };
-    udp.list = lib.mkOption {
+    udp = lib.mkOption {
       type = lib.types.listOf lib.types.port;
       default = [ ];
     };
@@ -26,7 +26,7 @@ in
       let
         findDuplicatePorts =
           protocol:
-          options.meta.ports.${protocol}.list.definitionsWithLocations
+          options.meta.ports.${protocol}.definitionsWithLocations
           |> lib.concatMap (
             { file, value }:
             value

@@ -82,7 +82,7 @@ in
           message = "Each caddy virtual host must set exactly one of `port` or `files`";
         };
 
-        meta.ports.tcp.list = [ cfg.metricsPort ];
+        meta.ports.tcp = [ cfg.metricsPort ];
 
         services.caddy = {
           enable = true;
@@ -99,7 +99,7 @@ in
       }
 
       (lib.mkIf publicHostsExist {
-        meta.ports.tcp.list = webPorts;
+        meta.ports.tcp = webPorts;
         networking.firewall.allowedTCPPorts = webPorts;
       })
 

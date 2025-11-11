@@ -13,8 +13,8 @@ in
 
   config = lib.mkIf config.custom.services.resolved.enable {
     meta.ports = {
-      tcp.list = ports;
-      udp.list = ports;
+      tcp = ports;
+      udp = ports;
     };
 
     services.resolved = {

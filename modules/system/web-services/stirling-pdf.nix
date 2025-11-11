@@ -28,7 +28,7 @@ in
   config = lib.mkIf cfg.enable {
     meta = {
       domains.local = [ cfg.domain ];
-      ports.tcp.list = [ cfg.port ];
+      ports.tcp = [ cfg.port ];
     };
 
     services.stirling-pdf = {
