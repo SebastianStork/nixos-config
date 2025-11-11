@@ -211,7 +211,7 @@ in
         caddy.virtualHosts.${cfg.domain}.port = cfg.port;
       };
 
-      persist.directories = [ dataDir ];
+      persistence.directories = [ dataDir ];
     };
   };
 }

@@ -14,7 +14,7 @@
   };
 
   custom = {
-    impermanence.enable = true;
+    persistence.enable = true;
 
     sops = {
       enable = true;

@@ -5,14 +5,14 @@
   ...
 }:
 let
-  cfg = config.custom.impermanence;
+  cfg = config.custom.persistence;
 in
 {
   imports = [ inputs.impermanence.nixosModules.impermanence ];
 
-  options.custom = {
-    impermanence.enable = lib.mkEnableOption "";
-    persist.directories = lib.mkOption {
+  options.custom.persistence = {
+    enable = lib.mkEnableOption "";
+    directories = lib.mkOption {
       type = lib.types.listOf lib.types.path;
       default = [ ];
     };
@@ -32,7 +32,7 @@ in
         "/var/lib/systemd"
         "/var/log"
       ]
-      ++ config.custom.persist.directories;
+      ++ config.custom.persistence.directories;
 
       files = [
         "/etc/machine-id"

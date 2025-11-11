@@ -86,7 +86,7 @@ in
           };
         };
 
-        persist.directories = [
+        persistence.directories = [
           dataDir
           config.services.postgresql.dataDir
         ];

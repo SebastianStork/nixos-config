@@ -60,7 +60,7 @@ in
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
-      persist.directories = [ "/var/lib/${config.services.victorialogs.stateDir}" ];
+      persistence.directories = [ "/var/lib/${config.services.victorialogs.stateDir}" ];
     };
   };
 }

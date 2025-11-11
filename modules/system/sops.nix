@@ -32,7 +32,7 @@ in
   config = lib.mkIf cfg.enable {
     sops = {
       age.sshKeyPaths = [
-        "${lib.optionalString config.custom.impermanence.enable "/persist"}/etc/ssh/ssh_host_ed25519_key"
+        "${lib.optionalString config.custom.persistence.enable "/persist"}/etc/ssh/ssh_host_ed25519_key"
       ];
       defaultSopsFile = absoluteSecretsPath;
     };

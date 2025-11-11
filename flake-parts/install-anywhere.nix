@@ -23,7 +23,7 @@ _: {
           destination="$2"
           root="/tmp/anywhere/$host"
 
-          impermanence="$(nix eval ".#nixosConfigurations.$host.config.custom.impermanence.enable")"
+          impermanence="$(nix eval ".#nixosConfigurations.$host.config.custom.persistence.enable")"
           if [ "$impermanence" = true ]; then
             ssh_dir="$root/persist/etc/ssh"
           else

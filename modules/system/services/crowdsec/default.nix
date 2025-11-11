@@ -114,6 +114,6 @@ in
         lib.mkAfter collectionsScript;
     };
 
-    custom.persist.directories = [ "/var/lib/crowdsec" ];
+    custom.persistence.directories = [ "/var/lib/crowdsec" ];
   };
 }

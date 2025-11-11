@@ -128,7 +128,7 @@ in
         };
       };
 
-      persist.directories = [ config.services.forgejo.stateDir ];
+      persistence.directories = [ config.services.forgejo.stateDir ];
     };
   };
 }

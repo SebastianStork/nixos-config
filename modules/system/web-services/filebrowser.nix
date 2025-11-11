@@ -62,7 +62,7 @@ in
         };
       };
 
-      persist.directories = [ dataDir ];
+      persistence.directories = [ dataDir ];
     };
   };
 }

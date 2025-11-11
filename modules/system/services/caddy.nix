@@ -95,7 +95,7 @@ in
           virtualHosts = virtualHosts |> lib.map mkVirtualHost |> lib.listToAttrs;
         };
 
-        custom.persist.directories = [ "/var/lib/caddy" ];
+        custom.persistence.directories = [ "/var/lib/caddy" ];
       }
 
       (lib.mkIf publicHostsExist {
