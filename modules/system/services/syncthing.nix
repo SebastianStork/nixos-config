@@ -54,7 +54,7 @@ in
     ];
 
     meta = {
-      domains.list = lib.mkIf (cfg.gui.domain != null) [ cfg.gui.domain ];
+      domains.local = lib.mkIf (cfg.gui.domain != null) [ cfg.gui.domain ];
       ports = {
         tcp.list = [
           cfg.syncPort

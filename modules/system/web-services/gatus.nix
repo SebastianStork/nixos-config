@@ -74,7 +74,7 @@ in
     };
 
     meta = {
-      domains.list = [ cfg.domain ];
+      domains.local = [ cfg.domain ];
       ports.tcp.list = [ cfg.port ];
     };
 
@@ -181,7 +181,7 @@ in
           let
             defaultEndpoints =
               self.nixosConfigurations
-              |> lib.mapAttrs (_: value: value.config.meta.domains.list)
+              |> lib.mapAttrs (_: value: value.config.meta.domains.local)
               |> lib.concatMapAttrs (
                 hostName: domains:
                 domains

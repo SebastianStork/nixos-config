@@ -64,7 +64,7 @@ in
       metricsAssertions ++ logsAssertions;
 
     meta = {
-      domains.list = [ cfg.domain ];
+      domains.local = [ cfg.domain ];
       ports.tcp.list = [ cfg.port ];
     };
 
