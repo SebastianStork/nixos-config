@@ -1,7 +1,7 @@
 {
   config,
-  inputs,
   pkgs,
+  pkgs-unstable,
   lib,
   ...
 }:
@@ -12,13 +12,6 @@
     virtualisation.docker.enable = true;
     users.users.seb.extraGroups = [ config.users.groups.docker.name ];
 
-    environment.systemPackages =
-      let
-        pkgs-c5ae371 = import inputs.nixpkgs-c5ae371 {
-          inherit (pkgs.stdenv.hostPlatform) system;
-          inherit (config.nixpkgs) config;
-        };
-      in
-      [ pkgs-c5ae371.winboat ];
+    environment.systemPackages = [ (pkgs-unstable.winboat.override { nodejs_24 = pkgs.nodejs_24; }) ];
   };
 }
