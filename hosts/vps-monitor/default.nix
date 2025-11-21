@@ -43,7 +43,7 @@
               extraConditions = [ "[BODY].healthy == true" ];
             };
             "git ssh" = {
-              group = "srv-public";
+              group = "vps-public";
               protocol = "ssh";
               domain = "git.sstork.dev";
             };
