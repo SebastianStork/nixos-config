@@ -90,6 +90,9 @@
         "rounding 0, floating:0, onworkspace:w[t1]s[false]"
 
         "idleinhibit fullscreen, class:.*"
+
+        # Fix flickering in JetBrains-IDEs
+        "noinitialfocus, class:(jetbrains-)(.*), floating:1"
       ];
     };
   };
