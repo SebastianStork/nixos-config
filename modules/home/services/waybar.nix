@@ -117,6 +117,24 @@
         .modules-right {
           padding-right: 8px;
         }
+
+        #workspaces {
+          padding: 0px 5px;
+        }
+
+        #workspaces button {
+          padding: 4px 10px;
+          margin: 2px 4px;
+          border-radius: 6px;
+          background: transparent;
+          color: @theme_fg_color;
+        }
+
+        #workspaces button.active {
+          background: @theme_selected_bg_color;
+          color: @theme_selected_fg_color;
+          font-weight: bold;
+        }
       '';
     };
   };
