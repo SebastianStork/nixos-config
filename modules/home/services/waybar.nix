@@ -106,8 +106,16 @@
         * {
           border: none;
           border-radius: 0px;
-          font-family: "Open Sans, Symbols Nerd Font Mono";
+          font-family: "Open Sans", "Symbols Nerd Font Mono";
           font-size: 15px;
+        }
+
+        .modules-left {
+          padding-left: 8px;
+        }
+
+        .modules-right {
+          padding-right: 8px;
         }
       '';
     };
