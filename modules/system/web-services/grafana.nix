@@ -87,8 +87,8 @@ in
 
         datasources.settings = {
           prune = true;
-          datasources = lib.concatLists [
-            (lib.optional cfg.datasources.prometheus.enable {
+          datasources = [
+            (lib.mkIf cfg.datasources.prometheus.enable {
               name = "Prometheus";
               type = "prometheus";
               inherit (cfg.datasources.prometheus) url;
@@ -98,13 +98,13 @@ in
                 prometheusVersion = "2.50.0";
               };
             })
-            (lib.optional cfg.datasources.victoriametrics.enable {
+            (lib.mkIf cfg.datasources.victoriametrics.enable {
               name = "VictoriaMetrics";
               type = "victoriametrics-metrics-datasource";
               inherit (cfg.datasources.victoriametrics) url;
               isDefault = false;
             })
-            (lib.optional cfg.datasources.victorialogs.enable {
+            (lib.mkIf cfg.datasources.victorialogs.enable {
               name = "VictoriaLogs";
               type = "victoriametrics-logs-datasource";
               inherit (cfg.datasources.victorialogs) url;
