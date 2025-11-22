@@ -95,10 +95,7 @@
             "󰂂"
             "󰁹"
           ];
-          states = {
-            critical = 5;
-            warning = 15;
-          };
+          states.critical = 10;
         };
       };
 
@@ -134,6 +131,10 @@
           background: @theme_selected_bg_color;
           color: @theme_selected_fg_color;
           font-weight: bold;
+        }
+
+        #battery.critical {
+          color: @error_color;
         }
       '';
     };
