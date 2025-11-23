@@ -24,7 +24,11 @@
             size = "20G";
             content = {
               type = "filesystem";
-              format = "ext4";
+              format = "xfs";
+              extraArgs = [
+                "-m"
+                "reflink=1"
+              ];
               mountpoint = "/nix";
               mountOptions = [ "noatime" ];
             };

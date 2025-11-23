@@ -6,7 +6,7 @@
     inputs.disko.nixosModules.default
   ];
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
 
   meta = {
     domains.validate = true;
@@ -18,10 +18,10 @@
 
     sops = {
       enable = true;
-      agePublicKey = "age1tfgn62qe9264yzsw5svdppz57e3dhlzfcf043ecpg82mgny88gwsdxg9vz";
+      agePublicKey = "age1j47wr83tg4t8sdjcyarwvvrt8qzjrgw2fa2e4nufffdev89t8prsu7lxnh";
     };
 
-    boot.loader.grub.enable = true;
+    boot.loader.systemd-boot.enable = true;
 
     services =
       let
