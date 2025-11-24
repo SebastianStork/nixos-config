@@ -116,7 +116,6 @@
         }
 
         #workspaces button.active {
-          color: @theme_selected_fg_color;
           font-weight: bold;
         }
 
