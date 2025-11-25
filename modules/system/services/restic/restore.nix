@@ -42,14 +42,14 @@ in
             let
               inherit (value) conflictingService;
               inherit (value.restoreCommand) preRestore postRestore;
-              hasconflictingService = conflictingService != null;
+              hasConflictingService = conflictingService != null;
             in
             ''
-              ${lib.optionalString hasconflictingService "systemctl stop ${conflictingService}"}
+              ${lib.optionalString hasConflictingService "systemctl stop ${conflictingService}"}
               ${preRestore}
               restic-${name} restore latest --target /
               ${postRestore}
-              ${lib.optionalString hasconflictingService "systemctl start ${conflictingService}"}
+              ${lib.optionalString hasConflictingService "systemctl start ${conflictingService}"}
             '';
         }
       );
