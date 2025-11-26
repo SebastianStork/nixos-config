@@ -30,9 +30,9 @@
       criticalPowerAction = "Hibernate";
     };
 
-    logind = {
-      powerKey = "suspend-then-hibernate";
-      lidSwitch = "suspend-then-hibernate";
+    logind.settings.Login = {
+      HandlePowerKey = "suspend-then-hibernate";
+      HandleLidSwitch = "suspend-then-hibernate";
     };
   };
 
