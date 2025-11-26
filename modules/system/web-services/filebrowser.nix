@@ -12,8 +12,6 @@ let
   dataDir = "/var/lib/filebrowser";
 in
 {
-  imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/web-apps/filebrowser.nix" ];
-
   options.custom.services.filebrowser = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
@@ -28,16 +26,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = lib'.isTailscaleDomain cfg.domain;
-        message = lib'.mkUnprotectedMessage "Filebrowser";
-      }
-      {
-        assertion = !lib.pathExists "${modulesPath}/services/web-apps/filebrowser.nix";
-        message = "TODO: Use filebrowser module from stable nixpkgs";
-      }
-    ];
+    assertions = lib.singleton {
+      assertion = lib'.isTailscaleDomain cfg.domain;
+      message = lib'.mkUnprotectedMessage "Filebrowser";
+    };
 
     meta = {
       domains.local = [ cfg.domain ];
