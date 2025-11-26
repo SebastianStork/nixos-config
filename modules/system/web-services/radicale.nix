@@ -54,7 +54,7 @@ in
                 pkgs.git
                 pkgs.gawk
                 (pkgs.python3.withPackages (python-pkgs: [
-                  python-pkgs.dateutil
+                  python-pkgs.python-dateutil
                   python-pkgs.vobject
                 ]))
               ];
