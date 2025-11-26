@@ -23,7 +23,7 @@ in
             sessionData = config.services.displayManager.sessionData.desktops;
           in
           lib.concatStringsSep " " [
-            (lib.getExe pkgs.greetd.tuigreet)
+            (lib.getExe pkgs.tuigreet)
             "--time"
             "--asterisks"
             "--remember"
