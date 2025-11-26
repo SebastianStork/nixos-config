@@ -10,6 +10,7 @@ let
 in
 {
   imports = [ inputs.crowdsec.nixosModules.crowdsec-firewall-bouncer ];
+  disabledModules = [ "services/security/crowdsec-firewall-bouncer.nix" ];
 
   options.custom.services.crowdsec.bouncers.firewall = lib.mkEnableOption "";
 

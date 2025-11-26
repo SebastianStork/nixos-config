@@ -11,6 +11,7 @@ let
   user = config.users.users.crowdsec.name;
 in
 {
+  disabledModules = [ "services/security/crowdsec.nix" ];
   imports = [ inputs.crowdsec.nixosModules.crowdsec ];
 
   options.custom.services.crowdsec = {
@@ -51,7 +52,7 @@ in
 
     services.crowdsec = {
       enable = true;
-      package = inputs.crowdsec.packages.${pkgs.system}.crowdsec;
+      package = inputs.crowdsec.packages.${pkgs.stdenv.hostPlatform.system}.crowdsec;
       enrollKeyFile = config.sops.secrets."crowdsec/enrollment-key".path;
       settings = {
         api.server.listen_uri = "localhost:${toString cfg.apiPort}";
