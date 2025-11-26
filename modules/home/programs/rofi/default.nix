@@ -8,7 +8,7 @@
   options.custom.programs.rofi.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.rofi.enable {
-    home.packages = [ pkgs.rofi-wayland ];
+    home.packages = [ pkgs.rofi ];
 
     xdg.configFile."rofi/config.rasi".source =
       let
