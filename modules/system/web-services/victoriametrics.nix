@@ -1,6 +1,6 @@
 {
   config,
-  pkgs-unstable,
+  pkgs,
   lib,
   ...
 }:
@@ -21,11 +21,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = lib.singleton {
-      assertion = lib.versionOlder lib.version "25.11";
-      message = "TODO: Use victoriametrics package from stable nixpkgs";
-    };
-
     meta = {
       domains.local = [ cfg.domain ];
       ports.tcp = [ cfg.port ];
@@ -48,7 +43,7 @@ in
     services.victoriametrics = {
       enable = true;
       # The victoriametrics grafana-dashboard expects the version label to have the format `victoria-metrics-*`
-      package = pkgs-unstable.victoriametrics.overrideAttrs (
+      package = pkgs.victoriametrics.overrideAttrs (
         _: previousAttrs: {
           version = "victoria-metrics-${previousAttrs.version}";
           __intentionallyOverridingVersion = true;
