@@ -1,7 +1,6 @@
 {
   config,
   self,
-  pkgs-unstable,
   lib,
   lib',
   ...
@@ -68,11 +67,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = lib.singleton {
-      assertion = lib.versionOlder lib.version "25.11";
-      message = "TODO: Use gatus package from stable nixpkgs";
-    };
-
     meta = {
       domains.local = [ cfg.domain ];
       ports.tcp = [ cfg.port ];
@@ -105,7 +99,6 @@ in
 
     services.gatus = {
       enable = true;
-      package = pkgs-unstable.gatus; # Unstable for the new UI
       environmentFile = config.sops.templates."gatus.env".path;
 
       settings = {
