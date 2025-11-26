@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs-unstable,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.services.privatebin;
 in
@@ -25,11 +20,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = lib.singleton {
-      assertion = lib.versionOlder lib.version "25.11";
-      message = "TODO: Use privatebin package from stable nixpkgs";
-    };
-
     meta = {
       domains.local = [ cfg.domain ];
       ports.tcp = [ cfg.port ];
@@ -38,7 +28,6 @@ in
     services = {
       privatebin = {
         enable = true;
-        package = pkgs-unstable.privatebin; # Unstable to get version 2.0
         enableNginx = true;
         virtualHost = "privatebin";
         settings.main = {
