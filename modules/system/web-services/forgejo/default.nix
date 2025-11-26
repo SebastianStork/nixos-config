@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs-unstable,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.services.forgejo;
 in
@@ -22,11 +17,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = lib.singleton {
-      assertion = lib.versionOlder lib.version "25.11";
-      message = "TODO: Use forgejo package from stable nixpkgs";
-    };
-
     meta = {
       domains.local = [ cfg.domain ];
       ports.tcp = [ cfg.port ];
@@ -49,7 +39,6 @@ in
 
     services.forgejo = {
       enable = true;
-      package = pkgs-unstable.forgejo;
 
       user = "git";
       group = "git";
