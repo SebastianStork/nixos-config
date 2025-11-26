@@ -13,8 +13,6 @@ let
   dataDir = config.services.memos.settings.MEMOS_DATA;
 in
 {
-  imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/misc/memos.nix" ];
-
   options.custom.services.memos = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
@@ -29,17 +27,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = !lib.pathExists "${modulesPath}/services/misc/memos.nix";
-        message = "TODO: Use memos module from stable nixpkgs";
-      }
-      {
-        assertion = lib.versionOlder lib.version "25.11";
-        message = "TODO: Use memos package from stable nixpkgs";
-      }
-    ];
-
     meta = {
       domains.local = [ cfg.domain ];
       ports.tcp = [ cfg.port ];
@@ -47,7 +34,6 @@ in
 
     services.memos = {
       enable = true;
-      package = pkgs-unstable.memos;
       settings = options.services.memos.settings.default // {
         MEMOS_PORT = toString cfg.port;
         MEMOS_INSTANCE_URL = "https://${cfg.domain}";
