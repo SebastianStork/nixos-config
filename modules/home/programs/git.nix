@@ -13,9 +13,13 @@
       git = {
         enable = true;
 
-        userName = "SebastianStork";
-        userEmail = "sebastian.stork@pm.me";
-        extraConfig.init.defaultBranch = "main";
+        settings = {
+          init.defaultBranch = "main";
+          user = {
+            name = "SebastianStork";
+            email = "sebastian.stork@pm.me";
+          };
+        };
 
         signing = {
           format = "ssh";
