@@ -111,8 +111,8 @@ in
 
         services.caddy = {
           package = pkgs.caddy.withPlugins {
-            plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20250508175905-642f61fea3cc" ];
-            hash = "sha256-o9/ueYS1yD8H4j9uKu/wDGw02r8gEPzI80Hxs70tsL8=";
+            plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20251117033914-662ef34c64b1" ];
+            hash = "sha256-t2Gw0AbkguS3pwl3FLooK6ZA16mWJLHAkHe3ZdqaE+c=";
           };
           globalConfig = ''
             tailscale {
