@@ -14,13 +14,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = lib.singleton {
-      assertion = !config.services.greetd ? useTextGreeter;
-      message = "TODO: Replace tuigreet tty fix with `useTextGreeter` option";
-    };
-
     services.greetd = {
       enable = true;
+      useTextGreeter = true;
       settings = {
         default_session.command =
           let
@@ -39,17 +35,6 @@ in
           user = "seb";
         };
       };
-    };
-
-    # Prevent systemd messages from covering the TUI
-    systemd.services.greetd.serviceConfig = {
-      Type = "idle";
-      StandardInputs = "tty";
-      StandardOutput = "tty";
-      StandardError = "journal";
-      TTYReset = true;
-      TTYVHangup = true;
-      TTYVTDisallocate = true;
     };
   };
 }
