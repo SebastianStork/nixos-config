@@ -16,7 +16,7 @@ in
   config = lib.mkIf cfg.bouncers.firewall {
     services.crowdsec-firewall-bouncer = {
       enable = true;
-      package = inputs.crowdsec.packages.${pkgs.system}.crowdsec-firewall-bouncer;
+      package = inputs.crowdsec.packages.${pkgs.stdenv.hostPlatform.system}.crowdsec-firewall-bouncer;
       settings = {
         api_key = "cs-firewall-bouncer";
         api_url = "http://localhost:${toString cfg.apiPort}";

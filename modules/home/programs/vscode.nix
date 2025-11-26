@@ -15,7 +15,7 @@
         extensions =
           let
             vscode-extensions =
-              inputs.vscode-extensions.extensions.${pkgs.system}.forVSCodeVersion
+              inputs.vscode-extensions.extensions.${pkgs.stdenv.hostPlatform.system}.forVSCodeVersion
                 config.programs.vscode.package.version;
             inherit (vscode-extensions) open-vsx;
           in
