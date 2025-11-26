@@ -37,16 +37,9 @@
           enable = true;
           domain = "status.${tailscaleDomain}";
           generateDefaultEndpoints = true;
-          endpoints = {
-            "alerts" = {
-              path = "/v1/health";
-              extraConditions = [ "[BODY].healthy == true" ];
-            };
-            "git ssh" = {
-              group = "vps-public";
-              protocol = "ssh";
-              domain = "git.sstork.dev";
-            };
+          endpoints."alerts" = {
+            path = "/v1/health";
+            extraConditions = [ "[BODY].healthy == true" ];
           };
         };
 
