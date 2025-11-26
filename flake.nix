@@ -6,6 +6,8 @@
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    nixpkgs-old.url = "github:nixos/nixpkgs/nixos-25.05";
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     impermanence.url = "github:nix-community/impermanence";
