@@ -17,7 +17,17 @@
             vscode-extensions =
               inputs.vscode-extensions.extensions.${pkgs.stdenv.hostPlatform.system}.forVSCodeVersion
                 config.programs.vscode.package.version;
-            inherit (vscode-extensions) open-vsx;
+            inherit (vscode-extensions) open-vsx vscode-marketplace;
+
+            # https://github.com/nix-community/nix-vscode-extensions?tab=readme-ov-file#unfree-extensions
+            resetLicense =
+              drv:
+              drv.overrideAttrs (prev: {
+                meta = prev.meta // {
+                  license = [ ];
+                };
+              });
+
           in
           [
             # Theming
@@ -28,6 +38,9 @@
             open-vsx.jnoortheen.nix-ide
             open-vsx.llvm-vs-code-extensions.vscode-clangd
             open-vsx.rust-lang.rust-analyzer
+
+            # AI
+            (resetLicense vscode-marketplace.github.copilot-chat)
           ];
       };
     };
