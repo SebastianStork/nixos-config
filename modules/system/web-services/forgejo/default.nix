@@ -79,33 +79,8 @@ in
       };
     };
 
-    systemd.services.forgejo.preStart =
-      let
-        userCmd = "${lib.getExe config.services.forgejo.package} admin user";
-      in
-      ''
-        username="SebastianStork"
-        password="$(cat ${config.sops.secrets."forgejo/admin-password".path})"
-
-        create_user() {
-          ${userCmd} create \
-            --username "$username" \
-            --password "$password" \
-            --email "sebastian.stork@pm.me" \
-            --admin
-        }
-
-        reset_password() {
-          ${userCmd} change-password \
-            --username "$username" \
-            --password "$password" \
-            --must-change-password=false
-        }
-
-        if ! create_user; then
-          reset_password
-        fi
-      '';
+    # Create user: `forgejo-user create --admin --username NAME --email EMAIL --password PASSWORD`
+    environment.shellAliases.forgejo-user = "sudo --user=${config.services.forgejo.user} ${lib.getExe config.services.forgejo.package} admin user --config /var/lib/forgejo/custom/conf/app.ini";
 
     custom = {
       services = {
