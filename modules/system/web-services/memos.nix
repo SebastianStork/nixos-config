@@ -1,9 +1,6 @@
 {
   config,
   options,
-  modulesPath,
-  inputs,
-  pkgs-unstable,
   lib,
   ...
 }:
