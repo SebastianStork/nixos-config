@@ -17,7 +17,7 @@
           init.defaultBranch = "main";
           user = {
             name = "SebastianStork";
-            email = "sebastian.stork@pm.me";
+            email = "git@sstork.dev";
           };
         };
 
