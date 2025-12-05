@@ -8,5 +8,5 @@ _: {
     theme = "dark";
   };
 
-  wayland.windowManager.hyprland.settings.monitor = [ "DP-1,2560x1440@144,0x0,1" ];
+  wayland.windowManager.hyprland.settings.monitor = [ "DP-1,2560x1440@180,0x0,1" ];
 }
