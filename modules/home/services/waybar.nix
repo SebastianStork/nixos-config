@@ -8,10 +8,6 @@
       systemd.enable = true;
 
       settings.mainBar = {
-        output = [
-          "DP-1"
-          "eDP-1"
-        ];
         layer = "top";
         position = "bottom";
         spacing = 10;
