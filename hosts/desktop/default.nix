@@ -41,10 +41,4 @@
 
     programs.steam.enable = true;
   };
-
-  services.foldingathome = {
-    enable = true;
-    user = "SebastianStork";
-    daemonNiceLevel = 19;
-  };
 }
