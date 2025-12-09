@@ -236,22 +236,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-old": {
-      "locked": {
-        "lastModified": 1764836381,
-        "narHash": "sha256-8jemYbbW9EBttQKHep7Rj8kzXaxsrk/lACdXA2DN5Xk=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "ff06bd3398fb1bea6c937039ece7e7c8aa396ebf",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-25.05",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1764667669,
@@ -296,7 +280,6 @@
         "impermanence": "impermanence",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-old": "nixpkgs-old",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "radicale-birthday-calendar": "radicale-birthday-calendar",
         "sops": "sops",

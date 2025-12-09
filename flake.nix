@@ -4,8 +4,6 @@
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
 
-    nixpkgs-old.url = "github:nixos/nixpkgs/nixos-25.05";
-
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
