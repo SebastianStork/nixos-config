@@ -35,6 +35,17 @@ in
         default = 8384;
       };
     };
+    folders = lib.mkOption {
+      type = lib.types.nonEmptyListOf lib.types.nonEmptyStr;
+      default = [
+        "Documents"
+        "Downloads"
+        "Music"
+        "Pictures"
+        "Projects"
+        "Videos"
+      ];
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -101,24 +112,11 @@ in
           );
 
         folders =
-          let
-            genFolders =
-              folders:
-              folders
-              |> lib'.genAttrs (name: {
-                path = "${dataDir}/${name}";
-                ignorePerms = false;
-                devices = config.services.syncthing.settings.devices |> lib.attrNames;
-              });
-          in
-          genFolders [
-            "Documents"
-            "Downloads"
-            "Music"
-            "Pictures"
-            "Projects"
-            "Videos"
-          ];
+          cfg.folders
+          |> lib'.genAttrs (name: {
+            path = "${dataDir}/${name}";
+            devices = config.services.syncthing.settings.devices |> lib.attrNames;
+          });
 
         options = {
           listenAddress = "tcp://0.0.0.0:${toString cfg.syncPort}";
