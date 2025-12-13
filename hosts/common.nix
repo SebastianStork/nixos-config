@@ -80,6 +80,7 @@
     pkgs.nh
     pkgs.dust
     (lib.hiPrio pkgs.uutils-coreutils-noprefix)
+    pkgs.comma
   ];
 
   nixpkgs.config.allowUnfree = true;
