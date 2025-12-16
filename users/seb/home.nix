@@ -46,9 +46,6 @@
     pkgs.anki
     pkgs.discord
 
-    pkgs.jetbrains.clion
-    pkgs.jetbrains.pycharm-professional
-
     pkgs.corefonts
     pkgs.roboto
     pkgs.open-sans
