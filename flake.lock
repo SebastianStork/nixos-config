@@ -46,15 +46,15 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1749197967,
-        "narHash": "sha256-wasotk39Kpd6Lp/+ujdiVCrxx/FqZUZ5TbNzCxwynC8=",
-        "owner": "VolodiaPG",
+        "lastModified": 1766051518,
+        "narHash": "sha256-znKOwPXQnt3o7lDb3hdf19oDo0BLP4MfBOYiWkEHoik=",
+        "owner": "serokell",
         "repo": "deploy-rs",
-        "rev": "2edaf49a9735d4b38274aa5a0782e51b727d58fa",
+        "rev": "d5eff7f948535b9c723d60cd8239f8f11ddc90fa",
         "type": "github"
       },
       "original": {
-        "owner": "VolodiaPG",
+        "owner": "serokell",
         "repo": "deploy-rs",
         "type": "github"
       }

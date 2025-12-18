@@ -26,7 +26,7 @@
     };
 
     deploy-rs = {
-      url = "github:VolodiaPG/deploy-rs"; # https://github.com/serokell/deploy-rs/issues/325
+      url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
