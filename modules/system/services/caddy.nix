@@ -112,7 +112,7 @@ in
         services.caddy = {
           package = pkgs.caddy.withPlugins {
             plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20251117033914-662ef34c64b1" ];
-            hash = "sha256-t2Gw0AbkguS3pwl3FLooK6ZA16mWJLHAkHe3ZdqaE+c=";
+            hash = "sha256-3lc2oSLFIco5Pgz1QNH2hT5tDTPZ4wcbc+NKH9wLEfY=";
           };
           globalConfig = ''
             tailscale {
