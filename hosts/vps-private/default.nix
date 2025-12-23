@@ -33,6 +33,12 @@
           ssh.enable = true;
           exitNode.enable = true;
         };
+        nebula.node = {
+          enable = true;
+          address = "10.254.250.2";
+          isLighthouse = true;
+          routableAddress = "49.13.231.235";
+        };
 
         syncthing = {
           enable = true;

@@ -33,6 +33,10 @@
         enable = true;
         ssh.enable = true;
       };
+      nebula.node = {
+        enable = true;
+        address = "10.254.250.1";
+      };
       syncthing = {
         enable = true;
         deviceId = "FAJS5WM-UAWGW2U-FXCGPSP-VAUOTGM-XUKSEES-D66PMCJ-WBODJLV-XTNCRA7";
