@@ -8,9 +8,7 @@ _: {
         runtimeInputs = [
           pkgs.sops
           pkgs.ssh-to-age
-
           pkgs.bitwarden-cli
-          pkgs.jq
         ];
 
         text = ''
@@ -40,10 +38,10 @@ _: {
             sed -i -E "s|(agePublicKey\s*=\s*\")[^\"]*(\";)|\1$new_age_key\2|" "hosts/$host/default.nix"
 
             echo "==> Updating SOPS secrets..."
-            if BW_SESSION="$(bw login --raw)"; then
+            if BW_SESSION="$(bw unlock --raw || bw login --raw)"; then
               export BW_SESSION
             fi
-            SOPS_AGE_KEY="$(bw get item 'admin age-key' | jq -r '.notes')"
+            SOPS_AGE_KEY="$(bw get notes 'admin age-key')"
             export SOPS_AGE_KEY
             SOPS_CONFIG="$(nix build .#sops-config --print-out-paths)"
             export SOPS_CONFIG

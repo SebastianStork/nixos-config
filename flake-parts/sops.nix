@@ -47,15 +47,12 @@
           pkgs.ssh-to-age
         ];
 
-        nativeBuildInputs = [
-          pkgs.bitwarden-cli
-          pkgs.jq
-        ];
+        nativeBuildInputs = [ pkgs.bitwarden-cli ];
         shellHook = ''
-          if BW_SESSION="$(bw login --raw)"; then
+          if BW_SESSION="$(bw unlock --raw || bw login --raw)"; then
             export BW_SESSION
           fi
-          SOPS_AGE_KEY="$(bw get item 'admin age-key' | jq -r '.notes')"
+          SOPS_AGE_KEY="$(bw get notes 'admin age-key')"
           export SOPS_AGE_KEY
           SOPS_CONFIG="${self'.packages.sops-config}"
           export SOPS_CONFIG
