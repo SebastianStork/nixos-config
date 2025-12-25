@@ -9,13 +9,16 @@ let
 
   hostname = config.networking.hostName;
 
-  lighthouses =
+  nodes =
     self.nixosConfigurations
     |> lib.filterAttrs (name: _: name != hostname)
     |> lib.attrValues
     |> lib.map (value: value.config.custom.services.nebula.node)
-    |> lib.filter (nebula: nebula.enable)
-    |> lib.filter (nebula: nebula.isLighthouse);
+    |> lib.filter (node: node.enable);
+
+  lighthouses = nodes |> lib.filter (node: node.isLighthouse);
+
+  routableNodes = nodes |> lib.filter (node: node.routableAddress != null);
 in
 {
   options.custom.services.nebula.node = {
@@ -28,15 +31,15 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
-
     isLighthouse = lib.mkEnableOption "";
+
     routableAddress = lib.mkOption {
       type = lib.types.nullOr lib.types.nonEmptyStr;
       default = null;
     };
     routablePort = lib.mkOption {
       type = lib.types.nullOr lib.types.port;
-      default = if cfg.isLighthouse then 47141 else null;
+      default = if cfg.routableAddress != null then 47141 else null;
     };
 
     pubPath = lib.mkOption {
@@ -50,7 +53,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.ports.udp = lib.optional (cfg.routablePort != 0) cfg.routablePort;
+    meta.ports.udp = lib.optional (cfg.routablePort != null) cfg.routablePort;
 
     sops.secrets."nebula/host-key" = {
       owner = config.users.users.nebula-main.name;
@@ -70,8 +73,9 @@ in
       lighthouses = lib.mkIf (!cfg.isLighthouse) (
         lighthouses |> lib.map (lighthouse: lighthouse.address)
       );
+
       staticHostMap =
-        lighthouses
+        routableNodes
         |> lib.map (lighthouse: {
           name = lighthouse.address;
           value = lib.singleton "${lighthouse.routableAddress}:${toString lighthouse.routablePort}";
