@@ -10,13 +10,13 @@
     {
       packages.sops-config =
         let
-          adminKey = "age1mpq8m4p7dnxh5ze3fh7etd2k6sp85zdnmp9te3e9chcw4pw07pcq960zh5";
+          adminPublicKey = "age1mpq8m4p7dnxh5ze3fh7etd2k6sp85zdnmp9te3e9chcw4pw07pcq960zh5";
 
           mkCreationRule = sopsCfg: {
-            path_regex = sopsCfg.secretsFile;
+            path_regex = self.lib.relativePath sopsCfg.secretsFile;
             key_groups = lib.singleton {
               age = [
-                adminKey
+                adminPublicKey
                 sopsCfg.agePublicKey
               ];
             };
