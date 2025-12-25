@@ -16,10 +16,7 @@
   custom = {
     persistence.enable = true;
 
-    sops = {
-      enable = true;
-      agePublicKey = "age1dv6uwnlv7d5dq63y2gwdajel3uyxxxjy07nsyth63fx2hgn3fvsqz94994";
-    };
+    sops.enable = true;
 
     boot.loader.grub.enable = true;
 

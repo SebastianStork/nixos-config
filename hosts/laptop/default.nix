@@ -10,10 +10,7 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   custom = {
-    sops = {
-      enable = true;
-      agePublicKey = "age1sywwrwse76x8yskrsfpwk38fu2cmyx5s9qkf2pgc68cta0vj9psql7dp6e";
-    };
+    sops.enable = true;
 
     boot = {
       loader.systemd-boot.enable = true;

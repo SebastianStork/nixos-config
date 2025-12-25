@@ -16,10 +16,7 @@
   custom = {
     persistence.enable = true;
 
-    sops = {
-      enable = true;
-      agePublicKey = "age1j47wr83tg4t8sdjcyarwvvrt8qzjrgw2fa2e4nufffdev89t8prsu7lxnh";
-    };
+    sops.enable = true;
 
     boot.loader.systemd-boot.enable = true;
 

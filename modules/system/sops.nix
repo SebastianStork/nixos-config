@@ -17,7 +17,7 @@ in
     enable = lib.mkEnableOption "";
     agePublicKey = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "";
+      default = "${self}/hosts/${config.networking.hostName}/keys/age.pub" |> lib.readFile |> lib.trim;
     };
     secretsFile = lib.mkOption {
       type = lib.types.nonEmptyStr;
