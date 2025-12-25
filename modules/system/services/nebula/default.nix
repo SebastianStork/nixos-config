@@ -42,11 +42,11 @@ in
       default = if cfg.routableAddress != null then 47141 else null;
     };
 
-    pubPath = lib.mkOption {
+    publicKeyPath = lib.mkOption {
       type = lib.types.path;
       default = "${self}/hosts/${hostname}/keys/nebula.pub";
     };
-    certPath = lib.mkOption {
+    certificatePath = lib.mkOption {
       type = lib.types.path;
       default = "${self}/hosts/${hostname}/keys/nebula.crt";
     };
@@ -69,7 +69,7 @@ in
       enable = true;
 
       ca = ./ca.crt;
-      cert = cfg.certPath;
+      cert = cfg.certificatePath;
       key = config.sops.secrets."nebula/host-key".path;
 
       listen.port = cfg.routablePort;
