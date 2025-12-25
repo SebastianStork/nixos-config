@@ -98,6 +98,7 @@ in
       settings = {
         pki.disconnect_invalid = true;
         cipher = "aes";
+        logging.level = "warning";
       };
     };
   };
