@@ -35,7 +35,7 @@ _: {
 
             echo "==> Replacing old age key with new age key..."
             new_age_key="$(ssh-to-age -i "$ssh_dir/ssh_host_ed25519_key.pub")"
-            sed -i -E "s|(agePublicKey\s*=\s*\")[^\"]*(\";)|\1$new_age_key\2|" "hosts/$host/default.nix"
+            echo "$new_age_key" > "hosts/$host/keys/age.pub"
 
             echo "==> Updating SOPS secrets..."
             if BW_SESSION="$(bw unlock --raw || bw login --raw)"; then
