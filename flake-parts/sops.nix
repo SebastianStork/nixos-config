@@ -49,11 +49,14 @@
 
         nativeBuildInputs = [ pkgs.bitwarden-cli ];
         shellHook = ''
-          if BW_SESSION="$(bw unlock --raw || bw login --raw)"; then
+          if ! declare -px BW_SESSION >/dev/null 2>&1; then
+            BW_SESSION="$(bw unlock --raw || bw login --raw)"
             export BW_SESSION
           fi
-          SOPS_AGE_KEY="$(bw get notes 'admin age-key')"
-          export SOPS_AGE_KEY
+          if ! declare -px SOPS_AGE_KEY >/dev/null 2>&1; then
+            SOPS_AGE_KEY="$(bw get notes 'admin age-key')"
+            export SOPS_AGE_KEY
+          fi
           SOPS_CONFIG="${self'.packages.sops-config}"
           export SOPS_CONFIG
         '';

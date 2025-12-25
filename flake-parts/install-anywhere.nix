@@ -37,10 +37,14 @@ _: {
           echo "$new_age_key" > "hosts/$host/keys/age.pub"
 
           echo "==> Updating SOPS secrets..."
-          BW_SESSION="$(bw unlock --raw || bw login --raw)"
-          export BW_SESSION
-          SOPS_AGE_KEY="$(bw get notes 'admin age-key')"
-          export SOPS_AGE_KEY
+          if ! declare -px BW_SESSION >/dev/null 2>&1; then
+            BW_SESSION="$(bw unlock --raw || bw login --raw)"
+            export BW_SESSION
+          fi
+          if ! declare -px SOPS_AGE_KEY >/dev/null 2>&1; then
+            SOPS_AGE_KEY="$(bw get notes 'admin age-key')"
+            export SOPS_AGE_KEY
+          fi
           SOPS_CONFIG="$(nix build .#sops-config --print-out-paths)"
           export SOPS_CONFIG
           sops updatekeys --yes "hosts/$host/secrets.json"
