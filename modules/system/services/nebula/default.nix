@@ -55,6 +55,11 @@ in
   config = lib.mkIf cfg.enable {
     meta.ports.udp = lib.optional (cfg.routablePort != null) cfg.routablePort;
 
+    assertions = lib.singleton {
+      assertion = cfg.isLighthouse -> cfg.routableAddress != null;
+      message = "'${hostname}' is a Nebula lighthouse, but routableAddress is not set. Lighthouses must be publicly reachable.";
+    };
+
     sops.secrets."nebula/host-key" = {
       owner = config.users.users.nebula-main.name;
       restartUnits = [ "nebula@main.service" ];
