@@ -1,11 +1,11 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.services.actualbudget;
+  cfg = config.custom.web-services.actualbudget;
 
   inherit (config.services.actual.settings) dataDir;
 in
 {
-  options.custom.services.actualbudget = {
+  options.custom.web-services.actualbudget = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.services.grafana;
+  cfg = config.custom.web-services.grafana;
 in
 {
-  options.custom.services.grafana = {
+  options.custom.web-services.grafana = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

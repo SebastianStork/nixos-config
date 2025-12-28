@@ -7,12 +7,12 @@
   ...
 }:
 let
-  cfg = config.custom.services.filebrowser;
+  cfg = config.custom.web-services.filebrowser;
 
   dataDir = "/var/lib/filebrowser";
 in
 {
-  options.custom.services.filebrowser = {
+  options.custom.web-services.filebrowser = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

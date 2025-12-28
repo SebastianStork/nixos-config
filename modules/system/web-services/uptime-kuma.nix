@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.services.uptime-kuma;
+  cfg = config.custom.web-services.uptime-kuma;
 in
 {
-  options.custom.services.uptime-kuma = {
+  options.custom.web-services.uptime-kuma = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.services.forgejo.ssh;
+  cfg = config.custom.web-services.forgejo.ssh;
 in
 {
-  options.custom.services.forgejo.ssh = {
+  options.custom.web-services.forgejo.ssh = {
     enable = lib.mkEnableOption "";
     port = lib.mkOption {
       type = lib.types.port;

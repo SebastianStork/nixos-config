@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.services.victoriametrics;
+  cfg = config.custom.web-services.victoriametrics;
 in
 {
-  options.custom.services.victoriametrics = {
+  options.custom.web-services.victoriametrics = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

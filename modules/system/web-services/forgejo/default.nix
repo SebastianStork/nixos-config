@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.services.forgejo;
+  cfg = config.custom.web-services.forgejo;
 in
 {
-  options.custom.services.forgejo = {
+  options.custom.web-services.forgejo = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

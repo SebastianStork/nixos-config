@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.services.stirling-pdf;
+  cfg = config.custom.web-services.stirling-pdf;
 in
 {
-  options.custom.services.stirling-pdf = {
+  options.custom.web-services.stirling-pdf = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

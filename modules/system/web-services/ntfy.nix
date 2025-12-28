@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.services.ntfy;
+  cfg = config.custom.web-services.ntfy;
 in
 {
-  options.custom.services.ntfy = {
+  options.custom.web-services.ntfy = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

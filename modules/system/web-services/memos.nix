@@ -5,12 +5,12 @@
   ...
 }:
 let
-  cfg = config.custom.services.memos;
+  cfg = config.custom.web-services.memos;
 
   dataDir = config.services.memos.settings.MEMOS_DATA;
 in
 {
-  options.custom.services.memos = {
+  options.custom.web-services.memos = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.services.outline;
+  cfg = config.custom.web-services.outline;
 in
 {
-  options.custom.services.outline = {
+  options.custom.web-services.outline = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

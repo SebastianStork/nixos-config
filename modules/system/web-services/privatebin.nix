@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.services.privatebin;
+  cfg = config.custom.web-services.privatebin;
 in
 {
-  options.custom.services.privatebin = {
+  options.custom.web-services.privatebin = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

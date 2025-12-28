@@ -20,16 +20,16 @@
 
     boot.loader.grub.enable = true;
 
-    services =
+    services.tailscale = {
+      enable = true;
+      ssh.enable = true;
+    };
+
+    web-services =
       let
         tailscaleDomain = config.custom.services.tailscale.domain;
       in
       {
-        tailscale = {
-          enable = true;
-          ssh.enable = true;
-        };
-
         gatus = {
           enable = true;
           domain = "status.${tailscaleDomain}";

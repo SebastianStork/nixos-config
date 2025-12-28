@@ -5,12 +5,12 @@
   ...
 }:
 let
-  cfg = config.custom.services.personal-blog;
+  cfg = config.custom.web-services.personal-blog;
 
   dataDir = "/var/lib/personal-blog";
 in
 {
-  options.custom.services.personal-blog = {
+  options.custom.web-services.personal-blog = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

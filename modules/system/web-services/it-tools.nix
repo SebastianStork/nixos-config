@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.services.it-tools;
+  cfg = config.custom.web-services.it-tools;
 in
 {
-  options.custom.services.it-tools = {
+  options.custom.web-services.it-tools = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

@@ -20,22 +20,25 @@
 
     boot.loader.systemd-boot.enable = true;
 
-    services =
+    services = {
+      tailscale = {
+        enable = true;
+        ssh.enable = true;
+      };
+
+      crowdsec = {
+        enable = true;
+        bouncers.firewall = true;
+      };
+
+    };
+
+    web-services =
       let
         sstorkDomain = "sstork.dev";
         sproutedDomain = "sprouted.cloud";
       in
       {
-        tailscale = {
-          enable = true;
-          ssh.enable = true;
-        };
-
-        crowdsec = {
-          enable = true;
-          bouncers.firewall = true;
-        };
-
         personal-blog = {
           enable = true;
           domain = sstorkDomain;

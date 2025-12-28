@@ -13,23 +13,24 @@
     ports.validate = true;
   };
 
-  custom = {
-    persistence.enable = true;
+  custom =
+    let
+      tailscaleDomain = config.custom.services.tailscale.domain;
+    in
+    {
+      persistence.enable = true;
 
-    sops.enable = true;
+      sops.enable = true;
 
-    boot.loader.systemd-boot.enable = true;
+      boot.loader.systemd-boot.enable = true;
 
-    services =
-      let
-        tailscaleDomain = config.custom.services.tailscale.domain;
-      in
-      {
+      services = {
         tailscale = {
           enable = true;
           ssh.enable = true;
           exitNode.enable = true;
         };
+
         nebula.node = {
           enable = true;
           address = "10.254.250.2";
@@ -44,7 +45,9 @@
           deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
           gui.domain = "syncthing.${tailscaleDomain}";
         };
+      };
 
+      web-services = {
         filebrowser = {
           enable = true;
           domain = "files.${tailscaleDomain}";
@@ -80,5 +83,5 @@
           domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
         };
       };
-  };
+    };
 }

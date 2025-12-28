@@ -6,12 +6,12 @@
   ...
 }:
 let
-  cfg = config.custom.services.radicale;
+  cfg = config.custom.web-services.radicale;
 
   dataDir = config.services.radicale.settings.storage.filesystem_folder;
 in
 {
-  options.custom.services.radicale = {
+  options.custom.web-services.radicale = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

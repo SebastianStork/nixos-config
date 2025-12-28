@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.services.alloy;
+  cfg = config.custom.web-services.alloy;
 in
 {
-  options.custom.services.alloy = {
+  options.custom.web-services.alloy = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
@@ -121,7 +121,7 @@ in
           text = ''
             prometheus.scrape "victorialogs" {
               targets = [{
-                __address__ = "localhost:${toString config.custom.services.victorialogs.port}",
+                __address__ = "localhost:${toString config.custom.web-services.victorialogs.port}",
                 job         = "victorialogs",
                 instance    = constants.hostname,
               }]

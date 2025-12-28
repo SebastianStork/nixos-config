@@ -5,12 +5,12 @@
   ...
 }:
 let
-  cfg = config.custom.services.freshrss;
+  cfg = config.custom.web-services.freshrss;
 
   inherit (config.services.freshrss) dataDir;
 in
 {
-  options.custom.services.freshrss = {
+  options.custom.web-services.freshrss = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
