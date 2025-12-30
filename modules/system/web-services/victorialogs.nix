@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.web-services.victorialogs;
 in
@@ -42,13 +37,6 @@ in
 
     services.victorialogs = {
       enable = true;
-      # The victorialogs grafana-dashboard expects the version label to have the format `victoria-logs-*`
-      package = pkgs.victorialogs.overrideAttrs (
-        _: previousAttrs: {
-          version = "victoria-logs-${previousAttrs.version}";
-          __intentionallyOverridingVersion = true;
-        }
-      );
       listenAddress = "localhost:${toString cfg.port}";
     };
 

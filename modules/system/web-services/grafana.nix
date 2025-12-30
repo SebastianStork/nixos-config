@@ -136,25 +136,39 @@ in
         };
       };
       # https://grafana.com/grafana/dashboards/10229-victoriametrics-single-node/
-      "grafana-dashboards/victoriametrics-single-node.json" = {
+      "grafana-dashboards/victoriametrics-single-node-patched.json" = {
         enable = cfg.dashboards.victoriametrics.enable;
-        source = pkgs.fetchurl {
-          name = "victoriametrics-single-node.json";
-          url = "https://grafana.com/api/dashboards/10229/revisions/41/download";
-          hash = "sha256-mwtah8A2w81WZjf5bUXoTJfS1R9UX+tua2PiDrBKJCQ=";
-        };
+        source =
+          pkgs.fetchurl {
+            name = "victoriametrics-single-node.json";
+            url = "https://grafana.com/api/dashboards/10229/revisions/41/download";
+            hash = "sha256-mwtah8A2w81WZjf5bUXoTJfS1R9UX+tua2PiDrBKJCQ=";
+          }
+          |> (
+            src:
+            pkgs.runCommand "victoriametrics-single-node-patched.json" { buildInputs = [ pkgs.gnused ]; } ''
+              sed 's/victoriametrics-logs-//g' ${src} > $out
+            ''
+          );
       };
       # https://grafana.com/grafana/dashboards/22084-victorialogs-single-node/
-      "grafana-dashboards/victorialogs-single-node.json" = {
+      "grafana-dashboards/victorialogs-single-node-patched.json" = {
         enable = cfg.dashboards.victorialogs.enable;
-        source = pkgs.fetchurl {
-          name = "victorialogs-single-node.json";
-          url = "https://grafana.com/api/dashboards/22084/revisions/8/download";
-          hash = "sha256-/a3Rbp/6oyiLBnQtGupyFZW+fIHQfkyKRRTyfofxVTM=";
-        };
+        source =
+          pkgs.fetchurl {
+            name = "victorialogs-single-node.json";
+            url = "https://grafana.com/api/dashboards/22084/revisions/8/download";
+            hash = "sha256-/a3Rbp/6oyiLBnQtGupyFZW+fIHQfkyKRRTyfofxVTM=";
+          }
+          |> (
+            src:
+            pkgs.runCommand "victorialogs-single-node-patched.json" { buildInputs = [ pkgs.gnused ]; } ''
+              sed 's/victoria-logs-//g' ${src} > $out
+            ''
+          );
       };
       # https://grafana.com/grafana/dashboards/19012-crowdsec-details-per-instance/
-      "grafana-dashboards/crowdsec-details-per-instance.json" = {
+      "grafana-dashboards/crowdsec-details-per-instance-patched.json" = {
         enable = cfg.dashboards.crowdsec.enable;
         source =
           pkgs.fetchurl {

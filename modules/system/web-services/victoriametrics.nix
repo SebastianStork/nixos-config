@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.web-services.victoriametrics;
 in
@@ -42,13 +37,6 @@ in
 
     services.victoriametrics = {
       enable = true;
-      # The victoriametrics grafana-dashboard expects the version label to have the format `victoria-metrics-*`
-      package = pkgs.victoriametrics.overrideAttrs (
-        _: previousAttrs: {
-          version = "victoria-metrics-${previousAttrs.version}";
-          __intentionallyOverridingVersion = true;
-        }
-      );
       listenAddress = "localhost:${toString cfg.port}";
       extraOptions = [
         "-selfScrapeInterval=15s"
