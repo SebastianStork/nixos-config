@@ -48,7 +48,6 @@
           enable = true;
           domain = "git.${sstorkDomain}";
           doBackups = true;
-          ssh.enable = true;
         };
 
         outline = {
