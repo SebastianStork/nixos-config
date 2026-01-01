@@ -61,11 +61,11 @@ in
     };
 
     sops.secrets."nebula/host-key" = {
-      owner = config.users.users.nebula-main.name;
-      restartUnits = [ "nebula@main.service" ];
+      owner = config.users.users.nebula-mesh.name;
+      restartUnits = [ "nebula@mesh.service" ];
     };
 
-    services.nebula.networks.main = {
+    services.nebula.networks.mesh = {
       enable = true;
 
       ca = ./ca.crt;
@@ -106,5 +106,7 @@ in
         logging.level = "warning";
       };
     };
+
+    networking.firewall.trustedInterfaces = [ "nebula.mesh" ];
   };
 }
