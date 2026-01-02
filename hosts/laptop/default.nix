@@ -36,6 +36,7 @@
       nebula.node = {
         enable = true;
         address = "10.254.250.3";
+        isClient = true;
       };
       syncthing = {
         enable = true;

@@ -34,8 +34,9 @@
         nebula.node = {
           enable = true;
           address = "10.254.250.2";
-          isLighthouse = true;
           routableAddress = "49.13.231.235";
+          isLighthouse = true;
+          isServer = true;
         };
 
         syncthing = {

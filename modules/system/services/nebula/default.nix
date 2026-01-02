@@ -6,49 +6,58 @@
 }:
 let
   cfg = config.custom.services.nebula.node;
+  peers = config.custom.services.nebula.peers;
 
   hostname = config.networking.hostName;
 
-  nodes =
-    self.nixosConfigurations
-    |> lib.filterAttrs (name: _: name != hostname)
-    |> lib.attrValues
-    |> lib.map (value: value.config.custom.services.nebula.node)
-    |> lib.filter (node: node.enable);
+  lighthouses = peers |> lib.filter (node: node.isLighthouse);
 
-  lighthouses = nodes |> lib.filter (node: node.isLighthouse);
-
-  routableNodes = nodes |> lib.filter (node: node.routableAddress != null);
+  routablePeers = peers |> lib.filter (node: node.routableAddress != null);
 in
 {
-  options.custom.services.nebula.node = {
-    enable = lib.mkEnableOption "";
-    name = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = config.networking.hostName;
-    };
-    address = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "";
-    };
-    isLighthouse = lib.mkEnableOption "";
+  options.custom.services.nebula = {
+    node = {
+      enable = lib.mkEnableOption "";
+      name = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = hostname;
+      };
+      address = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "";
+      };
+      isLighthouse = lib.mkEnableOption "";
+      isServer = lib.mkEnableOption "";
+      isClient = lib.mkEnableOption "";
 
-    routableAddress = lib.mkOption {
-      type = lib.types.nullOr lib.types.nonEmptyStr;
-      default = null;
-    };
-    routablePort = lib.mkOption {
-      type = lib.types.nullOr lib.types.port;
-      default = if cfg.routableAddress != null then 47141 else null;
+      routableAddress = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default = null;
+      };
+      routablePort = lib.mkOption {
+        type = lib.types.nullOr lib.types.port;
+        default = if cfg.routableAddress != null then 47141 else null;
+      };
+
+      publicKeyPath = lib.mkOption {
+        type = lib.types.path;
+        default = "${self}/hosts/${hostname}/keys/nebula.pub";
+      };
+      certificatePath = lib.mkOption {
+        type = lib.types.path;
+        default = "${self}/hosts/${hostname}/keys/nebula.crt";
+      };
     };
 
-    publicKeyPath = lib.mkOption {
-      type = lib.types.path;
-      default = "${self}/hosts/${hostname}/keys/nebula.pub";
-    };
-    certificatePath = lib.mkOption {
-      type = lib.types.path;
-      default = "${self}/hosts/${hostname}/keys/nebula.crt";
+    peers = lib.mkOption {
+      type = lib.types.anything;
+      default =
+        self.nixosConfigurations
+        |> lib.filterAttrs (name: _: name != hostname)
+        |> lib.attrValues
+        |> lib.map (value: value.config.custom.services.nebula.node)
+        |> lib.filter (node: node.enable);
+      readOnly = true;
     };
   };
 
@@ -80,7 +89,7 @@ in
       );
 
       staticHostMap =
-        routableNodes
+        routablePeers
         |> lib.map (lighthouse: {
           name = lighthouse.address;
           value = lib.singleton "${lighthouse.routableAddress}:${toString lighthouse.routablePort}";
@@ -89,14 +98,14 @@ in
 
       firewall = {
         outbound = lib.singleton {
-          host = "any";
           port = "any";
           proto = "any";
+          host = "any";
         };
         inbound = lib.singleton {
-          host = "any";
           port = "any";
-          proto = "any";
+          proto = "icmp";
+          host = "any";
         };
       };
 
