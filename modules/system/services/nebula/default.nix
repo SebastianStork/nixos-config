@@ -113,6 +113,7 @@ in
         pki.disconnect_invalid = true;
         cipher = "aes";
         logging.level = "warning";
+        lighthouse.local_allow_list.interfaces.tailscale0 = false;
       };
     };
 
