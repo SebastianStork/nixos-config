@@ -112,8 +112,7 @@ in
       settings = {
         pki.disconnect_invalid = true;
         cipher = "aes";
-        logging.level = "warning";
-        lighthouse.local_allow_list.interfaces.tailscale0 = false;
+        lighthouse.local_allow_list.interfaces.${config.services.tailscale.interfaceName} = false;
       };
     };
 
