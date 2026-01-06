@@ -20,9 +20,19 @@
 
     boot.loader.grub.enable = true;
 
-    services.tailscale = {
-      enable = true;
-      ssh.enable = true;
+    services = {
+      tailscale = {
+        enable = true;
+        ssh.enable = true;
+      };
+
+      nebula.node = {
+        enable = true;
+        address = "10.254.250.5";
+        routableAddress = "188.245.223.145";
+        isLighthouse = true;
+        isServer = true;
+      };
     };
 
     web-services =

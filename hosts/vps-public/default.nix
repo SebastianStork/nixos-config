@@ -26,6 +26,13 @@
         ssh.enable = true;
       };
 
+      nebula.node = {
+        enable = true;
+        address = "10.254.250.4";
+        routableAddress = "167.235.73.246";
+        isServer = true;
+      };
+
       crowdsec = {
         enable = true;
         bouncers.firewall = true;
