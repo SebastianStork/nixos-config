@@ -39,15 +39,11 @@
         };
       };
 
-      ssh = {
-        enable = true;
-        enableDefaultConfig = false;
-        matchBlocks =
-          config.custom.sops.secrets.ssh-key
-          |> lib.mapAttrs (name: _: { identityFile = config.sops.secrets."ssh-key/${name}".path; });
-      };
-
       lazygit.enable = true;
+
+      ssh.matchBlocks =
+        config.custom.sops.secrets.ssh-key
+        |> lib.mapAttrs (name: _: { identityFile = config.sops.secrets."ssh-key/${name}".path; });
     };
   };
 }
