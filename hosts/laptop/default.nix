@@ -29,10 +29,7 @@
       wlan.enable = true;
       bluetooth.enable = true;
       sound.enable = true;
-      tailscale = {
-        enable = true;
-        ssh.enable = true;
-      };
+      tailscale.enable = true;
       nebula.node = {
         enable = true;
         address = "10.254.250.3";

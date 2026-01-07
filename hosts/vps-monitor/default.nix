@@ -21,10 +21,7 @@
     boot.loader.grub.enable = true;
 
     services = {
-      tailscale = {
-        enable = true;
-        ssh.enable = true;
-      };
+      tailscale.enable = true;
 
       nebula.node = {
         enable = true;

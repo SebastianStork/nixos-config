@@ -27,7 +27,6 @@
       services = {
         tailscale = {
           enable = true;
-          ssh.enable = true;
           exitNode.enable = true;
         };
 
