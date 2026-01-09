@@ -46,4 +46,6 @@
       wireshark.enable = true;
     };
   };
+
+  programs.localsend.enable = true;
 }

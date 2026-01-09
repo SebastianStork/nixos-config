@@ -40,4 +40,6 @@
 
     programs.steam.enable = true;
   };
+
+  programs.localsend.enable = true;
 }
