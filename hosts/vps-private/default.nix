@@ -36,6 +36,7 @@
           routableAddress = "49.13.231.235";
           isLighthouse = true;
           isServer = true;
+          dns.enable = true;
         };
 
         syncthing = {

@@ -29,6 +29,7 @@
         routableAddress = "188.245.223.145";
         isLighthouse = true;
         isServer = true;
+        dns.enable = true;
       };
     };
 

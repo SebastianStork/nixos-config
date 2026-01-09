@@ -5,22 +5,40 @@
   ...
 }:
 let
-  cfg = config.custom.services.nebula.node;
-  peers = config.custom.services.nebula.peers;
+  nebulaCfg = config.custom.services.nebula;
+  cfg = nebulaCfg.node;
 
   hostname = config.networking.hostName;
-
-  lighthouses = peers |> lib.filter (node: node.isLighthouse);
-
-  routablePeers = peers |> lib.filter (node: node.routableAddress != null);
 in
 {
   options.custom.services.nebula = {
+    network = {
+      address = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "10.254.250.0";
+        readOnly = true;
+      };
+      prefixLength = lib.mkOption {
+        type = lib.types.ints.between 0 32;
+        default = 24;
+        readOnly = true;
+      };
+      domain = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "splitleaf.de";
+        readOnly = true;
+      };
+    };
+
     node = {
       enable = lib.mkEnableOption "";
       name = lib.mkOption {
         type = lib.types.nonEmptyStr;
         default = hostname;
+      };
+      interface = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "nebula.mesh";
       };
       address = lib.mkOption {
         type = lib.types.nonEmptyStr;
@@ -49,14 +67,18 @@ in
       };
     };
 
-    peers = lib.mkOption {
+    nodes = lib.mkOption {
       type = lib.types.anything;
       default =
         self.nixosConfigurations
-        |> lib.filterAttrs (name: _: name != hostname)
         |> lib.attrValues
         |> lib.map (value: value.config.custom.services.nebula.node)
         |> lib.filter (node: node.enable);
+      readOnly = true;
+    };
+    peers = lib.mkOption {
+      type = lib.types.anything;
+      default = nebulaCfg.nodes |> lib.filter (node: node.name != hostname);
       readOnly = true;
     };
   };
@@ -83,13 +105,14 @@ in
 
       listen.port = cfg.routablePort;
 
-      isLighthouse = cfg.isLighthouse;
+      inherit (cfg) isLighthouse;
       lighthouses = lib.mkIf (!cfg.isLighthouse) (
-        lighthouses |> lib.map (lighthouse: lighthouse.address)
+        nebulaCfg.peers |> lib.filter (node: node.isLighthouse) |> lib.map (lighthouse: lighthouse.address)
       );
 
       staticHostMap =
-        routablePeers
+        nebulaCfg.peers
+        |> lib.filter (node: node.routableAddress != null)
         |> lib.map (lighthouse: {
           name = lighthouse.address;
           value = lib.singleton "${lighthouse.routableAddress}:${toString lighthouse.routablePort}";
@@ -116,6 +139,13 @@ in
       };
     };
 
-    networking.firewall.trustedInterfaces = [ "nebula.mesh" ];
+    networking.firewall.trustedInterfaces = [ cfg.interface ];
+
+    systemd.network.networks."40-nebula" = {
+      matchConfig.Name = cfg.interface;
+      address = [ "${cfg.address}/${toString nebulaCfg.network.prefixLength}" ];
+      dns = nebulaCfg.peers |> lib.filter (node: node.dns.enable) |> lib.map (node: node.address);
+      domains = [ nebulaCfg.network.domain ];
+    };
   };
 }
