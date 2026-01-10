@@ -51,8 +51,8 @@ in
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = config.custom.services.tailscale.enable;
-        message = "Syncthing requires tailscale";
+        assertion = config.custom.services.nebula.node.enable;
+        message = "Syncthing requires nebula";
       }
       {
         assertion = cfg.isServer -> (cfg.gui.domain != null);
@@ -86,48 +86,61 @@ in
       };
     };
 
-    services.syncthing = {
-      enable = true;
+    services = {
+      syncthing = {
+        enable = true;
 
-      user = lib.mkIf (!cfg.isServer) "seb";
-      group = lib.mkIf (!cfg.isServer) "users";
-      dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
+        user = lib.mkIf (!cfg.isServer) "seb";
+        group = lib.mkIf (!cfg.isServer) "users";
+        dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
 
-      guiAddress = "localhost:${toString cfg.gui.port}";
+        guiAddress = "localhost:${toString cfg.gui.port}";
 
-      cert = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/cert".path;
-      key = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/key".path;
+        cert = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/cert".path;
+        key = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/key".path;
 
-      settings = {
-        # Get the devices and their ids from the configs of the other hosts
-        devices =
-          self.nixosConfigurations
-          |> lib.filterAttrs (name: _: name != config.networking.hostName)
-          |> lib.filterAttrs (_: value: value.config.custom.services.syncthing.enable)
-          |> lib.mapAttrs (
-            name: value: {
-              id = value.config.custom.services.syncthing.deviceId;
-              addresses = [ "tcp://${name}.${config.custom.services.tailscale.domain}:${toString cfg.syncPort}" ];
-            }
-          );
+        settings = {
+          # Get the devices and their ids from the configs of the other hosts
+          devices =
+            self.nixosConfigurations
+            |> lib.filterAttrs (name: _: name != config.networking.hostName)
+            |> lib.filterAttrs (_: value: value.config.custom.services.syncthing.enable)
+            |> lib.mapAttrs (
+              _: value: {
+                id = value.config.custom.services.syncthing.deviceId;
+                addresses = [
+                  "tcp://${value.config.custom.services.nebula.node.address}:${toString cfg.syncPort}"
+                ];
+              }
+            );
 
-        folders =
-          cfg.folders
-          |> lib'.genAttrs (name: {
-            path = "${dataDir}/${name}";
-            devices = config.services.syncthing.settings.devices |> lib.attrNames;
-          });
+          folders =
+            cfg.folders
+            |> lib'.genAttrs (name: {
+              path = "${dataDir}/${name}";
+              devices = config.services.syncthing.settings.devices |> lib.attrNames;
+            });
 
-        options = {
-          listenAddress = "tcp://0.0.0.0:${toString cfg.syncPort}";
-          globalAnnounceEnabled = false;
-          localAnnounceEnabled = false;
-          relaysEnabled = false;
-          natEnabled = false;
-          urAccepted = -1;
-          autoUpgradeIntervalH = 0;
+          options = {
+            listenAddress = "tcp://${config.custom.services.nebula.node.address}:${toString cfg.syncPort}";
+            globalAnnounceEnabled = false;
+            localAnnounceEnabled = false;
+            relaysEnabled = false;
+            natEnabled = false;
+            urAccepted = -1;
+            autoUpgradeIntervalH = 0;
+          };
         };
       };
+
+      nebula.networks.mesh.firewall.inbound =
+        config.services.syncthing.settings.devices
+        |> lib.attrNames
+        |> lib.map (name: {
+          port = cfg.syncPort;
+          proto = "tcp";
+          host = name;
+        });
     };
 
     custom = {
