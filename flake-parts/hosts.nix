@@ -21,8 +21,11 @@ let
     };
 
   mkDeployNode = hostname: {
-    inherit hostname;
-    sshUser = "root";
+    hostname = "${hostname}.${
+      self.nixosConfigurations.${hostname}.config.custom.services.nebula.network.domain
+    }";
+    user = "root";
+    interactiveSudo = true;
     profiles.system.path =
       inputs.deploy-rs.lib.x86_64-linux.activate.nixos
         self.nixosConfigurations.${hostname};
