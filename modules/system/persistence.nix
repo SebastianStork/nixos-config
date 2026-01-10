@@ -13,7 +13,7 @@ in
   options.custom.persistence = {
     enable = lib.mkEnableOption "";
     directories = lib.mkOption {
-      type = lib.types.listOf lib.types.path;
+      type = lib.types.listOf (lib.types.coercedTo lib.types.str (d: { directory = d; }) lib.types.attrs);
       default = [ ];
     };
   };
