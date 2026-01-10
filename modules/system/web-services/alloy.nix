@@ -15,11 +15,11 @@ in
     };
     metricsEndpoint = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "https://metrics.${config.custom.services.tailscale.domain}/prometheus/api/v1/write";
+      default = "https://metrics.${config.custom.services.nebula.network.domain}/prometheus/api/v1/write";
     };
     logsEndpoint = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "https://logs.${config.custom.services.tailscale.domain}/insert/loki/api/v1/push";
+      default = "https://logs.${config.custom.services.nebula.network.domain}/insert/loki/api/v1/push";
     };
     collect = {
       metrics = {

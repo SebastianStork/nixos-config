@@ -26,8 +26,6 @@
         onlyCleanRoots = true;
       };
 
-      tailscale.enable = true;
-
       nebula.node = {
         enable = true;
         address = "10.254.250.5";
@@ -40,12 +38,12 @@
 
     web-services =
       let
-        tailscaleDomain = config.custom.services.tailscale.domain;
+        privateDomain = config.custom.services.nebula.network.domain;
       in
       {
         gatus = {
           enable = true;
-          domain = "status.${tailscaleDomain}";
+          domain = "status.${privateDomain}";
           generateDefaultEndpoints = true;
           endpoints."alerts" = {
             path = "/v1/health";
@@ -55,12 +53,12 @@
 
         ntfy = {
           enable = true;
-          domain = "alerts.${tailscaleDomain}";
+          domain = "alerts.${privateDomain}";
         };
 
         grafana = {
           enable = true;
-          domain = "grafana.${tailscaleDomain}";
+          domain = "grafana.${privateDomain}";
           datasources = {
             prometheus.enable = true;
             victoriametrics.enable = true;
@@ -76,17 +74,17 @@
 
         victoriametrics = {
           enable = true;
-          domain = "metrics.${tailscaleDomain}";
+          domain = "metrics.${privateDomain}";
         };
 
         victorialogs = {
           enable = true;
-          domain = "logs.${tailscaleDomain}";
+          domain = "logs.${privateDomain}";
         };
 
         alloy = {
           enable = true;
-          domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
+          domain = "alloy.${config.networking.hostName}.${privateDomain}";
         };
       };
   };

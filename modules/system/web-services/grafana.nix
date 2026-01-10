@@ -23,21 +23,21 @@ in
         enable = lib.mkEnableOption "";
         url = lib.mkOption {
           type = lib.types.nonEmptyStr;
-          default = "https://metrics.${config.custom.services.tailscale.domain}";
+          default = "https://metrics.${config.custom.services.nebula.network.domain}";
         };
       };
       victoriametrics = {
         enable = lib.mkEnableOption "";
         url = lib.mkOption {
           type = lib.types.nonEmptyStr;
-          default = "https://metrics.${config.custom.services.tailscale.domain}";
+          default = "https://metrics.${config.custom.services.nebula.network.domain}";
         };
       };
       victorialogs = {
         enable = lib.mkEnableOption "";
         url = lib.mkOption {
           type = lib.types.nonEmptyStr;
-          default = "https://logs.${config.custom.services.tailscale.domain}";
+          default = "https://logs.${config.custom.services.nebula.network.domain}";
         };
       };
     };
