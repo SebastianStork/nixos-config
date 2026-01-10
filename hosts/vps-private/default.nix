@@ -25,6 +25,11 @@
       boot.loader.systemd-boot.enable = true;
 
       services = {
+        gc = {
+          enable = true;
+          onlyCleanRoots = true;
+        };
+
         tailscale = {
           enable = true;
           exitNode.enable = true;

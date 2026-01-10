@@ -21,6 +21,11 @@
     boot.loader.grub.enable = true;
 
     services = {
+      gc = {
+        enable = true;
+        onlyCleanRoots = true;
+      };
+
       tailscale.enable = true;
 
       nebula.node = {
