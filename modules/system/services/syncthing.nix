@@ -59,7 +59,7 @@ in
         message = "Running syncthing on a server requires `gui.domain` to be set";
       }
       {
-        assertion = (cfg.gui.domain != null) -> (lib'.isTailscaleDomain cfg.gui.domain);
+        assertion = (cfg.gui.domain != null) -> (lib'.isPrivateDomain cfg.gui.domain);
         message = lib'.mkUnprotectedMessage "Syncthing-GUI";
       }
     ];

@@ -25,7 +25,7 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
-      assertion = lib'.isTailscaleDomain cfg.domain;
+      assertion = lib'.isPrivateDomain cfg.domain;
       message = lib'.mkUnprotectedMessage "FreshRSS";
     };
 

@@ -15,7 +15,7 @@
 
   custom =
     let
-      tailscaleDomain = config.custom.services.tailscale.domain;
+      privateDomain = config.custom.services.nebula.network.domain;
     in
     {
       persistence.enable = true;
@@ -28,11 +28,6 @@
         gc = {
           enable = true;
           onlyCleanRoots = true;
-        };
-
-        tailscale = {
-          enable = true;
-          exitNode.enable = true;
         };
 
         nebula.node = {
@@ -49,44 +44,44 @@
           isServer = true;
           doBackups = true;
           deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
-          gui.domain = "syncthing.${tailscaleDomain}";
+          gui.domain = "syncthing.${privateDomain}";
         };
       };
 
       web-services = {
         filebrowser = {
           enable = true;
-          domain = "files.${tailscaleDomain}";
+          domain = "files.${privateDomain}";
           doBackups = true;
         };
 
         radicale = {
           enable = true;
-          domain = "calendar.${tailscaleDomain}";
+          domain = "calendar.${privateDomain}";
           doBackups = true;
         };
 
         memos = {
           enable = true;
-          domain = "memos.${tailscaleDomain}";
+          domain = "memos.${privateDomain}";
           doBackups = true;
         };
 
         actualbudget = {
           enable = true;
-          domain = "budget.${tailscaleDomain}";
+          domain = "budget.${privateDomain}";
           doBackups = true;
         };
 
         freshrss = {
           enable = true;
-          domain = "rss.${tailscaleDomain}";
+          domain = "rss.${privateDomain}";
           doBackups = true;
         };
 
         alloy = {
           enable = true;
-          domain = "alloy-${config.networking.hostName}.${tailscaleDomain}";
+          domain = "alloy.${config.networking.hostName}.${privateDomain}";
         };
       };
     };
