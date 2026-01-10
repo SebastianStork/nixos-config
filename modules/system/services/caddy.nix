@@ -11,8 +11,11 @@ let
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (value: value.enable);
 
-  publicHostsExist = virtualHosts |> lib.any (value: !lib'.isTailscaleDomain value.domain);
+  publicHostsExist =
+    virtualHosts
+    |> lib.any (value: (!lib'.isPrivateDomain value.domain) && (!lib'.isTailscaleDomain value.domain));
   tailscaleHostsExist = virtualHosts |> lib.any (value: lib'.isTailscaleDomain value.domain);
+  privateHostsExist = virtualHosts |> lib.any (value: lib'.isPrivateDomain value.domain);
 
   webPorts = [
     80
@@ -30,6 +33,15 @@ let
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
       extraConfig = lib.concatLines [
         (lib.optionalString (lib'.isTailscaleDomain domain) "bind tailscale/${lib'.subdomainOf domain}")
+        (lib.optionalString (lib'.isPrivateDomain domain) (
+          let
+            certDir = config.security.acme.certs.${domain}.directory;
+          in
+          ''
+            tls ${certDir}/fullchain.pem ${certDir}/key.pem
+            bind ${config.custom.services.nebula.node.address}
+          ''
+        ))
         (lib.optionalString (port != null) "reverse_proxy localhost:${toString port}")
         (lib.optionalString (files != null) ''
           root * ${files}
@@ -120,6 +132,52 @@ in
               ephemeral true
             }
           '';
+        };
+      })
+
+      (lib.mkIf privateHostsExist {
+        sops.secrets = {
+          "porkbun/api-key".owner = config.users.users.acme.name;
+          "porkbun/secret-api-key".owner = config.users.users.acme.name;
+        };
+
+        security.acme = {
+          acceptTerms = true;
+          defaults = {
+            email = "acme@sstork.dev";
+            dnsProvider = "porkbun";
+            dnsResolver = "1.1.1.1:53";
+            group = config.users.users.caddy.name;
+            credentialFiles = {
+              PORKBUN_API_KEY_FILE = config.sops.secrets."porkbun/api-key".path;
+              PORKBUN_SECRET_API_KEY_FILE = config.sops.secrets."porkbun/secret-api-key".path;
+            };
+            reloadServices = [ "caddy.service" ];
+          };
+
+          certs =
+            virtualHosts
+            |> lib.filter (host: lib'.isPrivateDomain host.domain)
+            |> lib.map (host: lib.nameValuePair host.domain { })
+            |> lib.listToAttrs;
+        };
+
+        services.nebula.networks.mesh.firewall.inbound = [
+          {
+            port = "80";
+            proto = "tcp";
+            host = "any";
+          }
+          {
+            port = "443";
+            proto = "tcp";
+            host = "any";
+          }
+        ];
+
+        systemd.services.caddy = {
+          requires = [ "nebula@mesh.service" ];
+          after = [ "nebula@mesh.service" ];
         };
       })
     ]

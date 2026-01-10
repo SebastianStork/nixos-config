@@ -1,4 +1,10 @@
-{ config, lib, ... }:
+{
+  config,
+  self,
+  lib,
+  lib',
+  ...
+}:
 let
   nebulaCfg = config.custom.services.nebula;
   cfg = nebulaCfg.node;
@@ -25,8 +31,21 @@ in
 
             local-zone = "\"${nebulaCfg.network.domain}.\" static";
             local-data =
-              nebulaCfg.nodes
-              |> lib.map (node: "\"${node.name}.${nebulaCfg.network.domain}. A ${node.address}\"");
+              let
+                nodeRecords =
+                  nebulaCfg.nodes
+                  |> lib.map (node: "\"${node.name}.${nebulaCfg.network.domain}. A ${node.address}\"");
+                serviceRecords =
+                  self.nixosConfigurations
+                  |> lib.attrValues
+                  |> lib.concatMap (
+                    host:
+                    host.config.meta.domains.local
+                    |> lib.filter (domain: lib'.isPrivateDomain domain)
+                    |> lib.map (domain: "\"${domain}. A ${host.config.custom.services.nebula.node.address}\"")
+                  );
+              in
+              nodeRecords ++ serviceRecords;
           };
 
           forward-zone =

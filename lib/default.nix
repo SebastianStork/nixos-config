@@ -5,6 +5,9 @@
 {
   isTailscaleDomain = domain: domain |> lib.hasSuffix ".ts.net";
 
+  isPrivateDomain =
+    domain: domain |> lib.hasSuffix ".splitleaf.de";
+
   subdomainOf = domain: domain |> lib.splitString "." |> lib.head;
 
   rootDomainOf = domain: domain |> lib.splitString "." |> lib.tail |> lib.concatStringsSep ".";
