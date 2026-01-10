@@ -35,13 +35,5 @@ in
     systemd.services.tailscaled-set.after = [ "tailscaled-autoconnect.service" ];
 
     custom.persistence.directories = [ "/var/lib/tailscale" ];
-
-    # Disable search domain when nebula is in use
-    systemd.network.networks."50-tailscale" = lib.mkIf config.custom.services.nebula.node.enable {
-      matchConfig.Name = config.services.tailscale.interfaceName;
-      linkConfig.Unmanaged = lib.mkForce false;
-      dns = [ "100.100.100.100" ];
-      domains = [ ];
-    };
   };
 }
