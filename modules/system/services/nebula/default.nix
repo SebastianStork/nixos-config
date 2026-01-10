@@ -135,7 +135,6 @@ in
       settings = {
         pki.disconnect_invalid = true;
         cipher = "aes";
-        lighthouse.local_allow_list.interfaces.${config.services.tailscale.interfaceName} = false;
       };
     };
 

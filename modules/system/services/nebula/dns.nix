@@ -48,18 +48,13 @@ in
               nodeRecords ++ serviceRecords;
           };
 
-          forward-zone =
-            (lib.singleton {
-              name = ".";
-              forward-addr = [
-                "1.1.1.1"
-                "8.8.8.8"
-              ];
-            })
-            ++ lib.optional config.custom.services.tailscale.enable {
-              name = "${config.custom.services.tailscale.domain}";
-              forward-addr = [ "100.100.100.100" ];
-            };
+          forward-zone = lib.singleton {
+            name = ".";
+            forward-addr = [
+              "1.1.1.1"
+              "8.8.8.8"
+            ];
+          };
         };
       };
 

@@ -1,20 +1,15 @@
 {
   config,
-  pkgs,
   lib,
   lib',
   ...
 }:
 let
   cfg = config.custom.services.caddy;
-  inherit (config.services.caddy) user;
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (value: value.enable);
 
-  publicHostsExist =
-    virtualHosts
-    |> lib.any (value: (!lib'.isPrivateDomain value.domain) && (!lib'.isTailscaleDomain value.domain));
-  tailscaleHostsExist = virtualHosts |> lib.any (value: lib'.isTailscaleDomain value.domain);
+  publicHostsExist = virtualHosts |> lib.any (value: (!lib'.isPrivateDomain value.domain));
   privateHostsExist = virtualHosts |> lib.any (value: lib'.isPrivateDomain value.domain);
 
   webPorts = [
@@ -32,7 +27,6 @@ let
     lib.nameValuePair domain {
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
       extraConfig = lib.concatLines [
-        (lib.optionalString (lib'.isTailscaleDomain domain) "bind tailscale/${lib'.subdomainOf domain}")
         (lib.optionalString (lib'.isPrivateDomain domain) (
           let
             certDir = config.security.acme.certs.${domain}.directory;
@@ -113,26 +107,6 @@ in
       (lib.mkIf publicHostsExist {
         meta.ports.tcp = webPorts;
         networking.firewall.allowedTCPPorts = webPorts;
-      })
-
-      (lib.mkIf tailscaleHostsExist {
-        sops.secrets."tailscale/service-auth-key" = {
-          owner = user;
-          restartUnits = [ "caddy.service" ];
-        };
-
-        services.caddy = {
-          package = pkgs.caddy.withPlugins {
-            plugins = [ "github.com/tailscale/caddy-tailscale@v0.0.0-20251117033914-662ef34c64b1" ];
-            hash = "sha256-3lc2oSLFIco5Pgz1QNH2hT5tDTPZ4wcbc+NKH9wLEfY=";
-          };
-          globalConfig = ''
-            tailscale {
-              auth_key {file.${config.sops.secrets."tailscale/service-auth-key".path}}
-              ephemeral true
-            }
-          '';
-        };
       })
 
       (lib.mkIf privateHostsExist {

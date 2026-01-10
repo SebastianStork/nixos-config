@@ -3,10 +3,7 @@
   self,
 }:
 {
-  isTailscaleDomain = domain: domain |> lib.hasSuffix ".ts.net";
-
-  isPrivateDomain =
-    domain: domain |> lib.hasSuffix ".splitleaf.de";
+  isPrivateDomain = domain: domain |> lib.hasSuffix ".splitleaf.de";
 
   subdomainOf = domain: domain |> lib.splitString "." |> lib.head;
 
