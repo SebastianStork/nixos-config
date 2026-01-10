@@ -26,8 +26,6 @@
         onlyCleanRoots = true;
       };
 
-      tailscale.enable = true;
-
       nebula.node = {
         enable = true;
         address = "10.254.250.4";
@@ -78,7 +76,7 @@
 
         alloy = {
           enable = true;
-          domain = "alloy-${config.networking.hostName}.${config.custom.services.tailscale.domain}";
+          domain = "alloy.${config.networking.hostName}.${config.custom.services.nebula.network.domain}";
         };
       };
   };
