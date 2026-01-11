@@ -8,18 +8,12 @@ let
   cfg = config.custom.services.nebula.node;
 in
 {
-  options.custom.services.nebula.node.sshd = {
-    enable = lib.mkEnableOption "" // {
-      default = true;
-    };
-    port = lib.mkOption {
-      type = lib.types.port;
-      default = 22;
-    };
+  options.custom.services.nebula.node.sshd.enable = lib.mkEnableOption "" // {
+    default = true;
   };
 
   config = lib.mkIf (cfg.enable && cfg.sshd.enable) {
-    meta.ports.tcp = [ cfg.sshd.port ];
+    meta.ports.tcp = [ 22 ];
 
     services = {
       openssh = {
@@ -28,7 +22,7 @@ in
         ports = [ ];
         listenAddresses = lib.singleton {
           addr = cfg.address;
-          inherit (cfg.sshd) port;
+          port = 22;
         };
         settings = {
           PasswordAuthentication = false;
@@ -41,7 +35,7 @@ in
         config.custom.services.nebula.peers
         |> lib.filter (node: node.isClient)
         |> lib.map (nebula: {
-          inherit (cfg.sshd) port;
+          port = 22;
           proto = "tcp";
           host = nebula.name;
         });
