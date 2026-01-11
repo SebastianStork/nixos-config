@@ -22,7 +22,7 @@ let
 
   mkDeployNode = hostname: {
     hostname = "${hostname}.${
-      self.nixosConfigurations.${hostname}.config.custom.services.nebula.network.domain
+      self.nixosConfigurations.${hostname}.config.custom.networking.overlay.domain
     }";
     user = "root";
     interactiveSudo = true;

@@ -10,6 +10,11 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   custom = {
+    networking = {
+      overlay.address = "10.254.250.1";
+      isClient = true;
+    };
+
     sops.enable = true;
 
     boot = {
@@ -26,11 +31,8 @@
     services = {
       gc.enable = true;
       sound.enable = true;
-      nebula.node = {
-        enable = true;
-        address = "10.254.250.1";
-        isClient = true;
-      };
+      nebula.node.enable = true;
+      sshd.enable = true;
       syncthing = {
         enable = true;
         deviceId = "FAJS5WM-UAWGW2U-FXCGPSP-VAUOTGM-XUKSEES-D66PMCJ-WBODJLV-XTNCRA7";

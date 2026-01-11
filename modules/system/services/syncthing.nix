@@ -7,6 +7,7 @@
 }:
 let
   cfg = config.custom.services.syncthing;
+  netCfg = config.custom.networking;
 
   inherit (config.services.syncthing) dataDir;
 
@@ -50,10 +51,6 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = [
-      {
-        assertion = config.custom.services.nebula.node.enable;
-        message = "Syncthing requires nebula";
-      }
       {
         assertion = cfg.isServer -> (cfg.gui.domain != null);
         message = "Running syncthing on a server requires `gui.domain` to be set";
@@ -109,7 +106,7 @@ in
               _: value: {
                 id = value.config.custom.services.syncthing.deviceId;
                 addresses = [
-                  "tcp://${value.config.custom.services.nebula.node.address}:${toString cfg.syncPort}"
+                  "tcp://${value.config.custom.networking.overlay.address}:${toString cfg.syncPort}"
                 ];
               }
             );
@@ -122,7 +119,7 @@ in
             });
 
           options = {
-            listenAddress = "tcp://${config.custom.services.nebula.node.address}:${toString cfg.syncPort}";
+            listenAddress = "tcp://${netCfg.overlay.address}:${toString cfg.syncPort}";
             globalAnnounceEnabled = false;
             localAnnounceEnabled = false;
             relaysEnabled = false;

@@ -6,13 +6,13 @@
   ...
 }:
 let
-  nebulaCfg = config.custom.services.nebula;
-  cfg = nebulaCfg.node;
+  cfg = config.custom.services.dns;
+  netCfg = config.custom.networking;
 in
 {
-  options.custom.services.nebula.node.dns.enable = lib.mkEnableOption "";
+  options.custom.services.dns.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf (cfg.enable && cfg.dns.enable) {
+  config = lib.mkIf cfg.enable {
     # meta.ports = {
     #   tcp = [ 53 ];
     #   udp = [ 53 ];
@@ -24,17 +24,17 @@ in
 
         settings = {
           server = {
-            interface = [ cfg.interface ];
+            interface = [ netCfg.overlay.interface ];
             access-control = [
-              "${nebulaCfg.network.address}/${toString nebulaCfg.network.prefixLength} allow"
+              "${netCfg.overlay.networkAddress}/${toString netCfg.overlay.prefixLength} allow"
             ];
 
-            local-zone = "\"${nebulaCfg.network.domain}.\" static";
+            local-zone = "\"${netCfg.overlay.domain}.\" static";
             local-data =
               let
                 nodeRecords =
-                  nebulaCfg.nodes
-                  |> lib.map (node: "\"${node.name}.${nebulaCfg.network.domain}. A ${node.address}\"");
+                  netCfg.nodes
+                  |> lib.map (node: "\"${node.hostname}.${node.overlay.domain}. A ${node.overlay.address}\"");
                 serviceRecords =
                   self.nixosConfigurations
                   |> lib.attrValues
@@ -42,7 +42,7 @@ in
                     host:
                     host.config.meta.domains.local
                     |> lib.filter (domain: lib'.isPrivateDomain domain)
-                    |> lib.map (domain: "\"${domain}. A ${host.config.custom.services.nebula.node.address}\"")
+                    |> lib.map (domain: "\"${domain}. A ${host.config.custom.networking.overlay.address}\"")
                   );
               in
               nodeRecords ++ serviceRecords;
@@ -66,8 +66,8 @@ in
     };
 
     systemd.services.unbound = {
-      requires = [ "nebula@mesh.service" ];
-      after = [ "nebula@mesh.service" ];
+      requires = [ netCfg.overlay.systemdUnit ];
+      after = [ netCfg.overlay.systemdUnit ];
     };
   };
 }

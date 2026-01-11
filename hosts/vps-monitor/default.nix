@@ -14,6 +14,16 @@
   };
 
   custom = {
+    networking = {
+      overlay.address = "10.254.250.5";
+      underlay = {
+        address = "188.245.223.145";
+        isPublic = true;
+      };
+      isServer = true;
+      isLighthouse = true;
+    };
+
     persistence.enable = true;
 
     sops.enable = true;
@@ -26,19 +36,14 @@
         onlyCleanRoots = true;
       };
 
-      nebula.node = {
-        enable = true;
-        address = "10.254.250.5";
-        routableAddress = "188.245.223.145";
-        isLighthouse = true;
-        isServer = true;
-        dns.enable = true;
-      };
+      nebula.node.enable = true;
+      sshd.enable = true;
+      dns.enable = true;
     };
 
     web-services =
       let
-        privateDomain = config.custom.services.nebula.network.domain;
+        privateDomain = config.custom.networking.overlay.domain;
       in
       {
         gatus = {
