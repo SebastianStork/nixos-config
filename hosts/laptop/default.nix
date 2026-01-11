@@ -23,17 +23,20 @@
     };
     de.hyprland.enable = true;
 
+    networking = {
+      overlay.address = "10.254.250.3";
+      underlay.interface = "wlan0";
+      isClient = true;
+    };
+
     services = {
       resolved.enable = true;
       gc.enable = true;
       wlan.enable = true;
       bluetooth.enable = true;
       sound.enable = true;
-      nebula.node = {
-        enable = true;
-        address = "10.254.250.3";
-        isClient = true;
-      };
+      nebula.enable = true;
+      sshd.enable = true;
       syncthing = {
         enable = true;
         deviceId = "Q4YPD3V-GXZPHSN-PT5X4PU-FBG4GX2-IASBX75-7NYMG75-4EJHBMZ-4WGDDAP";

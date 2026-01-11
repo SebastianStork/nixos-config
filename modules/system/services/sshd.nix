@@ -5,14 +5,13 @@
   ...
 }:
 let
-  cfg = config.custom.services.nebula.node;
+  cfg = config.custom.services.sshd;
+  netCfg = config.custom.networking;
 in
 {
-  options.custom.services.nebula.node.sshd.enable = lib.mkEnableOption "" // {
-    default = true;
-  };
+  options.custom.services.sshd.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf (cfg.enable && cfg.sshd.enable) {
+  config = lib.mkIf cfg.enable {
     meta.ports.tcp = [ 22 ];
 
     services = {
@@ -21,7 +20,7 @@ in
         openFirewall = false;
         ports = [ ];
         listenAddresses = lib.singleton {
-          addr = cfg.address;
+          addr = netCfg.overlay.address;
           port = 22;
         };
         settings = {
@@ -32,26 +31,26 @@ in
       };
 
       nebula.networks.mesh.firewall.inbound =
-        config.custom.services.nebula.peers
+        netCfg.peers
         |> lib.filter (node: node.isClient)
-        |> lib.map (nebula: {
+        |> lib.map (client: {
           port = 22;
           proto = "tcp";
-          host = nebula.name;
+          host = client.hostname;
         });
     };
 
     systemd.services.sshd = {
-      requires = [ "nebula@mesh.service" ];
-      after = [ "nebula@mesh.service" ];
+      requires = [ netCfg.overlay.systemdUnit ];
+      after = [ netCfg.overlay.systemdUnit ];
     };
 
     users.users.seb.openssh.authorizedKeys.keyFiles =
       self.nixosConfigurations
-      |> lib.filterAttrs (name: _: name != config.networking.hostName)
       |> lib.attrValues
-      |> lib.filter (value: value.config |> lib.hasAttr "home-manager")
-      |> lib.map (value: value.config.home-manager.users.seb.custom.programs.ssh)
+      |> lib.filter (host: host.config.custom.networking.hostname != netCfg.hostname)
+      |> lib.filter (host: host.config |> lib.hasAttr "home-manager")
+      |> lib.map (host: host.config.home-manager.users.seb.custom.programs.ssh)
       |> lib.filter (ssh: ssh.enable)
       |> lib.map (ssh: ssh.publicKeyPath);
   };

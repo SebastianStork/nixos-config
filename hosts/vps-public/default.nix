@@ -20,18 +20,24 @@
 
     boot.loader.systemd-boot.enable = true;
 
+    networking = {
+      overlay.address = "10.254.250.4";
+      underlay = {
+        interface = "enp1s0";
+        address = "167.235.73.246";
+        isPublic = true;
+      };
+      isServer = true;
+    };
+
     services = {
       gc = {
         enable = true;
         onlyCleanRoots = true;
       };
 
-      nebula.node = {
-        enable = true;
-        address = "10.254.250.4";
-        routableAddress = "167.235.73.246";
-        isServer = true;
-      };
+      nebula.node.enable = true;
+      sshd.enable = true;
 
       crowdsec = {
         enable = true;
@@ -76,7 +82,7 @@
 
         alloy = {
           enable = true;
-          domain = "alloy.${config.networking.hostName}.${config.custom.services.nebula.network.domain}";
+          domain = "alloy.${config.networking.hostName}.${config.custom.networking.overlay.domain}";
         };
       };
   };

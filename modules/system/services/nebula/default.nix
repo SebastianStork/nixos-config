@@ -5,91 +5,32 @@
   ...
 }:
 let
-  nebulaCfg = config.custom.services.nebula;
-  cfg = nebulaCfg.node;
+  cfg = config.custom.services.nebula;
+  netCfg = config.custom.networking;
 
-  hostname = config.networking.hostName;
+  publicPort = 47141;
 in
 {
   options.custom.services.nebula = {
-    network = {
-      address = lib.mkOption {
-        type = lib.types.nonEmptyStr;
-        default = "10.254.250.0";
-        readOnly = true;
-      };
-      prefixLength = lib.mkOption {
-        type = lib.types.ints.between 0 32;
-        default = 24;
-        readOnly = true;
-      };
-      domain = lib.mkOption {
-        type = lib.types.nonEmptyStr;
-        default = "splitleaf.de";
-        readOnly = true;
-      };
+    enable = lib.mkEnableOption "";
+
+    publicKeyPath = lib.mkOption {
+      type = lib.types.path;
+      default = "${self}/hosts/${netCfg.hostname}/keys/nebula.pub";
     };
-
-    node = {
-      enable = lib.mkEnableOption "";
-      name = lib.mkOption {
-        type = lib.types.nonEmptyStr;
-        default = hostname;
-      };
-      interface = lib.mkOption {
-        type = lib.types.nonEmptyStr;
-        default = "nebula.mesh";
-      };
-      address = lib.mkOption {
-        type = lib.types.nonEmptyStr;
-        default = "";
-      };
-      isLighthouse = lib.mkEnableOption "";
-      isServer = lib.mkEnableOption "";
-      isClient = lib.mkEnableOption "";
-
-      routableAddress = lib.mkOption {
-        type = lib.types.nullOr lib.types.nonEmptyStr;
-        default = null;
-      };
-      routablePort = lib.mkOption {
-        type = lib.types.nullOr lib.types.port;
-        default = if cfg.routableAddress != null then 47141 else null;
-      };
-
-      publicKeyPath = lib.mkOption {
-        type = lib.types.path;
-        default = "${self}/hosts/${hostname}/keys/nebula.pub";
-      };
-      certificatePath = lib.mkOption {
-        type = lib.types.path;
-        default = "${self}/hosts/${hostname}/keys/nebula.crt";
-      };
-    };
-
-    nodes = lib.mkOption {
-      type = lib.types.anything;
-      default =
-        self.nixosConfigurations
-        |> lib.attrValues
-        |> lib.map (value: value.config.custom.services.nebula.node)
-        |> lib.filter (node: node.enable);
-      readOnly = true;
-    };
-    peers = lib.mkOption {
-      type = lib.types.anything;
-      default = nebulaCfg.nodes |> lib.filter (node: node.name != hostname);
-      readOnly = true;
+    certificatePath = lib.mkOption {
+      type = lib.types.path;
+      default = "${self}/hosts/${netCfg.hostname}/keys/nebula.crt";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    meta.ports.udp = lib.optional (cfg.routablePort != null) cfg.routablePort;
-
     assertions = lib.singleton {
-      assertion = cfg.isLighthouse -> cfg.routableAddress != null;
-      message = "'${hostname}' is a Nebula lighthouse, but routableAddress is not set. Lighthouses must be publicly reachable.";
+      assertion = netCfg.isLighthouse -> netCfg.underlay.isPublic;
+      message = "'${netCfg.hostname}' is a Nebula lighthouse, but underlay.isPublic is not set. Lighthouses must be publicly reachable.";
     };
+
+    meta.ports.udp = lib.optional (netCfg.underlay.isPublic) publicPort;
 
     sops.secrets."nebula/host-key" = {
       owner = config.users.users.nebula-mesh.name;
@@ -103,19 +44,21 @@ in
       cert = cfg.certificatePath;
       key = config.sops.secrets."nebula/host-key".path;
 
-      listen.port = cfg.routablePort;
+      listen.port = lib.mkIf netCfg.underlay.isPublic publicPort;
 
-      inherit (cfg) isLighthouse;
-      lighthouses = lib.mkIf (!cfg.isLighthouse) (
-        nebulaCfg.peers |> lib.filter (node: node.isLighthouse) |> lib.map (lighthouse: lighthouse.address)
+      inherit (netCfg) isLighthouse;
+      lighthouses = lib.mkIf (!netCfg.isLighthouse) (
+        netCfg.peers
+        |> lib.filter (peer: peer.isLighthouse)
+        |> lib.map (lighthouse: lighthouse.overlay.address)
       );
 
       staticHostMap =
-        nebulaCfg.peers
-        |> lib.filter (node: node.routableAddress != null)
-        |> lib.map (lighthouse: {
-          name = lighthouse.address;
-          value = lib.singleton "${lighthouse.routableAddress}:${toString lighthouse.routablePort}";
+        netCfg.peers
+        |> lib.filter (peer: peer.underlay.isPublic)
+        |> lib.map (publicPeer: {
+          name = publicPeer.overlay.address;
+          value = lib.singleton "${publicPeer.underlay.address}:${toString publicPort}";
         })
         |> lib.listToAttrs;
 
@@ -138,13 +81,17 @@ in
       };
     };
 
-    networking.firewall.trustedInterfaces = [ cfg.interface ];
+    networking.firewall.trustedInterfaces = [ netCfg.overlay.interface ];
 
     systemd.network.networks."40-nebula" = {
-      matchConfig.Name = cfg.interface;
-      address = [ "${cfg.address}/${toString nebulaCfg.network.prefixLength}" ];
-      dns = nebulaCfg.peers |> lib.filter (node: node.dns.enable) |> lib.map (node: node.address);
-      domains = [ nebulaCfg.network.domain ];
+      matchConfig.Name = netCfg.overlay.interface;
+      address = [ "${netCfg.overlay.address}/${toString netCfg.overlay.prefixLength}" ];
+      dns =
+        self.nixosConfigurations
+        |> lib.attrValues
+        |> lib.filter (host: host.config.custom.services.dns.enable)
+        |> lib.map (host: host.config.custom.networking.overlay.address);
+      domains = [ netCfg.overlay.domain ];
     };
   };
 }

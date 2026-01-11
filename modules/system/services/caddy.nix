@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.custom.services.caddy;
+  netCfg = config.custom.networking;
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (value: value.enable);
 
@@ -33,7 +34,7 @@ let
           in
           ''
             tls ${certDir}/fullchain.pem ${certDir}/key.pem
-            bind ${config.custom.services.nebula.node.address}
+            bind ${config.custom.networking.overlay.address}
           ''
         ))
         (lib.optionalString (port != null) "reverse_proxy localhost:${toString port}")
@@ -150,8 +151,8 @@ in
         ];
 
         systemd.services.caddy = {
-          requires = [ "nebula@mesh.service" ];
-          after = [ "nebula@mesh.service" ];
+          requires = [ netCfg.overlay.systemdUnit ];
+          after = [ netCfg.overlay.systemdUnit ];
         };
       })
     ]
