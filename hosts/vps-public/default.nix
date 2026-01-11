@@ -38,12 +38,6 @@
 
       nebula.enable = true;
       sshd.enable = true;
-
-      crowdsec = {
-        enable = true;
-        bouncers.firewall = true;
-      };
-
     };
 
     web-services =
