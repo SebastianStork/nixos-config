@@ -41,7 +41,7 @@ in
       };
       interface = lib.mkOption {
         type = lib.types.nonEmptyStr;
-        default = "nebula.mesh";
+        default = "nebula";
       };
       systemdUnit = lib.mkOption {
         type = lib.types.nonEmptyStr;

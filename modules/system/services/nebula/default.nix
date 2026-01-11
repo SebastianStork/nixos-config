@@ -30,7 +30,7 @@ in
       message = "'${netCfg.hostname}' is a Nebula lighthouse, but underlay.isPublic is not set. Lighthouses must be publicly reachable.";
     };
 
-    meta.ports.udp = lib.optional (netCfg.underlay.isPublic) publicPort;
+    meta.ports.udp = lib.optional netCfg.underlay.isPublic publicPort;
 
     sops.secrets."nebula/host-key" = {
       owner = config.users.users.nebula-mesh.name;
@@ -44,6 +44,7 @@ in
       cert = cfg.certificatePath;
       key = config.sops.secrets."nebula/host-key".path;
 
+      tun.device = netCfg.overlay.interface;
       listen.port = lib.mkIf netCfg.underlay.isPublic publicPort;
 
       inherit (netCfg) isLighthouse;
