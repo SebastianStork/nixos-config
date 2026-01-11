@@ -38,10 +38,7 @@ _: {
     enable = true;
     networks."10-enp6s0" = {
       matchConfig.Name = "enp6s0";
-      networkConfig = {
-        DHCP = "ipv4";
-        IPv6AcceptRA = true;
-      };
+      networkConfig.DHCP = "ipv4";
       linkConfig.RequiredForOnline = "routable";
     };
   };

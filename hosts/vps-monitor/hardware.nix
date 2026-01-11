@@ -1,4 +1,4 @@
-{ modulesPath, ... }:
+{ modulesPath, lib, ... }:
 {
   imports = [ "${modulesPath}/profiles/qemu-guest.nix" ];
 
@@ -21,23 +21,14 @@
     networks."10-enp1s0" = {
       matchConfig.Name = "enp1s0";
       linkConfig.RequiredForOnline = "routable";
-      networkConfig.DHCP = "no";
-      address = [
-        "188.245.223.145/32"
-        "2a01:4f8:1c1b:468f::1/64"
-      ];
-      routes = [
-        {
-          Gateway = "172.31.1.1";
-          GatewayOnLink = true;
-        }
-        { Gateway = "fe80::1"; }
-      ];
+      address = [ "188.245.223.145/32" ];
+      routes = lib.singleton {
+        Gateway = "172.31.1.1";
+        GatewayOnLink = true;
+      };
       dns = [
         "1.1.1.1"
         "8.8.8.8"
-        "2606:4700:4700::1111"
-        "2001:4860:4860::8888"
       ];
     };
   };
