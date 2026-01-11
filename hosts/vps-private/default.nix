@@ -41,7 +41,7 @@
           onlyCleanRoots = true;
         };
 
-        nebula.node.enable = true;
+        nebula.enable = true;
         sshd.enable = true;
         dns.enable = true;
 
