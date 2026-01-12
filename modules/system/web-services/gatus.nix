@@ -113,7 +113,7 @@ in
         connectivity.checker.target = "1.1.1.1:53"; # Cloudflare DNS
         alerting.ntfy = {
           topic = "uptime";
-          url = "https://alerts.${config.custom.networking.overlay.domain}";
+          url = "https://alerts.sprouted.cloud";
           click = "https://${cfg.domain}";
           default-alert = {
             enable = true;
@@ -122,8 +122,8 @@ in
             send-on-resolved = true;
           };
           overrides = lib.singleton {
-            group = "Monitoring";
-            topic = "stork-atlas";
+            group = config.networking.hostName;
+            topic = "splitleaf";
             url = "https://ntfy.sh";
             default-alert = {
               failure-threshold = 4;

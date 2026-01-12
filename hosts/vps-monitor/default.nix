@@ -59,7 +59,7 @@
 
         ntfy = {
           enable = true;
-          domain = "alerts.${privateDomain}";
+          domain = "alerts.sprouted.cloud";
         };
 
         grafana = {
