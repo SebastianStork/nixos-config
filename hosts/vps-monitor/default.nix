@@ -74,7 +74,6 @@
             nodeExporter.enable = true;
             victoriametrics.enable = true;
             victorialogs.enable = true;
-            crowdsec.enable = true;
           };
         };
 
