@@ -154,6 +154,8 @@ in
           requires = [ netCfg.overlay.systemdUnit ];
           after = [ netCfg.overlay.systemdUnit ];
         };
+
+        custom.persistence.directories = [ "/var/lib/acme" ];
       })
     ]
   );
