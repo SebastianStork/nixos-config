@@ -65,16 +65,6 @@
         grafana = {
           enable = true;
           domain = "grafana.${privateDomain}";
-          datasources = {
-            prometheus.enable = true;
-            victoriametrics.enable = true;
-            victorialogs.enable = true;
-          };
-          dashboards = {
-            nodeExporter.enable = true;
-            victoriametrics.enable = true;
-            victorialogs.enable = true;
-          };
         };
 
         victoriametrics = {

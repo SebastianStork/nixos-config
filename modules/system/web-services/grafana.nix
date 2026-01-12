@@ -20,32 +20,46 @@ in
     };
     datasources = {
       prometheus = {
-        enable = lib.mkEnableOption "";
+        enable = lib.mkEnableOption "" // {
+          default = config.custom.web-services.victoriametrics.enable;
+        };
         url = lib.mkOption {
           type = lib.types.nonEmptyStr;
-          default = "https://metrics.${config.custom.networking.overlay.domain}";
+          default = "https://${config.custom.web-services.victoriametrics.domain}";
         };
       };
       victoriametrics = {
-        enable = lib.mkEnableOption "";
+        enable = lib.mkEnableOption "" // {
+          default = config.custom.web-services.victoriametrics.enable;
+        };
         url = lib.mkOption {
           type = lib.types.nonEmptyStr;
-          default = "https://metrics.${config.custom.networking.overlay.domain}";
+          default = "https://${config.custom.web-services.victoriametrics.domain}";
         };
       };
       victorialogs = {
-        enable = lib.mkEnableOption "";
+        enable = lib.mkEnableOption "" // {
+          default = config.custom.web-services.victorialogs.enable;
+        };
         url = lib.mkOption {
           type = lib.types.nonEmptyStr;
-          default = "https://logs.${config.custom.networking.overlay.domain}";
+          default = "https://${config.custom.web-services.victorialogs.domain}";
         };
       };
     };
     dashboards = {
-      nodeExporter.enable = lib.mkEnableOption "";
-      victoriametrics.enable = lib.mkEnableOption "";
-      victorialogs.enable = lib.mkEnableOption "";
-      crowdsec.enable = lib.mkEnableOption "";
+      nodeExporter.enable = lib.mkEnableOption "" // {
+        default = true;
+      };
+      victoriametrics.enable = lib.mkEnableOption "" // {
+        default = config.custom.web-services.victoriametrics.enable;
+      };
+      victorialogs.enable = lib.mkEnableOption "" // {
+        default = config.custom.web-services.victorialogs.enable;
+      };
+      crowdsec.enable = lib.mkEnableOption "" // {
+        default = config.custom.services.crowdsec.enable;
+      };
     };
   };
 
