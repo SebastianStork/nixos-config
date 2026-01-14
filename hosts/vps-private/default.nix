@@ -61,12 +61,6 @@
           doBackups = true;
         };
 
-        radicale = {
-          enable = true;
-          domain = "calendar.${privateDomain}";
-          doBackups = true;
-        };
-
         memos = {
           enable = true;
           domain = "memos.${privateDomain}";

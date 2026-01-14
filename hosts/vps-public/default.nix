@@ -74,6 +74,12 @@
           branding.name = "SproutedBin";
         };
 
+        radicale = {
+          enable = true;
+          domain = "dav.${sproutedDomain}";
+          doBackups = true;
+        };
+
         alloy = {
           enable = true;
           domain = "alloy.${config.networking.hostName}.${config.custom.networking.overlay.domain}";
