@@ -47,6 +47,15 @@ in
         type = lib.types.nonEmptyStr;
         default = "nebula@mesh.service";
       };
+
+      dnsServers = lib.mkOption {
+        type = lib.types.anything;
+        default =
+          self.nixosConfigurations
+          |> lib.attrValues
+          |> lib.filter (host: host.config.custom.services.dns.enable)
+          |> lib.map (host: host.config.custom.networking.overlay.address);
+      };
     };
 
     underlay = {

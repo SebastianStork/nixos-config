@@ -87,11 +87,7 @@ in
     systemd.network.networks."40-nebula" = {
       matchConfig.Name = netCfg.overlay.interface;
       address = [ "${netCfg.overlay.address}/${toString netCfg.overlay.prefixLength}" ];
-      dns =
-        self.nixosConfigurations
-        |> lib.attrValues
-        |> lib.filter (host: host.config.custom.services.dns.enable)
-        |> lib.map (host: host.config.custom.networking.overlay.address);
+      dns = netCfg.overlay.dnsServers;
       domains = [ netCfg.overlay.domain ];
     };
   };
