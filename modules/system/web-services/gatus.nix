@@ -20,6 +20,10 @@ in
       type = lib.types.port;
       default = 8080;
     };
+    ntfyUrl = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "https://${config.custom.web-services.ntfy.domain}";
+    };
     generateDefaultEndpoints = lib.mkEnableOption "";
     endpoints = lib.mkOption {
       type = lib.types.attrsOf (
@@ -113,7 +117,7 @@ in
         connectivity.checker.target = "1.1.1.1:53"; # Cloudflare DNS
         alerting.ntfy = {
           topic = "uptime";
-          url = "https://alerts.${config.custom.networking.overlay.domain}";
+          url = cfg.ntfyUrl;
           click = "https://${cfg.domain}";
           default-alert = {
             enable = true;
