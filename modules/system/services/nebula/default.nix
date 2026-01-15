@@ -30,6 +30,14 @@ in
       message = "'${netCfg.hostname}' is a Nebula lighthouse, but underlay.isPublic is not set. Lighthouses must be publicly reachable.";
     };
 
+    custom.networking.overlay = {
+      networkAddress = "10.254.250.0";
+      prefixLength = 24;
+      domain = "splitleaf.de";
+      interface = "nebula";
+      systemdUnit = "nebula@mesh.service";
+    };
+
     meta.ports.udp = lib.optional netCfg.underlay.isPublic publicPort;
 
     sops.secrets."nebula/host-key" = {

@@ -21,18 +21,15 @@ in
     overlay = {
       networkAddress = lib.mkOption {
         type = lib.types.nonEmptyStr;
-        default = "10.254.250.0";
-        readOnly = true;
+        default = "";
       };
       prefixLength = lib.mkOption {
-        type = lib.types.ints.between 0 32;
-        default = 24;
-        readOnly = true;
+        type = lib.types.nullOr (lib.types.ints.between 0 32);
+        default = null;
       };
       domain = lib.mkOption {
         type = lib.types.nonEmptyStr;
-        default = "splitleaf.de";
-        readOnly = true;
+        default = "";
       };
 
       address = lib.mkOption {
@@ -41,11 +38,11 @@ in
       };
       interface = lib.mkOption {
         type = lib.types.nonEmptyStr;
-        default = "nebula";
+        default = "";
       };
       systemdUnit = lib.mkOption {
         type = lib.types.nonEmptyStr;
-        default = "nebula@mesh.service";
+        default = "";
       };
 
       dnsServers = lib.mkOption {
