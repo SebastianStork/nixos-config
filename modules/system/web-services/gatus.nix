@@ -113,7 +113,7 @@ in
         connectivity.checker.target = "1.1.1.1:53"; # Cloudflare DNS
         alerting.ntfy = {
           topic = "uptime";
-          url = "https://alerts.sprouted.cloud";
+          url = "https://alerts.${config.custom.networking.overlay.domain}";
           click = "https://${cfg.domain}";
           default-alert = {
             enable = true;
