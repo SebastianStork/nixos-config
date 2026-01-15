@@ -23,6 +23,7 @@ let
       domain,
       port,
       files,
+      extraConfig,
       ...
     }:
     lib.nameValuePair domain {
@@ -43,6 +44,7 @@ let
           encode
           file_server
         '')
+        (lib.optionalString (extraConfig != null) extraConfig)
       ];
     };
 in
@@ -71,6 +73,10 @@ in
               };
               files = lib.mkOption {
                 type = lib.types.nullOr lib.types.path;
+                default = null;
+              };
+              extraConfig = lib.mkOption {
+                type = lib.types.nullOr lib.types.lines;
                 default = null;
               };
             };
