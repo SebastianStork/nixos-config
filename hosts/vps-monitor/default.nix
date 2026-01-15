@@ -40,6 +40,14 @@
       nebula.enable = true;
       sshd.enable = true;
       dns.enable = true;
+
+      caddy.virtualHosts."alerts.sprouted.cloud" = {
+        inherit (config.custom.web-services.ntfy) port;
+        extraConfig = ''
+          @putpost method PUT POST
+          respond @putpost "Access denied" 403 { close }
+        '';
+      };
     };
 
     web-services =
@@ -59,7 +67,7 @@
 
         ntfy = {
           enable = true;
-          domain = "alerts.sprouted.cloud";
+          domain = "alerts.${privateDomain}";
         };
 
         grafana = {
