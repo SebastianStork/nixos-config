@@ -30,6 +30,7 @@
             open-vsx.llvm-vs-code-extensions.vscode-clangd
             open-vsx.rust-lang.rust-analyzer
             open-vsx.dart-code.flutter
+            open-vsx.ms-python.python
           ];
       };
     };
