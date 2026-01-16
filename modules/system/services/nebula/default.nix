@@ -45,11 +45,24 @@ in
       restartUnits = [ "nebula@mesh.service" ];
     };
 
+    environment.etc = {
+      "nebula/ca.crt" = {
+        source = ./ca.crt;
+        mode = "0440";
+        user = config.systemd.services."nebula@mesh".serviceConfig.User;
+      };
+      "nebula/host.crt" = {
+        source = cfg.certificatePath;
+        mode = "0440";
+        user = config.systemd.services."nebula@mesh".serviceConfig.User;
+      };
+    };
+
     services.nebula.networks.mesh = {
       enable = true;
 
-      ca = ./ca.crt;
-      cert = cfg.certificatePath;
+      ca = "/etc/nebula/ca.crt";
+      cert = "/etc/nebula/host.crt";
       key = config.sops.secrets."nebula/host-key".path;
 
       tun.device = netCfg.overlay.interface;
