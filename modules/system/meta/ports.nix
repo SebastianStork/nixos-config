@@ -1,8 +1,8 @@
 {
   config,
   options,
+  self,
   lib,
-  lib',
   ...
 }:
 let
@@ -31,7 +31,7 @@ in
             { file, value }:
             value
             |> lib.map (port: {
-              file = lib'.relativePath file;
+              file = self.lib.relativePath file;
               inherit port;
             })
           )

@@ -2,7 +2,6 @@
   config,
   self,
   lib,
-  lib',
   ...
 }:
 let
@@ -41,7 +40,7 @@ in
                   |> lib.concatMap (
                     host:
                     host.config.meta.domains.local
-                    |> lib.filter (domain: lib'.isPrivateDomain domain)
+                    |> lib.filter (domain: self.lib.isPrivateDomain domain)
                     |> lib.map (domain: "\"${domain}. A ${host.config.custom.networking.overlay.address}\"")
                   );
               in

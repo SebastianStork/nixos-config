@@ -1,7 +1,7 @@
 {
   config,
+  self,
   lib,
-  lib',
   ...
 }:
 let
@@ -10,8 +10,8 @@ let
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (value: value.enable);
 
-  publicHostsExist = virtualHosts |> lib.any (value: (!lib'.isPrivateDomain value.domain));
-  privateHostsExist = virtualHosts |> lib.any (value: lib'.isPrivateDomain value.domain);
+  publicHostsExist = virtualHosts |> lib.any (value: (!self.lib.isPrivateDomain value.domain));
+  privateHostsExist = virtualHosts |> lib.any (value: self.lib.isPrivateDomain value.domain);
 
   webPorts = [
     80
@@ -29,7 +29,7 @@ let
     lib.nameValuePair domain {
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
       extraConfig = lib.concatLines [
-        (lib.optionalString (lib'.isPrivateDomain domain) (
+        (lib.optionalString (self.lib.isPrivateDomain domain) (
           let
             certDir = config.security.acme.certs.${domain}.directory;
           in
@@ -138,7 +138,7 @@ in
 
           certs =
             virtualHosts
-            |> lib.filter (host: lib'.isPrivateDomain host.domain)
+            |> lib.filter (host: self.lib.isPrivateDomain host.domain)
             |> lib.map (host: lib.nameValuePair host.domain { })
             |> lib.listToAttrs;
         };

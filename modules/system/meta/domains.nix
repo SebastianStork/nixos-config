@@ -2,7 +2,6 @@
   config,
   self,
   lib,
-  lib',
   ...
 }:
 let
@@ -38,7 +37,7 @@ in
             { file, value }:
             value
             |> lib.map (domain: {
-              file = lib'.relativePath file;
+              file = self.lib.relativePath file;
               inherit domain;
             })
           )

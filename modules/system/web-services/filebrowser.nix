@@ -1,7 +1,7 @@
 {
   config,
+  self,
   lib,
-  lib',
   ...
 }:
 let
@@ -25,8 +25,8 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
-      assertion = lib'.isPrivateDomain cfg.domain;
-      message = lib'.mkUnprotectedMessage "Filebrowser";
+      assertion = self.lib.isPrivateDomain cfg.domain;
+      message = self.lib.mkUnprotectedMessage "Filebrowser";
     };
 
     meta = {

@@ -5,12 +5,10 @@
   ...
 }:
 let
-  lib' = self.lib;
-
   mkHost =
     hostName:
     inputs.nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs self lib'; };
+      specialArgs = { inherit inputs self; };
       modules = [
         { networking = { inherit hostName; }; }
         "${self}/hosts/common.nix"
@@ -31,13 +29,13 @@ let
         self.nixosConfigurations.${hostname};
   };
 
-  hostNames = "${self}/hosts" |> lib'.listDirectoryNames;
+  hostNames = "${self}/hosts" |> self.lib.listDirectoryNames;
 in
 {
   flake = {
-    nixosConfigurations = hostNames |> lib'.genAttrs mkHost;
+    nixosConfigurations = hostNames |> self.lib.genAttrs mkHost;
 
-    deploy.nodes = hostNames |> lib'.genAttrs mkDeployNode;
+    deploy.nodes = hostNames |> self.lib.genAttrs mkDeployNode;
 
     checks = inputs.deploy-rs.lib |> lib.mapAttrs (_: deployLib: deployLib.deployChecks self.deploy);
   };
