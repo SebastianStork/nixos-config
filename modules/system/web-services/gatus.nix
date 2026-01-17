@@ -183,7 +183,7 @@ in
               |> lib.filter (domain: domain != cfg.domain)
               |> lib.map (
                 domain:
-                lib.nameValuePair (self.lib.subdomainOf domain) {
+                lib.nameValuePair domain {
                   inherit domain;
                   group = hostName;
                 }

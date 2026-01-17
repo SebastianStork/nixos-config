@@ -59,7 +59,7 @@
           enable = true;
           domain = "status.${privateDomain}";
           generateDefaultEndpoints = true;
-          endpoints."alerts" = {
+          endpoints."alerts.${privateDomain}" = {
             path = "/v1/health";
             extraConditions = [ "[BODY].healthy == true" ];
           };
