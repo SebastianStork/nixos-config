@@ -33,7 +33,7 @@ in
               let
                 nodeRecords =
                   netCfg.nodes
-                  |> lib.map (node: "\"${node.hostname}.${node.overlay.domain}. A ${node.overlay.address}\"");
+                  |> lib.map (node: "\"${node.hostName}.${node.overlay.domain}. A ${node.overlay.address}\"");
                 serviceRecords =
                   self.nixosConfigurations
                   |> lib.attrValues

@@ -18,15 +18,15 @@ let
       ++ lib.optional (lib.pathExists "${self}/users/seb/@${hostName}") "${self}/users/seb/@${hostName}";
     };
 
-  mkDeployNode = hostname: {
-    hostname = "${hostname}.${
-      self.nixosConfigurations.${hostname}.config.custom.networking.overlay.domain
+  mkDeployNode = hostName: {
+    hostname = "${hostName}.${
+      self.nixosConfigurations.${hostName}.config.custom.networking.overlay.domain
     }";
     user = "root";
     interactiveSudo = true;
     profiles.system.path =
       inputs.deploy-rs.lib.x86_64-linux.activate.nixos
-        self.nixosConfigurations.${hostname};
+        self.nixosConfigurations.${hostName};
   };
 
   hostNames = "${self}/hosts" |> self.lib.listDirectoryNames;

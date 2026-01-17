@@ -18,7 +18,7 @@ in
       default =
         self.nixosConfigurations
         |> lib.attrValues
-        |> lib.map (value: value.config.meta.domains.local)
+        |> lib.map (host: host.config.meta.domains.local)
         |> lib.concatLists;
       readOnly = true;
     };
@@ -31,7 +31,7 @@ in
         duplicateDomains =
           self.nixosConfigurations
           |> lib.attrValues
-          |> lib.map (value: value.options.meta.domains.local.definitionsWithLocations)
+          |> lib.map (host: host.options.meta.domains.local.definitionsWithLocations)
           |> lib.concatLists
           |> lib.concatMap (
             { file, value }:

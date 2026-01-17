@@ -143,21 +143,21 @@ in
 
         endpoints =
           let
-            mkEndpoint = value: {
-              inherit (value) name group interval;
-              url = "${value.protocol}://${value.domain}${value.path}";
-              alerts = lib.mkIf value.enableAlerts [ { type = "ntfy"; } ];
-              ssh = lib.mkIf (value.protocol == "ssh") {
+            mkEndpoint = endpoint: {
+              inherit (endpoint) name group interval;
+              url = "${endpoint.protocol}://${endpoint.domain}${endpoint.path}";
+              alerts = lib.mkIf endpoint.enableAlerts [ { type = "ntfy"; } ];
+              ssh = lib.mkIf (endpoint.protocol == "ssh") {
                 username = "";
                 password = "";
               };
               conditions = lib.concatLists [
-                value.extraConditions
-                (lib.optional (lib.elem value.protocol [
+                endpoint.extraConditions
+                (lib.optional (lib.elem endpoint.protocol [
                   "http"
                   "https"
                 ]) "[STATUS] == 200")
-                (lib.optional (lib.elem value.protocol [
+                (lib.optional (lib.elem endpoint.protocol [
                   "tcp"
                   "ssh"
                   "icmp"
@@ -176,7 +176,7 @@ in
         let
           defaultEndpoints =
             self.nixosConfigurations
-            |> lib.mapAttrs (_: value: value.config.meta.domains.local)
+            |> lib.mapAttrs (_: host: host.config.meta.domains.local)
             |> lib.concatMapAttrs (
               hostName: domains:
               domains

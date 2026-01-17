@@ -7,8 +7,7 @@
 let
   backupsWithRestoreCommand =
     config.custom.services.restic.backups
-    |> lib.filterAttrs (_: value: value.enable)
-    |> lib.filterAttrs (_: value: value.restoreCommand.enable);
+    |> lib.filterAttrs (_: backup: backup.enable && backup.restoreCommand.enable);
 in
 {
   options.custom.services.restic.backups = lib.mkOption {
@@ -35,13 +34,13 @@ in
     environment.systemPackages =
       backupsWithRestoreCommand
       |> lib.mapAttrsToList (
-        name: value:
+        name: backup:
         pkgs.writeShellApplication {
           name = "restic-restore-${name}";
           text =
             let
-              inherit (value) conflictingService;
-              inherit (value.restoreCommand) preRestore postRestore;
+              inherit (backup) conflictingService;
+              inherit (backup.restoreCommand) preRestore postRestore;
               hasConflictingService = conflictingService != null;
             in
             ''

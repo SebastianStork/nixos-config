@@ -96,16 +96,15 @@ in
         key = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/key".path;
 
         settings = {
-          # Get the devices and their ids from the configs of the other hosts
           devices =
             self.nixosConfigurations
-            |> lib.filterAttrs (name: _: name != config.networking.hostName)
-            |> lib.filterAttrs (_: value: value.config.custom.services.syncthing.enable)
+            |> lib.filterAttrs (_: host: host.config.networking.hostName != config.networking.hostName)
+            |> lib.filterAttrs (_: host: host.config.custom.services.syncthing.enable)
             |> lib.mapAttrs (
-              _: value: {
-                id = value.config.custom.services.syncthing.deviceId;
+              _: host: {
+                id = host.config.custom.services.syncthing.deviceId;
                 addresses = [
-                  "tcp://${value.config.custom.networking.overlay.address}:${toString cfg.syncPort}"
+                  "tcp://${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.syncthing.syncPort}"
                 ];
               }
             );

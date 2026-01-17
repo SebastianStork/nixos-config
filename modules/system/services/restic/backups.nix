@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  backups = config.custom.services.restic.backups |> lib.filterAttrs (_: value: value.enable);
+  backups = config.custom.services.restic.backups |> lib.filterAttrs (_: backup: backup.enable);
 in
 {
   options.custom.services.restic.backups = lib.mkOption {
@@ -48,10 +48,10 @@ in
     services.restic.backups =
       backups
       |> lib.mapAttrs (
-        name: value:
+        name: backup:
         lib.mkMerge [
           {
-            inherit (value) paths;
+            inherit (backup) paths;
             initialize = true;
             repository = "s3:https://s3.eu-central-003.backblazeb2.com/stork-atlas/${name}";
             environmentFile = config.sops.templates."restic/environment".path;
@@ -66,20 +66,20 @@ in
               RandomizedDelaySec = "1h";
             };
           }
-          value.extraConfig
+          backup.extraConfig
         ]
       );
 
     systemd.services =
       backups
       |> lib.mapAttrs' (
-        name: value:
+        name: backup:
         lib.nameValuePair "restic-backups-${name}" (
-          lib.mkIf (value.conflictingService != null) {
-            unitConfig.Conflicts = [ value.conflictingService ];
-            after = [ value.conflictingService ];
-            onSuccess = [ value.conflictingService ];
-            onFailure = [ value.conflictingService ];
+          lib.mkIf (backup.conflictingService != null) {
+            unitConfig.Conflicts = [ backup.conflictingService ];
+            after = [ backup.conflictingService ];
+            onSuccess = [ backup.conflictingService ];
+            onFailure = [ backup.conflictingService ];
           }
         )
       );

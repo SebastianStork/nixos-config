@@ -7,8 +7,7 @@
 let
   backupsWithHealthchecks =
     config.custom.services.restic.backups
-    |> lib.filterAttrs (_: value: value.enable)
-    |> lib.filterAttrs (_: value: value.doHealthchecks);
+    |> lib.filterAttrs (_: backup: backup.enable && backup.doHealthchecks);
 in
 {
   options.custom.services.restic.backups = lib.mkOption {

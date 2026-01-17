@@ -9,7 +9,7 @@ let
 in
 {
   options.custom.networking = {
-    hostname = lib.mkOption {
+    hostName = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = config.networking.hostName;
       readOnly = true;
@@ -89,7 +89,7 @@ in
     };
     peers = lib.mkOption {
       type = lib.types.anything;
-      default = cfg.nodes |> lib.filter (node: node.hostname != cfg.hostname);
+      default = cfg.nodes |> lib.filter (node: node.hostName != cfg.hostName);
       readOnly = true;
     };
   };

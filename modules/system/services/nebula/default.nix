@@ -16,18 +16,18 @@ in
 
     publicKeyPath = lib.mkOption {
       type = lib.types.path;
-      default = "${self}/hosts/${netCfg.hostname}/keys/nebula.pub";
+      default = "${self}/hosts/${netCfg.hostName}/keys/nebula.pub";
     };
     certificatePath = lib.mkOption {
       type = lib.types.path;
-      default = "${self}/hosts/${netCfg.hostname}/keys/nebula.crt";
+      default = "${self}/hosts/${netCfg.hostName}/keys/nebula.crt";
     };
   };
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
       assertion = netCfg.isLighthouse -> netCfg.underlay.isPublic;
-      message = "'${netCfg.hostname}' is a Nebula lighthouse, but underlay.isPublic is not set. Lighthouses must be publicly reachable.";
+      message = "'${netCfg.hostName}' is a Nebula lighthouse, but underlay.isPublic is not set. Lighthouses must be publicly reachable.";
     };
 
     custom.networking.overlay = {

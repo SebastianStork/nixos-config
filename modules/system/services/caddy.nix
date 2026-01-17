@@ -8,10 +8,10 @@ let
   cfg = config.custom.services.caddy;
   netCfg = config.custom.networking;
 
-  virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (value: value.enable);
+  virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (vHost: vHost.enable);
 
-  publicHostsExist = virtualHosts |> lib.any (value: (!self.lib.isPrivateDomain value.domain));
-  privateHostsExist = virtualHosts |> lib.any (value: self.lib.isPrivateDomain value.domain);
+  publicHostsExist = virtualHosts |> lib.any (vHost: (!self.lib.isPrivateDomain vHost.domain));
+  privateHostsExist = virtualHosts |> lib.any (vHost: self.lib.isPrivateDomain vHost.domain);
 
   webPorts = [
     80
