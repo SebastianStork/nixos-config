@@ -44,6 +44,7 @@ in
         "Pictures"
         "Projects"
         "Videos"
+        ".local/share/zsh"
       ];
     };
   };
@@ -145,7 +146,10 @@ in
         restic.backups.syncthing = lib.mkIf cfg.doBackups {
           conflictingService = "syncthing.service";
           paths = [ dataDir ];
-          extraConfig.exclude = [ "${dataDir}/Downloads" ];
+          extraConfig.exclude = [
+            "${dataDir}/Downloads"
+            "${dataDir}/.local/share/zsh"
+          ];
         };
       };
 
