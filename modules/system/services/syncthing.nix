@@ -145,6 +145,7 @@ in
         restic.backups.syncthing = lib.mkIf cfg.doBackups {
           conflictingService = "syncthing.service";
           paths = [ dataDir ];
+          extraConfig.exclude = [ "${dataDir}/Downloads" ];
         };
       };
 
