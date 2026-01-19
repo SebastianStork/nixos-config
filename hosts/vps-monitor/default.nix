@@ -40,26 +40,19 @@
       nebula.enable = true;
       sshd.enable = true;
       dns.enable = true;
-
-      caddy.virtualHosts."alerts.sprouted.cloud" = {
-        inherit (config.custom.web-services.ntfy) port;
-        extraConfig = ''
-          @putpost method PUT POST
-          respond @putpost "Access denied" 403 { close }
-        '';
-      };
     };
 
     web-services =
       let
         privateDomain = config.custom.networking.overlay.domain;
+        sproutedCloud = "sprouted.cloud";
       in
       {
         gatus = {
           enable = true;
           domain = "status.${privateDomain}";
           generateDefaultEndpoints = true;
-          endpoints."alerts.${privateDomain}" = {
+          endpoints."alerts.${sproutedCloud}" = {
             path = "/v1/health";
             extraConditions = [ "[BODY].healthy == true" ];
           };
@@ -67,7 +60,7 @@
 
         ntfy = {
           enable = true;
-          domain = "alerts.${privateDomain}";
+          domain = "alerts.${sproutedCloud}";
         };
 
         grafana = {
