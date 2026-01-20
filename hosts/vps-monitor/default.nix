@@ -45,14 +45,14 @@
     web-services =
       let
         privateDomain = config.custom.networking.overlay.domain;
-        sproutedCloud = "sprouted.cloud";
+        sproutedDomain = "sprouted.cloud";
       in
       {
         gatus = {
           enable = true;
           domain = "status.${privateDomain}";
           generateDefaultEndpoints = true;
-          endpoints."alerts.${sproutedCloud}" = {
+          endpoints."alerts.${sproutedDomain}" = {
             path = "/v1/health";
             extraConditions = [ "[BODY].healthy == true" ];
           };
@@ -60,7 +60,7 @@
 
         ntfy = {
           enable = true;
-          domain = "alerts.${sproutedCloud}";
+          domain = "alerts.${sproutedDomain}";
         };
 
         grafana = {
