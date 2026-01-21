@@ -8,11 +8,6 @@
 
   system.stateVersion = "25.11";
 
-  meta = {
-    domains.validate = true;
-    ports.validate = true;
-  };
-
   custom = {
     persistence.enable = true;
 

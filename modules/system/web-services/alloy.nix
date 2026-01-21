@@ -63,11 +63,6 @@ in
       in
       metricsAssertions ++ logsAssertions;
 
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     services.alloy = {
       enable = true;
       extraFlags = [

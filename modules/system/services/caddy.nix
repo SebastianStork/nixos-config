@@ -95,7 +95,7 @@ in
           message = "Each caddy virtual host must set exactly one of `port` or `files`";
         };
 
-        meta.ports.tcp = [ cfg.metricsPort ];
+        networking.firewall.allowedTCPPorts = lib.mkIf publicHostsExist webPorts;
 
         services.caddy = {
           enable = true;
@@ -110,11 +110,6 @@ in
 
         custom.persistence.directories = [ "/var/lib/caddy" ];
       }
-
-      (lib.mkIf publicHostsExist {
-        meta.ports.tcp = webPorts;
-        networking.firewall.allowedTCPPorts = webPorts;
-      })
 
       (lib.mkIf privateHostsExist {
         sops.secrets = {

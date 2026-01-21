@@ -29,11 +29,6 @@ in
       message = self.lib.mkUnprotectedMessage "Filebrowser";
     };
 
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     services.filebrowser = {
       enable = true;
       settings = {

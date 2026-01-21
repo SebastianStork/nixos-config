@@ -25,11 +25,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     sops.secrets."radicale/htpasswd" = {
       owner = config.users.users.radicale.name;
       restartUnits = [ "radicale.service" ];

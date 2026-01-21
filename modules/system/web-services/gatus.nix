@@ -70,11 +70,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     sops = {
       secrets."healthchecks/ping-key" = { };
       templates."gatus.env" = {
@@ -176,7 +171,10 @@ in
         let
           defaultEndpoints =
             self.nixosConfigurations
-            |> lib.mapAttrs (_: host: host.config.meta.domains.local)
+            |> lib.mapAttrs (
+              _: host:
+              host.config.custom.services.caddy.virtualHosts |> lib.attrValues |> lib.map (vHost: vHost.domain)
+            )
             |> lib.concatMapAttrs (
               hostName: domains:
               domains

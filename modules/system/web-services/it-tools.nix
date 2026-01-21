@@ -17,8 +17,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.domains.local = [ cfg.domain ];
-
     custom.services.caddy.virtualHosts.${cfg.domain}.files = "${pkgs.it-tools}/lib";
   };
 }

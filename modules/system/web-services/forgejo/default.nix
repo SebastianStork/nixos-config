@@ -17,11 +17,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     users = {
       users.git = {
         isSystemUser = true;

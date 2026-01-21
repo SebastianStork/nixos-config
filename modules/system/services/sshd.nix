@@ -12,8 +12,6 @@ in
   options.custom.services.sshd.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.enable {
-    meta.ports.tcp = [ 22 ];
-
     services = {
       openssh = {
         enable = true;

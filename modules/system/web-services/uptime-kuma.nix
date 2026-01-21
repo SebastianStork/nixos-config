@@ -16,11 +16,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     services.uptime-kuma = {
       enable = true;
       settings.PORT = toString cfg.port;

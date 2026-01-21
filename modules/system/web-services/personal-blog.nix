@@ -19,8 +19,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.domains.local = [ cfg.domain ];
-
     systemd.services.generate-blog = {
       serviceConfig.Type = "oneshot";
       wantedBy = [ "multi-user.target" ];

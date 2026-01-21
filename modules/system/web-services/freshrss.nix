@@ -29,11 +29,6 @@ in
       message = self.lib.mkUnprotectedMessage "FreshRSS";
     };
 
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     services.freshrss = {
       enable = true;
       baseUrl = "https://${cfg.domain}";

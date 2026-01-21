@@ -12,11 +12,6 @@ in
   options.custom.services.dns.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.enable {
-    # meta.ports = {
-    #   tcp = [ 53 ];
-    #   udp = [ 53 ];
-    # };
-
     services = {
       unbound = {
         enable = true;
@@ -39,7 +34,9 @@ in
                   |> lib.attrValues
                   |> lib.concatMap (
                     host:
-                    host.config.meta.domains.local
+                    host.config.custom.services.caddy.virtualHosts
+                    |> lib.attrValues
+                    |> lib.map (vHost: vHost.domain)
                     |> lib.filter (domain: self.lib.isPrivateDomain domain)
                     |> lib.map (domain: "\"${domain}. A ${host.config.custom.networking.overlay.address}\"")
                   );

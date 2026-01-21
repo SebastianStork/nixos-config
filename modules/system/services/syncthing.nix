@@ -61,17 +61,6 @@ in
       }
     ];
 
-    meta = {
-      domains.local = lib.mkIf (cfg.gui.domain != null) [ cfg.gui.domain ];
-      ports = {
-        tcp = [
-          cfg.syncPort
-          cfg.gui.port
-        ];
-        udp = [ cfg.syncPort ];
-      };
-    };
-
     sops.secrets = lib.mkIf useSopsSecrets {
       "syncthing/cert" = {
         owner = config.services.syncthing.user;

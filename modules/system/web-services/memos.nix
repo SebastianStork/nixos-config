@@ -24,11 +24,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     services.memos = {
       enable = true;
       settings = options.services.memos.settings.default // {

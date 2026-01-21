@@ -12,8 +12,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.ports.tcp = [ cfg.port ];
-
     services.forgejo.settings.server.SSH_PORT = cfg.port;
 
     services.openssh = {

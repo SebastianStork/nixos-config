@@ -38,8 +38,6 @@ in
       systemdUnit = "nebula@mesh.service";
     };
 
-    meta.ports.udp = lib.optional netCfg.underlay.isPublic publicPort;
-
     sops.secrets."nebula/host-key" = {
       owner = config.users.users.nebula-mesh.name;
       restartUnits = [ "nebula@mesh.service" ];

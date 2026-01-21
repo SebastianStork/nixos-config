@@ -64,11 +64,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     sops.secrets."grafana/admin-password" = {
       owner = config.users.users.grafana.name;
       restartUnits = [ "grafana.service" ];

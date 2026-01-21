@@ -22,11 +22,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta = {
-      domains.local = [ cfg.domain ];
-      ports.tcp = [ cfg.port ];
-    };
-
     sops.secrets."outline/gitlab-auth-secret" = {
       owner = config.users.users.outline.name;
       restartUnits = [ "outline.service" ];

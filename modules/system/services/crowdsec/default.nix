@@ -38,11 +38,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    meta.ports.tcp = [
-      cfg.apiPort
-      cfg.prometheusPort
-    ];
-
     sops.secrets."crowdsec/enrollment-key" = {
       owner = user;
       restartUnits = [ "crowdsec.service" ];
