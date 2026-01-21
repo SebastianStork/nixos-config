@@ -83,16 +83,16 @@
       ];
       windowrule = [
         # No borders on floating window when it's the only window
-        "border_size 0, match:float 1, match:workspace w[1]"
+        "bordersize 0, floating:1, onworkspace:w[1]"
         # No borders on tiled window when it's the only tiled window
-        "border_size 0, match:float 0, match:workspace w[t1]"
-        # No rounding on tiled window when it's the only tiled windonoinitialfocus, class:(jetbrains-)(.*), floating:1w on a normal workspace
-        "rounding 0, match:float 0, match:workspace w[t1]s[false]"
+        "bordersize 0, floating:0, onworkspace:w[t1]"
+        # No rounding on tiled window when it's the only tiled window on a normal workspace
+        "rounding 0, floating:0, onworkspace:w[t1]s[false]"
 
-        "idle_inhibit fullscreen, match:class .*"
+        "idleinhibit fullscreen, class:.*"
 
         # Fix flickering in JetBrains-IDEs
-        "no_initial_focus on, match:class (jetbrains-)(.*), match:float 1"
+        "noinitialfocus, class:(jetbrains-)(.*), floating:1"
       ];
     };
   };
