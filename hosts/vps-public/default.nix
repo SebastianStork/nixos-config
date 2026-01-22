@@ -41,9 +41,7 @@
         caddy.virtualHosts."dav.${sproutedDomain}" = {
           inherit (config.custom.web-services.radicale) port;
           extraConfig = ''
-            respond /.web/ "Access denied" 403 {
-            	close
-            }
+            respond /.web/ "Access denied" 403 { close }
           '';
         };
       };
@@ -80,6 +78,11 @@
             enable = true;
             domain = "pastebin.${sproutedDomain}";
             branding.name = "SproutedBin";
+          };
+
+          screego = {
+            enable = true;
+            domain = "mirror.${sproutedDomain}";
           };
 
           radicale = {
