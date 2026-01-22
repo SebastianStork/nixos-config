@@ -71,7 +71,12 @@
 
           it-tools = {
             enable = true;
-            domain = "tools.${sproutedDomain}";
+            domain = "it-tools.${sproutedDomain}";
+          };
+
+          networking-toolbox = {
+            enable = true;
+            domain = "net-tools.${sproutedDomain}";
           };
 
           privatebin = {
