@@ -30,6 +30,9 @@ in
           { name, ... }:
           {
             options = {
+              enable = lib.mkEnableOption "" // {
+                default = true;
+              };
               name = lib.mkOption {
                 type = lib.types.nonEmptyStr;
                 default = name;
@@ -160,7 +163,7 @@ in
               ];
             };
           in
-          cfg.endpoints |> lib.attrValues |> lib.map mkEndpoint;
+          cfg.endpoints |> lib.attrValues |> lib.filter (endpoint: endpoint.enable) |> lib.map mkEndpoint;
       };
     };
 

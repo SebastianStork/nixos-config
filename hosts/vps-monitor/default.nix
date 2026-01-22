@@ -47,9 +47,12 @@
           enable = true;
           domain = "status.${privateDomain}";
           generateDefaultEndpoints = true;
-          endpoints."alerts.${sproutedDomain}" = {
-            path = "/v1/health";
-            extraConditions = [ "[BODY].healthy == true" ];
+          endpoints = {
+            "dav.${sproutedDomain}".enable = false;
+            "alerts.${sproutedDomain}" = {
+              path = "/v1/health";
+              extraConditions = [ "[BODY].healthy == true" ];
+            };
           };
         };
 
