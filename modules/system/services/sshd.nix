@@ -16,7 +16,7 @@ in
       openssh = {
         enable = true;
         openFirewall = false;
-        ports = [ ];
+        ports = lib.mkForce [ ];
         listenAddresses = lib.singleton {
           addr = netCfg.overlay.address;
           port = 22;
@@ -46,7 +46,7 @@ in
     users.users.seb.openssh.authorizedKeys.keyFiles =
       self.nixosConfigurations
       |> lib.attrValues
-      |> lib.filter (host: host.config.custom.networking.hostName != netCfg.hostName)
+      |> lib.filter (host: host.config.networking.hostName != netCfg.hostName)
       |> lib.filter (host: host.config |> lib.hasAttr "home-manager")
       |> lib.map (host: host.config.home-manager.users.seb.custom.programs.ssh)
       |> lib.filter (ssh: ssh.enable)
