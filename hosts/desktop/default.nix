@@ -30,7 +30,7 @@
     };
 
     services = {
-      gc.enable = true;
+      auto-gc.enable = true;
       sound.enable = true;
       nebula.enable = true;
       sshd.enable = true;

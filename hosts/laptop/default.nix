@@ -31,7 +31,7 @@
 
     services = {
       resolved.enable = true;
-      gc.enable = true;
+      auto-gc.enable = true;
       wlan.enable = true;
       bluetooth.enable = true;
       sound.enable = true;

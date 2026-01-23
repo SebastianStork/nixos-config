@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.services.gc;
+  cfg = config.custom.services.auto-gc;
 in
 {
-  options.custom.services.gc = {
+  options.custom.services.auto-gc = {
     enable = lib.mkEnableOption "";
     onlyCleanRoots = lib.mkEnableOption "";
   };

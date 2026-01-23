@@ -27,7 +27,7 @@
     };
 
     services = {
-      gc = {
+      auto-gc = {
         enable = true;
         onlyCleanRoots = true;
       };
