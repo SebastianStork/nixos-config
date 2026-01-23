@@ -37,7 +37,6 @@
   };
 
   home.packages = [
-    pkgs.bottom
     pkgs.fastfetch
 
     pkgs.nemo-with-extensions
