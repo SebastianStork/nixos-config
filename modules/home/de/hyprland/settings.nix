@@ -78,7 +78,7 @@
         "special:music, on-created-empty:spotify"
         "special:chat, on-created-empty:discord"
         "special:flake, on-created-empty:kitty --directory ${config.home.sessionVariables.NH_FLAKE}"
-        "special:monitor, on-created-empty:kitty btm"
+        "special:monitor, on-created-empty:kitty btop"
         "special:files, on-created-empty:nemo"
       ];
       windowrule = [

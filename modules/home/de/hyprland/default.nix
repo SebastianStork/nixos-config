@@ -32,6 +32,7 @@
       programs = {
         rofi.enable = true;
         hyprlock.enable = true;
+        btop.enable = true;
       };
     };
 
