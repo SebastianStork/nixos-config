@@ -27,7 +27,7 @@
             |> lib.attrValues
             |> lib.map (host: host.config.custom.sops)
             |> lib.filter (sops: sops.enable)
-            |> lib.map (sops: mkCreationRule sops);
+            |> lib.map mkCreationRule;
 
           userCreationRules =
             self.nixosConfigurations
@@ -35,7 +35,7 @@
             |> lib.filter (host: host.config |> lib.hasAttr "home-manager")
             |> lib.map (host: host.config.home-manager.users.seb.custom.sops)
             |> lib.filter (sops: sops.enable)
-            |> lib.map (sops: mkCreationRule sops);
+            |> lib.map mkCreationRule;
 
           jsonConfig = { creation_rules = hostCreationRules ++ userCreationRules; } |> lib.strings.toJSON;
         in
