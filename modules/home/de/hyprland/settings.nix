@@ -69,18 +69,6 @@
         no_donation_nag = true;
       };
 
-      workspace = [
-        # No outer gaps when only one tiled window on normal workspaces
-        "w[t1]s[false], gapsout:0"
-        # Large outer gaps on special workspaces
-        "s[true], gapsout:60"
-
-        "special:music, on-created-empty:spotify"
-        "special:chat, on-created-empty:discord"
-        "special:flake, on-created-empty:kitty --directory ${config.home.sessionVariables.NH_FLAKE}"
-        "special:monitor, on-created-empty:kitty btop"
-        "special:files, on-created-empty:nemo"
-      ];
       windowrule = [
         # No borders on floating window when it's the only window
         "bordersize 0, floating:1, onworkspace:w[1]"
@@ -94,6 +82,21 @@
         # Fix flickering in JetBrains-IDEs
         "noinitialfocus, class:(jetbrains-)(.*), floating:1"
       ];
+
+      workspace = [
+        # No outer gaps when only one tiled window on normal workspaces
+        "w[t1]s[false], gapsout:0"
+        # Large outer gaps on special workspaces
+        "s[true], gapsout:60"
+
+        "special:music, on-created-empty:spotify"
+        "special:chat, on-created-empty:discord"
+        "special:flake, on-created-empty:kitty --directory ${config.home.sessionVariables.NH_FLAKE}"
+        "special:monitor, on-created-empty:kitty btop"
+        "special:files, on-created-empty:nemo"
+      ];
+
+      exec-once = [ "[workspace special:monitor silent] kitty btop" ];
     };
   };
 }
