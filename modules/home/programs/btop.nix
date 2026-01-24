@@ -5,7 +5,7 @@
   config = lib.mkIf config.custom.programs.btop.enable {
     programs.btop = {
       enable = true;
-      settings.settings =
+      settings.color_theme =
         {
           dark = "adwaita-dark";
           light = "adwaita";
