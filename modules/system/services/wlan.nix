@@ -20,10 +20,7 @@ in
   config = lib.mkIf cfg.enable {
     networking.wireless.iwd = {
       enable = true;
-      settings = {
-        General.EnableNetworkConfiguration = true;
-        Settings.AutoConnect = true;
-      };
+      settings.General.EnableNetworkConfiguration = true;
     };
 
     environment.systemPackages = [ pkgs.iwgtk ];
