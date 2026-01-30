@@ -16,14 +16,17 @@
     boot.loader.grub.enable = true;
 
     networking = {
-      overlay.address = "10.254.250.5";
+      overlay = {
+        address = "10.254.250.5";
+        isLighthouse = true;
+        role = "server";
+      };
       underlay = {
         interface = "enp1s0";
-        address = "188.245.223.145";
+        cidr = "188.245.223.145/32";
         isPublic = true;
+        gateway = "172.31.1.1";
       };
-      isLighthouse = true;
-      isServer = true;
     };
 
     services = {

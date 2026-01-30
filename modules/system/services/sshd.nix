@@ -30,7 +30,7 @@ in
 
       nebula.networks.mesh.firewall.inbound =
         netCfg.peers
-        |> lib.filter (node: node.isClient)
+        |> lib.filter (node: node.overlay.role == "client")
         |> lib.map (client: {
           port = 22;
           proto = "tcp";

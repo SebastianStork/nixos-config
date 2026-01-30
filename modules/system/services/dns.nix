@@ -20,7 +20,7 @@ in
           server = {
             interface = [ netCfg.overlay.interface ];
             access-control = [
-              "${netCfg.overlay.networkAddress}/${toString netCfg.overlay.prefixLength} allow"
+              "${toString netCfg.overlay.networkCidr} allow"
             ];
 
             local-zone = "\"${netCfg.overlay.domain}.\" static";

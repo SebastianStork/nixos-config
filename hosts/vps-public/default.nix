@@ -20,13 +20,16 @@
       boot.loader.systemd-boot.enable = true;
 
       networking = {
-        overlay.address = "10.254.250.4";
+        overlay = {
+          address = "10.254.250.4";
+          role = "server";
+        };
         underlay = {
           interface = "enp1s0";
-          address = "167.235.73.246";
+          cidr = "167.235.73.246/32";
           isPublic = true;
+          gateway = "172.31.1.1";
         };
-        isServer = true;
       };
 
       services = {

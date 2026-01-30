@@ -24,15 +24,19 @@
     de.hyprland.enable = true;
 
     networking = {
-      overlay.address = "10.254.250.3";
-      underlay.interface = "wlan0";
-      isClient = true;
+      overlay = {
+        address = "10.254.250.3";
+        role = "client";
+      };
+      underlay = {
+        interface = "wlan0";
+        useDhcp = true;
+        wireless.enable = true;
+      };
     };
 
     services = {
-      resolved.enable = true;
       auto-gc.enable = true;
-      wlan.enable = true;
       bluetooth.enable = true;
       sound.enable = true;
       nebula.enable = true;

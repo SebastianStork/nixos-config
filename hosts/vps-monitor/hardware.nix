@@ -1,4 +1,4 @@
-{ modulesPath, lib, ... }:
+{ modulesPath, ... }:
 {
   imports = [ "${modulesPath}/profiles/qemu-guest.nix" ];
 
@@ -14,22 +14,4 @@
   ];
 
   zramSwap.enable = true;
-
-  networking.useDHCP = false;
-  systemd.network = {
-    enable = true;
-    networks."10-enp1s0" = {
-      matchConfig.Name = "enp1s0";
-      linkConfig.RequiredForOnline = "routable";
-      address = [ "188.245.223.145/32" ];
-      routes = lib.singleton {
-        Gateway = "172.31.1.1";
-        GatewayOnLink = true;
-      };
-      dns = [
-        "1.1.1.1"
-        "8.8.8.8"
-      ];
-    };
-  };
 }

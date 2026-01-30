@@ -40,17 +40,4 @@
     HibernateDelaySec=2h
     HibernateOnACPower=yes
   '';
-
-  networking.useNetworkd = true;
-  systemd.network = {
-    enable = true;
-    networks."10-wlan0" = {
-      matchConfig.Name = "wlan0";
-      linkConfig.RequiredForOnline = "routable";
-      networkConfig = {
-        DHCP = "yes";
-        IgnoreCarrierLoss = "3s";
-      };
-    };
-  };
 }

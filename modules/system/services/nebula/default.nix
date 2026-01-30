@@ -26,13 +26,12 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
-      assertion = netCfg.isLighthouse -> netCfg.underlay.isPublic;
+      assertion = netCfg.overlay.isLighthouse -> netCfg.underlay.isPublic;
       message = "'${netCfg.hostName}' is a Nebula lighthouse, but underlay.isPublic is not set. Lighthouses must be publicly reachable.";
     };
 
     custom.networking.overlay = {
-      networkAddress = "10.254.250.0";
-      prefixLength = 24;
+      networkCidr = "10.254.250.0/24";
       domain = "splitleaf.de";
       interface = "nebula";
       systemdUnit = "nebula@mesh.service";
@@ -66,10 +65,10 @@ in
       tun.device = netCfg.overlay.interface;
       listen.port = lib.mkIf netCfg.underlay.isPublic publicPort;
 
-      inherit (netCfg) isLighthouse;
-      lighthouses = lib.mkIf (!netCfg.isLighthouse) (
+      inherit (netCfg.overlay) isLighthouse;
+      lighthouses = lib.mkIf (!netCfg.overlay.isLighthouse) (
         netCfg.peers
-        |> lib.filter (peer: peer.isLighthouse)
+        |> lib.filter (peer: peer.overlay.isLighthouse)
         |> lib.map (lighthouse: lighthouse.overlay.address)
       );
 
@@ -105,7 +104,7 @@ in
 
     systemd.network.networks."40-nebula" = {
       matchConfig.Name = netCfg.overlay.interface;
-      address = [ "${netCfg.overlay.address}/${toString netCfg.overlay.prefixLength}" ];
+      address = [ netCfg.overlay.cidr ];
       dns = netCfg.overlay.dnsServers;
       domains = [ netCfg.overlay.domain ];
     };

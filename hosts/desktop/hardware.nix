@@ -33,16 +33,6 @@ _: {
     '';
   };
 
-  networking.useNetworkd = true;
-  systemd.network = {
-    enable = true;
-    networks."10-enp6s0" = {
-      matchConfig.Name = "enp6s0";
-      networkConfig.DHCP = "ipv4";
-      linkConfig.RequiredForOnline = "routable";
-    };
-  };
-
   hardware.fancontrol = {
     enable = true;
     config = ''

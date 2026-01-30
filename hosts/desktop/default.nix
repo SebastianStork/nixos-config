@@ -24,9 +24,14 @@
     de.hyprland.enable = true;
 
     networking = {
-      overlay.address = "10.254.250.1";
-      underlay.interface = "enp6s0";
-      isClient = true;
+      overlay = {
+        address = "10.254.250.1";
+        role = "client";
+      };
+      underlay = {
+        interface = "enp6s0";
+        useDhcp = true;
+      };
     };
 
     services = {
