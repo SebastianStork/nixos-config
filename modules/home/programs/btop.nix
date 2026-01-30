@@ -7,7 +7,7 @@
       enable = true;
       settings.color_theme =
         {
-          dark = "adwaita-dark";
+          dark = "Default";
           light = "adwaita";
         }
         .${config.custom.theme};
