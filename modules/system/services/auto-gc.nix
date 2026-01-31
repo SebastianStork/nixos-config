@@ -18,8 +18,8 @@ in
           [
             "--keep 10"
             "--keep-since 7d"
-            (lib.optionalString cfg.onlyCleanRoots "--no-gc")
           ]
+          ++ lib.optional cfg.onlyCleanRoots "--no-gc"
           |> lib.concatStringsSep " ";
       };
     };

@@ -13,11 +13,6 @@ let
   publicHostsExist = virtualHosts |> lib.any (vHost: (!self.lib.isPrivateDomain vHost.domain));
   privateHostsExist = virtualHosts |> lib.any (vHost: self.lib.isPrivateDomain vHost.domain);
 
-  webPorts = [
-    80
-    443
-  ];
-
   mkVirtualHost =
     {
       domain,
@@ -28,24 +23,25 @@ let
     }:
     lib.nameValuePair domain {
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
-      extraConfig = lib.concatLines [
-        (lib.optionalString (self.lib.isPrivateDomain domain) (
-          let
-            certDir = config.security.acme.certs.${domain}.directory;
-          in
-          ''
-            tls ${certDir}/fullchain.pem ${certDir}/key.pem
-            bind ${config.custom.networking.overlay.address}
-          ''
-        ))
-        (lib.optionalString (port != null) "reverse_proxy localhost:${toString port}")
-        (lib.optionalString (files != null) ''
-          root * ${files}
-          encode
-          file_server
-        '')
-        (lib.optionalString (extraConfig != null) extraConfig)
-      ];
+      extraConfig =
+        let
+          certDir = config.security.acme.certs.${domain}.directory;
+        in
+        [
+          (lib.optionals (self.lib.isPrivateDomain domain) [
+            "tls ${certDir}/fullchain.pem ${certDir}/key.pem"
+            "bind ${config.custom.networking.overlay.address}"
+          ])
+          (lib.optional (port != null) "reverse_proxy localhost:${toString port}")
+          (lib.optionals (files != null) [
+            "root * ${files}"
+            "encode"
+            "file_server"
+          ])
+          (lib.optional (extraConfig != null) extraConfig)
+        ]
+        |> lib.concatLists
+        |> lib.concatLines;
     };
 in
 {
@@ -95,7 +91,10 @@ in
           message = "Each caddy virtual host must set exactly one of `port` or `files`";
         };
 
-        networking.firewall.allowedTCPPorts = lib.mkIf publicHostsExist webPorts;
+        networking.firewall.allowedTCPPorts = lib.mkIf publicHostsExist [
+          80
+          443
+        ];
 
         services.caddy = {
           enable = true;
