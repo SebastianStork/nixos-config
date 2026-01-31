@@ -70,12 +70,6 @@
           doBackups = true;
         };
 
-        freshrss = {
-          enable = true;
-          domain = "rss.${privateDomain}";
-          doBackups = true;
-        };
-
         alloy = {
           enable = true;
           domain = "alloy.${config.networking.hostName}.${privateDomain}";
