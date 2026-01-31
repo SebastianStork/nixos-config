@@ -38,7 +38,6 @@
           onlyCleanRoots = true;
         };
 
-        nebula.enable = true;
         sshd.enable = true;
 
         caddy.virtualHosts."dav.${sproutedDomain}" = {

@@ -39,7 +39,6 @@
       auto-gc.enable = true;
       bluetooth.enable = true;
       sound.enable = true;
-      nebula.enable = true;
       sshd.enable = true;
       syncthing = {
         enable = true;

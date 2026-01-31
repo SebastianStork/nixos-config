@@ -21,6 +21,7 @@ in
     prefixLength = lib.mkOption {
       type = lib.types.ints.between 0 32;
       default = cfg.networkCidr |> lib.splitString "/" |> lib.last |> lib.toInt;
+      readOnly = true;
     };
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
@@ -60,6 +61,11 @@ in
         |> lib.attrValues
         |> lib.filter (host: host.config.custom.services.dns.enable)
         |> lib.map (host: host.config.custom.networking.overlay.address);
+    };
+
+    implementation = lib.mkOption {
+      type = lib.types.enum [ "nebula" ];
+      default = "nebula";
     };
   };
 }

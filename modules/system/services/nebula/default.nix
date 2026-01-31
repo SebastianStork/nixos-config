@@ -12,7 +12,9 @@ let
 in
 {
   options.custom.services.nebula = {
-    enable = lib.mkEnableOption "";
+    enable = lib.mkEnableOption "" // {
+      default = netCfg.overlay.implementation == "nebula";
+    };
 
     publicKeyPath = lib.mkOption {
       type = lib.types.path;
