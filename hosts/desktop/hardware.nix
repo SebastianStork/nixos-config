@@ -24,14 +24,10 @@ _: {
 
   zramSwap.enable = true;
 
-  services = {
-    fstrim.enable = true;
-
-    # Prevent immediate wake-up from suspend caused by the logi bolt receiver
-    udev.extraRules = ''
-      ACTION=="add" SUBSYSTEM=="pci" ATTR{vendor}=="0x1022" ATTR{device}=="0x43ee" ATTR{power/wakeup}="disabled"
-    '';
-  };
+  # Prevent immediate wake-up from suspend caused by the logi bolt receiver
+  services.udev.extraRules = ''
+    ACTION=="add" SUBSYSTEM=="pci" ATTR{vendor}=="0x1022" ATTR{device}=="0x43ee" ATTR{power/wakeup}="disabled"
+  '';
 
   hardware.fancontrol = {
     enable = true;
