@@ -58,12 +58,6 @@
           doBackups = true;
         };
 
-        memos = {
-          enable = true;
-          domain = "memos.${privateDomain}";
-          doBackups = true;
-        };
-
         actualbudget = {
           enable = true;
           domain = "budget.${privateDomain}";
