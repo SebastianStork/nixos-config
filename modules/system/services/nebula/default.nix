@@ -29,7 +29,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
       assertion = netCfg.overlay.isLighthouse -> netCfg.underlay.isPublic;
-      message = "'${netCfg.hostName}' is a Nebula lighthouse, but underlay.isPublic is not set. Lighthouses must be publicly reachable.";
+      message = "`${netCfg.hostName}` is a Nebula lighthouse, but `underlay.isPublic` is not set. Lighthouses must be publicly reachable.";
     };
 
     custom.networking.overlay = {

@@ -53,7 +53,7 @@ in
     assertions = [
       {
         assertion = cfg.isServer -> (cfg.gui.domain != null);
-        message = "Running syncthing on a server requires `gui.domain` to be set";
+        message = "Syncthing requires `gui.domain` to be set when `isServer` is enabled";
       }
       {
         assertion = (cfg.gui.domain != null) -> (self.lib.isPrivateDomain cfg.gui.domain);
