@@ -86,10 +86,18 @@ in
   config = lib.mkIf (virtualHosts != [ ]) (
     lib.mkMerge [
       {
-        assertions = lib.singleton {
-          assertion = virtualHosts |> lib.all ({ port, files, ... }: lib.xor (port != null) (files != null));
-          message = "Each caddy virtual host must set exactly one of `port` or `files`";
-        };
+        assertions =
+          virtualHosts
+          |> lib.concatMap (vHost: [
+            {
+              assertion = (vHost.port == null) || (vHost.files == null);
+              message = "Caddy virtual host `${vHost.domain}` cannot set both `port` and `files`";
+            }
+            {
+              assertion = (vHost.port != null) || (vHost.files != null) || (vHost.extraConfig != null);
+              message = "Caddy virtual host `${vHost.domain}` must set at least one of `port`, `files` or `extraConfig`";
+            }
+          ]);
 
         networking.firewall.allowedTCPPorts = lib.mkIf publicHostsExist [
           80
