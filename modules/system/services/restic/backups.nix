@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   backups =
     config.custom.services.restic.backups |> lib.attrValues |> lib.filter (backup: backup.enable);
@@ -92,5 +97,16 @@ in
         };
       })
       |> lib.listToAttrs;
+
+    environment.systemPackages =
+      let
+        backupAllScript = pkgs.writeShellApplication {
+          name = "restic-backup-all";
+          text = "systemctl start restic-backups-{${
+            backups |> lib.map (backup: backup.name) |> lib.concatStringsSep ","
+          }}";
+        };
+      in
+      [ backupAllScript ];
   };
 }
