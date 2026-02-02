@@ -7,7 +7,8 @@
 let
   backupsWithRestoreCommand =
     config.custom.services.restic.backups
-    |> lib.filterAttrs (_: backup: backup.enable && backup.restoreCommand.enable);
+    |> lib.attrValues
+    |> lib.filter (backup: backup.enable && backup.restoreCommand.enable);
 in
 {
   options.custom.services.restic.backups = lib.mkOption {
@@ -33,23 +34,22 @@ in
   config = {
     environment.systemPackages =
       backupsWithRestoreCommand
-      |> lib.mapAttrsToList (
-        name: backup:
+      |> lib.map (
+        backup:
+        let
+          inherit (backup) name conflictingService;
+          inherit (backup.restoreCommand) preRestore postRestore;
+          hasConflictingService = conflictingService != null;
+        in
         pkgs.writeShellApplication {
           name = "restic-restore-${name}";
-          text =
-            let
-              inherit (backup) conflictingService;
-              inherit (backup.restoreCommand) preRestore postRestore;
-              hasConflictingService = conflictingService != null;
-            in
-            ''
-              ${lib.optionalString hasConflictingService "systemctl stop ${conflictingService}"}
-              ${preRestore}
-              restic-${name} restore latest --target /
-              ${postRestore}
-              ${lib.optionalString hasConflictingService "systemctl start ${conflictingService}"}
-            '';
+          text = ''
+            ${lib.optionalString hasConflictingService "systemctl stop ${conflictingService}"}
+            ${preRestore}
+            restic-${name} restore latest --target /
+            ${postRestore}
+            ${lib.optionalString hasConflictingService "systemctl start ${conflictingService}"}
+          '';
         }
       );
   };

@@ -7,7 +7,8 @@
 let
   backupsWithHealthchecks =
     config.custom.services.restic.backups
-    |> lib.filterAttrs (_: backup: backup.enable && backup.doHealthchecks);
+    |> lib.attrValues
+    |> lib.filter (backup: backup.enable && backup.doHealthchecks);
 in
 {
   options.custom.services.restic.backups = lib.mkOption {
@@ -20,40 +21,38 @@ in
     );
   };
 
-  config = lib.mkIf (backupsWithHealthchecks != { }) {
+  config = lib.mkIf (backupsWithHealthchecks != [ ]) {
     sops.secrets."healthchecks/ping-key" = { };
 
-    systemd.services = lib.mkMerge [
-      {
-        "healthcheck-ping@" = {
-          description = "Pings healthcheck (%i)";
-          serviceConfig.Type = "oneshot";
-          scriptArgs = "%i";
-          script = ''
-            ping_key="$(cat ${config.sops.secrets."healthchecks/ping-key".path})"
-            slug="$(echo "$1" | tr _ /)"
+    systemd.services = {
+      "healthcheck-ping@" = {
+        description = "Pings healthcheck (%i)";
+        serviceConfig.Type = "oneshot";
+        scriptArgs = "%i";
+        script = ''
+          ping_key="$(cat ${config.sops.secrets."healthchecks/ping-key".path})"
+          slug="$(echo "$1" | tr _ /)"
 
-            ${lib.getExe pkgs.curl} \
-              --fail \
-              --silent \
-              --show-error \
-              --max-time 10 \
-              --retry 5 "https://hc-ping.com/$ping_key/$slug?create=1"
-          '';
+          ${lib.getExe pkgs.curl} \
+            --fail \
+            --silent \
+            --show-error \
+            --max-time 10 \
+            --retry 5 "https://hc-ping.com/$ping_key/$slug?create=1"
+        '';
+      };
+    }
+    // (
+      backupsWithHealthchecks
+      |> lib.map (backup: {
+        name = "restic-backups-${backup.name}";
+        value = {
+          wants = [ "healthcheck-ping@${backup.name}-backup_start.service" ];
+          onSuccess = [ "healthcheck-ping@${backup.name}-backup.service" ];
+          onFailure = [ "healthcheck-ping@${backup.name}-backup_fail.service" ];
         };
-      }
-
-      (
-        backupsWithHealthchecks
-        |> lib.mapAttrs' (
-          name: _:
-          lib.nameValuePair "restic-backups-${name}" {
-            wants = [ "healthcheck-ping@${name}-backup_start.service" ];
-            onSuccess = [ "healthcheck-ping@${name}-backup.service" ];
-            onFailure = [ "healthcheck-ping@${name}-backup_fail.service" ];
-          }
-        )
-      )
-    ];
+      })
+      |> lib.listToAttrs
+    );
   };
 }
