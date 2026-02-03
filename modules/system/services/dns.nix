@@ -16,41 +16,29 @@ in
       unbound = {
         enable = true;
 
-        settings = {
-          server = {
-            interface = [ netCfg.overlay.interface ];
-            access-control = [
-              "${toString netCfg.overlay.networkCidr} allow"
-            ];
+        settings.server = {
+          interface = [ netCfg.overlay.interface ];
+          access-control = [ "${toString netCfg.overlay.networkCidr} allow" ];
 
-            local-zone = "\"${netCfg.overlay.domain}.\" static";
-            local-data =
-              let
-                nodeRecords =
-                  netCfg.nodes
-                  |> lib.map (node: "\"${node.hostName}.${node.overlay.domain}. A ${node.overlay.address}\"");
-                serviceRecords =
-                  self.nixosConfigurations
+          local-zone = "\"${netCfg.overlay.domain}.\" static";
+          local-data =
+            let
+              nodeRecords =
+                netCfg.nodes
+                |> lib.map (node: "\"${node.hostName}.${node.overlay.domain}. A ${node.overlay.address}\"");
+              serviceRecords =
+                self.nixosConfigurations
+                |> lib.attrValues
+                |> lib.concatMap (
+                  host:
+                  host.config.custom.services.caddy.virtualHosts
                   |> lib.attrValues
-                  |> lib.concatMap (
-                    host:
-                    host.config.custom.services.caddy.virtualHosts
-                    |> lib.attrValues
-                    |> lib.map (vHost: vHost.domain)
-                    |> lib.filter (domain: self.lib.isPrivateDomain domain)
-                    |> lib.map (domain: "\"${domain}. A ${host.config.custom.networking.overlay.address}\"")
-                  );
-              in
-              nodeRecords ++ serviceRecords;
-          };
-
-          forward-zone = lib.singleton {
-            name = ".";
-            forward-addr = [
-              "1.1.1.1"
-              "8.8.8.8"
-            ];
-          };
+                  |> lib.map (vHost: vHost.domain)
+                  |> lib.filter (domain: self.lib.isPrivateDomain domain)
+                  |> lib.map (domain: "\"${domain}. A ${host.config.custom.networking.overlay.address}\"")
+                );
+            in
+            nodeRecords ++ serviceRecords;
         };
       };
 
