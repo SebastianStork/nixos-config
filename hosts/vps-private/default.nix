@@ -1,10 +1,6 @@
-{ config, inputs, ... }:
+{ config, self, ... }:
 {
-  imports = [
-    ./hardware.nix
-    ./disko.nix
-    inputs.disko.nixosModules.default
-  ];
+  imports = [ self.nixosModules.profile-server ];
 
   system.stateVersion = "25.11";
 
@@ -13,17 +9,12 @@
       privateDomain = config.custom.networking.overlay.domain;
     in
     {
-      persistence.enable = true;
-
-      sops.enable = true;
-
       boot.loader.systemd-boot.enable = true;
 
       networking = {
         overlay = {
           address = "10.254.250.2";
           isLighthouse = true;
-          role = "server";
         };
         underlay = {
           interface = "enp1s0";
@@ -34,19 +25,13 @@
       };
 
       services = {
-        auto-gc = {
-          enable = true;
-          onlyCleanRoots = true;
-        };
-        comin.enable = true;
-        sshd.enable = true;
         dns.enable = true;
         syncthing = {
           enable = true;
-          isServer = true;
-          doBackups = true;
           deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
+          isServer = true;
           gui.domain = "syncthing.${privateDomain}";
+          doBackups = true;
         };
       };
 
@@ -61,11 +46,6 @@
           enable = true;
           domain = "budget.${privateDomain}";
           doBackups = true;
-        };
-
-        alloy = {
-          enable = true;
-          domain = "alloy.${config.networking.hostName}.${privateDomain}";
         };
       };
     };

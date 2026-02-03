@@ -1,25 +1,16 @@
-{ config, inputs, ... }:
+{ config, self, ... }:
 {
-  imports = [
-    ./hardware.nix
-    ./disko.nix
-    inputs.disko.nixosModules.default
-  ];
+  imports = [ self.nixosModules.profile-server ];
 
   system.stateVersion = "25.11";
 
   custom = {
-    persistence.enable = true;
-
-    sops.enable = true;
-
     boot.loader.grub.enable = true;
 
     networking = {
       overlay = {
         address = "10.254.250.5";
         isLighthouse = true;
-        role = "server";
       };
       underlay = {
         interface = "enp1s0";
@@ -29,15 +20,7 @@
       };
     };
 
-    services = {
-      auto-gc = {
-        enable = true;
-        onlyCleanRoots = true;
-      };
-      comin.enable = true;
-      sshd.enable = true;
-      dns.enable = true;
-    };
+    services.dns.enable = true;
 
     web-services =
       let
@@ -76,11 +59,6 @@
         victorialogs = {
           enable = true;
           domain = "logs.${privateDomain}";
-        };
-
-        alloy = {
-          enable = true;
-          domain = "alloy.${config.networking.hostName}.${privateDomain}";
         };
       };
   };

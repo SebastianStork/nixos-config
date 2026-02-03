@@ -1,51 +1,22 @@
-{ inputs, pkgs, ... }:
+{ self, ... }:
 {
-  imports = [
-    ./hardware.nix
-    ./disko.nix
-    inputs.disko.nixosModules.default
-  ];
+  imports = [ self.nixosModules.profile-workstation ];
 
   system.stateVersion = "23.11";
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   custom = {
-    sops.enable = true;
-
-    boot = {
-      loader.systemd-boot.enable = true;
-      silent = true;
-    };
-
-    dm.tuigreet = {
-      enable = true;
-      autoLogin = true;
-    };
-    de.hyprland.enable = true;
+    boot.loader.systemd-boot.enable = true;
 
     networking = {
-      overlay = {
-        address = "10.254.250.1";
-        role = "client";
-      };
+      overlay.address = "10.254.250.1";
       underlay = {
         interface = "enp6s0";
         useDhcp = true;
       };
     };
 
-    services = {
-      auto-gc.enable = true;
-      sound.enable = true;
-      sshd.enable = true;
-      syncthing = {
-        enable = true;
-        deviceId = "FAJS5WM-UAWGW2U-FXCGPSP-VAUOTGM-XUKSEES-D66PMCJ-WBODJLV-XTNCRA7";
-      };
-    };
+    services.syncthing.deviceId = "FAJS5WM-UAWGW2U-FXCGPSP-VAUOTGM-XUKSEES-D66PMCJ-WBODJLV-XTNCRA7";
 
     programs.steam.enable = true;
   };
-
-  programs.localsend.enable = true;
 }

@@ -1,10 +1,6 @@
-{ config, inputs, ... }:
+{ config, self, ... }:
 {
-  imports = [
-    ./hardware.nix
-    ./disko.nix
-    inputs.disko.nixosModules.default
-  ];
+  imports = [ self.nixosModules.profile-server ];
 
   system.stateVersion = "25.11";
 
@@ -13,17 +9,10 @@
       sproutedDomain = "sprouted.cloud";
     in
     {
-      persistence.enable = true;
-
-      sops.enable = true;
-
       boot.loader.systemd-boot.enable = true;
 
       networking = {
-        overlay = {
-          address = "10.254.250.4";
-          role = "server";
-        };
+        overlay.address = "10.254.250.4";
         underlay = {
           interface = "enp1s0";
           cidr = "167.235.73.246/32";
@@ -32,25 +21,15 @@
         };
       };
 
-      services = {
-        auto-gc = {
-          enable = true;
-          onlyCleanRoots = true;
-        };
-        comin.enable = true;
-        sshd.enable = true;
-
-        caddy.virtualHosts."dav.${sproutedDomain}" = {
-          inherit (config.custom.web-services.radicale) port;
-          extraConfig = ''
-            respond /.web/ "Access denied" 403 { close }
-          '';
-        };
+      services.caddy.virtualHosts."dav.${sproutedDomain}" = {
+        inherit (config.custom.web-services.radicale) port;
+        extraConfig = ''
+          respond /.web/ "Access denied" 403 { close }
+        '';
       };
 
       web-services =
         let
-          privateDomain = config.custom.networking.overlay.domain;
           sstorkDomain = "sstork.dev";
         in
         {
@@ -94,13 +73,8 @@
 
           radicale = {
             enable = true;
-            domain = "dav.${privateDomain}";
+            domain = "dav.${config.custom.networking.overlay.domain}";
             doBackups = true;
-          };
-
-          alloy = {
-            enable = true;
-            domain = "alloy.${config.networking.hostName}.${privateDomain}";
           };
         };
     };

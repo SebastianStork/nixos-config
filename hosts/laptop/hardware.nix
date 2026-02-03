@@ -20,8 +20,6 @@
     ];
   };
 
-  zramSwap.enable = true;
-
   services = {
     fwupd.enable = true;
     fprintd.enable = true; # fwupdmgr refresh && fwupdmgr update

@@ -11,8 +11,9 @@ let
       specialArgs = { inherit inputs self; };
       modules = [
         { networking = { inherit hostName; }; }
-        "${self}/hosts/common.nix"
-        "${self}/hosts/${hostName}"
+        "${self}/hosts/${hostName}/default.nix"
+        "${self}/hosts/${hostName}/hardware.nix"
+        "${self}/hosts/${hostName}/disko.nix"
         "${self}/users/seb"
       ]
       ++ lib.optional (lib.pathExists "${self}/users/seb/@${hostName}") "${self}/users/seb/@${hostName}";

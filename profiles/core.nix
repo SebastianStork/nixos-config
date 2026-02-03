@@ -7,7 +7,10 @@
   ...
 }:
 {
-  imports = [ self.nixosModules.default ];
+  imports = [
+    self.nixosModules.default
+    inputs.disko.nixosModules.default
+  ];
 
   nix =
     let
@@ -74,6 +77,8 @@
     vimAlias = true;
   };
 
+  zramSwap.enable = true;
+
   environment.systemPackages = [
     (lib.hiPrio pkgs.uutils-coreutils-noprefix)
     pkgs.git
@@ -89,5 +94,13 @@
   _module.args.pkgs-unstable = import inputs.nixpkgs-unstable {
     inherit (pkgs.stdenv.hostPlatform) system;
     inherit (config.nixpkgs) config;
+  };
+
+  custom = {
+    sops.enable = true;
+    services = {
+      auto-gc.enable = true;
+      sshd.enable = true;
+    };
   };
 }
