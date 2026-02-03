@@ -75,12 +75,13 @@
   };
 
   environment.systemPackages = [
+    (lib.hiPrio pkgs.uutils-coreutils-noprefix)
     pkgs.git
     pkgs.just
     pkgs.nh
     pkgs.dust
-    (lib.hiPrio pkgs.uutils-coreutils-noprefix)
     pkgs.comma
+    pkgs.btop
   ];
 
   nixpkgs.config.allowUnfree = true;
