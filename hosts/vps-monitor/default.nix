@@ -34,7 +34,7 @@
         enable = true;
         onlyCleanRoots = true;
       };
-
+      comin.enable = true;
       sshd.enable = true;
       dns.enable = true;
     };

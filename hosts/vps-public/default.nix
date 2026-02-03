@@ -37,7 +37,7 @@
           enable = true;
           onlyCleanRoots = true;
         };
-
+        comin.enable = true;
         sshd.enable = true;
 
         caddy.virtualHosts."dav.${sproutedDomain}" = {
