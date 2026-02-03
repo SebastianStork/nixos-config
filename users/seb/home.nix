@@ -5,7 +5,7 @@
   ...
 }:
 {
-  imports = [ self.homeManagerModules.default ];
+  imports = [ self.homeModules.default ];
 
   xdg = {
     enable = true;

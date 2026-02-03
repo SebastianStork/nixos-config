@@ -9,7 +9,7 @@ let
   cfg = config.custom.sops;
 in
 {
-  imports = [ inputs.sops.homeManagerModules.sops ];
+  imports = [ inputs.sops.homeModules.sops ];
 
   options.custom.sops = {
     enable = lib.mkEnableOption "";
