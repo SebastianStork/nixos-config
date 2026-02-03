@@ -40,7 +40,9 @@ reboot:
 
 [group('remote')]
 deploy +hosts:
-    deploy --skip-checks --targets $(echo {{ hosts }} | sed 's/[^ ]*/\.#&/g')
+    for host in {{ hosts }}; do \
+      nh os switch . --hostname=$host --target-host=$host; \
+    done
 
 [group('remote')]
 install host destination='root@installer':

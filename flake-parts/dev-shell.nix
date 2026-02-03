@@ -1,12 +1,11 @@
 _: {
   perSystem =
-    { inputs', pkgs, ... }:
+    { pkgs, ... }:
     {
       devShells.default = pkgs.mkShellNoCC {
         packages = [
           pkgs.just
           pkgs.nh
-          inputs'.deploy-rs.packages.default
         ];
       };
     };
