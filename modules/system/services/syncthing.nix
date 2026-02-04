@@ -19,7 +19,7 @@ in
     doBackups = lib.mkEnableOption "";
     deviceId = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "";
+      default = "${self}/hosts/${netCfg.hostName}/keys/syncthing.id" |> lib.readFile |> lib.trim;
     };
     syncPort = lib.mkOption {
       type = lib.types.port;

@@ -28,7 +28,6 @@
         dns.enable = true;
         syncthing = {
           enable = true;
-          deviceId = "5R2MH7T-Q2ZZS2P-ZMSQ2UJ-B6VBHES-XYLNMZ6-7FYC27L-4P7MGJ2-FY4ITQD";
           isServer = true;
           gui.domain = "syncthing.${privateDomain}";
           doBackups = true;

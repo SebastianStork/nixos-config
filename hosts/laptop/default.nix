@@ -16,10 +16,7 @@
       };
     };
 
-    services = {
-      bluetooth.enable = true;
-      syncthing.deviceId = "Q4YPD3V-GXZPHSN-PT5X4PU-FBG4GX2-IASBX75-7NYMG75-4EJHBMZ-4WGDDAP";
-    };
+    services.bluetooth.enable = true;
 
     programs = {
       winboat.enable = true;

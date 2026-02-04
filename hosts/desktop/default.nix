@@ -15,8 +15,6 @@
       };
     };
 
-    services.syncthing.deviceId = "FAJS5WM-UAWGW2U-FXCGPSP-VAUOTGM-XUKSEES-D66PMCJ-WBODJLV-XTNCRA7";
-
     programs.steam.enable = true;
   };
 }
