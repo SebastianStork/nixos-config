@@ -41,7 +41,7 @@ reboot:
 [group('remote')]
 deploy +hosts:
     for host in {{ hosts }}; do \
-      nh os switch . --hostname=$host --target-host=$host; \
+        nh os switch . --hostname=$host --target-host=$host; \
     done
 
 [group('remote')]
@@ -69,4 +69,9 @@ sops-rotate-all:
     just _sops-do "find . -type f -name 'secrets.json' -exec sops rotate --in-place {} \;"
 
 _sops-do command:
-    -if command -v sops >/dev/null 2>&1; then {{ command }}; else nix develop .#sops --command bash -c "{{ command }}; exec zsh"; fi
+    if command -v sops > /dev/null 2>&1; then \
+        {{ command }}; \
+    else \
+        nix develop .#sops --command bash -c "{{ command }}; \
+        exec zsh"; \
+    fi
