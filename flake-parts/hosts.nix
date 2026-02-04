@@ -9,14 +9,15 @@ let
     hostName:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs self; };
-      modules = [
-        { networking = { inherit hostName; }; }
-        "${self}/hosts/${hostName}/default.nix"
-        "${self}/hosts/${hostName}/hardware.nix"
-        "${self}/hosts/${hostName}/disko.nix"
-        "${self}/users/seb"
-      ]
-      ++ lib.optional (lib.pathExists "${self}/users/seb/@${hostName}") "${self}/users/seb/@${hostName}";
+      modules =
+        (lib.singleton { networking = { inherit hostName; }; })
+        ++ (
+          "${self}/hosts/${hostName}"
+          |> builtins.readDir
+          |> lib.attrNames
+          |> lib.filter (file: file |> lib.hasSuffix ".nix")
+          |> lib.map (file: "${self}/hosts/${hostName}/${file}")
+        );
     };
 in
 {

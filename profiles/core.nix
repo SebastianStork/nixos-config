@@ -68,7 +68,16 @@
 
   console.keyMap = "de-latin1-nodeadkeys";
 
-  users.mutableUsers = false;
+  sops.secrets."seb-password".neededForUsers = true;
+  users = {
+    mutableUsers = false;
+    users.seb = {
+      isNormalUser = true;
+      description = "Sebastian Stork";
+      hashedPasswordFile = config.sops.secrets."seb-password".path;
+      extraGroups = [ "wheel" ];
+    };
+  };
 
   programs.neovim = {
     enable = true;

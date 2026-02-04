@@ -1,6 +1,16 @@
-{ self, pkgs, ... }:
 {
-  imports = [ self.nixosModules.profile-core ];
+  config,
+  inputs,
+  self,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
+{
+  imports = [
+    self.nixosModules.profile-core
+    inputs.home-manager.nixosModules.home-manager
+  ];
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
@@ -19,4 +29,14 @@
   };
 
   programs.localsend.enable = true;
+
+  programs.zsh.enable = true;
+  users.users.seb.shell = pkgs.zsh;
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    extraSpecialArgs = { inherit inputs self pkgs-unstable; };
+    users.seb = "${self}/users/seb/@${config.networking.hostName}/home.nix";
+  };
 }
