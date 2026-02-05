@@ -40,7 +40,7 @@
         allow-import-from-derivation = false;
 
         min-free = 4 * 1024 * 1024 * 1024;
-        max-free = 8 * 1024 * 1024 * 1024;
+        max-free = 6 * 1024 * 1024 * 1024;
       };
     };
 
