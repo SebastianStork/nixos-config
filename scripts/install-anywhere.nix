@@ -1,4 +1,4 @@
-{ pkgs , ...}:
+{ pkgs, ... }:
 pkgs.writeShellApplication {
   name = "install-anywhere";
 
@@ -17,6 +17,7 @@ pkgs.writeShellApplication {
     host="$1"
     destination="$2"
     root="$(mktemp --directory)"
+    trap 'rm -rf "$root"' EXIT
 
     impermanence="$(nix eval ".#nixosConfigurations.$host.config.custom.persistence.enable")"
     if [ "$impermanence" = true ]; then
@@ -51,7 +52,5 @@ pkgs.writeShellApplication {
       --extra-files "$root" \
       --flake ".#$host" \
       --target-host "$destination"
-
-    rm -rf "$root"
   '';
 }

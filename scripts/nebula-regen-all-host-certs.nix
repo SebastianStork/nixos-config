@@ -1,4 +1,9 @@
-{ self', pkgs, lib, ... }:
+{
+  self',
+  pkgs,
+  lib,
+  ...
+}:
 pkgs.writeShellApplication {
   name = "nebula-regen-all-host-certs";
 
