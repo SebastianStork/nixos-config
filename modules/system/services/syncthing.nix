@@ -118,14 +118,11 @@ in
         };
       };
 
-      nebula.networks.mesh.firewall.inbound =
-        config.services.syncthing.settings.devices
-        |> lib.attrNames
-        |> lib.map (name: {
-          port = cfg.syncPort;
-          proto = "tcp";
-          host = name;
-        });
+      nebula.networks.mesh.firewall.inbound = lib.singleton {
+        port = cfg.syncPort;
+        proto = "tcp";
+        group = "syncthing";
+      };
     };
 
     custom = {

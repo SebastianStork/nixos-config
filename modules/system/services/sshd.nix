@@ -28,14 +28,11 @@ in
         };
       };
 
-      nebula.networks.mesh.firewall.inbound =
-        netCfg.peers
-        |> lib.filter (node: node.overlay.role == "client")
-        |> lib.map (client: {
-          port = 22;
-          proto = "tcp";
-          host = client.hostName;
-        });
+      nebula.networks.mesh.firewall.inbound = lib.singleton {
+        port = 22;
+        proto = "tcp";
+        group = "client";
+      };
     };
 
     systemd.services.sshd = {

@@ -15,6 +15,7 @@ pkgs.writeShellApplication {
 
     host="$1"
     address="$(nix eval --raw ".#nixosConfigurations.$host.config.custom.networking.overlay.cidr")"
+    groups="$(nix eval ".#nixosConfigurations.$host.config.custom.services.nebula.groups" --apply 'builtins.concatStringsSep ","')"
     ca_cert='modules/system/services/nebula/ca.crt'
     host_pub="$(nix eval --raw ".#nixosConfigurations.$host.config.custom.services.nebula.publicKeyPath")"
     host_cert="$(nix eval --raw ".#nixosConfigurations.$host.config.custom.services.nebula.certificatePath")"
@@ -35,6 +36,6 @@ pkgs.writeShellApplication {
     fi
 
     rm -f "$host_cert"
-    nebula-cert sign -name "$host" -networks "$address" -ca-crt "$ca_cert" -ca-key "$ca_key" -in-pub "$host_pub" -out-crt "$host_cert"
+    nebula-cert sign -name "$host" -networks "$address" -groups "$groups" -ca-crt "$ca_cert" -ca-key "$ca_key" -in-pub "$host_pub" -out-crt "$host_cert"
   '';
 }

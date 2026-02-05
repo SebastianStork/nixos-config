@@ -15,6 +15,12 @@ in
     enable = lib.mkEnableOption "" // {
       default = netCfg.overlay.implementation == "nebula";
     };
+    groups = lib.mkOption {
+      type = lib.types.nonEmptyListOf lib.types.nonEmptyStr;
+      default =
+        lib.singleton netCfg.overlay.role
+        ++ lib.optional config.custom.services.syncthing.enable "syncthing";
+    };
 
     publicKeyPath = lib.mkOption {
       type = lib.types.path;
