@@ -1,10 +1,11 @@
 {
   config,
+  osConfig,
   inputs,
   self,
   lib,
   ...
-}@moduleArgs:
+}:
 let
   cfg = config.custom.sops;
 in
@@ -13,18 +14,16 @@ in
 
   options.custom.sops = {
     enable = lib.mkEnableOption "";
-    hostName = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = moduleArgs.osConfig.networking.hostName or "";
-    };
     agePublicKey = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default =
-        "${self}/users/${config.home.username}/@${cfg.hostName}/keys/age.pub" |> lib.readFile |> lib.trim;
+        "${self}/users/${config.home.username}/@${osConfig.networking.hostName}/keys/age.pub"
+        |> lib.readFile
+        |> lib.trim;
     };
     secretsFile = lib.mkOption {
       type = lib.types.path;
-      default = "${self}/users/${config.home.username}/@${cfg.hostName}/secrets.json";
+      default = "${self}/users/${config.home.username}/@${osConfig.networking.hostName}/secrets.json";
     };
     secrets = lib.mkOption {
       type = lib.types.anything;

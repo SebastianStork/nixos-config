@@ -1,7 +1,12 @@
-{ config, lib, ... }@moduleArgs:
+{
+  config,
+  osConfig,
+  lib,
+  ...
+}:
 {
   options.custom.services.syncthing.enable = lib.mkEnableOption "" // {
-    default = moduleArgs.osConfig.custom.services.syncthing.enable or false;
+    default = osConfig.custom.services.syncthing.enable;
   };
 
   config = lib.mkIf config.custom.services.syncthing.enable {

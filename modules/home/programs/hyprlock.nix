@@ -1,9 +1,10 @@
 {
   config,
+  osConfig,
   pkgs-unstable,
   lib,
   ...
-}@moduleArgs:
+}:
 let
   cfg = config.custom.programs.hyprlock;
 in
@@ -11,7 +12,7 @@ in
   options.custom.programs.hyprlock = {
     enable = lib.mkEnableOption "";
     fprintAuth = lib.mkEnableOption "" // {
-      default = moduleArgs.osConfig.services.fprintd.enable or false;
+      default = osConfig.services.fprintd.enable;
     };
   };
 

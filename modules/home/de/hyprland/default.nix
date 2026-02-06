@@ -1,12 +1,13 @@
 {
   config,
+  osConfig,
   pkgs,
   lib,
   ...
-}@moduleArgs:
+}:
 {
   options.custom.de.hyprland.enable = lib.mkEnableOption "" // {
-    default = moduleArgs.osConfig.custom.de.hyprland.enable or false;
+    default = osConfig.custom.de.hyprland.enable;
   };
 
   config = lib.mkIf config.custom.de.hyprland.enable {
