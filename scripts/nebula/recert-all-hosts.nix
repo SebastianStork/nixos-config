@@ -1,11 +1,11 @@
 { self', pkgs, ... }:
 pkgs.writeShellApplication {
-  name = "nebula-regen-all-host-certs";
+  name = "nebula-recert-all-hosts";
 
   runtimeInputs = [
     pkgs.bitwarden-cli
     pkgs.jq
-    self'.packages.nebula-regen-host-cert
+    self'.packages.nebula-recert-host
   ];
 
   text = ''
@@ -23,7 +23,7 @@ pkgs.writeShellApplication {
 
     for host in $hosts; do
       echo "Regenerating certificate for $host..."
-      nebula-regen-host-cert "$host" "$ca_key"
+      nebula-recert-host "$host" "$ca_key"
     done
 
     echo "Done!"

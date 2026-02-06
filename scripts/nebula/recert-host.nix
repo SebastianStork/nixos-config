@@ -1,6 +1,6 @@
 { pkgs, ... }:
 pkgs.writeShellApplication {
-  name = "nebula-regen-host-cert";
+  name = "nebula-recert-host";
 
   runtimeInputs = [
     pkgs.nebula

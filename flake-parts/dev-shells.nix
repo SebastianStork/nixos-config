@@ -29,8 +29,8 @@ _: {
           packages = [
             pkgs.nebula
             pkgs.bitwarden-cli
-            self'.packages.nebula-regen-host-cert
-            self'.packages.nebula-regen-all-host-certs
+            self'.packages.nebula-recert-host
+            self'.packages.nebula-recert-all-hosts
           ];
 
           shellHook = ''
