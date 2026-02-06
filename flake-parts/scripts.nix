@@ -10,9 +10,16 @@
     {
       packages =
         "${self}/scripts"
-        |> builtins.readDir
-        |> lib.attrNames
-        |> lib.map (name: name |> lib.removeSuffix ".nix")
-        |> self.lib.genAttrs (name: import "${self}/scripts/${name}.nix" { inherit self' pkgs lib; });
+        |> lib.filesystem.listFilesRecursive
+        |> lib.map (file: {
+          name =
+            file
+            |> lib.unsafeDiscardStringContext
+            |> lib.removePrefix "${self}/scripts/"
+            |> lib.removeSuffix ".nix"
+            |> lib.replaceString "/" "-";
+          value = import file { inherit self' pkgs lib; };
+        })
+        |> lib.listToAttrs;
     };
 }
