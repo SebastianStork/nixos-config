@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.web-services.alloy;
+  cfg = config.custom.services.alloy;
 in
 {
-  options.custom.web-services.alloy = {
+  options.custom.services.alloy = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
