@@ -27,6 +27,7 @@
         aliases.enable = true;
         direnv.enable = true;
       };
+      atuin.enable = true;
       ssh.enable = true;
       git.enable = true;
       kitty.enable = true;
