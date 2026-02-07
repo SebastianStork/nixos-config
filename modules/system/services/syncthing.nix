@@ -85,37 +85,40 @@ in
         cert = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/cert".path;
         key = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/key".path;
 
-        settings = {
-          devices =
-            self.nixosConfigurations
-            |> lib.filterAttrs (_: host: host.config.networking.hostName != config.networking.hostName)
-            |> lib.filterAttrs (_: host: host.config.custom.services.syncthing.enable)
-            |> lib.mapAttrs (
-              _: host: {
-                id = host.config.custom.services.syncthing.deviceId;
-                addresses = [
-                  "tcp://${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.syncthing.syncPort}"
-                ];
-              }
-            );
+        settings =
+          let
+            hosts =
+              self.nixosConfigurations
+              |> lib.filterAttrs (_: host: host.config.networking.hostName != config.networking.hostName)
+              |> lib.filterAttrs (_: host: host.config.custom.services.syncthing.enable);
+          in
+          {
+            devices =
+              hosts
+              |> lib.mapAttrs (
+                _: host: {
+                  id = host.config.custom.services.syncthing.deviceId;
+                  addresses = lib.singleton "tcp://${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.syncthing.syncPort}";
+                }
+              );
 
-          folders =
-            cfg.folders
-            |> self.lib.genAttrs (name: {
-              path = "${dataDir}/${name}";
-              devices = config.services.syncthing.settings.devices |> lib.attrNames;
-            });
+            folders =
+              cfg.folders
+              |> self.lib.genAttrs (name: {
+                path = "${dataDir}/${name}";
+                devices = hosts |> lib.attrNames;
+              });
 
-          options = {
-            listenAddress = "tcp://${netCfg.overlay.address}:${toString cfg.syncPort}";
-            globalAnnounceEnabled = false;
-            localAnnounceEnabled = false;
-            relaysEnabled = false;
-            natEnabled = false;
-            urAccepted = -1;
-            autoUpgradeIntervalH = 0;
+            options = {
+              listenAddress = "tcp://${netCfg.overlay.address}:${toString cfg.syncPort}";
+              globalAnnounceEnabled = false;
+              localAnnounceEnabled = false;
+              relaysEnabled = false;
+              natEnabled = false;
+              urAccepted = -1;
+              autoUpgradeIntervalH = 0;
+            };
           };
-        };
       };
 
       nebula.networks.mesh.firewall.inbound = lib.singleton {

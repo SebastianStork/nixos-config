@@ -112,4 +112,12 @@
       sshd.enable = true;
     };
   };
+
+  services.syncthing.settings = {
+    devices."fairphone" = {
+      id = "6ROH65D-E65I5F6-URI4OUZ-RCHFC3B-PMBSIHH-5DNLJPS-SYSUWQY-HKYGHQG";
+      addresses = "tcp://10.254.250.74:22000";
+    };
+    folders."Documents".devices = [ config.services.syncthing.settings.devices."fairphone".name ];
+  };
 }
