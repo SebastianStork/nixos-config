@@ -46,6 +46,11 @@
           domain = "budget.${privateDomain}";
           doBackups = true;
         };
+
+        atuin = {
+          enable = true;
+          domain = "atuin.${privateDomain}";
+        };
       };
     };
 }
