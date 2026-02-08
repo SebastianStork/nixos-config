@@ -9,6 +9,11 @@ let
   netCfg = config.custom.networking;
 
   publicPort = 47141;
+
+  lighthouses =
+    netCfg.peers
+    |> lib.filter (peer: peer.overlay.isLighthouse)
+    |> lib.map (lighthouse: lighthouse.overlay.address);
 in
 {
   options.custom.services.nebula = {
@@ -74,11 +79,10 @@ in
       listen.port = lib.mkIf netCfg.underlay.isPublic publicPort;
 
       inherit (netCfg.overlay) isLighthouse;
-      lighthouses = lib.mkIf (!netCfg.overlay.isLighthouse) (
-        netCfg.peers
-        |> lib.filter (peer: peer.overlay.isLighthouse)
-        |> lib.map (lighthouse: lighthouse.overlay.address)
-      );
+      lighthouses = lib.mkIf (!netCfg.overlay.isLighthouse) lighthouses;
+      
+      isRelay = netCfg.overlay.isLighthouse;
+      relays = lib.mkIf (!netCfg.overlay.isLighthouse) lighthouses;
 
       staticHostMap =
         netCfg.peers
