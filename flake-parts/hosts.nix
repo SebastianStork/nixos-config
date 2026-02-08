@@ -13,21 +13,14 @@ let
         (lib.singleton {
           networking.hostName = hostDir |> lib.baseNameOf |> lib.unsafeDiscardStringContext;
         })
-        ++ (
-          hostDir
-          |> builtins.readDir
-          |> lib.attrNames
-          |> lib.filter (lib.hasSuffix ".nix")
-          |> lib.map (file: "${hostDir}/${file}")
-        );
+        ++ self.lib.listNixFilesRecursively hostDir;
     };
 
   mkHosts =
     baseDir:
     baseDir
-    |> builtins.readDir
-    |> lib.filterAttrs (_: type: type == "directory")
-    |> lib.mapAttrs (hostName: _: mkHost "${baseDir}/${hostName}");
+    |> self.lib.listDirectoryNames
+    |> self.lib.genAttrs (hostName: mkHost "${baseDir}/${hostName}");
 in
 {
   flake = {
