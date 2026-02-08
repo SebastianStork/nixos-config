@@ -76,11 +76,14 @@ in
       key = config.sops.secrets."nebula/host-key".path;
 
       tun.device = netCfg.overlay.interface;
-      listen.port = lib.mkIf netCfg.underlay.isPublic publicPort;
+      listen = {
+        host = lib.mkIf (netCfg.underlay.address != null) netCfg.underlay.address;
+        port = lib.mkIf netCfg.underlay.isPublic publicPort;
+      };
 
       inherit (netCfg.overlay) isLighthouse;
       lighthouses = lib.mkIf (!netCfg.overlay.isLighthouse) lighthouses;
-      
+
       isRelay = netCfg.overlay.isLighthouse;
       relays = lib.mkIf (!netCfg.overlay.isLighthouse) lighthouses;
 
