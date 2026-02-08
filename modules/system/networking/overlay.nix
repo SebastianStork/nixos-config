@@ -57,7 +57,7 @@ in
     dnsServers = lib.mkOption {
       type = lib.types.anything;
       default =
-        self.nixosConfigurations
+        self.allHosts
         |> lib.attrValues
         |> lib.filter (host: host.config.custom.services.dns.enable)
         |> lib.map (host: host.config.custom.networking.overlay.address);

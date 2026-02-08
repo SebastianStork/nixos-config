@@ -18,14 +18,14 @@
           };
 
           hostCreationRules =
-            self.nixosConfigurations
+            self.allHosts
             |> lib.attrValues
             |> lib.map (host: host.config.custom.sops)
             |> lib.filter (sops: sops.enable)
             |> lib.map mkCreationRule;
 
           userCreationRules =
-            self.nixosConfigurations
+            self.allHosts
             |> lib.attrValues
             |> lib.filter (host: host.config |> lib.hasAttr "home-manager")
             |> lib.map (host: host.config.home-manager.users.seb.custom.sops)

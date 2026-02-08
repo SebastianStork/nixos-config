@@ -16,7 +16,7 @@ repair:
     nix-store --verify --check-contents --repair
 
 repl host='$(hostname)':
-    nix repl .#nixosConfigurations.{{ host }}
+    nix repl .#allHosts.{{ host }}
 
 [group('rebuild')]
 rebuild mode:

@@ -9,7 +9,7 @@ pkgs.writeShellApplication {
   ];
 
   text = ''
-    hosts="$(nix eval .#nixosConfigurations --apply 'builtins.attrNames' --json | jq -r '.[]')"
+    hosts="$(nix eval .#allHosts --apply 'builtins.attrNames' --json | jq -r '.[]')"
 
     if ! declare -px BW_SESSION >/dev/null 2>&1; then
       BW_SESSION="$(bw unlock --raw || bw login --raw)"

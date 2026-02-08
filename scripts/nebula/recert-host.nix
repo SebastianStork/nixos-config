@@ -14,11 +14,11 @@ pkgs.writeShellApplication {
     fi
 
     host="$1"
-    address="$(nix eval --raw ".#nixosConfigurations.$host.config.custom.networking.overlay.cidr")"
-    groups="$(nix eval --raw ".#nixosConfigurations.$host.config.custom.services.nebula.groups" --apply 'builtins.concatStringsSep ","')"
+    address="$(nix eval --raw ".#allHosts.$host.config.custom.networking.overlay.cidr")"
+    groups="$(nix eval --raw ".#allHosts.$host.config.custom.services.nebula.groups" --apply 'builtins.concatStringsSep ","')"
     ca_cert='modules/system/services/nebula/ca.crt'
-    host_pub="$(nix eval --raw ".#nixosConfigurations.$host.config.custom.services.nebula.publicKeyPath")"
-    host_cert="$(nix eval --raw ".#nixosConfigurations.$host.config.custom.services.nebula.certificatePath")"
+    host_pub="$(nix eval --raw ".#allHosts.$host.config.custom.services.nebula.publicKeyPath")"
+    host_cert="$(nix eval --raw ".#allHosts.$host.config.custom.services.nebula.certificatePath")"
     host_cert="''${host_cert#*-source/}"
 
     if [[ $# -eq 2 ]]; then

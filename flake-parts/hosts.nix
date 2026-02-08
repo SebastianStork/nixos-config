@@ -6,21 +6,31 @@
 }:
 let
   mkHost =
-    hostName:
+    hostDir:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs self; };
       modules =
-        (lib.singleton { networking = { inherit hostName; }; })
+        (lib.singleton { networking.hostName = lib.baseNameOf hostDir; })
         ++ (
-          "${self}/hosts/${hostName}"
+          hostDir
           |> builtins.readDir
           |> lib.attrNames
-          |> lib.filter (file: file |> lib.hasSuffix ".nix")
-          |> lib.map (file: "${self}/hosts/${hostName}/${file}")
+          |> lib.filter (lib.hasSuffix ".nix")
+          |> lib.map (file: "${hostDir}/${file}")
         );
     };
+
+  mkHosts =
+    baseDir:
+    baseDir
+    |> builtins.readDir
+    |> lib.filterAttrs (_: type: type == "directory")
+    |> lib.mapAttrs (hostName: _: mkHost "${baseDir}/${hostName}");
 in
 {
-  flake.nixosConfigurations =
-    "${self}/hosts" |> self.lib.listDirectoryNames |> self.lib.genAttrs mkHost;
+  flake = {
+    nixosConfigurations = mkHosts "${self}/hosts";
+    externalConfigurations = mkHosts "${self}/external-hosts";
+    allHosts = self.nixosConfigurations // self.externalConfigurations;
+  };
 }

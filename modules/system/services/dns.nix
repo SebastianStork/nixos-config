@@ -27,7 +27,7 @@ in
                 netCfg.nodes
                 |> lib.map (node: "\"${node.hostName}.${node.overlay.domain}. A ${node.overlay.address}\"");
               serviceRecords =
-                self.nixosConfigurations
+                self.allHosts
                 |> lib.attrValues
                 |> lib.concatMap (
                   host:

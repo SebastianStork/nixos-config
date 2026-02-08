@@ -87,7 +87,7 @@ in
         settings =
           let
             hosts =
-              self.nixosConfigurations
+              self.allHosts
               |> lib.filterAttrs (_: host: host.config.networking.hostName != config.networking.hostName)
               |> lib.filterAttrs (_: host: host.config.custom.services.syncthing.enable);
           in

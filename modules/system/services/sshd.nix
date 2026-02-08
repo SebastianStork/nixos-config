@@ -41,7 +41,7 @@ in
     };
 
     users.users.seb.openssh.authorizedKeys.keyFiles =
-      self.nixosConfigurations
+      self.allHosts
       |> lib.attrValues
       |> lib.filter (host: host.config.networking.hostName != netCfg.hostName)
       |> lib.filter (host: host.config |> lib.hasAttr "home-manager")

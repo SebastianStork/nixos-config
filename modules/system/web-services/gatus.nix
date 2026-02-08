@@ -173,7 +173,7 @@ in
       web-services.gatus.endpoints =
         let
           defaultEndpoints =
-            self.nixosConfigurations
+            self.allHosts
             |> lib.mapAttrs (
               _: host:
               host.config.custom.services.caddy.virtualHosts |> lib.attrValues |> lib.map (vHost: vHost.domain)

@@ -18,7 +18,7 @@ in
     nodes = lib.mkOption {
       type = lib.types.anything;
       default =
-        self.nixosConfigurations
+        self.allHosts
         |> lib.attrValues
         |> lib.map (host: host.config.custom.networking)
         |> lib.map (
