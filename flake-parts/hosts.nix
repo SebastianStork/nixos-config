@@ -10,7 +10,9 @@ let
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs self; };
       modules =
-        (lib.singleton { networking.hostName = lib.baseNameOf hostDir; })
+        (lib.singleton {
+          networking.hostName = hostDir |> lib.baseNameOf |> lib.unsafeDiscardStringContext;
+        })
         ++ (
           hostDir
           |> builtins.readDir
