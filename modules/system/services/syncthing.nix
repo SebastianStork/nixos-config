@@ -103,9 +103,12 @@ in
 
             folders =
               cfg.folders
-              |> self.lib.genAttrs (name: {
-                path = "${dataDir}/${name}";
-                devices = hosts |> lib.attrNames;
+              |> self.lib.genAttrs (folder: {
+                path = "${dataDir}/${folder}";
+                devices =
+                  hosts
+                  |> lib.filterAttrs (_: host: host.config.custom.services.syncthing.folders |> lib.elem folder)
+                  |> lib.attrNames;
               });
 
             options = {
