@@ -52,6 +52,11 @@
           domain = "budget.${privateDomain}";
           doBackups = true;
         };
+
+        karakeep = {
+          enable = true;
+          domain = "bookmarks.${privateDomain}";
+        };
       };
     };
 }
