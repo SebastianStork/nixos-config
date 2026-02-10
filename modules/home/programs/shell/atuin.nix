@@ -6,9 +6,9 @@
   ...
 }:
 {
-  options.custom.programs.atuin.enable = lib.mkEnableOption "";
+  options.custom.programs.shell.atuin.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.programs.atuin.enable {
+  config = lib.mkIf config.custom.programs.shell.atuin.enable {
     programs.atuin = {
       enable = true;
       forceOverwriteSettings = true;
