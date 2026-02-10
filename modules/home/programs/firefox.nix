@@ -69,6 +69,10 @@ in
       return-youtube-dislikes.uuid = "{762f9885-5a13-4abd-9c77-433dcd38b8fd}";
       sponsorblock.uuid = "sponsorBlocker@ajay.app";
       clearurls.uuid = "{74145f27-f039-47ce-a470-a662b129930a}";
+      karakeep = {
+        uuid = "addon@karakeep.app";
+        defaultArea = "navbar";
+      };
     };
 
     programs.firefox = {
