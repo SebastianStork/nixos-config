@@ -1,4 +1,4 @@
-{ config, self, ... }:
+{ self, ... }:
 {
   imports = [ self.nixosModules.server-profile ];
 
@@ -19,13 +19,6 @@
           isPublic = true;
           gateway = "172.31.1.1";
         };
-      };
-
-      services.caddy.virtualHosts."dav.${sproutedDomain}" = {
-        inherit (config.custom.web-services.radicale) port;
-        extraConfig = ''
-          respond /.web/ "Access denied" 403 { close }
-        '';
       };
 
       web-services =
@@ -69,12 +62,6 @@
           screego = {
             enable = true;
             domain = "mirror.${sproutedDomain}";
-          };
-
-          radicale = {
-            enable = true;
-            domain = "dav.${config.custom.networking.overlay.domain}";
-            doBackups = true;
           };
         };
     };

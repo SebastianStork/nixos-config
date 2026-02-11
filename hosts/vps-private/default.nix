@@ -47,6 +47,12 @@
           doBackups = true;
         };
 
+        radicale = {
+          enable = true;
+          domain = "dav.${privateDomain}";
+          doBackups = true;
+        };
+
         actualbudget = {
           enable = true;
           domain = "budget.${privateDomain}";
