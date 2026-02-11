@@ -1,6 +1,6 @@
 { self, ... }:
 {
-  imports = [ self.nixosModules.profile-workstation ];
+  imports = [ self.nixosModules.workstation-profile ];
 
   system.stateVersion = "24.11";
 

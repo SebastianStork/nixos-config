@@ -5,7 +5,7 @@
     |> builtins.readDir
     |> lib.attrNames
     |> lib.map (name: {
-      name = "profile-${name |> lib.removeSuffix ".nix"}";
+      name = "${name |> lib.removeSuffix ".nix"}-profile";
       value = "${self}/profiles/${name}";
     })
     |> lib.listToAttrs;

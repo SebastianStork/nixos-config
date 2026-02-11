@@ -1,6 +1,6 @@
 { config, self, ... }:
 {
-  imports = [ self.nixosModules.profile-server ];
+  imports = [ self.nixosModules.server-profile ];
 
   system.stateVersion = "25.11";
 

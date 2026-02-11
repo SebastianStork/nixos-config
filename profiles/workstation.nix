@@ -8,7 +8,7 @@
 }:
 {
   imports = [
-    self.nixosModules.profile-core
+    self.nixosModules.core-profile
     inputs.home-manager.nixosModules.home-manager
   ];
 

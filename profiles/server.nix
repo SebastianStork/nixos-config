@@ -1,6 +1,6 @@
 { config, self, ... }:
 {
-  imports = [ self.nixosModules.profile-core ];
+  imports = [ self.nixosModules.core-profile ];
 
   custom = {
     persistence.enable = true;
