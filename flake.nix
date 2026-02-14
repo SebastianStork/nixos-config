@@ -70,6 +70,6 @@
         ./flake-parts
         |> builtins.readDir
         |> builtins.attrNames
-        |> builtins.map (name: ./flake-parts + "/${name}");
+        |> builtins.map (name: ./flake-parts/${name});
     };
 }
