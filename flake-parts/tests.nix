@@ -2,27 +2,25 @@
 {
   perSystem =
     { pkgs, lib, ... }:
+    let
+      mkTest = dir: rec {
+        name = "${dir}-test";
+        value = pkgs.testers.runNixOSTest (
+          {
+            inherit name;
+          }
+          // import "${self}/tests/${dir}" {
+            inherit
+              inputs
+              self
+              pkgs
+              lib
+              ;
+          }
+        );
+      };
+    in
     {
-      checks =
-        "${self}/tests"
-        |> builtins.readDir
-        |> lib.attrNames
-        |> lib.map (name: {
-          name = "${name}-test";
-          value = pkgs.testers.runNixOSTest (
-            {
-              name = "${name}-test";
-            }
-            // import "${self}/tests/${name}" {
-              inherit
-                inputs
-                self
-                pkgs
-                lib
-                ;
-            }
-          );
-        })
-        |> lib.listToAttrs;
+      checks = "${self}/tests" |> builtins.readDir |> lib.attrNames |> lib.map mkTest |> lib.listToAttrs;
     };
 }
