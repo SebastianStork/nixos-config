@@ -10,7 +10,7 @@
       comin.enable = true;
       alloy = {
         enable = true;
-        domain = "alloy.${config.networking.hostName}.${config.custom.networking.overlay.domain}";
+        domain = "alloy.${config.custom.networking.overlay.fqdn}";
       };
     };
   };

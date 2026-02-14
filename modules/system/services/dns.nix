@@ -24,9 +24,7 @@ in
           local-zone = "\"${netCfg.overlay.domain}.\" static";
           local-data =
             let
-              nodeRecords =
-                netCfg.nodes
-                |> lib.map (node: "\"${node.hostName}.${node.overlay.domain}. A ${node.overlay.address}\"");
+              nodeRecords = netCfg.nodes |> lib.map (node: "\"${node.overlay.fqdn}. A ${node.overlay.address}\"");
               serviceRecords =
                 allHosts
                 |> lib.attrValues

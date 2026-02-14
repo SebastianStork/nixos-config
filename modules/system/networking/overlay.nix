@@ -27,6 +27,10 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
+    fqdn = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "${config.custom.networking.hostName}.${cfg.domain}";
+    };
 
     address = lib.mkOption {
       type = lib.types.nonEmptyStr;
