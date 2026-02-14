@@ -27,6 +27,10 @@ in
         ++ lib.optional config.custom.services.syncthing.enable "syncthing";
     };
 
+    caCertificatePath = lib.mkOption {
+      type = lib.types.path;
+      default = ./ca.crt;
+    };
     publicKeyPath = lib.mkOption {
       type = lib.types.path;
       default = "${self}/hosts/${netCfg.hostName}/keys/nebula.pub";
@@ -34,6 +38,10 @@ in
     certificatePath = lib.mkOption {
       type = lib.types.path;
       default = "${self}/hosts/${netCfg.hostName}/keys/nebula.crt";
+    };
+    privateKeyPath = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
     };
   };
 
@@ -50,14 +58,14 @@ in
       systemdUnit = "nebula@mesh.service";
     };
 
-    sops.secrets."nebula/host-key" = {
+    sops.secrets."nebula/host-key" = lib.mkIf (cfg.privateKeyPath == null) {
       owner = config.users.users.nebula-mesh.name;
       restartUnits = [ "nebula@mesh.service" ];
     };
 
     environment.etc = {
       "nebula/ca.crt" = {
-        source = ./ca.crt;
+        source = cfg.caCertificatePath;
         mode = "0440";
         user = config.systemd.services."nebula@mesh".serviceConfig.User;
       };
@@ -73,7 +81,11 @@ in
 
       ca = "/etc/nebula/ca.crt";
       cert = "/etc/nebula/host.crt";
-      key = config.sops.secrets."nebula/host-key".path;
+      key =
+        if (cfg.privateKeyPath != null) then
+          cfg.privateKeyPath
+        else
+          config.sops.secrets."nebula/host-key".path;
 
       tun.device = netCfg.overlay.interface;
       listen = {
