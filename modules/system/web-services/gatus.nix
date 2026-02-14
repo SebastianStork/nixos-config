@@ -1,7 +1,7 @@
 {
   config,
-  self,
   lib,
+  allHosts,
   ...
 }:
 let
@@ -173,7 +173,7 @@ in
       web-services.gatus.endpoints =
         let
           defaultEndpoints =
-            self.allHosts
+            allHosts
             |> lib.mapAttrs (
               _: host:
               host.config.custom.services.caddy.virtualHosts |> lib.attrValues |> lib.map (vHost: vHost.domain)

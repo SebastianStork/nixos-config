@@ -1,7 +1,7 @@
 {
   config,
-  self,
   lib,
+  allHosts,
   ...
 }:
 let
@@ -41,7 +41,7 @@ in
     };
 
     users.users.seb.openssh.authorizedKeys.keyFiles =
-      self.allHosts
+      allHosts
       |> lib.attrValues
       |> lib.filter (host: host.config.networking.hostName != netCfg.hostName)
       |> lib.filter (host: host.config |> lib.hasAttr "home-manager")

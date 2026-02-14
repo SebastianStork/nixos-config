@@ -2,6 +2,7 @@
   config,
   self,
   lib,
+  allHosts,
   ...
 }:
 let
@@ -27,7 +28,7 @@ in
                 netCfg.nodes
                 |> lib.map (node: "\"${node.hostName}.${node.overlay.domain}. A ${node.overlay.address}\"");
               serviceRecords =
-                self.allHosts
+                allHosts
                 |> lib.attrValues
                 |> lib.concatMap (
                   host:

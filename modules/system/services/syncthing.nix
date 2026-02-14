@@ -2,6 +2,7 @@
   config,
   self,
   lib,
+  allHosts,
   ...
 }:
 let
@@ -87,7 +88,7 @@ in
         settings =
           let
             hosts =
-              self.allHosts
+              allHosts
               |> lib.filterAttrs (_: host: host.config.networking.hostName != config.networking.hostName)
               |> lib.filterAttrs (_: host: host.config.custom.services.syncthing.enable);
           in

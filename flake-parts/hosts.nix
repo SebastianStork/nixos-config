@@ -8,7 +8,10 @@ let
   mkHost =
     hostDir:
     inputs.nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs self; };
+      specialArgs = {
+        inherit inputs self;
+        inherit (self) allHosts;
+      };
       modules =
         (lib.singleton {
           networking.hostName = hostDir |> lib.baseNameOf |> lib.unsafeDiscardStringContext;

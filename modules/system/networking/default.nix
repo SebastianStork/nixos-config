@@ -1,7 +1,7 @@
 {
   config,
-  self,
   lib,
+  allHosts,
   ...
 }:
 let
@@ -18,7 +18,7 @@ in
     nodes = lib.mkOption {
       type = lib.types.anything;
       default =
-        self.allHosts
+        allHosts
         |> lib.attrValues
         |> lib.map (host: host.config.custom.networking)
         |> lib.map (
