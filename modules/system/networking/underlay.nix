@@ -40,7 +40,11 @@ in
 
   config = lib.mkMerge [
     {
-      networking.useNetworkd = true;
+      networking = {
+        useNetworkd = true;
+        useDHCP = false;
+      };
+
       systemd.network = {
         enable = true;
         networks."10-${cfg.interface}" = {
