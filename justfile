@@ -10,6 +10,9 @@ fmt:
     nix fmt
 
 check:
+    nix flake check
+
+check-lite:
     nix flake check --no-build
 
 repair:
