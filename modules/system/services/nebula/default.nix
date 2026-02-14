@@ -51,13 +51,6 @@ in
       message = "`${netCfg.hostName}` is a Nebula lighthouse, but `underlay.isPublic` is not set. Lighthouses must be publicly reachable.";
     };
 
-    custom.networking.overlay = {
-      networkCidr = "10.254.250.0/24";
-      domain = "splitleaf.de";
-      interface = "nebula";
-      systemdUnit = "nebula@mesh.service";
-    };
-
     sops.secrets."nebula/host-key" = lib.mkIf (cfg.privateKeyPath == null) {
       owner = config.users.users.nebula-mesh.name;
       restartUnits = [ "nebula@mesh.service" ];

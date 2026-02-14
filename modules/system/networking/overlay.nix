@@ -11,7 +11,7 @@ in
   options.custom.networking.overlay = {
     networkCidr = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "";
+      default = "10.254.250.0/24";
     };
     networkAddress = lib.mkOption {
       type = lib.types.nonEmptyStr;
@@ -25,7 +25,7 @@ in
     };
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "";
+      default = "splitleaf.de";
     };
     fqdn = lib.mkOption {
       type = lib.types.nonEmptyStr;
@@ -43,11 +43,11 @@ in
     };
     interface = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "";
+      default = "nebula";
     };
     systemdUnit = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "";
+      default = "nebula@mesh.service";
     };
 
     isLighthouse = lib.mkEnableOption "";
