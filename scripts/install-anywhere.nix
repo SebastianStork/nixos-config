@@ -1,7 +1,5 @@
 { pkgs, ... }:
-pkgs.writeShellApplication {
-  name = "install-anywhere";
-
+{
   runtimeInputs = [
     pkgs.sops
     pkgs.ssh-to-age

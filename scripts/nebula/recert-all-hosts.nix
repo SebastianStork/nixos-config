@@ -1,7 +1,5 @@
 { self', pkgs, ... }:
-pkgs.writeShellApplication {
-  name = "nebula-recert-all-hosts";
-
+{
   runtimeInputs = [
     pkgs.bitwarden-cli
     pkgs.jq

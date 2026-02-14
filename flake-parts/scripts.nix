@@ -7,19 +7,19 @@
       lib,
       ...
     }:
+    let
+      mkScript = file: rec {
+        name =
+          file
+          |> lib.unsafeDiscardStringContext
+          |> lib.removePrefix "${self}/scripts/"
+          |> lib.removeSuffix ".nix"
+          |> lib.replaceString "/" "-";
+        value = pkgs.writeShellApplication ({ inherit name; } // import file { inherit self' pkgs lib; });
+      };
+    in
     {
       packages =
-        "${self}/scripts"
-        |> lib.filesystem.listFilesRecursive
-        |> lib.map (file: {
-          name =
-            file
-            |> lib.unsafeDiscardStringContext
-            |> lib.removePrefix "${self}/scripts/"
-            |> lib.removeSuffix ".nix"
-            |> lib.replaceString "/" "-";
-          value = import file { inherit self' pkgs lib; };
-        })
-        |> lib.listToAttrs;
+        "${self}/scripts" |> lib.filesystem.listFilesRecursive |> lib.map mkScript |> lib.listToAttrs;
     };
 }
