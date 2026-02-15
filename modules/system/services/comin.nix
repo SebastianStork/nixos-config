@@ -15,6 +15,7 @@
       remotes = lib.singleton {
         name = "origin";
         url = "https://github.com/SebastianStork/nixos-config.git";
+        branches.main.name = "deploy";
       };
     };
   };
