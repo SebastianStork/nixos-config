@@ -12,4 +12,4 @@ jobs:
         with:
           name: sebastian-stork
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-      - run: nix flake check
+      - run: nix flake --extra-experimental-features pipe-operators check
