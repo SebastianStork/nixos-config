@@ -57,9 +57,6 @@ in
       victorialogs.enable = lib.mkEnableOption "" // {
         default = config.custom.web-services.victorialogs.enable;
       };
-      crowdsec.enable = lib.mkEnableOption "" // {
-        default = config.custom.services.crowdsec.enable;
-      };
     };
   };
 
@@ -173,22 +170,6 @@ in
             src:
             pkgs.runCommand "victorialogs-single-node-patched.json" { buildInputs = [ pkgs.gnused ]; } ''
               sed 's/victoria-logs-//g' ${src} > $out
-            ''
-          );
-      };
-      # https://grafana.com/grafana/dashboards/19012-crowdsec-details-per-instance/
-      "grafana-dashboards/crowdsec-details-per-instance-patched.json" = {
-        enable = cfg.dashboards.crowdsec.enable;
-        source =
-          pkgs.fetchurl {
-            name = "crowdsec-details-per-instance.json";
-            url = "https://grafana.com/api/dashboards/19012/revisions/1/download";
-            hash = "sha256-VRPWAbPRgp+2pqfmey53wMqaOhLBzXVKUZs/pJ28Ikk=";
-          }
-          |> (
-            src:
-            pkgs.runCommand "crowdsec-details-per-instance-patched.json" { buildInputs = [ pkgs.gnused ]; } ''
-              sed 's/''${DS_PROMETHEUS}/Prometheus/g' ${src} > $out
             ''
           );
       };

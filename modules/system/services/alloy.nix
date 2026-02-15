@@ -32,9 +32,6 @@ in
         caddy = lib.mkEnableOption "" // {
           default = config.services.caddy.enable;
         };
-        crowdsec = lib.mkEnableOption "" // {
-          default = config.services.crowdsec.enable;
-        };
       };
       logs.openssh = lib.mkEnableOption "" // {
         default = config.services.openssh.enable;
@@ -132,20 +129,6 @@ in
               targets = [{
                 __address__ = "localhost:${toString config.custom.services.caddy.metricsPort}",
                 job         = "caddy",
-                instance    = constants.hostname,
-              }]
-              forward_to      = [prometheus.remote_write.default.receiver]
-              scrape_interval = "15s"
-            }
-          '';
-        };
-        "alloy/crowdsec-metrics.alloy" = {
-          enable = cfg.collect.metrics.crowdsec;
-          text = ''
-            prometheus.scrape "crowdsec" {
-              targets = [{
-                __address__ = "localhost:${toString config.custom.services.crowdsec.prometheusPort}",
-                job         = "crowdsec",
                 instance    = constants.hostname,
               }]
               forward_to      = [prometheus.remote_write.default.receiver]
