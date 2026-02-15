@@ -12,7 +12,7 @@
       enable = true;
       options = [ "--cmd cd" ];
     };
-      
+
     home = {
       packages = [
         pkgs.eza
@@ -23,12 +23,25 @@
         let
           lsAliases =
             let
-              eza = [ "eza" "--header" "--group" "--time-style=long-iso" "--group-directories-first" "--sort=name" "--icons=auto" "--git" "--git-repos-no-status" "--binary" ];
+              eza = [
+                "eza"
+                "--header"
+                "--group"
+                "--time-style=long-iso"
+                "--group-directories-first"
+                "--sort=name"
+                "--icons=auto"
+                "--git"
+                "--git-repos-no-status"
+                "--binary"
+              ];
+
               aliasPartsToCommand =
                 aliasParts:
                 aliasParts
                 |> lib.filter (aliasPart: aliasPart != "")
-                |> lib.map (aliasPart:
+                |> lib.map (
+                  aliasPart:
                   {
                     "l" = "--oneline --dereference";
                     "ll" = "--long";
@@ -37,18 +50,47 @@
                     "d" = "--only-dirs";
                     "f" = "--only-files";
                   }
-                  .${aliasPart})
+                  .${aliasPart}
+                )
                 |> (flags: eza ++ flags)
                 |> lib.concatStringsSep " ";
             in
-              { format = [ "l" "ll" "lt" ]; visibility = [ "" "a" ]; restriction = [ "" "d" "f" ]; }
-              |> lib.mapCartesianProduct ({ format, visibility, restriction, }: [ format visibility restriction ])
-              |> lib.map (aliasParts: lib.nameValuePair (lib.concatStrings aliasParts) (aliasPartsToCommand aliasParts))
-              |> lib.listToAttrs;
-        in 
-        lsAliases // {
+            {
+              format = [
+                "l"
+                "ll"
+                "lt"
+              ];
+              visibility = [
+                ""
+                "a"
+              ];
+              restriction = [
+                ""
+                "d"
+                "f"
+              ];
+            }
+            |> lib.mapCartesianProduct (
+              {
+                format,
+                visibility,
+                restriction,
+              }:
+              [
+                format
+                visibility
+                restriction
+              ]
+            )
+            |> lib.map (
+              aliasParts: lib.nameValuePair (lib.concatStrings aliasParts) (aliasPartsToCommand aliasParts)
+            )
+            |> lib.listToAttrs;
+        in
+        lsAliases
+        // {
           ls = "l";
-          btm = "btm --group_processes";
           cat =
             let
               theme =
