@@ -5,6 +5,8 @@
   ...
 }:
 {
+  node.specialArgs = { inherit inputs self; };
+
   defaults =
     { nodes, config, ... }:
     {
@@ -17,8 +19,17 @@
         users.seb = {
           isNormalUser = true;
           password = "seb";
-          extraGroups = [ "wheel" ];
+          openssh.authorizedKeys.keyFiles = lib.mkIf config.custom.services.sshd.enable [
+            ./keys/server-ssh.pub
+            ./keys/client1-ssh.pub
+            ./keys/client2-ssh.pub
+          ];
         };
+      };
+
+      environment.etc."ssh-key" = lib.mkIf (lib.pathExists ./keys/${config.networking.hostName}-ssh) {
+        source = ./keys/${config.networking.hostName}-ssh;
+        mode = "0600";
       };
 
       custom.services.nebula = {
@@ -29,8 +40,6 @@
 
       services.resolved.dnssec = lib.mkForce "false";
     };
-
-  node.specialArgs = { inherit inputs self; };
 
   nodes = {
     lighthouse = {
@@ -68,30 +77,41 @@
 
         services.sshd.enable = true;
       };
-
-      users.users.seb.openssh.authorizedKeys.keyFiles = [ ./keys/client-ssh.pub ];
-      environment.etc."ssh-key" = {
-        source = ./keys/server-ssh;
-        mode = "0600";
-      };
     };
 
-    client = {
-      custom.networking = {
-        overlay = {
-          address = "10.254.250.3";
-          role = "client";
+    client1 =
+      { pkgs, ... }:
+      {
+        custom = {
+          networking = {
+            overlay = {
+              address = "10.254.250.3";
+              role = "client";
+            };
+            underlay = {
+              interface = "eth1";
+              cidr = "192.168.0.3/16";
+            };
+          };
         };
-        underlay = {
-          interface = "eth1";
-          cidr = "192.168.0.3/16";
-        };
+
+        environment.systemPackages = [ pkgs.openssh ];
       };
 
-      users.users.seb.openssh.authorizedKeys.keyFiles = [ ./keys/server-ssh.pub ];
-      environment.etc."ssh-key" = {
-        source = ./keys/client-ssh;
-        mode = "0600";
+    client2 = {
+      custom = {
+        networking = {
+          overlay = {
+            address = "10.254.250.4";
+            role = "client";
+          };
+          underlay = {
+            interface = "eth1";
+            cidr = "192.168.0.4/16";
+          };
+        };
+
+        services.sshd.enable = true;
       };
     };
   };
@@ -99,31 +119,42 @@
   testScript =
     { nodes, ... }:
     let
-      lighthouseNetCfg = nodes.lighthouse.custom.networking.overlay;
-      serverNetCfg = nodes.server.custom.networking.overlay;
-      clientNetCfg = nodes.client.custom.networking.overlay;
+      lighthouseNetCfg = nodes.lighthouse.custom.networking;
+      serverNetCfg = nodes.server.custom.networking;
+      client1NetCfg = nodes.client1.custom.networking;
+      client2NetCfg = nodes.client2.custom.networking;
 
       sshOptions = "-i /etc/ssh-key -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
     in
     ''
       start_all()
 
-      lighthouse.wait_for_unit("${lighthouseNetCfg.systemdUnit}")
-      server.wait_for_unit("${serverNetCfg.systemdUnit}")
-      client.wait_for_unit("${clientNetCfg.systemdUnit}")
+      lighthouse.wait_for_unit("${lighthouseNetCfg.overlay.systemdUnit}")
+      server.wait_for_unit("${serverNetCfg.overlay.systemdUnit}")
+      client1.wait_for_unit("${client1NetCfg.overlay.systemdUnit}")
+      client2.wait_for_unit("${client2NetCfg.overlay.systemdUnit}")
+
       lighthouse.wait_for_unit("unbound.service")
+      lighthouse.wait_for_open_port(53, "${lighthouseNetCfg.overlay.address}")
+
       server.wait_for_unit("sshd.service")
+      client2.wait_for_unit("sshd.service")
+      server.wait_for_open_port(22, "${serverNetCfg.overlay.address}")
+      client2.wait_for_open_port(22, "${client2NetCfg.overlay.address}")
 
       with subtest("Overlay connectivity between nodes"):
-        client.succeed("ping -c 1 ${serverNetCfg.address}")
-        server.succeed("ping -c 1 ${clientNetCfg.address}")
+        client1.succeed("ping -c 1 ${serverNetCfg.overlay.address}")
+        client1.succeed("ping -c 1 ${client2NetCfg.overlay.address}")
+        server.succeed("ping -c 1 ${client1NetCfg.overlay.address}")
 
-      with subtest("DNS resolution of overlay hostnames"):
-        client.succeed("ping -c 1 ${serverNetCfg.fqdn}")
-        server.succeed("ping -c 1 ${clientNetCfg.fqdn}")
+      with subtest("DNS resolution of FQDNs"):
+        client1.succeed("ping -c 1 ${serverNetCfg.overlay.fqdn}")
+        client1.succeed("ping -c 1 ${client2NetCfg.overlay.fqdn}")
+        server.succeed("ping -c 1 ${client1NetCfg.overlay.fqdn}")
 
       with subtest("SSH access restricted by role"):
-        client.succeed("ssh ${sshOptions} seb@${serverNetCfg.fqdn} 'echo Hello'")
-        server.fail("ssh ${sshOptions} seb@${clientNetCfg.fqdn} 'echo Hello'")
+        client1.succeed("ssh ${sshOptions} seb@${serverNetCfg.overlay.fqdn} 'echo Hello'")
+        client1.succeed("ssh ${sshOptions} seb@${client2NetCfg.overlay.fqdn} 'echo Hello'")
+        server.fail("ssh ${sshOptions} seb@${client2NetCfg.overlay.fqdn} 'echo Hello'")
     '';
 }
