@@ -38,6 +38,7 @@
         privateKeyPath = ./keys/${config.networking.hostName}.key;
       };
 
+      networking.extraHosts = lib.mkForce "";
       services.resolved.dnssec = lib.mkForce "false";
     };
 
@@ -145,16 +146,21 @@
       with subtest("Overlay connectivity between nodes"):
         client1.succeed("ping -c 1 ${serverNetCfg.overlay.address}")
         client1.succeed("ping -c 1 ${client2NetCfg.overlay.address}")
-        server.succeed("ping -c 1 ${client1NetCfg.overlay.address}")
+        server.succeed("ping -c 1 ${client2NetCfg.overlay.address}")
 
       with subtest("DNS resolution of FQDNs"):
         client1.succeed("ping -c 1 ${serverNetCfg.overlay.fqdn}")
         client1.succeed("ping -c 1 ${client2NetCfg.overlay.fqdn}")
-        server.succeed("ping -c 1 ${client1NetCfg.overlay.fqdn}")
+        server.succeed("ping -c 1 ${client2NetCfg.overlay.fqdn}")
+
+      with subtest("DNS resolution of unqualified hostnames"):
+        client1.succeed("ping -c 1 server")
+        client1.succeed("ping -c 1 client2")
+        server.succeed("ping -c 1 client2")
 
       with subtest("SSH access restricted by role"):
-        client1.succeed("ssh ${sshOptions} seb@${serverNetCfg.overlay.fqdn} 'echo Hello'")
-        client1.succeed("ssh ${sshOptions} seb@${client2NetCfg.overlay.fqdn} 'echo Hello'")
-        server.fail("ssh ${sshOptions} seb@${client2NetCfg.overlay.fqdn} 'echo Hello'")
+        client1.succeed("ssh ${sshOptions} seb@server 'echo Hello'")
+        client1.succeed("ssh ${sshOptions} seb@client2 'echo Hello'")
+        server.fail("ssh ${sshOptions} seb@client2 'echo Hello'")
     '';
 }
