@@ -162,5 +162,8 @@
         client1.succeed("ssh ${sshOptions} seb@server 'echo Hello'")
         client1.succeed("ssh ${sshOptions} seb@client2 'echo Hello'")
         server.fail("ssh ${sshOptions} seb@client2 'echo Hello'")
+
+      with subtest("SSH not reachable on underlay"):
+        client1.fail("ssh ${sshOptions} seb@${serverNetCfg.underlay.address} 'echo Hello'")
     '';
 }
