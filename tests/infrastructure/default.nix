@@ -21,13 +21,10 @@
         };
       };
 
-      custom = {
-        networking.overlay.networkCidr = lib.mkForce "10.10.10.0/24";
-        services.nebula = {
-          caCertificatePath = ./keys/ca.crt;
-          certificatePath = ./keys/${config.networking.hostName}.crt;
-          privateKeyPath = ./keys/${config.networking.hostName}.key;
-        };
+      custom.services.nebula = {
+        caCertificatePath = ./keys/ca.crt;
+        certificatePath = ./keys/${config.networking.hostName}.crt;
+        privateKeyPath = ./keys/${config.networking.hostName}.key;
       };
 
       services.resolved.dnssec = lib.mkForce "false";
@@ -40,7 +37,7 @@
       custom = {
         networking = {
           overlay = {
-            address = "10.10.10.1";
+            address = "10.254.250.1";
             isLighthouse = true;
             role = "server";
           };
@@ -59,7 +56,7 @@
       custom = {
         networking = {
           overlay = {
-            address = "10.10.10.2";
+            address = "10.254.250.2";
             role = "server";
           };
           underlay = {
@@ -82,7 +79,7 @@
     client = {
       custom.networking = {
         overlay = {
-          address = "10.10.10.3";
+          address = "10.254.250.3";
           role = "client";
         };
         underlay = {
