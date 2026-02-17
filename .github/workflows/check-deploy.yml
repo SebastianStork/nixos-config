@@ -1,4 +1,4 @@
-name: "CI"
+name: "Check & Deploy"
 on:
   push:
     branches: [main]
