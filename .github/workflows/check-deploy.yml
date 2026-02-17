@@ -14,7 +14,7 @@ jobs:
         with:
           name: sebastian-stork
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-      - run: nix flake check
+      - run: nix flake check --print-build-logs
   deploy:
     needs: check
     runs-on: ubuntu-latest
