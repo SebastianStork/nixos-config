@@ -1,16 +1,8 @@
-{ inputs, ... }:
+{ inputs, self, ... }:
 {
   perSystem =
     { pkgs, ... }:
     {
-      formatter =
-        (inputs.treefmt.lib.evalModule pkgs {
-          projectRootFile = "flake.nix";
-          programs = {
-            nixfmt.enable = true;
-            prettier.enable = true;
-            just.enable = true;
-          };
-        }).config.build.wrapper;
+      formatter = (inputs.treefmt.lib.evalModule pkgs "${self}/treefmt.nix").config.build.wrapper;
     };
 }

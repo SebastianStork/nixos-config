@@ -35,6 +35,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    statix = {
+      url = "github:oppiliappan/statix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
