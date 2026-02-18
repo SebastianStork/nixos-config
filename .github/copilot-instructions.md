@@ -51,19 +51,19 @@ Hosts enable services declaratively: `custom.web-services.forgejo = { enable = t
 
 ## Developer Workflows
 
-| Task | Command |
-|---|---|
-| Rebuild & switch locally | `just switch` |
-| Test config without switching | `just test` |
-| Deploy to remote host(s) | `just deploy hostname1 hostname2` |
-| Format all files | `just fmt` or `nix fmt` |
-| Run flake checks + tests | `just check` |
-| Check without building | `just check-lite` |
-| Update flake inputs | `just update` |
-| Edit SOPS secrets | `just sops-edit hosts/<host>/secrets.json` |
-| Rotate all secrets | `just sops-rotate-all` |
-| Install a new host | `just install <host> root@<ip>` |
-| Open nix repl for a host | `just repl <hostname>` |
+| Task                          | Command                                    |
+| ----------------------------- | ------------------------------------------ |
+| Rebuild & switch locally      | `just switch`                              |
+| Test config without switching | `just test`                                |
+| Deploy to remote host(s)      | `just deploy hostname1 hostname2`          |
+| Format all files              | `just fmt` or `nix fmt`                    |
+| Run flake checks + tests      | `just check`                               |
+| Check without building        | `just check-lite`                          |
+| Update flake inputs           | `just update`                              |
+| Edit SOPS secrets             | `just sops-edit hosts/<host>/secrets.json` |
+| Rotate all secrets            | `just sops-rotate-all`                     |
+| Install a new host            | `just install <host> root@<ip>`            |
+| Open nix repl for a host      | `just repl <hostname>`                     |
 
 SOPS commands auto-enter a `nix develop .#sops` shell if `sops` isn't available, which handles Bitwarden login and age key retrieval.
 
