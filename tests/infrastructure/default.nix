@@ -83,16 +83,14 @@
     client1 =
       { pkgs, ... }:
       {
-        custom = {
-          networking = {
-            overlay = {
-              address = "10.254.250.3";
-              role = "client";
-            };
-            underlay = {
-              interface = "eth1";
-              cidr = "192.168.0.3/16";
-            };
+        custom.networking = {
+          overlay = {
+            address = "10.254.250.3";
+            role = "client";
+          };
+          underlay = {
+            interface = "eth1";
+            cidr = "192.168.0.3/16";
           };
         };
 
