@@ -6,27 +6,13 @@
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-
-    impermanence.url = "github:nix-community/impermanence";
-
-    sops = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     disko = {
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    comin = {
-      url = "github:nlewo/comin";
+    sops = {
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -37,6 +23,14 @@
 
     statix = {
       url = "github:oppiliappan/statix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # For Workstations
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -53,6 +47,14 @@
     betterfox = {
       url = "github:yokoffing/Betterfox";
       flake = false;
+    };
+
+    # For Servers
+    impermanence.url = "github:nix-community/impermanence";
+
+    comin = {
+      url = "github:nlewo/comin";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     radicale-birthday-calendar = {
