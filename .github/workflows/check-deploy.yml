@@ -1,9 +1,41 @@
 name: "Check & Deploy"
 on:
+  workflow_dispatch:
   push:
     branches: [main]
 jobs:
-  check:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      checks: ${{ steps.checks.outputs.checks }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: experimental-features = nix-command flakes pipe-operators
+      - id: checks
+        run: |
+          checks=$(nix flake show --json | jq -c '.checks."x86_64-linux" | keys')
+          printf "checks=%s" "$checks" >> "$GITHUB_OUTPUT"
+  build-check:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check: ${{ fromJson(needs.generate-matrix.outputs.checks) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: experimental-features = nix-command flakes pipe-operators
+      - uses: cachix/cachix-action@v15
+        with:
+          name: sebastian-stork
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
+  flake-check:
+    needs: build-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -14,10 +46,9 @@ jobs:
         with:
           name: sebastian-stork
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-      - run: nix flake check --print-build-logs
-      - run: nix build .#checks.x86_64-linux.infrastructure-test --print-build-logs
+      - run: nix flake check --keep-going --print-build-logs
   deploy:
-    needs: check
+    needs: flake-check
     runs-on: ubuntu-latest
     permissions:
       contents: write
