@@ -17,6 +17,10 @@ jobs:
         run: |
           checks=$(nix flake show --json | jq -c '.checks."x86_64-linux" | keys')
           printf "checks=%s" "$checks" >> "$GITHUB_OUTPUT"
+      - id: hosts
+        run: |
+          hosts=$(nix flake show --json | jq -c '.nixosConfigurations | keys')
+          printf "hosts=%s" "$hosts" >> "$GITHUB_OUTPUT"
   build-check:
     needs: generate-matrix
     runs-on: ubuntu-latest
@@ -35,6 +39,24 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           useDaemon: false
       - run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
+  build-host:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        host: ${{ fromJson(needs.generate-matrix.outputs.hosts) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: experimental-features = nix-command flakes pipe-operators
+      - uses: cachix/cachix-action@v15
+        with:
+          name: sebastian-stork
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          useDaemon: false
+      - run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --print-build-logs
   flake-check:
     needs: build-check
     runs-on: ubuntu-latest
@@ -49,7 +71,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - run: nix flake check --keep-going --print-build-logs
   deploy:
-    needs: flake-check
+    needs: [build-host, flake-check]
     runs-on: ubuntu-latest
     permissions:
       contents: write
