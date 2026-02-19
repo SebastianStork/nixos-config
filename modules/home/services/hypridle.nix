@@ -1,13 +1,10 @@
 {
   config,
-  modulesPath,
   pkgs-unstable,
   lib,
   ...
 }:
 {
-  imports = [ "${modulesPath}/services/hypridle.nix" ];
-
   options.custom.services.hypridle.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.hypridle.enable {

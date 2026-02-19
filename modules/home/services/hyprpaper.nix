@@ -1,12 +1,5 @@
+{ config, lib, ... }:
 {
-  config,
-  modulesPath,
-  lib,
-  ...
-}:
-{
-  imports = [ "${modulesPath}/services/hyprpaper.nix" ];
-
   options.custom.services.hyprpaper.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.hyprpaper.enable {

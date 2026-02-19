@@ -1,22 +1,5 @@
+{ config, lib, ... }:
 {
-  config,
-  modulesPath,
-  lib,
-  ...
-}:
-{
-  imports = [
-    "${modulesPath}/programs/git.nix"
-    "${modulesPath}/programs/lazygit.nix"
-    "${modulesPath}/programs/delta.nix"
-    "${modulesPath}/programs/jujutsu.nix"
-    "${modulesPath}/programs/diff-highlight.nix"
-    "${modulesPath}/programs/diff-so-fancy.nix"
-    "${modulesPath}/programs/difftastic.nix"
-    "${modulesPath}/programs/patdiff.nix"
-    "${modulesPath}/programs/riff.nix"
-  ];
-
   options.custom.programs.git.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.git.enable {

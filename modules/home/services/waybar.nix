@@ -1,12 +1,5 @@
+{ config, lib, ... }:
 {
-  config,
-  modulesPath,
-  lib,
-  ...
-}:
-{
-  imports = [ "${modulesPath}/programs/waybar.nix" ];
-
   options.custom.services.waybar.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.waybar.enable {

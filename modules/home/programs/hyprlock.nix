@@ -1,7 +1,6 @@
 {
   config,
   osConfig,
-  modulesPath,
   pkgs-unstable,
   lib,
   ...
@@ -10,8 +9,6 @@ let
   cfg = config.custom.programs.hyprlock;
 in
 {
-  imports = [ "${modulesPath}/programs/hyprlock.nix" ];
-
   options.custom.programs.hyprlock = {
     enable = lib.mkEnableOption "";
     fprintAuth = lib.mkEnableOption "" // {

@@ -1,14 +1,11 @@
 {
   config,
   osConfig,
-  modulesPath,
   self,
   lib,
   ...
 }:
 {
-  imports = [ "${modulesPath}/programs/ssh.nix" ];
-
   options.custom.programs.ssh = {
     enable = lib.mkEnableOption "";
     publicKeyPath = lib.mkOption {

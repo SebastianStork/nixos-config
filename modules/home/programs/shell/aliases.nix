@@ -1,13 +1,10 @@
 {
   config,
-  modulesPath,
   pkgs,
   lib,
   ...
 }:
 {
-  imports = [ "${modulesPath}/programs/zoxide.nix" ];
-
   options.custom.programs.shell.aliases.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.shell.aliases.enable {

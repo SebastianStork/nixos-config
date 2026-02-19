@@ -1,16 +1,10 @@
 {
   config,
-  modulesPath,
   pkgs,
   lib,
   ...
 }:
 {
-  imports = [
-    "${modulesPath}/programs/fish.nix"
-    "${modulesPath}/programs/fzf.nix"
-    "${modulesPath}/programs/man.nix"
-  ];
   options.custom.programs.shell.zsh.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.shell.zsh.enable {

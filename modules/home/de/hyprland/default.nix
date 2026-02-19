@@ -1,17 +1,11 @@
 {
   config,
   osConfig,
-  modulesPath,
   pkgs,
   lib,
   ...
 }:
 {
-  imports = [
-    "${modulesPath}/services/window-managers/hyprland.nix"
-    "${modulesPath}/services/dunst.nix"
-  ];
-
   options.custom.de.hyprland.enable = lib.mkEnableOption "" // {
     default = osConfig.custom.de.hyprland.enable;
   };

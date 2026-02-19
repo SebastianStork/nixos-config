@@ -1,13 +1,10 @@
 {
   config,
-  modulesPath,
   pkgs,
   lib,
   ...
 }:
 {
-  imports = [ "${modulesPath}/services/cliphist.nix" ];
-
   options.custom.services.cliphist.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.cliphist.enable {

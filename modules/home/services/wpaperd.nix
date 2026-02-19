@@ -1,12 +1,5 @@
+{ config, lib, ... }:
 {
-  config,
-  modulesPath,
-  lib,
-  ...
-}:
-{
-  imports = [ "${modulesPath}/services/wpaperd.nix" ];
-
   options.custom.services.wpaperd.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.services.wpaperd.enable {
