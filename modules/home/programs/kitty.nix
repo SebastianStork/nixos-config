@@ -1,10 +1,13 @@
 {
   config,
+  modulesPath,
   pkgs,
   lib,
   ...
 }:
 {
+  imports = [ "${modulesPath}/programs/kitty.nix" ];
+
   options.custom.programs.kitty.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.kitty.enable {

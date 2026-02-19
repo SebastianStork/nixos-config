@@ -34,6 +34,7 @@
   users.users.seb.shell = pkgs.zsh;
 
   home-manager = {
+    minimal = true;
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = { inherit inputs self pkgs-unstable; };

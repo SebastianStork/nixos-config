@@ -1,5 +1,12 @@
-{ config, lib, ... }:
 {
+  config,
+  modulesPath,
+  lib,
+  ...
+}:
+{
+  imports = [ "${modulesPath}/programs/direnv.nix" ];
+
   options.custom.programs.shell.direnv.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.shell.direnv.enable {

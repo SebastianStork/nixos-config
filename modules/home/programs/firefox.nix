@@ -1,5 +1,6 @@
 {
   config,
+  modulesPath,
   inputs,
   pkgs,
   lib,
@@ -27,6 +28,8 @@ let
     };
 in
 {
+  imports = [ "${modulesPath}/programs/firefox" ];
+
   options.custom.programs.firefox = {
     enable = lib.mkEnableOption "";
     extensions = lib.mkOption {

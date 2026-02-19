@@ -1,11 +1,14 @@
 {
   config,
+  modulesPath,
   inputs,
   pkgs,
   lib,
   ...
 }:
 {
+  imports = [ "${modulesPath}/programs/vscode" ];
+
   options.custom.programs.vscode.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.vscode.enable {

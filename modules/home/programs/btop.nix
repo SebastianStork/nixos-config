@@ -1,5 +1,12 @@
-{ config, lib, ... }:
 {
+  config,
+  modulesPath,
+  lib,
+  ...
+}:
+{
+  imports = [ "${modulesPath}/programs/btop.nix" ];
+
   options.custom.programs.btop.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.btop.enable {

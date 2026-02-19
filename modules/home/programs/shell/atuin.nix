@@ -1,11 +1,14 @@
 {
   config,
   osConfig,
+  modulesPath,
   pkgs,
   lib,
   ...
 }:
 {
+  imports = [ "${modulesPath}/programs/atuin.nix" ];
+
   options.custom.programs.shell.atuin.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.shell.atuin.enable {
