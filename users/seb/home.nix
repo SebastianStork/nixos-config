@@ -16,8 +16,6 @@
     };
   };
 
-  home.sessionVariables.NH_FLAKE = "~/Projects/nixos-config";
-
   custom = {
     sops.enable = true;
 
