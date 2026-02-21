@@ -126,10 +126,7 @@ in
       matchConfig.Name = netCfg.overlay.interface;
       address = [ netCfg.overlay.cidr ];
       dns = netCfg.overlay.dnsServers;
-      domains = [
-        netCfg.overlay.domain
-        "~." # Route all DNS traffic to this interface first
-      ];
+      domains = [ netCfg.overlay.domain ];
     };
   };
 }
