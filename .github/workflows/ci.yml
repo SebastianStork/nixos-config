@@ -1,4 +1,4 @@
-name: "Check & Deploy"
+name: "CI"
 on:
   workflow_dispatch:
   push:
