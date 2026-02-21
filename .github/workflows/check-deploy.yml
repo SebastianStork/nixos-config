@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
 jobs:
-  generate-matrix:
+  parse-flake:
     runs-on: ubuntu-latest
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
@@ -23,12 +23,12 @@ jobs:
           hosts=$(nix flake show --json | jq -c '.nixosConfigurations | keys')
           printf "hosts=%s" "$hosts" >> "$GITHUB_OUTPUT"
   build-check:
-    needs: generate-matrix
+    needs: parse-flake
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        check: ${{ fromJson(needs.generate-matrix.outputs.checks) }}
+        check: ${{ fromJson(needs.parse-flake.outputs.checks) }}
     steps:
       - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v31
@@ -41,12 +41,12 @@ jobs:
           useDaemon: false
       - run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
   build-host:
-    needs: generate-matrix
+    needs: parse-flake
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        host: ${{ fromJson(needs.generate-matrix.outputs.hosts) }}
+        host: ${{ fromJson(needs.parse-flake.outputs.hosts) }}
     steps:
       - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v31
