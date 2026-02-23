@@ -3,6 +3,9 @@
   perSystem =
     { pkgs, ... }:
     {
-      formatter = (inputs.treefmt.lib.evalModule pkgs "${self}/treefmt.nix").config.build.wrapper;
+      formatter =
+        "${self}/treefmt.nix"
+        |> inputs.treefmt.lib.evalModule pkgs
+        |> (formatter: formatter.config.build.wrapper);
     };
 }
