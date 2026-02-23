@@ -4,7 +4,10 @@
     { inputs', pkgs, ... }:
     {
       checks = {
-        formatting = (inputs.treefmt.lib.evalModule pkgs "${self}/treefmt.nix").config.build.check self;
+        formatting =
+          "${self}/treefmt.nix"
+          |> inputs.treefmt.lib.evalModule pkgs
+          |> (formatter: formatter.config.build.check self);
 
         statix = pkgs.runCommand "statix" { buildInputs = [ inputs'.statix.packages.statix ]; } ''
           statix check ${self}
