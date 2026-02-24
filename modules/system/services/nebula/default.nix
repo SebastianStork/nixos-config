@@ -27,19 +27,19 @@ in
         ++ lib.optional config.custom.services.syncthing.enable "syncthing";
     };
 
-    caCertificatePath = lib.mkOption {
+    caCertificateFile = lib.mkOption {
       type = lib.types.path;
       default = ./ca.crt;
     };
-    publicKeyPath = lib.mkOption {
+    publicKeyFile = lib.mkOption {
       type = lib.types.path;
       default = "${self}/hosts/${netCfg.hostName}/keys/nebula.pub";
     };
-    certificatePath = lib.mkOption {
+    certificateFile = lib.mkOption {
       type = lib.types.path;
       default = "${self}/hosts/${netCfg.hostName}/keys/nebula.crt";
     };
-    privateKeyPath = lib.mkOption {
+    privateKeyFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
       default = null;
     };
@@ -51,19 +51,19 @@ in
       message = "`${netCfg.hostName}` is a Nebula lighthouse, but `underlay.isPublic` is not set. Lighthouses must be publicly reachable.";
     };
 
-    sops.secrets."nebula/host-key" = lib.mkIf (cfg.privateKeyPath == null) {
+    sops.secrets."nebula/host-key" = lib.mkIf (cfg.privateKeyFile == null) {
       owner = config.users.users.nebula-mesh.name;
       restartUnits = [ "nebula@mesh.service" ];
     };
 
     environment.etc = {
       "nebula/ca.crt" = {
-        source = cfg.caCertificatePath;
+        source = cfg.caCertificateFile;
         mode = "0440";
         user = config.systemd.services."nebula@mesh".serviceConfig.User;
       };
       "nebula/host.crt" = {
-        source = cfg.certificatePath;
+        source = cfg.certificateFile;
         mode = "0440";
         user = config.systemd.services."nebula@mesh".serviceConfig.User;
       };
@@ -75,8 +75,8 @@ in
       ca = "/etc/nebula/ca.crt";
       cert = "/etc/nebula/host.crt";
       key =
-        if (cfg.privateKeyPath != null) then
-          cfg.privateKeyPath
+        if (cfg.privateKeyFile != null) then
+          cfg.privateKeyFile
         else
           config.sops.secrets."nebula/host-key".path;
 

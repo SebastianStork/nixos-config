@@ -15,8 +15,8 @@
 
     services = {
       nebula = {
-        publicKeyPath = toString ./keys/nebula.pub;
-        certificatePath = toString ./keys/nebula.crt;
+        publicKeyFile = ./keys/nebula.pub;
+        certificateFile = ./keys/nebula.crt;
       };
 
       syncthing = {

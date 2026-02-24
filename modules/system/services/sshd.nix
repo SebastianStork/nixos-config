@@ -47,6 +47,6 @@ in
       |> lib.filter (host: host.config |> lib.hasAttr "home-manager")
       |> lib.map (host: host.config.home-manager.users.seb.custom.programs.ssh)
       |> lib.filter (ssh: ssh.enable)
-      |> lib.map (ssh: ssh.publicKeyPath);
+      |> lib.map (ssh: ssh.publicKeyFile);
   };
 }

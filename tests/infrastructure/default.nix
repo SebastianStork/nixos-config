@@ -33,9 +33,9 @@
       };
 
       custom.services.nebula = {
-        caCertificatePath = ./keys/ca.crt;
-        certificatePath = ./keys/${config.networking.hostName}.crt;
-        privateKeyPath = ./keys/${config.networking.hostName}.key;
+        caCertificateFile = ./keys/ca.crt;
+        certificateFile = ./keys/${config.networking.hostName}.crt;
+        privateKeyFile = ./keys/${config.networking.hostName}.key;
       };
 
       networking.extraHosts = lib.mkForce "";
