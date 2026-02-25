@@ -123,7 +123,7 @@
       client1NetCfg = nodes.client1.custom.networking;
       client2NetCfg = nodes.client2.custom.networking;
 
-      sshOptions = "-i /etc/ssh-key -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
+      ssh = "timeout 5 ssh -i /etc/ssh-key -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
     in
     ''
       start_all()
@@ -157,11 +157,11 @@
         server.succeed("ping -c 1 client2")
 
       with subtest("SSH access restricted by role"):
-        client1.succeed("ssh ${sshOptions} seb@server 'echo Hello'")
-        client1.succeed("ssh ${sshOptions} seb@client2 'echo Hello'")
-        server.fail("timeout 5 ssh ${sshOptions} seb@client2 'echo Hello'")
+        client1.succeed("${ssh} seb@server 'echo Hello'")
+        client1.succeed("${ssh} seb@client2 'echo Hello'")
+        server.fail("${ssh} seb@client2 'echo Hello'")
 
       with subtest("SSH not reachable on underlay"):
-        client1.fail("timeout 5 ssh ${sshOptions} seb@${serverNetCfg.underlay.address} 'echo Hello'")
+        client1.fail("${ssh} seb@${serverNetCfg.underlay.address} 'echo Hello'")
     '';
 }
