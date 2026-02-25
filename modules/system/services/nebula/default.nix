@@ -28,15 +28,15 @@ in
     };
 
     caCertificateFile = lib.mkOption {
-      type = lib.types.path;
+      type = self.lib.types.existingPath;
       default = ./ca.crt;
     };
     publicKeyFile = lib.mkOption {
-      type = lib.types.path;
+      type = self.lib.types.existingPath;
       default = "${self}/hosts/${netCfg.hostName}/keys/nebula.pub";
     };
     certificateFile = lib.mkOption {
-      type = lib.types.path;
+      type = self.lib.types.existingPath;
       default = "${self}/hosts/${netCfg.hostName}/keys/nebula.crt";
     };
     privateKeyFile = lib.mkOption {

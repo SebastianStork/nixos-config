@@ -15,5 +15,9 @@
       name: "${name} should only be exposed on private networks; access control isn't yet configured";
 
     relativePath = path: path |> toString |> lib.removePrefix "${self}/";
+
+    types.existingPath = (lib.types.addCheck lib.types.path lib.pathExists) // {
+      description = "path that exists";
+    };
   };
 }

@@ -22,7 +22,7 @@ in
         |> lib.trim;
     };
     secretsFile = lib.mkOption {
-      type = lib.types.path;
+      type = self.lib.types.existingPath;
       default = "${self}/users/${config.home.username}/@${osConfig.networking.hostName}/secrets.json";
     };
     secrets = lib.mkOption {

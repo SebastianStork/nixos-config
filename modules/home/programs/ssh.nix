@@ -9,7 +9,7 @@
   options.custom.programs.ssh = {
     enable = lib.mkEnableOption "";
     publicKeyFile = lib.mkOption {
-      type = lib.types.path;
+      type = self.lib.types.existingPath;
       default = "${self}/users/${config.home.username}/@${osConfig.networking.hostName}/keys/ssh.pub";
     };
   };

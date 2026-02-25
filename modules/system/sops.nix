@@ -18,7 +18,7 @@ in
       default = "${self}/hosts/${config.networking.hostName}/keys/age.pub" |> lib.readFile |> lib.trim;
     };
     secretsFile = lib.mkOption {
-      type = lib.types.path;
+      type = self.lib.types.existingPath;
       default = "${self}/hosts/${config.networking.hostName}/secrets.json";
     };
     secrets = lib.mkOption {
