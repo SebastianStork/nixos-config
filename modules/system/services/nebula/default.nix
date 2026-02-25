@@ -122,11 +122,18 @@ in
 
     networking.firewall.trustedInterfaces = [ netCfg.overlay.interface ];
 
-    systemd.network.networks."40-nebula" = {
-      matchConfig.Name = netCfg.overlay.interface;
-      address = [ netCfg.overlay.cidr ];
-      dns = netCfg.overlay.dnsServers;
-      domains = [ netCfg.overlay.domain ];
+    systemd = {
+      services."nebula@mesh" = {
+        wants = [ "network-online.target" ];
+        after = [ "network-online.target" ];
+      };
+
+      network.networks."40-nebula" = {
+        matchConfig.Name = netCfg.overlay.interface;
+        address = [ netCfg.overlay.cidr ];
+        dns = netCfg.overlay.dnsServers;
+        domains = [ netCfg.overlay.domain ];
+      };
     };
   };
 }
