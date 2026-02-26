@@ -36,5 +36,13 @@ in
       age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
       defaultSopsFile = cfg.secretsFile;
     };
+
+    assertions =
+      config.sops.secrets
+      |> lib.attrNames
+      |> lib.map (secretPath: {
+        assertion = cfg.secrets |> lib.hasAttrByPath (secretPath |> lib.splitString "/");
+        message = "Sops secret `${secretPath}` must be defined in secrets.json";
+      });
   };
 }
