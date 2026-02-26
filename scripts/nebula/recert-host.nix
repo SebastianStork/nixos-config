@@ -7,16 +7,16 @@
 
   text = ''
     if [[ $# -lt 1 ]] || [[ $# -gt 2 ]]; then
-      echo "Usage: $0 <host> [<ca-key-path>]"
+      echo "Usage: $0 <hostname> [<ca-key-path>]"
       exit 1
     fi
 
-    host="$1"
-    address="$(nix eval --raw ".#allHosts.$host.config.custom.networking.overlay.cidr")"
-    groups="$(nix eval --raw ".#allHosts.$host.config.custom.services.nebula.groups" --apply 'builtins.concatStringsSep ","')"
-    ca_cert='modules/system/services/nebula/ca.crt'
-    host_pub="$(nix eval --raw ".#allHosts.$host.config.custom.services.nebula.publicKeyFile")"
-    host_cert="$(nix eval --raw ".#allHosts.$host.config.custom.services.nebula.certificateFile")"
+    hostname="$1"
+    address="$(nix eval --raw ".#allHosts.$hostname.config.custom.networking.overlay.cidr")"
+    groups="$(nix eval --raw ".#allHosts.$hostname.config.custom.services.nebula.groups" --apply 'builtins.concatStringsSep ","')"
+    ca_cert="$(nix eval --raw ".#allHosts.$hostname.config.custom.services.nebula.caCertificateFile")"
+    host_pub="$(nix eval --raw ".#allHosts.$hostname.config.custom.services.nebula.publicKeyFile")"
+    host_cert="$(nix eval --raw ".#allHosts.$hostname.config.custom.services.nebula.certificateFile")"
     host_cert="''${host_cert#*-source/}"
 
     if [[ $# -eq 2 ]]; then
@@ -34,6 +34,13 @@
     fi
 
     rm -f "$host_cert"
-    nebula-cert sign -name "$host" -networks "$address" -groups "$groups" -ca-crt "$ca_cert" -ca-key "$ca_key" -in-pub "$host_pub" -out-crt "$host_cert"
+    nebula-cert sign \
+      -name "$hostname" \
+      -networks "$address" \
+      -groups "$groups" \
+      -ca-crt "$ca_cert" \
+      -ca-key "$ca_key" \
+      -in-pub "$host_pub" \
+      -out-crt "$host_cert"
   '';
 }
