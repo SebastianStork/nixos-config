@@ -20,7 +20,11 @@ jobs:
           printf "checks=%s" "$checks" >> "$GITHUB_OUTPUT"
       - id: hosts
         run: |
-          hosts=$(nix flake show --json | jq -c '.nixosConfigurations | keys')
+          hosts=$(nix eval .#nixosConfigurations --apply 'configs:
+            configs
+            |> builtins.attrNames
+            |> builtins.filter (name: configs.${name}.config.custom.services.comin.enable)
+          ' --json)
           printf "hosts=%s" "$hosts" >> "$GITHUB_OUTPUT"
   build-check:
     needs: parse-flake
