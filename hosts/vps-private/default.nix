@@ -27,13 +27,6 @@
       services = {
         dns.enable = true;
 
-        syncthing = {
-          enable = true;
-          isServer = true;
-          gui.domain = "syncthing.${privateDomain}";
-          doBackups = true;
-        };
-
         atuin = {
           enable = true;
           domain = "atuin.${privateDomain}";
