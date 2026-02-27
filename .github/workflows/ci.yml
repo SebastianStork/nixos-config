@@ -14,11 +14,13 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: experimental-features = nix-command flakes pipe-operators
-      - id: checks
+      - name: Get checks
+        id: checks
         run: |
           checks=$(nix flake show --json | jq -c '.checks."x86_64-linux" | keys')
           printf "checks=%s" "$checks" >> "$GITHUB_OUTPUT"
-      - id: hosts
+      - name: Get hosts
+        id: hosts
         run: |
           hosts=$(nix eval .#nixosConfigurations --apply 'configs:
             configs
@@ -43,7 +45,8 @@ jobs:
           name: sebastian-stork
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           useDaemon: false
-      - run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
+      - name: Build check
+        run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
   build-host:
     needs: parse-flake
     runs-on: ubuntu-latest
@@ -61,7 +64,8 @@ jobs:
           name: sebastian-stork
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           useDaemon: false
-      - run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --print-build-logs
+      - name: Build host
+        run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --print-build-logs
   flake-check:
     needs: build-check
     runs-on: ubuntu-latest
@@ -74,7 +78,8 @@ jobs:
         with:
           name: sebastian-stork
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-      - run: nix flake check --keep-going --print-build-logs
+      - name: Run flake check
+        run: nix flake check --keep-going --print-build-logs
   deploy:
     needs: [build-host, flake-check]
     runs-on: ubuntu-latest
@@ -82,4 +87,5 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
-      - run: git push origin HEAD:deploy --force
+      - name: Push to deploy branch
+        run: git push origin HEAD:deploy --force
