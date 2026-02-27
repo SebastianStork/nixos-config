@@ -11,7 +11,7 @@ let
 
   inherit (config.services.syncthing) dataDir;
 
-  useSopsSecrets = config.custom.sops.secrets |> lib.hasAttr "syncthing";
+  useSopsSecrets = config.custom.sops.secretsData |> lib.hasAttr "syncthing";
 in
 {
   options.custom.services.syncthing = {

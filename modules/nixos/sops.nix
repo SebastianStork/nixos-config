@@ -21,7 +21,7 @@ in
       type = self.lib.types.existingPath;
       default = "${self}/hosts/${config.networking.hostName}/secrets.json";
     };
-    secrets = lib.mkOption {
+    secretsData = lib.mkOption {
       type = lib.types.anything;
       default = cfg.secretsFile |> lib.readFile |> lib.strings.fromJSON;
     };
@@ -40,12 +40,12 @@ in
         config.sops.secrets
         |> lib.attrNames
         |> lib.map (secretPath: {
-          assertion = cfg.secrets |> lib.hasAttrByPath (secretPath |> lib.splitString "/");
+          assertion = cfg.secretsData |> lib.hasAttrByPath (secretPath |> lib.splitString "/");
           message = "Sops secret `${secretPath}` is used in a module but not defined in secrets.json";
         })
       )
       ++ (
-        lib.removeAttrs cfg.secrets [ "sops" ]
+        lib.removeAttrs cfg.secretsData [ "sops" ]
         |> lib.mapAttrsToListRecursive (path: _: path |> lib.concatStringsSep "/")
         |> lib.map (secretPath: {
           assertion = config.sops.secrets |> lib.hasAttr secretPath;

@@ -4,7 +4,7 @@
 
   config = lib.mkIf config.custom.programs.git.enable {
     sops.secrets =
-      config.custom.sops.secrets.ssh-key
+      config.custom.sops.secretsData.ssh-key
       |> lib.mapAttrs' (
         name: _: lib.nameValuePair "ssh-key/${name}" { path = "${config.home.homeDirectory}/.ssh/${name}"; }
       );
@@ -42,7 +42,7 @@
       lazygit.enable = true;
 
       ssh.matchBlocks =
-        config.custom.sops.secrets.ssh-key
+        config.custom.sops.secretsData.ssh-key
         |> lib.mapAttrs (name: _: { identityFile = config.sops.secrets."ssh-key/${name}".path; });
     };
   };

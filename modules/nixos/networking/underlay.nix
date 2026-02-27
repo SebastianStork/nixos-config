@@ -33,7 +33,7 @@ in
       enable = lib.mkEnableOption "";
       networks = lib.mkOption {
         type = lib.types.listOf lib.types.nonEmptyStr;
-        default = config.custom.sops.secrets.iwd |> lib.attrNames;
+        default = config.custom.sops.secretsData.iwd |> lib.attrNames;
       };
     };
   };
