@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
-      hosts: ${{ steps.hosts.outputs.hosts }}
+      servers: ${{ steps.servers.outputs.servers }}
+      workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
       - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v31
@@ -19,15 +20,24 @@ jobs:
         run: |
           checks=$(nix flake show --json | jq -c '.checks."x86_64-linux" | keys')
           printf "checks=%s" "$checks" >> "$GITHUB_OUTPUT"
-      - name: Get hosts
-        id: hosts
+      - name: Get servers
+        id: servers
         run: |
-          hosts=$(nix eval .#nixosConfigurations --apply 'configs:
+          servers=$(nix eval .#nixosConfigurations --apply 'configs:
             configs
             |> builtins.attrNames
             |> builtins.filter (name: configs.${name}.config.custom.services.comin.enable)
           ' --json)
-          printf "hosts=%s" "$hosts" >> "$GITHUB_OUTPUT"
+          printf "servers=%s" "$servers" >> "$GITHUB_OUTPUT"
+      - name: Get workstations
+        id: workstations
+        run: |
+          workstations=$(nix eval .#nixosConfigurations --apply 'configs:
+            configs
+            |> builtins.attrNames
+            |> builtins.filter (name: !configs.${name}.config.custom.services.comin.enable)
+          ' --json)
+          printf "workstations=%s" "$workstations" >> "$GITHUB_OUTPUT"
   build-check:
     needs: parse-flake
     runs-on: ubuntu-latest
@@ -47,27 +57,22 @@ jobs:
           useDaemon: false
       - name: Build check
         run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
-  build-host:
+  build-server:
     needs: parse-flake
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        host: ${{ fromJson(needs.parse-flake.outputs.hosts) }}
-    steps:
-      - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: experimental-features = nix-command flakes pipe-operators
-      - uses: cachix/cachix-action@v15
-        with:
-          name: sebastian-stork
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-          useDaemon: false
-      - name: Build host
-        run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --print-build-logs
+    uses: ./.github/workflows/build-host.yml
+    with:
+      hosts: ${{ needs.parse-flake.outputs.servers }}
+    secrets:
+      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+  build-workstation:
+    needs: parse-flake
+    uses: ./.github/workflows/build-host.yml
+    with:
+      hosts: ${{ needs.parse-flake.outputs.workstations }}
+    secrets:
+      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
   deploy:
-    needs: [build-check, build-host]
+    needs: [build-check, build-server]
     runs-on: ubuntu-latest
     permissions:
       contents: write
