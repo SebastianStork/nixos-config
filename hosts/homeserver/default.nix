@@ -29,14 +29,14 @@
           gui.domain = "syncthing.${privateDomain}";
           doBackups = true;
         };
+      };
 
+      web-services = {
         atuin = {
           enable = true;
           domain = "atuin.${privateDomain}";
         };
-      };
 
-      web-services = {
         filebrowser = {
           enable = true;
           domain = "files.${privateDomain}";
