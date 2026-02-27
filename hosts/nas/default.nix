@@ -20,6 +20,14 @@
       };
     };
 
-    services.dns.enable = true;
+    services = {
+      dns.enable = true;
+
+      syncthing = {
+        enable = true;
+        isServer = true;
+        gui.domain = "syncthing.nas.splitleaf.de";
+      };
+    };
   };
 }
