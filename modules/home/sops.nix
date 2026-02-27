@@ -38,11 +38,21 @@ in
     };
 
     assertions =
-      config.sops.secrets
-      |> lib.attrNames
-      |> lib.map (secretPath: {
-        assertion = cfg.secrets |> lib.hasAttrByPath (secretPath |> lib.splitString "/");
-        message = "Sops secret `${secretPath}` must be defined in secrets.json";
-      });
+      (
+        config.sops.secrets
+        |> lib.attrNames
+        |> lib.map (secretPath: {
+          assertion = cfg.secrets |> lib.hasAttrByPath (secretPath |> lib.splitString "/");
+          message = "Sops secret `${secretPath}` is used in a module but not defined in secrets.json";
+        })
+      )
+      ++ (
+        lib.removeAttrs cfg.secrets [ "sops" ]
+        |> lib.mapAttrsToListRecursive (path: _: path |> lib.concatStringsSep "/")
+        |> lib.map (secretPath: {
+          assertion = config.sops.secrets |> lib.hasAttr secretPath;
+          message = "Sops secret `${secretPath}` is defined in secrets.json but not used in any module";
+        })
+      );
   };
 }
