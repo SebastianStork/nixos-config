@@ -50,11 +50,6 @@
           enable = true;
           domain = "grafana.${privateDomain}";
         };
-
-        victoriametrics = {
-          enable = true;
-          domain = "metrics.${privateDomain}";
-        };
       };
   };
 }
