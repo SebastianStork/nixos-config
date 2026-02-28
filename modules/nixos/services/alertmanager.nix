@@ -72,7 +72,10 @@ in
           http.addr = "localhost:${toString cfg.ntfyBridgePort}";
           ntfy = {
             baseurl = "https://ntfy.sh";
-            notification.topic = "splitleaf";
+            notification = {
+              topic = "splitleaf";
+              priority = "default";
+            };
           };
         };
       };
