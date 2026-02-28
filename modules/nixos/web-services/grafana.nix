@@ -2,10 +2,18 @@
   config,
   pkgs,
   lib,
+  allHosts,
   ...
 }:
 let
   cfg = config.custom.web-services.grafana;
+
+  prometheusDomains =
+    allHosts
+    |> lib.attrValues
+    |> lib.map (host: host.config.custom.services.prometheus)
+    |> lib.filter (prometheus: prometheus.enable)
+    |> lib.map (prometheus: prometheus.domain);
 in
 {
   options.custom.web-services.grafana = {
@@ -18,33 +26,17 @@ in
       type = lib.types.port;
       default = 3000;
     };
-    datasources = {
-      prometheus = {
-        enable = lib.mkEnableOption "" // {
-          default = config.custom.web-services.victoriametrics.enable;
-        };
-        url = lib.mkOption {
-          type = lib.types.nonEmptyStr;
-          default = "https://${config.custom.web-services.victoriametrics.domain}";
-        };
+    datasources.prometheus = {
+      enable = lib.mkEnableOption "" // {
+        default = prometheusDomains != [ ];
       };
-      victoriametrics = {
-        enable = lib.mkEnableOption "" // {
-          default = config.custom.web-services.victoriametrics.enable;
-        };
-        url = lib.mkOption {
-          type = lib.types.nonEmptyStr;
-          default = "https://${config.custom.web-services.victoriametrics.domain}";
-        };
+      url = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "https://metrics.${config.custom.networking.overlay.fqdn}";
       };
     };
-    dashboards = {
-      nodeExporter.enable = lib.mkEnableOption "" // {
-        default = true;
-      };
-      victoriametrics.enable = lib.mkEnableOption "" // {
-        default = config.custom.web-services.victoriametrics.enable;
-      };
+    dashboards.nodeExporter.enable = lib.mkEnableOption "" // {
+      default = true;
     };
   };
 
@@ -81,65 +73,45 @@ in
 
         datasources.settings = {
           prune = true;
-          datasources = [
-            (lib.mkIf cfg.datasources.prometheus.enable {
-              name = "Prometheus";
-              type = "prometheus";
-              inherit (cfg.datasources.prometheus) url;
-              isDefault = true;
-              jsonData = {
-                prometheusType = "Prometheus";
-                prometheusVersion = "2.50.0";
-              };
-            })
-            (lib.mkIf cfg.datasources.victoriametrics.enable {
-              name = "VictoriaMetrics";
-              type = "victoriametrics-metrics-datasource";
-              inherit (cfg.datasources.victoriametrics) url;
-              isDefault = false;
-            })
-          ];
+          datasources = lib.optional cfg.datasources.prometheus.enable {
+            name = "Prometheus";
+            type = "prometheus";
+            inherit (cfg.datasources.prometheus) url;
+            isDefault = true;
+            jsonData = {
+              prometheusType = "Prometheus";
+              prometheusVersion = "3.7.2";
+            };
+          };
         };
       };
 
-      declarativePlugins =
+    };
+
+    # https://grafana.com/grafana/dashboards/1860-node-exporter-full/
+    environment.etc."grafana-dashboards/node-exporter-full.json" = {
+      enable = cfg.dashboards.nodeExporter.enable;
+      source = pkgs.fetchurl {
+        name = "node-exporter-full.json";
+        url = "https://grafana.com/api/dashboards/1860/revisions/41/download";
+        hash = "sha256-EywgxEayjwNIGDvSmA/S56Ld49qrTSbIYFpeEXBJlTs=";
+      };
+    };
+
+    custom.services.caddy = {
+      virtualHosts.${cfg.domain}.port = cfg.port;
+
+      virtualHosts."metrics.${config.custom.networking.overlay.fqdn}".extraConfig =
         let
-          plugins = pkgs.grafanaPlugins;
+          upstreams = prometheusDomains |> lib.map (domain: "https://${domain}") |> lib.concatStringsSep " ";
         in
-        [
-          (lib.optional cfg.datasources.victoriametrics.enable plugins.victoriametrics-metrics-datasource)
-        ]
-        |> lib.concatLists;
-    };
-
-    environment.etc = {
-      # https://grafana.com/grafana/dashboards/1860-node-exporter-full/
-      "grafana-dashboards/node-exporter-full.json" = {
-        enable = cfg.dashboards.nodeExporter.enable;
-        source = pkgs.fetchurl {
-          name = "node-exporter-full.json";
-          url = "https://grafana.com/api/dashboards/1860/revisions/41/download";
-          hash = "sha256-EywgxEayjwNIGDvSmA/S56Ld49qrTSbIYFpeEXBJlTs=";
-        };
-      };
-      # https://grafana.com/grafana/dashboards/10229-victoriametrics-single-node/
-      "grafana-dashboards/victoriametrics-single-node-patched.json" = {
-        enable = cfg.dashboards.victoriametrics.enable;
-        source =
-          pkgs.fetchurl {
-            name = "victoriametrics-single-node.json";
-            url = "https://grafana.com/api/dashboards/10229/revisions/41/download";
-            hash = "sha256-mwtah8A2w81WZjf5bUXoTJfS1R9UX+tua2PiDrBKJCQ=";
+        ''
+          reverse_proxy ${upstreams} {
+            header_up Host {upstream_hostport}
+            lb_policy first
+            health_uri /api/v1/status/buildinfo
           }
-          |> (
-            src:
-            pkgs.runCommand "victoriametrics-single-node-patched.json" { buildInputs = [ pkgs.gnused ]; } ''
-              sed 's/victoriametrics-logs-//g' ${src} > $out
-            ''
-          );
-      };
+        '';
     };
-
-    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
   };
 }
