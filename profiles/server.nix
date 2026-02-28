@@ -12,6 +12,14 @@
         enable = true;
         domain = "alloy.${config.custom.networking.overlay.fqdn}";
       };
+      prometheus = {
+        enable = true;
+        domain = "prometheus.${config.custom.networking.overlay.fqdn}";
+      };
+      alertmanager = {
+        enable = true;
+        domain = "alertmanager.${config.custom.networking.overlay.fqdn}";
+      };
     };
   };
 }
