@@ -17,48 +17,25 @@ in
       type = lib.types.nonEmptyStr;
       default = "https://metrics.${config.custom.networking.overlay.domain}/prometheus/api/v1/write";
     };
-    logsEndpoint = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "https://logs.${config.custom.networking.overlay.domain}/insert/loki/api/v1/push";
-    };
-    collect = {
-      metrics = {
-        system = lib.mkEnableOption "" // {
-          default = true;
-        };
-        victorialogs = lib.mkEnableOption "" // {
-          default = config.services.victorialogs.enable;
-        };
-        caddy = lib.mkEnableOption "" // {
-          default = config.services.caddy.enable;
-        };
+    collect.metrics = {
+      system = lib.mkEnableOption "" // {
+        default = true;
       };
-      logs.openssh = lib.mkEnableOption "" // {
-        default = config.services.openssh.enable;
+      caddy = lib.mkEnableOption "" // {
+        default = config.services.caddy.enable;
       };
     };
   };
 
   config = lib.mkIf cfg.enable {
     assertions =
-      let
-        metricsAssertions =
-          cfg.collect.metrics
-          |> lib.attrNames
-          |> lib.filter (name: name != "system")
-          |> lib.map (name: {
-            assertion = cfg.collect.metrics.${name} -> config.services.${name}.enable;
-            message = "Alloy cannot collect `${name}` metrics without the `${name}` service";
-          });
-        logsAssertions =
-          cfg.collect.logs
-          |> lib.attrNames
-          |> lib.map (name: {
-            assertion = cfg.collect.logs.${name} -> config.services.${name}.enable;
-            message = "Alloy cannot collect '${name}' logs without the '${name}' service";
-          });
-      in
-      metricsAssertions ++ logsAssertions;
+      cfg.collect.metrics
+      |> lib.attrNames
+      |> lib.filter (name: name != "system")
+      |> lib.map (name: {
+        assertion = cfg.collect.metrics.${name} -> config.services.${name}.enable;
+        message = "Alloy cannot collect `${name}` metrics without the `${name}` service";
+      });
 
     services.alloy = {
       enable = true;
@@ -84,16 +61,6 @@ in
             }
           '';
         };
-        "alloy/logs-endpoint.alloy" = {
-          enable = cfg.collect.logs |> anyIsTrue;
-          text = ''
-            loki.write "default" {
-              endpoint {
-                url = "${cfg.logsEndpoint}"
-              }
-            }
-          '';
-        };
         "alloy/system-metrics.alloy" = {
           enable = cfg.collect.metrics.system;
           text = ''
@@ -103,20 +70,6 @@ in
 
             prometheus.scrape "node_exporter" {
               targets         = prometheus.exporter.unix.default.targets
-              forward_to      = [prometheus.remote_write.default.receiver]
-              scrape_interval = "15s"
-            }
-          '';
-        };
-        "alloy/victorialogs-metrics.alloy" = {
-          enable = cfg.collect.metrics.victorialogs;
-          text = ''
-            prometheus.scrape "victorialogs" {
-              targets = [{
-                __address__ = "localhost:${toString config.custom.web-services.victorialogs.port}",
-                job         = "victorialogs",
-                instance    = constants.hostname,
-              }]
               forward_to      = [prometheus.remote_write.default.receiver]
               scrape_interval = "15s"
             }
@@ -133,15 +86,6 @@ in
               }]
               forward_to      = [prometheus.remote_write.default.receiver]
               scrape_interval = "15s"
-            }
-          '';
-        };
-        "alloy/sshd-logs.alloy" = {
-          enable = cfg.collect.logs.openssh;
-          text = ''
-            loki.source.journal "sshd" {
-              matches    = "_SYSTEMD_UNIT=sshd.service"
-              forward_to = [loki.write.default.receiver]
             }
           '';
         };

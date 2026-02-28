@@ -55,11 +55,6 @@
           enable = true;
           domain = "metrics.${privateDomain}";
         };
-
-        victorialogs = {
-          enable = true;
-          domain = "logs.${privateDomain}";
-        };
       };
   };
 }

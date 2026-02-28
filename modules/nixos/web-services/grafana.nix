@@ -37,15 +37,6 @@ in
           default = "https://${config.custom.web-services.victoriametrics.domain}";
         };
       };
-      victorialogs = {
-        enable = lib.mkEnableOption "" // {
-          default = config.custom.web-services.victorialogs.enable;
-        };
-        url = lib.mkOption {
-          type = lib.types.nonEmptyStr;
-          default = "https://${config.custom.web-services.victorialogs.domain}";
-        };
-      };
     };
     dashboards = {
       nodeExporter.enable = lib.mkEnableOption "" // {
@@ -53,9 +44,6 @@ in
       };
       victoriametrics.enable = lib.mkEnableOption "" // {
         default = config.custom.web-services.victoriametrics.enable;
-      };
-      victorialogs.enable = lib.mkEnableOption "" // {
-        default = config.custom.web-services.victorialogs.enable;
       };
     };
   };
@@ -110,12 +98,6 @@ in
               inherit (cfg.datasources.victoriametrics) url;
               isDefault = false;
             })
-            (lib.mkIf cfg.datasources.victorialogs.enable {
-              name = "VictoriaLogs";
-              type = "victoriametrics-logs-datasource";
-              inherit (cfg.datasources.victorialogs) url;
-              isDefault = false;
-            })
           ];
         };
       };
@@ -126,7 +108,6 @@ in
         in
         [
           (lib.optional cfg.datasources.victoriametrics.enable plugins.victoriametrics-metrics-datasource)
-          (lib.optional cfg.datasources.victorialogs.enable plugins.victoriametrics-logs-datasource)
         ]
         |> lib.concatLists;
     };
@@ -154,22 +135,6 @@ in
             src:
             pkgs.runCommand "victoriametrics-single-node-patched.json" { buildInputs = [ pkgs.gnused ]; } ''
               sed 's/victoriametrics-logs-//g' ${src} > $out
-            ''
-          );
-      };
-      # https://grafana.com/grafana/dashboards/22084-victorialogs-single-node/
-      "grafana-dashboards/victorialogs-single-node-patched.json" = {
-        enable = cfg.dashboards.victorialogs.enable;
-        source =
-          pkgs.fetchurl {
-            name = "victorialogs-single-node.json";
-            url = "https://grafana.com/api/dashboards/22084/revisions/8/download";
-            hash = "sha256-/a3Rbp/6oyiLBnQtGupyFZW+fIHQfkyKRRTyfofxVTM=";
-          }
-          |> (
-            src:
-            pkgs.runCommand "victorialogs-single-node-patched.json" { buildInputs = [ pkgs.gnused ]; } ''
-              sed 's/victoria-logs-//g' ${src} > $out
             ''
           );
       };
