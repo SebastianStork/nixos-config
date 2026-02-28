@@ -77,10 +77,11 @@ in
           enable = cfg.collect.metrics.system;
           text = ''
             prometheus.exporter.unix "default" {
-              enable_collectors = ["systemd"]
+              enable_collectors = ["systemd", "processes"]
             }
 
             prometheus.scrape "node_exporter" {
+              job_name        = "node"
               targets         = prometheus.exporter.unix.default.targets
               forward_to      = [prometheus.remote_write.default.receiver]
               scrape_interval = "15s"
