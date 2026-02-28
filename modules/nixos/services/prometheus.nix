@@ -30,6 +30,7 @@ in
       inherit (cfg) port;
       webExternalUrl = "https://${cfg.domain}";
 
+      extraFlags = [ "--web.enable-remote-write-receiver" ];
       globalConfig = {
         scrape_interval = "30s";
         external_labels.monitor = "global";

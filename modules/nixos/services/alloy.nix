@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  allHosts,
+  ...
+}:
 let
   cfg = config.custom.services.alloy;
 in
@@ -12,10 +17,6 @@ in
     port = lib.mkOption {
       type = lib.types.port;
       default = 12345;
-    };
-    metricsEndpoint = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "https://metrics.${config.custom.networking.overlay.domain}/prometheus/api/v1/write";
     };
     collect.metrics = {
       system = lib.mkEnableOption "" // {
@@ -47,19 +48,30 @@ in
 
     environment.etc =
       let
-        isTrue = x: x;
-        anyIsTrue = attrs: attrs |> lib.attrValues |> lib.any isTrue;
+        anyIsTrue = attrs: attrs |> lib.attrValues |> lib.any lib.id;
+
+        prometheusEndpoints =
+          allHosts
+          |> lib.attrValues
+          |> lib.filter (host: host.config.custom.services.prometheus.enable)
+          |> lib.map (host: "https://${host.config.custom.services.prometheus.domain}/api/v1/write");
       in
       {
         "alloy/metrics-endpoint.alloy" = {
           enable = cfg.collect.metrics |> anyIsTrue;
-          text = ''
-            prometheus.remote_write "default" {
+          text =
+            prometheusEndpoints
+            |> lib.map (url: ''
               endpoint {
-                url = "${cfg.metricsEndpoint}"
+                url = "${url}"
               }
-            }
-          '';
+            '')
+            |> lib.concatLines
+            |> (endpoints: ''
+              prometheus.remote_write "default" {
+                ${endpoints}
+              }
+            '');
         };
         "alloy/system-metrics.alloy" = {
           enable = cfg.collect.metrics.system;
@@ -85,7 +97,7 @@ in
                 instance    = constants.hostname,
               }]
               forward_to      = [prometheus.remote_write.default.receiver]
-              scrape_interval = "15s"
+              scrape_interval = "30s"
             }
           '';
         };
