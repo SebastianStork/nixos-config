@@ -73,6 +73,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    networking.firewall = {
+      allowedTCPPorts = [ 53 ];
+      allowedUDPPorts = [ 53 ];
+    };
+
     services.nsd = {
       enable = true;
       interfaces = [ netCfg.underlay.interface ];
