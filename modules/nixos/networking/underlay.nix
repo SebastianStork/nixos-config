@@ -56,6 +56,11 @@ in
             Gateway = cfg.gateway;
             GatewayOnLink = true;
           };
+          dns = lib.mkIf (!cfg.useDhcp) [
+            "1.1.1.1#cloudflare-dns.com"
+            "8.8.8.8#dns.google"
+            "9.9.9.9#dns.quad9.net"
+          ];
         };
       };
 
