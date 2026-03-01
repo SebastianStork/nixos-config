@@ -76,7 +76,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    sops = {
+    sops = lib.mkIf cfg.alerts.enable {
       secrets."healthchecks/ping-key" = { };
       templates."gatus.env" = {
         content = "HEALTHCHECKS_PING_KEY=${config.sops.placeholder."healthchecks/ping-key"}";
@@ -103,7 +103,7 @@ in
 
     services.gatus = {
       enable = true;
-      environmentFile = config.sops.templates."gatus.env".path;
+      environmentFile = lib.mkIf cfg.alerts.enable config.sops.templates."gatus.env".path;
 
       settings = {
         web = {
@@ -198,7 +198,7 @@ in
         lib.mkIf cfg.generateDefaultEndpoints (
           defaultEndpoints
           // {
-            "healthchecks.io" = {
+            "healthchecks.io" = lib.mkIf cfg.alerts.enable {
               group = "external";
               domain = "hc-ping.com";
               path = "/\${HEALTHCHECKS_PING_KEY}/${config.networking.hostName}-gatus-uptime?create=1";

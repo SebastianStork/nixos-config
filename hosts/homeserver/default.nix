@@ -66,6 +66,12 @@
           enable = true;
           domain = "grafana.${privateDomain}";
         };
+
+        gatus = {
+          enable = true;
+          domain = "status.${privateDomain}";
+          generateDefaultEndpoints = true;
+        };
       };
     };
 }

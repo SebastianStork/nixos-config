@@ -1,4 +1,4 @@
-{ config, self, ... }:
+{ self, ... }:
 {
   imports = [ self.nixosModules.server-profile ];
 
@@ -21,19 +21,5 @@
     };
 
     services.dns.enable = true;
-
-    web-services =
-      let
-        privateDomain = config.custom.networking.overlay.domain;
-        sproutedDomain = "sprouted.cloud";
-      in
-      {
-        gatus = {
-          enable = true;
-          domain = "status.${privateDomain}";
-          generateDefaultEndpoints = true;
-          endpoints."dav.${sproutedDomain}".enable = false;
-        };
-      };
   };
 }
