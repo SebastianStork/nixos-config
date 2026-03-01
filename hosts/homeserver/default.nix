@@ -59,6 +59,12 @@
           enable = true;
           domain = "bookmarks.${privateDomain}";
         };
+
+        grafana = {
+          enable = true;
+          domain = "grafana.${privateDomain}";
+          storageRetentionSize = "20GB";
+        };
       };
     };
 }

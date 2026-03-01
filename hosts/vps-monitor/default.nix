@@ -45,11 +45,6 @@
           enable = true;
           domain = "alerts.${sproutedDomain}";
         };
-
-        grafana = {
-          enable = true;
-          domain = "grafana.${privateDomain}";
-        };
       };
   };
 }
