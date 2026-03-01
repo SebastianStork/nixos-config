@@ -10,12 +10,13 @@ let
   cfg = config.custom.services.nameservers.overlay;
   netCfg = config.custom.networking;
 
-  zoneData = {
+  zoneData = inputs.dns.lib.toString netCfg.overlay.domain {
     SOA = {
       nameServer = "${netCfg.overlay.fqdn}.";
       adminEmail = "hostmaster@sstork.dev";
       serial = 1;
     };
+
     NS =
       allHosts
       |> lib.attrValues
@@ -24,7 +25,7 @@ let
 
     subdomains =
       let
-        mkRecord =
+        mkSubdomain =
           { name, address }:
           {
             inherit name;
@@ -33,13 +34,11 @@ let
 
         nodeRecords =
           netCfg.nodes
-          |> lib.map (
-            node:
-            mkRecord {
-              name = node.hostName;
-              inherit (node.overlay) address;
-            }
-          );
+          |> lib.map (node: {
+            name = node.hostName;
+            inherit (node.overlay) address;
+          });
+
         serviceRecords =
           allHosts
           |> lib.attrValues
@@ -49,16 +48,13 @@ let
             |> lib.attrValues
             |> lib.map (vHost: vHost.domain)
             |> lib.filter (domain: self.lib.isPrivateDomain domain)
-            |> lib.map (
-              domain:
-              mkRecord {
-                name = domain |> lib.removeSuffix ".${netCfg.overlay.domain}";
-                inherit (host.config.custom.networking.overlay) address;
-              }
-            )
+            |> lib.map (domain: {
+              name = domain |> lib.removeSuffix ".${netCfg.overlay.domain}";
+              inherit (host.config.custom.networking.overlay) address;
+            })
           );
       in
-      (nodeRecords ++ serviceRecords) |> lib.listToAttrs;
+      (nodeRecords ++ serviceRecords) |> lib.map mkSubdomain |> lib.listToAttrs;
   };
 in
 {
@@ -69,7 +65,7 @@ in
       nsd = {
         enable = true;
         interfaces = [ netCfg.overlay.interface ];
-        zones.${netCfg.overlay.domain}.data = zoneData |> inputs.dns.lib.toString netCfg.overlay.domain;
+        zones.${netCfg.overlay.domain}.data = zoneData;
       };
 
       nebula.networks.mesh.firewall.inbound = lib.singleton {
