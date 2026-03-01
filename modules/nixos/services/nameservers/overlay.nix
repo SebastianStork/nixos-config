@@ -6,11 +6,11 @@
   ...
 }:
 let
-  cfg = config.custom.services.dns;
+  cfg = config.custom.services.nameservers.overlay;
   netCfg = config.custom.networking;
 in
 {
-  options.custom.services.dns.enable = lib.mkEnableOption "";
+  options.custom.services.nameservers.overlay.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.enable {
     services = {

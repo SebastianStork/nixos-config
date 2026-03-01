@@ -58,7 +58,7 @@
           };
         };
 
-        services.dns.enable = true;
+        services.nameservers.overlay.enable = true;
       };
     };
 

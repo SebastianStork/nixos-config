@@ -21,7 +21,7 @@
       };
 
       services = {
-        dns.enable = true;
+        nameservers.overlay.enable = true;
 
         syncthing = {
           enable = true;

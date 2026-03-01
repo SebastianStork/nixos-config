@@ -63,7 +63,7 @@ in
       default =
         allHosts
         |> lib.attrValues
-        |> lib.filter (host: host.config.custom.services.dns.enable)
+        |> lib.filter (host: host.config.custom.services.nameservers.overlay.enable)
         |> lib.map (host: host.config.custom.networking.overlay.address);
     };
 
