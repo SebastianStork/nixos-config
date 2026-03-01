@@ -80,10 +80,18 @@ in
               enable_collectors = ["systemd", "processes"]
             }
 
+            discovery.relabel "unix_exporter" {
+              targets = prometheus.exporter.unix.default.targets
+
+              rule {
+                target_label = "job"
+                replacement = "node"
+              }
+            }
+
             prometheus.scrape "node_exporter" {
-              job_name        = "node"
-              targets         = prometheus.exporter.unix.default.targets
-              forward_to      = [prometheus.remote_write.default.receiver]
+              targets = discovery.relabel.unix_exporter.output
+              forward_to = [prometheus.remote_write.default.receiver]
               scrape_interval = "15s"
             }
           '';
@@ -94,10 +102,10 @@ in
             prometheus.scrape "caddy" {
               targets = [{
                 __address__ = "localhost:${toString config.custom.services.caddy.metricsPort}",
-                job         = "caddy",
-                instance    = constants.hostname,
+                job = "caddy",
+                instance = constants.hostname,
               }]
-              forward_to      = [prometheus.remote_write.default.receiver]
+              forward_to = [prometheus.remote_write.default.receiver]
               scrape_interval = "30s"
             }
           '';
