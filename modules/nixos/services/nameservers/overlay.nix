@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   self,
   lib,
   allHosts,
@@ -8,37 +9,67 @@
 let
   cfg = config.custom.services.nameservers.overlay;
   netCfg = config.custom.networking;
+
+  zoneData = {
+    SOA = {
+      nameServer = "${netCfg.overlay.fqdn}.";
+      adminEmail = "hostmaster@sstork.dev";
+      serial = 1;
+    };
+    NS =
+      allHosts
+      |> lib.attrValues
+      |> lib.filter (host: host.config.custom.services.nameservers.overlay.enable)
+      |> lib.map (host: "${host.config.custom.networking.overlay.fqdn}.");
+
+    subdomains =
+      let
+        mkRecord =
+          { name, address }:
+          {
+            inherit name;
+            value.A = [ address ];
+          };
+
+        nodeRecords =
+          netCfg.nodes
+          |> lib.map (
+            node:
+            mkRecord {
+              name = node.hostName;
+              inherit (node.overlay) address;
+            }
+          );
+        serviceRecords =
+          allHosts
+          |> lib.attrValues
+          |> lib.concatMap (
+            host:
+            host.config.custom.services.caddy.virtualHosts
+            |> lib.attrValues
+            |> lib.map (vHost: vHost.domain)
+            |> lib.filter (domain: self.lib.isPrivateDomain domain)
+            |> lib.map (
+              domain:
+              mkRecord {
+                name = domain |> lib.removeSuffix ".${netCfg.overlay.domain}";
+                inherit (host.config.custom.networking.overlay) address;
+              }
+            )
+          );
+      in
+      (nodeRecords ++ serviceRecords) |> lib.listToAttrs;
+  };
 in
 {
   options.custom.services.nameservers.overlay.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.enable {
     services = {
-      unbound = {
+      nsd = {
         enable = true;
-
-        settings.server = {
-          interface = [ netCfg.overlay.interface ];
-          access-control = [ "${toString netCfg.overlay.networkCidr} allow" ];
-
-          local-zone = "\"${netCfg.overlay.domain}.\" static";
-          local-data =
-            let
-              nodeRecords = netCfg.nodes |> lib.map (node: "\"${node.overlay.fqdn}. A ${node.overlay.address}\"");
-              serviceRecords =
-                allHosts
-                |> lib.attrValues
-                |> lib.concatMap (
-                  host:
-                  host.config.custom.services.caddy.virtualHosts
-                  |> lib.attrValues
-                  |> lib.map (vHost: vHost.domain)
-                  |> lib.filter (domain: self.lib.isPrivateDomain domain)
-                  |> lib.map (domain: "\"${domain}. A ${host.config.custom.networking.overlay.address}\"")
-                );
-            in
-            nodeRecords ++ serviceRecords;
-        };
+        interfaces = [ netCfg.overlay.interface ];
+        zones.${netCfg.overlay.domain}.data = zoneData |> inputs.dns.lib.toString netCfg.overlay.domain;
       };
 
       nebula.networks.mesh.firewall.inbound = lib.singleton {
@@ -48,7 +79,7 @@ in
       };
     };
 
-    systemd.services.unbound = {
+    systemd.services.nsd = {
       requires = [ netCfg.overlay.systemdUnit ];
       after = [ netCfg.overlay.systemdUnit ];
     };

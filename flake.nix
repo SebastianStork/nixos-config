@@ -57,6 +57,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    dns = {
+      url = "github:kirelagin/dns.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     radicale-birthday-calendar = {
       url = "github:iBigQ/radicale-birthday-calendar";
       flake = false;
