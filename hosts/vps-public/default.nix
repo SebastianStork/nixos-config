@@ -21,6 +21,14 @@
         };
       };
 
+      services.nameservers.public = {
+        enable = true;
+        zones = [
+          "sprouted.cloud"
+          "sstork.dev"
+        ];
+      };
+
       web-services =
         let
           sstorkDomain = "sstork.dev";

@@ -20,6 +20,15 @@
       };
     };
 
-    services.nameservers.overlay.enable = true;
+    services.nameservers = {
+      overlay.enable = true;
+      public = {
+        enable = true;
+        zones = [
+          "sprouted.cloud"
+          "sstork.dev"
+        ];
+      };
+    };
   };
 }
