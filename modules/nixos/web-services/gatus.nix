@@ -19,9 +19,12 @@ in
       type = lib.types.port;
       default = 8080;
     };
-    ntfyUrl = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "https://${config.custom.web-services.ntfy.domain}";
+    alerts = {
+      enable = lib.mkEnableOption "";
+      ntfyUrl = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "https://${config.custom.web-services.ntfy.domain}";
+      };
     };
     generateDefaultEndpoints = lib.mkEnableOption "";
     endpoints = lib.mkOption {
@@ -62,7 +65,7 @@ in
                 default = [ ];
               };
               enableAlerts = lib.mkEnableOption "" // {
-                default = true;
+                default = cfg.alerts.enable;
               };
             };
           }
@@ -112,7 +115,7 @@ in
           path = "${dataDir}/data.db";
         };
         connectivity.checker.target = "1.1.1.1:53"; # Cloudflare DNS
-        alerting.ntfy = {
+        alerting.ntfy = lib.mkIf cfg.alerts.enable {
           topic = "uptime";
           url = cfg.ntfyUrl;
           click = "https://${cfg.domain}";

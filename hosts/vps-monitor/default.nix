@@ -32,18 +32,7 @@
           enable = true;
           domain = "status.${privateDomain}";
           generateDefaultEndpoints = true;
-          endpoints = {
-            "dav.${sproutedDomain}".enable = false;
-            "alerts.${sproutedDomain}" = {
-              path = "/v1/health";
-              extraConditions = [ "[BODY].healthy == true" ];
-            };
-          };
-        };
-
-        ntfy = {
-          enable = true;
-          domain = "alerts.${sproutedDomain}";
+          endpoints."dav.${sproutedDomain}".enable = false;
         };
       };
   };
