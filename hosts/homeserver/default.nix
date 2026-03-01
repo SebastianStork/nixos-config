@@ -29,6 +29,8 @@
           gui.domain = "syncthing.${privateDomain}";
           doBackups = true;
         };
+
+        prometheus.storageRetentionSize = "20GB";
       };
 
       web-services = {
@@ -63,7 +65,6 @@
         grafana = {
           enable = true;
           domain = "grafana.${privateDomain}";
-          storageRetentionSize = "20GB";
         };
       };
     };
