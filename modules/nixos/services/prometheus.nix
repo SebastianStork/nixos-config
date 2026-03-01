@@ -19,6 +19,10 @@ in
       type = lib.types.port;
       default = 9090;
     };
+    storageRetentionSize = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "2GB";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -30,7 +34,10 @@ in
       inherit (cfg) port;
       webExternalUrl = "https://${cfg.domain}";
 
-      extraFlags = [ "--web.enable-remote-write-receiver" ];
+      extraFlags = [
+        "--web.enable-remote-write-receiver"
+        "--storage.tsdb.retention.size=${cfg.storageRetentionSize}"
+      ];
       globalConfig = {
         scrape_interval = "30s";
         external_labels.monitor = "global";
