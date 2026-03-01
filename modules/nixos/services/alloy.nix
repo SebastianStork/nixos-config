@@ -57,7 +57,7 @@ in
           |> lib.map (host: "https://${host.config.custom.services.prometheus.domain}/api/v1/write");
       in
       {
-        "alloy/metrics-endpoint.alloy" = {
+        "alloy/prometheus-endpoint.alloy" = {
           enable = cfg.collect.metrics |> anyIsTrue;
           text =
             prometheusEndpoints
@@ -80,9 +80,8 @@ in
               enable_collectors = ["systemd", "processes"]
             }
 
-            discovery.relabel "unix_exporter" {
+            discovery.relabel "node_exporter" {
               targets = prometheus.exporter.unix.default.targets
-
               rule {
                 target_label = "job"
                 replacement = "node"
@@ -90,7 +89,7 @@ in
             }
 
             prometheus.scrape "node_exporter" {
-              targets = discovery.relabel.unix_exporter.output
+              targets = discovery.relabel.node_exporter.output
               forward_to = [prometheus.remote_write.default.receiver]
               scrape_interval = "15s"
             }
