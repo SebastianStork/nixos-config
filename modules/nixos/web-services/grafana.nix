@@ -7,13 +7,6 @@
 }:
 let
   cfg = config.custom.web-services.grafana;
-
-  prometheusDomains =
-    allHosts
-    |> lib.attrValues
-    |> lib.map (host: host.config.custom.services.prometheus)
-    |> lib.filter (prometheus: prometheus.enable)
-    |> lib.map (prometheus: prometheus.domain);
 in
 {
   options.custom.web-services.grafana = {
@@ -25,15 +18,6 @@ in
     port = lib.mkOption {
       type = lib.types.port;
       default = 3000;
-    };
-    datasources.prometheus = {
-      enable = lib.mkEnableOption "" // {
-        default = prometheusDomains != [ ];
-      };
-      url = lib.mkOption {
-        type = lib.types.nonEmptyStr;
-        default = "https://metrics.${config.custom.networking.overlay.fqdn}";
-      };
     };
     dashboards.nodeExporter.enable = lib.mkEnableOption "" // {
       default = true;
@@ -73,19 +57,22 @@ in
 
         datasources.settings = {
           prune = true;
-          datasources = lib.optional cfg.datasources.prometheus.enable {
-            name = "Prometheus";
-            type = "prometheus";
-            inherit (cfg.datasources.prometheus) url;
-            isDefault = true;
-            jsonData = {
-              prometheusType = "Prometheus";
-              prometheusVersion = "3.7.2";
-            };
-          };
+          datasources =
+            allHosts
+            |> lib.attrValues
+            |> lib.filter (host: host.config.custom.services.prometheus.enable)
+            |> lib.map (host: {
+              name = "Prometheus ${host.config.networking.hostName}";
+              type = "prometheus";
+              url = "https://${host.config.custom.services.prometheus.domain}";
+              isDefault = host.config.networking.hostName == config.networking.hostName;
+              jsonData = {
+                prometheusType = "Prometheus";
+                prometheusVersion = "3.7.2";
+              };
+            });
         };
       };
-
     };
 
     # https://grafana.com/grafana/dashboards/1860-node-exporter-full/
@@ -98,20 +85,6 @@ in
       };
     };
 
-    custom.services.caddy = {
-      virtualHosts.${cfg.domain}.port = cfg.port;
-
-      virtualHosts."metrics.${config.custom.networking.overlay.fqdn}".extraConfig =
-        let
-          upstreams = prometheusDomains |> lib.map (domain: "https://${domain}") |> lib.concatStringsSep " ";
-        in
-        ''
-          reverse_proxy ${upstreams} {
-            header_up Host {upstream_hostport}
-            lb_policy first
-            health_uri /api/v1/status/buildinfo
-          }
-        '';
-    };
+    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
   };
 }
