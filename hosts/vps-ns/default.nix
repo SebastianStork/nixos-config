@@ -20,9 +20,9 @@
       };
     };
 
-    services.nameservers = {
-      overlay.enable = true;
-      public = {
+    services = {
+      private-nameserver.enable = true;
+      public-nameserver = {
         enable = true;
         zones = [
           "sprouted.cloud"
