@@ -58,18 +58,24 @@ let
   };
 in
 {
-  options.custom.services.private-nameserver.enable = lib.mkEnableOption "";
+  options.custom.services.private-nameserver = {
+    enable = lib.mkEnableOption "";
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 5335;
+    };
+  };
 
   config = lib.mkIf cfg.enable {
     services = {
       nsd = {
         enable = true;
-        interfaces = [ netCfg.overlay.interface ];
+        interfaces = [ "${netCfg.overlay.address}@${toString cfg.port}" ];
         zones.${netCfg.overlay.domain}.data = zoneData;
       };
 
       nebula.networks.mesh.firewall.inbound = lib.singleton {
-        port = 53;
+        inherit (cfg) port;
         proto = "any";
         host = "any";
       };

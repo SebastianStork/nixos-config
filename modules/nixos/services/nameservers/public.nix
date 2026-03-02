@@ -66,6 +66,10 @@ in
 {
   options.custom.services.public-nameserver = {
     enable = lib.mkEnableOption "";
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 53;
+    };
     zones = lib.mkOption {
       type = lib.types.nonEmptyListOf lib.types.nonEmptyStr;
       default = [ ];
@@ -73,14 +77,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    networking.firewall = {
-      allowedTCPPorts = [ 53 ];
-      allowedUDPPorts = [ 53 ];
-    };
-
     services.nsd = {
       enable = true;
-      interfaces = [ netCfg.underlay.interface ];
+      interfaces = [ "${netCfg.underlay.address}@${toString cfg.port}" ];
       zones =
         cfg.zones
         |> lib.map (zone: {
@@ -88,6 +87,11 @@ in
           value.data = zoneData zone;
         })
         |> lib.listToAttrs;
+    };
+
+    networking.firewall = {
+      allowedTCPPorts = [ cfg.port ];
+      allowedUDPPorts = [ cfg.port ];
     };
   };
 }

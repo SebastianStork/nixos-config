@@ -64,7 +64,10 @@ in
         allHosts
         |> lib.attrValues
         |> lib.filter (host: host.config.custom.services.private-nameserver.enable)
-        |> lib.map (host: host.config.custom.networking.overlay.address);
+        |> lib.map (
+          host:
+          "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.private-nameserver.port}"
+        );
     };
 
     implementation = lib.mkOption {
