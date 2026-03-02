@@ -21,7 +21,7 @@
         };
       };
 
-      services.nameservers.public = {
+      services.public-nameserver = {
         enable = true;
         zones = [
           "sprouted.cloud"

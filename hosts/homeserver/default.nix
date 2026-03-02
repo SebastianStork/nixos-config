@@ -21,7 +21,7 @@
       };
 
       services = {
-        nameservers.overlay.enable = true;
+        private-nameserver.enable = true;
 
         syncthing = {
           enable = true;

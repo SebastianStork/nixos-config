@@ -6,7 +6,7 @@
   ...
 }:
 let
-  cfg = config.custom.services.nameservers.public;
+  cfg = config.custom.services.public-nameserver;
   netCfg = config.custom.networking;
 
   zoneData =
@@ -38,7 +38,7 @@ let
       nsRecords =
         allHosts
         |> lib.attrValues
-        |> lib.filter (host: host.config.custom.services.nameservers.public.enable)
+        |> lib.filter (host: host.config.custom.services.public-nameserver.enable)
         |> lib.map (host: {
           name = host.config.custom.networking.hostName;
           inherit (host.config.custom.networking.underlay) address;
@@ -64,7 +64,7 @@ let
     };
 in
 {
-  options.custom.services.nameservers.public = {
+  options.custom.services.public-nameserver = {
     enable = lib.mkEnableOption "";
     zones = lib.mkOption {
       type = lib.types.nonEmptyListOf lib.types.nonEmptyStr;

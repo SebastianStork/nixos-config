@@ -7,7 +7,7 @@
   ...
 }:
 let
-  cfg = config.custom.services.nameservers.overlay;
+  cfg = config.custom.services.private-nameserver;
   netCfg = config.custom.networking;
 
   zoneData = inputs.dns.lib.toString netCfg.overlay.domain {
@@ -20,7 +20,7 @@ let
     NS =
       allHosts
       |> lib.attrValues
-      |> lib.filter (host: host.config.custom.services.nameservers.overlay.enable)
+      |> lib.filter (host: host.config.custom.services.private-nameserver.enable)
       |> lib.map (host: "${host.config.custom.networking.overlay.fqdn}.");
 
     subdomains =
@@ -58,7 +58,7 @@ let
   };
 in
 {
-  options.custom.services.nameservers.overlay.enable = lib.mkEnableOption "";
+  options.custom.services.private-nameserver.enable = lib.mkEnableOption "";
 
   config = lib.mkIf cfg.enable {
     services = {
