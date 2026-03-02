@@ -58,7 +58,10 @@
           };
         };
 
-        services.private-nameserver.enable = true;
+        services = {
+          recursive-nameserver.enable = true;
+          private-nameserver.enable = true;
+        };
       };
     };
 
@@ -133,7 +136,7 @@
       client1.wait_for_unit("${client1NetCfg.overlay.systemdUnit}")
       client2.wait_for_unit("${client2NetCfg.overlay.systemdUnit}")
 
-      lighthouse.wait_for_unit("nsd.service")
+      lighthouse.wait_for_unit("unbound.service")
       lighthouse.wait_for_open_port(53, "${lighthouseNetCfg.overlay.address}")
 
       server.wait_for_unit("sshd.service")

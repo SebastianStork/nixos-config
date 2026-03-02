@@ -21,6 +21,7 @@
       };
 
       services = {
+        recursive-nameserver.enable = true;
         private-nameserver.enable = true;
 
         syncthing = {

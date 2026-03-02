@@ -63,10 +63,10 @@ in
       default =
         allHosts
         |> lib.attrValues
-        |> lib.filter (host: host.config.custom.services.private-nameserver.enable)
+        |> lib.filter (host: host.config.custom.services.recursive-nameserver.enable)
         |> lib.map (
           host:
-          "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.private-nameserver.port}"
+          "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.recursive-nameserver.port}"
         );
     };
 
