@@ -132,10 +132,7 @@ in
         matchConfig.Name = netCfg.overlay.interface;
         address = [ netCfg.overlay.cidr ];
         dns = netCfg.overlay.dnsServers;
-        domains = [
-          "~${netCfg.overlay.domain}"
-          netCfg.overlay.domain
-        ];
+        domains = [ netCfg.overlay.domain ];
         networkConfig.DNSSEC = false;
       };
     };
