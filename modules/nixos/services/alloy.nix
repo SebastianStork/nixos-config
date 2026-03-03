@@ -109,6 +109,20 @@ in
             }
           '';
         };
+        "alloy/comin-metrics.alloy" = {
+          enable = cfg.collect.metrics.comin;
+          text = ''
+            prometheus.scrape "comin" {
+              targets = [{
+                __address__ = "localhost:${toString config.custom.services.comin.metricsPort}",
+                job = "comin",
+                instance = constants.hostname,
+              }]
+              forward_to = [prometheus.remote_write.default.receiver]
+              scrape_interval = "30s"
+            }
+          '';
+        };
       };
 
     custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
