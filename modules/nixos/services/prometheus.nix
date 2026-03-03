@@ -104,12 +104,12 @@ in
                 };
               }
               {
-                alert = "CominDeploymentDifferentCommits";
+                alert = "CominDeploymentCommitMismatch";
                 expr = "count(count by (commit_id) (comin_deployment_info)) > 1";
                 for = "10m";
                 annotations = {
-                  summary = "Comin commit mismatch";
-                  description = "Two or more comin deployments are on different commits.";
+                  summary = "Hosts are running different commits";
+                  description = "Not all hosts are running the same git commit, which may indicate a failed deployment and could lead to incompatible configurations.";
                 };
               }
             ];
