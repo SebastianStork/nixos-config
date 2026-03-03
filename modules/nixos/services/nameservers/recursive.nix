@@ -31,6 +31,7 @@ in
             settings.server = {
               interface = [ "${netCfg.overlay.address}@${toString cfg.port}" ];
               access-control = [ "${toString netCfg.overlay.networkCidr} allow" ];
+              prefetch = true;
             };
           };
 
