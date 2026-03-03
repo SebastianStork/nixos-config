@@ -105,12 +105,13 @@ jobs:
       - uses: actions/checkout@v5
       - name: Push to deploy branch
         run: git push origin HEAD:deploy --force
-  notify-success:
-    if: always() && needs.deploy.result == 'success'
+  notify:
+    if: always()
     needs: [deploy]
     runs-on: ubuntu-latest
     steps:
-      - name: Send ntfy success notification
+      - name: Notify success
+        if: needs.deploy.result == 'success'
         run: |
           curl -s \
             -H "Title: CI: Deploy succeeded" \
@@ -120,12 +121,8 @@ jobs:
             -H "Markdown: yes" \
             -d "Commit \`${GITHUB_SHA::7}\` deployed successfully." \
             https://ntfy.sh/splitleaf
-  notify-failure:
-    if: always() && needs.deploy.result != 'success'
-    needs: [deploy]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send ntfy failure notification
+      - name: Notify failure
+        if: needs.deploy.result != 'success'
         run: |
           curl -s \
             -H "Title: CI: Deploy failed" \
