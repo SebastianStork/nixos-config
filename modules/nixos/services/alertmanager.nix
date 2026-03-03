@@ -75,6 +75,20 @@ in
             notification = {
               topic = "splitleaf";
               priority = "default";
+              templates = {
+                title = ''{{ index .Annotations "summary" }}'';
+                description = "";
+              };
+              tags = [
+                {
+                  condition = ''status == "resolved"'';
+                  tag = "white_check_mark";
+                }
+                {
+                  condition = ''status == "firing"'';
+                  tag = "rotating_light";
+                }
+              ];
             };
           };
         };

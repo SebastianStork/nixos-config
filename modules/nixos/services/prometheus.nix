@@ -89,7 +89,7 @@ in
               expr = "up == 0";
               for = "2m";
               labels.severity = "critical";
-              annotations.summary = "Instance {{ $labels.instance }} down";
+              annotations.summary = "{{ $labels.instance }} is DOWN";
             };
           };
         }
