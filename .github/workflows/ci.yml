@@ -117,7 +117,8 @@ jobs:
             -H "Priority: low" \
             -H "Tags: white_check_mark" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-            -d "Commit ${{ github.sha }} succeeded." \
+            -H "Markdown: yes" \
+            -d "Commit `${{ github.sha }}` succeeded." \
             https://ntfy.sh/splitleaf
   notify-failure:
     if: always() && contains(needs.*.result, 'failure')
@@ -131,5 +132,6 @@ jobs:
             -H "Priority: default" \
             -H "Tags: rotating_light" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-            -d "Commit ${{ github.sha }} failed." \
+            -H "Markdown: yes" \
+            -d "Commit `${{ github.sha }}` failed." \
             https://ntfy.sh/splitleaf
