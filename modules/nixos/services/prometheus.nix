@@ -83,17 +83,36 @@ in
       ruleFiles =
         {
           groups = lib.singleton {
-            name = "InstanceDown";
-            rules = lib.singleton {
-              alert = "InstanceDown";
-              expr = "up == 0";
-              for = "2m";
-              labels.severity = "critical";
-              annotations = {
-                summary = "{{ $labels.instance }} is DOWN";
-                description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes.";
-              };
-            };
+            name = "Rules";
+            rules = [
+              {
+                alert = "InstanceDown";
+                expr = "up == 0";
+                for = "2m";
+                labels.severity = "critical";
+                annotations = {
+                  summary = "{{ $labels.instance }} is DOWN";
+                  description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes.";
+                };
+              }
+              {
+                alert = "CominDeploymentFailed";
+                expr = ''comin_deployment_info{status!="done"}'';
+                annotations = {
+                  summary = "{{ $labels.instance }} deployment failed";
+                  description = "The deployment of {{ $labels.instance }} with comin is failing.";
+                };
+              }
+              {
+                alert = "CominDeploymentDifferentCommits";
+                expr = "count(count by (commit_id) (comin_deployment_info)) > 1";
+                for = "10m";
+                annotations = {
+                  summary = "Comin commit mismatch";
+                  description = "Two or more comin deployments are on different commits.";
+                };
+              }
+            ];
           };
         }
         |> lib.strings.toJSON
