@@ -93,11 +93,12 @@
       bind = CONTROL, Print, exec, grimblast --notify --freeze copysave active
 
       # Special workspaces
+      bind = SUPER, Q, togglespecialworkspace, flake
       bind = SUPER, S, togglespecialworkspace, music
       bind = SUPER, D, togglespecialworkspace, chat
-      bind = SUPER, Q, togglespecialworkspace, flake
       bind = SUPER, M, togglespecialworkspace, monitor
       bind = SUPER, F, togglespecialworkspace, files
+      bind = SUPER, N, togglespecialworkspace, notes
     '';
   };
 }
