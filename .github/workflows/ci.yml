@@ -16,11 +16,6 @@ jobs:
       - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: experimental-features = nix-command flakes pipe-operators
-      - name: Get packages
-        id: packages
-        run: |
-          packages=$(nix flake show --json | jq -c '.packages."x86_64-linux" | keys')
-          printf "packages=%s" "$packages" >> "$GITHUB_OUTPUT"
       - name: Get checks
         id: checks
         run: |
@@ -32,38 +27,11 @@ jobs:
           servers=$(nix eval .#nixosConfigurations --apply 'configs:
             configs
             |> builtins.attrNames
-            |> builtins.filter (name: configs.${name}.config.custom.services.comin.enable)
+            |> builtins.filter (hostName: configs.${hostName}.config.custom.services.comin.enable)
           ' --json)
           printf "servers=%s" "$servers" >> "$GITHUB_OUTPUT"
-      - name: Get workstations
-        id: workstations
-        run: |
-          workstations=$(nix eval .#nixosConfigurations --apply 'configs:
-            configs
-            |> builtins.attrNames
-            |> builtins.filter (name: !configs.${name}.config.custom.services.comin.enable)
-          ' --json)
-          printf "workstations=%s" "$workstations" >> "$GITHUB_OUTPUT"
-  build-package:
-    needs: parse-flake
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJson(needs.parse-flake.outputs.packages) }}
-    steps:
-      - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: experimental-features = nix-command flakes pipe-operators
-      - uses: cachix/cachix-action@v15
-        with:
-          name: sebastian-stork
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-          useDaemon: false
-      - name: Build package
-        run: nix build .#packages.x86_64-linux.${{ matrix.package }} --print-build-logs
   build-check:
+    name: ${{ matrix.check }}
     needs: parse-flake
     runs-on: ubuntu-latest
     strategy:
@@ -83,19 +51,25 @@ jobs:
       - name: Build check
         run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
   build-server:
+    name: ${{ matrix.server }}
     needs: parse-flake
-    uses: ./.github/workflows/build-host.yml
-    with:
-      hosts: ${{ needs.parse-flake.outputs.servers }}
-    secrets:
-      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
-  build-workstation:
-    needs: parse-flake
-    uses: ./.github/workflows/build-host.yml
-    with:
-      hosts: ${{ needs.parse-flake.outputs.workstations }}
-    secrets:
-      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        server: ${{ fromJson(needs.parse-flake.outputs.servers) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: experimental-features = nix-command flakes pipe-operators
+      - uses: cachix/cachix-action@v15
+        with:
+          name: sebastian-stork
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          useDaemon: false
+      - name: Build server
+        run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --print-build-logs
   deploy:
     needs: [build-check, build-server]
     runs-on: ubuntu-latest
