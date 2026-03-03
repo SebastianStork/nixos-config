@@ -29,7 +29,7 @@ in
     };
     exporter = {
       listen_address = "127.0.0.1";
-      inherit (cfg) port;
+      port = cfg.metricsPort;
     };
   };
 }
