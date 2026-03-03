@@ -25,6 +25,9 @@ in
       caddy = lib.mkEnableOption "" // {
         default = config.services.caddy.enable;
       };
+      comin = lib.mkEnableOption "" // {
+        default = config.services.comin.enable;
+      };
     };
   };
 
