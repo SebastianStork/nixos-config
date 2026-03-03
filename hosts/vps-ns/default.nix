@@ -25,6 +25,7 @@
       private-nameserver.enable = true;
       public-nameserver = {
         enable = true;
+        publicHostName = "ns1";
         zones = [
           "sprouted.cloud"
           "sstork.dev"

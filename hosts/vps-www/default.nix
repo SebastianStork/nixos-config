@@ -23,6 +23,7 @@
 
       services.public-nameserver = {
         enable = true;
+        publicHostName = "ns2";
         zones = [
           "sprouted.cloud"
           "sstork.dev"
