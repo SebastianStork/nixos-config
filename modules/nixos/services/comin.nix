@@ -26,10 +26,10 @@ in
         url = "https://github.com/SebastianStork/nixos-config.git";
         branches.main.name = "deploy";
       };
-    };
-    exporter = {
-      listen_address = "127.0.0.1";
-      port = cfg.metricsPort;
+      exporter = {
+        listen_address = "127.0.0.1";
+        port = cfg.metricsPort;
+      };
     };
   };
 }
