@@ -106,32 +106,32 @@ jobs:
       - name: Push to deploy branch
         run: git push origin HEAD:deploy --force
   notify-success:
-    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
-    needs: [build-package, build-check, build-server, build-workstation, deploy]
+    if: always() && needs.deploy.result == 'success'
+    needs: [deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Send ntfy success notification
         run: |
           curl -s \
-            -H "Title: CI succeeded" \
+            -H "Title: CI: Deploy succeeded" \
             -H "Priority: low" \
             -H "Tags: white_check_mark" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d "Commit `${{ github.sha }}` succeeded." \
+            -d "Commit \`${GITHUB_SHA::7}\` deployed successfully." \
             https://ntfy.sh/splitleaf
   notify-failure:
-    if: always() && contains(needs.*.result, 'failure')
-    needs: [build-package, build-check, build-server, build-workstation, deploy]
+    if: always() && needs.deploy.result != 'success'
+    needs: [deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Send ntfy failure notification
         run: |
           curl -s \
-            -H "Title: CI failed" \
+            -H "Title: CI: Deploy failed" \
             -H "Priority: default" \
             -H "Tags: rotating_light" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d "Commit `${{ github.sha }}` failed." \
+            -d "Commit \`${GITHUB_SHA::7}\` failed to deploy." \
             https://ntfy.sh/splitleaf
