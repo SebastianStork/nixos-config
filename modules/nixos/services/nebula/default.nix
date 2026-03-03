@@ -133,7 +133,6 @@ in
         address = [ netCfg.overlay.cidr ];
         dns = netCfg.overlay.dnsServers;
         domains = [ netCfg.overlay.domain ];
-        networkConfig.DNSSEC = false;
       };
     };
   };
