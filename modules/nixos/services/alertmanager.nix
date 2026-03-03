@@ -75,10 +75,7 @@ in
             notification = {
               topic = "splitleaf";
               priority = "default";
-              templates = {
-                title = ''{{ index .Annotations "summary" }}'';
-                description = "";
-              };
+              templates.title = ''{{ index .Annotations "summary" }}'';
               tags = [
                 {
                   condition = ''status == "resolved"'';

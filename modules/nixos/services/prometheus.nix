@@ -89,7 +89,10 @@ in
               expr = "up == 0";
               for = "2m";
               labels.severity = "critical";
-              annotations.summary = "{{ $labels.instance }} is DOWN";
+              annotations = {
+                summary = "{{ $labels.instance }} is DOWN";
+                description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes.";
+              };
             };
           };
         }
