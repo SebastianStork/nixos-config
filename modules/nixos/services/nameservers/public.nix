@@ -40,7 +40,7 @@ let
         |> lib.attrValues
         |> lib.filter (host: host.config.custom.services.public-nameserver.enable)
         |> lib.map (host: {
-          name = host.config.custom.networking.hostName;
+          name = host.config.custom.services.public-nameserver.publicHostName;
           inherit (host.config.custom.networking.underlay) address;
         });
     in
@@ -66,6 +66,10 @@ in
 {
   options.custom.services.public-nameserver = {
     enable = lib.mkEnableOption "";
+    publicHostName = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = netCfg.hostName;
+    };
     port = lib.mkOption {
       type = lib.types.port;
       default = 53;
