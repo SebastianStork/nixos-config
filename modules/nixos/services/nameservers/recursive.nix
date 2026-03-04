@@ -1,5 +1,7 @@
 {
   config,
+  inputs,
+  pkgs,
   lib,
   allHosts,
   ...
@@ -7,6 +9,16 @@
 let
   cfg = config.custom.services.recursive-nameserver;
   netCfg = config.custom.networking;
+
+  blocklist =
+    pkgs.runCommand "blocklist.conf" { } ''
+      echo "server:" > $out
+      cat ${inputs.blocklist}/hosts \
+        | grep '^0.0.0.0 ' \
+        | awk '$2 != "0.0.0.0" {print "  local-zone: \"" $2 "\" refuse"}' \
+        >> $out
+    ''
+    |> toString;
 
   privateNameservers =
     allHosts
@@ -20,6 +32,7 @@ in
       type = lib.types.port;
       default = 53;
     };
+    blockAds = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable (
@@ -28,10 +41,13 @@ in
         services = {
           unbound = {
             enable = true;
-            settings.server = {
-              interface = [ "${netCfg.overlay.address}@${toString cfg.port}" ];
-              access-control = [ "${toString netCfg.overlay.networkCidr} allow" ];
-              prefetch = true;
+            settings = {
+              server = {
+                interface = [ "${netCfg.overlay.address}@${toString cfg.port}" ];
+                access-control = [ "${toString netCfg.overlay.networkCidr} allow" ];
+                prefetch = true;
+              };
+              include-toplevel = lib.mkIf cfg.blockAds blocklist;
             };
           };
 

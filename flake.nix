@@ -75,6 +75,11 @@
       url = "github:iBigQ/radicale-birthday-calendar";
       flake = false;
     };
+
+    blocklist = {
+      url = "github:StevenBlack/hosts";
+      flake = false;
+    };
   };
 
   outputs =
