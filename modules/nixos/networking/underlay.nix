@@ -51,6 +51,7 @@ in
           matchConfig.Name = cfg.interface;
           linkConfig.RequiredForOnline = "routable";
           networkConfig.DHCP = lib.mkIf cfg.useDhcp "yes";
+          dhcpV4Config.UseDNS = lib.mkIf cfg.useDhcp false;
           address = lib.optional (cfg.cidr != null) cfg.cidr;
           routes = lib.optional (cfg.gateway != null) {
             Gateway = cfg.gateway;
