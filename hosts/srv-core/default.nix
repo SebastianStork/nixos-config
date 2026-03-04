@@ -28,7 +28,7 @@
           address = "130.83.103.62";
           port = 47033;
         };
-        
+
         recursive-nameserver = {
           enable = true;
           blockAds = true;
