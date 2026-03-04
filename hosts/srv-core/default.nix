@@ -17,7 +17,7 @@
           isLighthouse = true;
           advertise = {
             address = "130.83.103.62";
-            port = "47033";
+            port = 47033;
           };
         };
         underlay = {
