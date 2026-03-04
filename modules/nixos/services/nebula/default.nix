@@ -8,8 +8,6 @@ let
   cfg = config.custom.services.nebula;
   netCfg = config.custom.networking;
 
-  publicPort = 47141;
-
   lighthouses =
     netCfg.peers
     |> lib.filter (peer: peer.overlay.isLighthouse)
@@ -25,6 +23,11 @@ in
       default =
         lib.singleton netCfg.overlay.role
         ++ lib.optional config.custom.services.syncthing.enable "syncthing";
+    };
+
+    listenPort = lib.mkOption {
+      type = lib.types.port;
+      default = if (netCfg.overlay.advertise.address != null) then 47141 else 0;
     };
 
     caCertificateFile = lib.mkOption {
@@ -47,8 +50,8 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
-      assertion = netCfg.overlay.isLighthouse -> netCfg.underlay.isPublic;
-      message = "`${netCfg.hostName}` is a Nebula lighthouse, but `underlay.isPublic` is not set. Lighthouses must be publicly reachable.";
+      assertion = netCfg.overlay.isLighthouse -> netCfg.overlay.advertise.address != null;
+      message = "`${netCfg.hostName}` is a Nebula lighthouse, but `underlay.isPublic` or `overlay.advertise.address` are not set. Lighthouses must be publicly reachable.";
     };
 
     sops.secrets."nebula/host-key" = lib.mkIf (cfg.privateKeyFile == null) {
@@ -83,7 +86,7 @@ in
       tun.device = netCfg.overlay.interface;
       listen = {
         host = lib.mkIf (netCfg.underlay.address != null) netCfg.underlay.address;
-        port = lib.mkIf netCfg.underlay.isPublic publicPort;
+        port = cfg.listenPort;
       };
 
       inherit (netCfg.overlay) isLighthouse;
@@ -94,10 +97,10 @@ in
 
       staticHostMap =
         netCfg.peers
-        |> lib.filter (peer: peer.underlay.isPublic)
-        |> lib.map (publicPeer: {
-          name = publicPeer.overlay.address;
-          value = lib.singleton "${publicPeer.underlay.address}:${toString publicPort}";
+        |> lib.filter (peer: peer.overlay.advertise.address != null)
+        |> lib.map (peer: {
+          name = peer.overlay.address;
+          value = lib.singleton "${peer.overlay.advertise.address}:${toString peer.overlay.advertise.port}";
         })
         |> lib.listToAttrs;
 

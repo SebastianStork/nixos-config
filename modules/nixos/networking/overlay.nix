@@ -51,6 +51,22 @@ in
     };
 
     isLighthouse = lib.mkEnableOption "";
+
+    advertise = {
+      address = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default =
+          if config.custom.networking.underlay.isPublic then
+            config.custom.networking.underlay.address
+          else
+            null;
+      };
+      port = lib.mkOption {
+        type = lib.types.nullOr lib.types.port;
+        default = if cfg.advertise.address != null then config.custom.services.nebula.listenPort else null;
+      };
+    };
+
     role = lib.mkOption {
       type = lib.types.enum [
         "client"
