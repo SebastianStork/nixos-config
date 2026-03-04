@@ -21,7 +21,10 @@
     };
 
     services = {
-      recursive-nameserver.enable = true;
+      recursive-nameserver = {
+        enable = true;
+        blockAds = true;
+      };
       private-nameserver.enable = true;
       public-nameserver = {
         enable = true;
