@@ -12,7 +12,14 @@
       boot.loader.grub.enable = true;
 
       networking = {
-        overlay.address = "10.254.250.6";
+        overlay = {
+          address = "10.254.250.6";
+          isLighthouse = true;
+          advertise = {
+            address = "130.83.103.62";
+            port = "47033";
+          };
+        };
         underlay = {
           interface = "enp2s0";
           cidr = "192.168.0.64/24";
