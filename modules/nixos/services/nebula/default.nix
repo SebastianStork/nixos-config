@@ -2,6 +2,7 @@
   config,
   self,
   lib,
+  allHosts,
   ...
 }:
 let
@@ -27,7 +28,17 @@ in
 
     listenPort = lib.mkOption {
       type = lib.types.port;
-      default = if (netCfg.overlay.advertise.address != null) then 47141 else 0;
+      default = if (cfg.advertise.address != null) then 47141 else 0;
+    };
+    advertise = {
+      address = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default = if netCfg.underlay.isPublic then netCfg.underlay.address else null;
+      };
+      port = lib.mkOption {
+        type = lib.types.nullOr lib.types.port;
+        default = if cfg.advertise.address != null then cfg.listenPort else null;
+      };
     };
 
     caCertificateFile = lib.mkOption {
@@ -50,7 +61,7 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
-      assertion = netCfg.overlay.isLighthouse -> netCfg.overlay.advertise.address != null;
+      assertion = netCfg.overlay.isLighthouse -> cfg.advertise.address != null;
       message = "`${netCfg.hostName}` is a Nebula lighthouse, but `underlay.isPublic` or `overlay.advertise.address` are not set. Lighthouses must be publicly reachable.";
     };
 
@@ -96,11 +107,12 @@ in
       relays = lib.mkIf (!netCfg.overlay.isLighthouse) lighthouses;
 
       staticHostMap =
-        netCfg.peers
-        |> lib.filter (peer: peer.overlay.advertise.address != null)
-        |> lib.map (peer: {
-          name = peer.overlay.address;
-          value = lib.singleton "${peer.overlay.advertise.address}:${toString peer.overlay.advertise.port}";
+        allHosts
+        |> lib.attrValues
+        |> lib.filter (host: host.config.custom.services.nebula.advertise.address != null)
+        |> lib.map (host: {
+          name = host.config.custom.networking.overlay.address;
+          value = lib.singleton "${host.config.custom.services.nebula.advertise.address}:${toString host.config.custom.services.nebula.advertise.port}";
         })
         |> lib.listToAttrs;
 

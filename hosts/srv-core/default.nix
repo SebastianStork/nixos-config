@@ -15,10 +15,6 @@
         overlay = {
           address = "10.254.250.6";
           isLighthouse = true;
-          advertise = {
-            address = "130.83.103.62";
-            port = 47033;
-          };
         };
         underlay = {
           interface = "enp2s0";
@@ -28,6 +24,11 @@
       };
 
       services = {
+        nebula.advertise = {
+          address = "130.83.103.62";
+          port = 47033;
+        };
+        
         recursive-nameserver = {
           enable = true;
           blockAds = true;
