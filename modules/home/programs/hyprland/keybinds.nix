@@ -1,20 +1,11 @@
 { config, lib, ... }:
 {
-  config = lib.mkIf config.custom.de.hyprland.enable {
+  config = lib.mkIf config.custom.programs.hyprland.enable {
     wayland.windowManager.hyprland.extraConfig = ''
       # Bindflags:
       # r = release
       # e = repeat
       # l = locked
-
-      # Variables
-      $play-pause = playerctl --ignore-player=firefox play-pause
-      $play-next = playerctl --ignore-player=firefox next
-      $play-previous = playerctl --ignore-player=firefox previous
-      $mute = wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-      $volume-up = wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
-      $volume-down = wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-      $mute-mic = wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
       # Essentials
       bind = SUPER SHIFT, C, killactive,
@@ -22,9 +13,7 @@
       bind = SUPER SHIFT, F, fullscreen, 0
 
       # Launch programs
-      bind = SUPER, R, exec, rofi -show drun
       bind = SUPER, RETURN, exec, kitty
-      bind = SUPER, V, exec, rofi-clipboard
       bind = SUPER, B, exec, firefox
       bind = SUPER, C, exec, code
 
@@ -61,7 +50,6 @@
       bindrl = SUPER CONTROL, R, exec, reboot
       bindrl = SUPER CONTROL, H, exec, systemctl hibernate
       bindrl = SUPER CONTROL, S, exec, systemctl sleep
-      bindrl = SUPER CONTROL, L, exec, loginctl lock-session
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
 
       # Control media

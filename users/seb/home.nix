@@ -19,6 +19,8 @@
   custom = {
     sops.enable = true;
 
+    de.hyprland.classic.enable = true;
+
     programs = {
       shell = {
         zsh.enable = true;
@@ -32,6 +34,7 @@
       vscode.enable = true;
       firefox.enable = true;
       libreoffice.enable = true;
+      btop.enable = true;
     };
   };
 
