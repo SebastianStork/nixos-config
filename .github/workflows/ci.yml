@@ -99,7 +99,7 @@ jobs:
             -d "Commit \`${GITHUB_SHA::7}\` deployed successfully." \
             https://ntfy.sh/splitleaf
       - name: Notify failure
-        if: needs.deploy.result != 'success'
+        if: needs.deploy.result == 'failure'
         run: |
           curl -s \
             -H "Title: CI: Deploy failed" \
