@@ -19,6 +19,7 @@
           animationSpeed = 1.8;
           enableShadows = false;
           compactLockScreen = true;
+          clockStyle = "digital";
           autoStartAuth = true;
           allowPasswordWithFprintd = true;
           showSessionButtonsOnLockScreen = false;
@@ -53,7 +54,7 @@
             left = lib.singleton {
               id = "Clock";
               formatHorizontal = "HH:mm ddd, d MMM";
-              tooltipFormat = "yyyy-MM-dd HH:mm";
+              tooltipFormat = "HH:mm yyyy-MM-dd";
             };
             center = lib.singleton {
               id = "Workspace";
