@@ -36,6 +36,7 @@
 
       # Manage session
       bindrl = SUPER CONTROL, L, exec, $ipc lockScreen lock
+      bindrl = SUPER CONTROL, S, exec, $ipc sessionMenu lockAndSuspend
     '';
   };
 }

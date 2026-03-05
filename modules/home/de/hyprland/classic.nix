@@ -46,6 +46,7 @@
 
       # Manage session
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session
+      bindrl = SUPER CONTROL, S, exec, systemctl sleep
     '';
   };
 }

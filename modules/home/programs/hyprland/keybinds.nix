@@ -49,7 +49,6 @@
       bindrl = SUPER CONTROL, P, exec, poweroff
       bindrl = SUPER CONTROL, R, exec, reboot
       bindrl = SUPER CONTROL, H, exec, systemctl hibernate
-      bindrl = SUPER CONTROL, S, exec, systemctl sleep
       bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
 
       # Control media
