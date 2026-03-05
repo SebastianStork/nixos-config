@@ -42,12 +42,6 @@
             "extensions.autoCheckUpdates" = false;
             "editor.fontFamily" = "JetBrainsMono Nerd Font";
             "workbench.iconTheme" = "material-icon-theme";
-            "workbench.colorTheme" =
-              {
-                dark = "GitHub Dark";
-                light = "GitHub Light";
-              }
-              .${config.custom.theme};
             "workbench.sideBar.location" = "right";
             "workbench.editor.decorations.colors" = false;
             "editor.renderWhitespace" = "none";
@@ -68,6 +62,12 @@
             "github.copilot.enable"."*" = false;
             "chat.fontSize" = 15;
             "chat.editor.fontSize" = 15;
+            "workbench.colorTheme" =
+              {
+                dark = "GitHub Dark";
+                light = "GitHub Light";
+              }
+              .${config.custom.theme};
           }
         );
       in
