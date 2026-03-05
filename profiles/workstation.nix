@@ -25,6 +25,10 @@
     services = {
       sound.enable = true;
       syncthing.enable = true;
+      alloy = {
+        enable = true;
+        domain = null;
+      };
     };
   };
 
