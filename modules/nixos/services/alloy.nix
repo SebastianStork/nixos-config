@@ -11,8 +11,8 @@ in
   options.custom.services.alloy = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "";
+      type = lib.types.nullOr lib.types.nonEmptyStr;
+      default = null;
     };
     port = lib.mkOption {
       type = lib.types.port;
@@ -128,6 +128,6 @@ in
         };
       };
 
-    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+    custom.services.caddy.virtualHosts.${cfg.domain}.port = lib.mkIf (cfg.domain != null) cfg.port;
   };
 }
