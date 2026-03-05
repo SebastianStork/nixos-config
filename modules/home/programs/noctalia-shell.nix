@@ -84,12 +84,22 @@
           enableWindowsSearch = false;
           enableClipboardHistory = true;
         };
+        osd.enabledTypes = [
+          0
+          1
+          2
+          3
+        ];
         location.name = "Darmstadt";
         sessionMenu = {
           largeButtonsStyle = false;
           countdownDuration = 3000;
         };
         audio.mprisBlacklist = "firefox";
+        location = {
+          firstDayOfWeek = 1;
+          showWeekNumberInCalendar = true;
+        };
       };
     };
   };
