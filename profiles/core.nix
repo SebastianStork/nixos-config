@@ -73,6 +73,8 @@
 
   console.keyMap = "de-latin1-nodeadkeys";
 
+  security.sudo.extraConfig = "Defaults pwfeedback";
+
   sops.secrets."seb-password".neededForUsers = true;
   users = {
     mutableUsers = false;
