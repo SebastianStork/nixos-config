@@ -121,13 +121,11 @@ jobs:
     if: always() && needs.await-deploy.result == 'failure'
     needs: [trigger-deploy, await-deploy]
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      workflows: write
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT }}
       - name: Rollback deploy branch
         run: |
           previous_sha="${{ needs.trigger-deploy.outputs.previous-sha }}"
