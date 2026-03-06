@@ -19,6 +19,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    sops.secrets."git/push-token" = { };
+    systemd.services.comin.serviceConfig.LoadCredential = "git-push-token:${
+      config.sops.secrets."git/push-token".path
+    }";
+
     services.comin = {
       enable = true;
       remotes = lib.singleton {
