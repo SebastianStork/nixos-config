@@ -119,21 +119,21 @@ jobs:
         if: needs.await-deploy.result == 'success'
         run: |
           curl -s \
-            -H "Title: CI: Deploy succeeded" \
+            -H "Title: CI: Deployment succeeded" \
             -H "Priority: low" \
             -H "Tags: white_check_mark" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d $'Commit `'"${GITHUB_SHA::7}"$'` deployed successfully.\n\n> ${{ github.event.head_commit.message }}' \
+            -d $'Commit `'"${GITHUB_SHA::7}"$'` deployed successfully.\n> ${{ github.event.head_commit.message }}' \
             https://ntfy.sh/splitleaf
       - name: Notify failure
         if: needs.await-deploy.result == 'failure'
         run: |
           curl -s \
-            -H "Title: CI: Deploy failed" \
+            -H "Title: CI: Deployment failed" \
             -H "Priority: default" \
             -H "Tags: rotating_light" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d $'Commit `'"${GITHUB_SHA::7}"$'` failed to deploy.\n\n> ${{ github.event.head_commit.message }}' \
+            -d $'Commit `'"${GITHUB_SHA::7}"$'` failed to deploy.\n> ${{ github.event.head_commit.message }}' \
             https://ntfy.sh/splitleaf
