@@ -18,6 +18,7 @@
         general = {
           animationSpeed = 1.8;
           enableShadows = false;
+          dimmerOpacity = 0.1;
           compactLockScreen = true;
           clockStyle = "digital";
           autoStartAuth = true;
@@ -96,6 +97,7 @@
           largeButtonsStyle = false;
           countdownDuration = 3000;
         };
+        idle.enabled = true;
         audio.mprisBlacklist = "firefox";
         location = {
           firstDayOfWeek = 1;
