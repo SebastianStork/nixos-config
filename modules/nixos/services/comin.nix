@@ -18,7 +18,7 @@ let
           exit 0
         fi
 
-        token=$(cat "''${CREDENTIALS_DIRECTORY}/git-push-token")
+        token=$(cat "${config.sops.secrets."git/push-token".path}")
         repo_url="https://x-access-token:$token@github.com/SebastianStork/nixos-config.git"
 
         git push --force "$repo_url" "$COMIN_GIT_SHA:refs/heads/deployed/$COMIN_HOSTNAME"
@@ -41,9 +41,6 @@ in
 
   config = lib.mkIf cfg.enable {
     sops.secrets."git/push-token" = { };
-    systemd.services.comin.serviceConfig.LoadCredential = "git-push-token:${
-      config.sops.secrets."git/push-token".path
-    }";
 
     services.comin = {
       enable = true;
