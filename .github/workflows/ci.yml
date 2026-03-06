@@ -118,7 +118,7 @@ jobs:
             sleep 5
           done
   rollback-deploy:
-    if: needs.await-deploy.result == 'failure'
+    if: always() && needs.await-deploy.result == 'failure'
     needs: [trigger-deploy, await-deploy]
     runs-on: ubuntu-latest
     permissions:
