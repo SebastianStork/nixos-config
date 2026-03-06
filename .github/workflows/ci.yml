@@ -76,17 +76,10 @@ jobs:
   trigger-deploy:
     needs: [build-check, build-server]
     runs-on: ubuntu-latest
-    outputs:
-      previous-sha: ${{ steps.previous-sha.outputs.sha }}
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v5
-      - name: Get previous deploy SHA
-        id: previous-sha
-        run: |
-          sha=$(git ls-remote origin deploy | cut -f1)
-          printf "sha=%s" "$sha" >> "$GITHUB_OUTPUT"
       - name: Push to deploy branch
         run: git push --force origin HEAD:refs/heads/deploy
   await-deploy:
@@ -117,20 +110,6 @@ jobs:
 
             sleep 5
           done
-  rollback-deploy:
-    if: always() && needs.await-deploy.result == 'failure'
-    needs: [trigger-deploy, await-deploy]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PAT }}
-      - name: Rollback deploy branch
-        run: |
-          previous_sha="${{ needs.trigger-deploy.outputs.previous-sha }}"
-          echo "Rolling back deploy branch to $previous_sha"
-          git push --force origin "$previous_sha:refs/heads/deploy"
   notify:
     if: always()
     needs: [await-deploy]
