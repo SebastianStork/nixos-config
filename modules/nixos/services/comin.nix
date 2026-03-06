@@ -21,7 +21,7 @@ let
         token=$(cat "${config.sops.secrets."git/push-token".path}")
         repo_url="https://x-access-token:$token@github.com/SebastianStork/nixos-config.git"
 
-        git push --force "$repo_url" "$COMIN_GIT_SHA:refs/heads/deployed/$COMIN_HOSTNAME"
+        git -C /var/lib/comin/repository push --force "$repo_url" "$COMIN_GIT_SHA:refs/heads/deployed/$COMIN_HOSTNAME"
 
         echo "Updated deployed/$COMIN_HOSTNAME to $COMIN_GIT_SHA"
       '';
