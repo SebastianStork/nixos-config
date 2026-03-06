@@ -124,7 +124,7 @@ jobs:
             -H "Tags: white_check_mark" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d "Commit \`${GITHUB_SHA::7}\` deployed successfully." \
+            -d $'Commit `'"${GITHUB_SHA::7}"$'` deployed successfully.\n\n> ${{ github.event.head_commit.message }}' \
             https://ntfy.sh/splitleaf
       - name: Notify failure
         if: needs.await-deploy.result == 'failure'
@@ -135,5 +135,5 @@ jobs:
             -H "Tags: rotating_light" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d "Commit \`${GITHUB_SHA::7}\` failed to deploy." \
+            -d $'Commit `'"${GITHUB_SHA::7}"$'` failed to deploy.\n\n> ${{ github.event.head_commit.message }}' \
             https://ntfy.sh/splitleaf
