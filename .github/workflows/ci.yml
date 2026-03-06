@@ -73,22 +73,72 @@ jobs:
           useDaemon: false
       - name: Build server
         run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --print-build-logs
-  deploy:
+  trigger-deploy:
     needs: [build-check, build-server]
+    runs-on: ubuntu-latest
+    outputs:
+      previous-sha: ${{ steps.previous-sha.outputs.sha }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Get previous deploy SHA
+        id: previous-sha
+        run: |
+          sha=$(git ls-remote origin deploy | cut -f1)
+          printf "sha=%s" "$sha" >> "$GITHUB_OUTPUT"
+      - name: Push to deploy branch
+        run: git push --force origin HEAD:refs/heads/deploy
+  await-deploy:
+    name: ${{ matrix.server }}
+    needs: [parse-flake, trigger-deploy]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        server: ${{ fromJson(needs.parse-flake.outputs.servers) }}
+    steps:
+      - name: Wait for deployment
+        timeout-minutes: 5
+        run: |
+          repo_url="https://github.com/${{ github.repository }}.git"
+          expected_sha="${{ github.sha }}"
+          branch="deployed/${{ matrix.server }}"
+
+          while true; do
+            deployed_sha=$(git ls-remote "$repo_url" "$branch" | cut -f1)
+
+            if [[ "$deployed_sha" == "$expected_sha" ]]; then
+              echo "✅ ${{ matrix.server }} deployed $expected_sha"
+              exit 0
+            else
+              echo "⏳ ${{ matrix.server }}: deployed ${deployed_sha::7}, waiting for ${expected_sha::7}..."
+            fi
+
+            sleep 5
+          done
+  rollback-deploy:
+    if: needs.await-deploy.result == 'failure'
+    needs: [trigger-deploy, await-deploy]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v5
-      - name: Push to deploy branch
-        run: git push origin HEAD:deploy --force
+        with:
+          fetch-depth: 0
+      - name: Rollback deploy branch
+        run: |
+          previous_sha="${{ needs.trigger-deploy.outputs.previous-sha }}"
+          echo "Rolling back deploy branch to $previous_sha"
+          git push --force origin "$previous_sha:refs/heads/deploy"
   notify:
     if: always()
-    needs: [deploy]
+    needs: [await-deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Notify success
-        if: needs.deploy.result == 'success'
+        if: needs.await-deploy.result == 'success'
         run: |
           curl -s \
             -H "Title: CI: Deploy succeeded" \
@@ -99,7 +149,7 @@ jobs:
             -d "Commit \`${GITHUB_SHA::7}\` deployed successfully." \
             https://ntfy.sh/splitleaf
       - name: Notify failure
-        if: needs.deploy.result == 'failure'
+        if: needs.await-deploy.result == 'failure'
         run: |
           curl -s \
             -H "Title: CI: Deploy failed" \

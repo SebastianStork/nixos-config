@@ -1,11 +1,32 @@
 {
   config,
   inputs,
+  pkgs,
   lib,
   ...
 }:
 let
   cfg = config.custom.services.comin;
+
+  postDeploymentScript =
+    pkgs.writeShellApplication {
+      name = "comin-post-deployment";
+      runtimeInputs = [ pkgs.git ];
+      text = ''
+        if [[ "$COMIN_STATUS" != "done" ]]; then
+          echo "Deployment not successful (status: $COMIN_STATUS), skipping branch update"
+          exit 0
+        fi
+
+        token=$(cat "''${CREDENTIALS_DIRECTORY}/git-push-token")
+        repo_url="https://x-access-token:$token@github.com/SebastianStork/nixos-config.git"
+
+        git push --force "$repo_url" "$COMIN_GIT_SHA:refs/heads/deployed/$COMIN_HOSTNAME"
+
+        echo "Updated deployed/$COMIN_HOSTNAME to $COMIN_GIT_SHA"
+      '';
+    }
+    |> lib.getExe;
 in
 {
   imports = [ inputs.comin.nixosModules.comin ];
@@ -35,6 +56,7 @@ in
         listen_address = "127.0.0.1";
         port = cfg.metricsPort;
       };
+      postDeploymentCommand = postDeploymentScript;
     };
   };
 }
