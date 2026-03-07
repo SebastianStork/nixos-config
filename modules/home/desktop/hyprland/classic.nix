@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.custom.de.hyprland.classic.enable = lib.mkEnableOption "";
+  options.custom.desktop.hyprland.classic.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.de.hyprland.classic.enable {
+  config = lib.mkIf config.custom.desktop.hyprland.classic.enable {
     custom = {
       programs = {
         hyprland.enable = true;

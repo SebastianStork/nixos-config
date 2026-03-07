@@ -17,11 +17,11 @@
   custom = {
     networking.overlay.role = "client";
     boot.silent = true;
-    dm.tuigreet = {
+    login.tuigreet = {
       enable = true;
       autoLogin = true;
     };
-    de.hyprland.enable = true;
+    desktop.hyprland.enable = true;
     services = {
       sound.enable = true;
       syncthing.enable = true;

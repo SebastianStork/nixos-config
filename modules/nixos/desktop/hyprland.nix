@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.custom.de.hyprland.enable = lib.mkEnableOption "";
+  options.custom.desktop.hyprland.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.de.hyprland.enable {
+  config = lib.mkIf config.custom.desktop.hyprland.enable {
     programs.hyprland = {
       enable = true;
       package = pkgs-unstable.hyprland;

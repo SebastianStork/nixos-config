@@ -19,7 +19,7 @@
   custom = {
     sops.enable = true;
 
-    de.hyprland.noctalia.enable = true;
+    desktop.hyprland.noctalia.enable = true;
 
     programs = {
       shell = {

@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.custom.de.hyprland.noctalia.enable = lib.mkEnableOption "";
+  options.custom.desktop.hyprland.noctalia.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.de.hyprland.noctalia.enable {
+  config = lib.mkIf config.custom.desktop.hyprland.noctalia.enable {
     custom = {
       programs = {
         hyprland.enable = true;

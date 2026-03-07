@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.dm.tuigreet;
+  cfg = config.custom.login.tuigreet;
 in
 {
-  options.custom.dm.tuigreet = {
+  options.custom.login.tuigreet = {
     enable = lib.mkEnableOption "";
     autoLogin = lib.mkEnableOption "";
   };
@@ -30,7 +30,7 @@ in
             "--remember-user-session"
             "--sessions '${sessionData}/share/wayland-sessions:${sessionData}/share/xsessions'"
           ];
-        initial_session = lib.mkIf (cfg.autoLogin && config.custom.de.hyprland.enable) {
+        initial_session = lib.mkIf (cfg.autoLogin && config.custom.desktop.hyprland.enable) {
           command = lib.getExe pkgs.hyprland;
           user = "seb";
         };
