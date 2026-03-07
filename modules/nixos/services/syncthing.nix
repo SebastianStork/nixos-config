@@ -10,8 +10,6 @@ let
   netCfg = config.custom.networking;
 
   inherit (config.services.syncthing) dataDir;
-
-  useSopsSecrets = config.custom.sops.secretsData |> lib.hasAttr "syncthing";
 in
 {
   options.custom.services.syncthing = {
@@ -47,28 +45,44 @@ in
         "Videos"
       ];
     };
+
+    certFile = lib.mkOption {
+      type = lib.types.nullOr self.lib.types.existingPath;
+      default = null;
+    };
+    keyFile = lib.mkOption {
+      type = lib.types.nullOr self.lib.types.existingPath;
+      default = null;
+    };
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = cfg.isServer -> (cfg.gui.domain != null);
-        message = "Syncthing requires `gui.domain` to be set when `isServer` is enabled";
-      }
-      {
-        assertion = (cfg.gui.domain != null) -> (self.lib.isPrivateDomain cfg.gui.domain);
-        message = self.lib.mkUnprotectedMessage "Syncthing-GUI";
-      }
-    ];
+    assertions = lib.singleton {
+      assertion = (cfg.gui.domain != null) -> (self.lib.isPrivateDomain cfg.gui.domain);
+      message = self.lib.mkUnprotectedMessage "Syncthing-GUI";
+    };
 
-    sops.secrets = lib.mkIf useSopsSecrets {
-      "syncthing/cert" = {
+    sops.secrets = {
+      "syncthing/cert" = lib.mkIf (cfg.certFile == null) {
         owner = config.services.syncthing.user;
         restartUnits = [ "syncthing.service" ];
       };
-      "syncthing/key" = {
+      "syncthing/key" = lib.mkIf (cfg.keyFile == null) {
         owner = config.services.syncthing.user;
         restartUnits = [ "syncthing.service" ];
+      };
+    };
+
+    environment.etc = {
+      "syncthing/cert.pem" = lib.mkIf (cfg.certFile != null) {
+        source = cfg.certFile;
+        mode = "0644";
+        user = config.services.syncthing.user;
+      };
+      "syncthing/key.pem" = lib.mkIf (cfg.keyFile != null) {
+        source = cfg.keyFile;
+        mode = "0600";
+        user = config.services.syncthing.user;
       };
     };
 
@@ -82,8 +96,16 @@ in
 
         guiAddress = "localhost:${toString cfg.gui.port}";
 
-        cert = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/cert".path;
-        key = lib.mkIf useSopsSecrets config.sops.secrets."syncthing/key".path;
+        cert =
+          if (cfg.certFile != null) then
+            "/etc/syncthing/cert.pem"
+          else
+            config.sops.secrets."syncthing/cert".path;
+        key =
+          if (cfg.keyFile != null) then
+            "/etc/syncthing/key.pem"
+          else
+            config.sops.secrets."syncthing/key".path;
 
         settings =
           let
