@@ -92,14 +92,15 @@
           2
           3
         ];
-        location.name = "Darmstadt";
         sessionMenu = {
           largeButtonsStyle = false;
           countdownDuration = 3000;
         };
         idle.enabled = true;
-        audio.mprisBlacklist = "firefox";
+        audio.mprisBlacklist = [ "firefox" ];
+        network.bluetoothAutoConnect = false;
         location = {
+          name = "Darmstadt";
           firstDayOfWeek = 1;
           showWeekNumberInCalendar = true;
         };
