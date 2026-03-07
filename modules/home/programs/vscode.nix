@@ -31,6 +31,7 @@
             open-vsx.rust-lang.rust-analyzer
             open-vsx.dart-code.flutter
             open-vsx.ms-python.python
+            open-vsx.github.vscode-github-actions
           ];
       };
     };
