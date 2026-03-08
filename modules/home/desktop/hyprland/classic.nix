@@ -11,6 +11,7 @@
     custom = {
       programs = {
         hyprland.enable = true;
+        waybar.enable = true;
         rofi.enable = true;
         hyprlock.enable = true;
       };
@@ -18,7 +19,6 @@
       services = {
         wpaperd.enable = true;
         hypridle.enable = true;
-        waybar.enable = true;
         cliphist.enable = true;
       };
     };
