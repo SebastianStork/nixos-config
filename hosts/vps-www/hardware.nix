@@ -12,4 +12,6 @@
     "sd_mod"
     "sr_mod"
   ];
+
+  zramSwap.enable = true;
 }

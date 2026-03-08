@@ -20,6 +20,10 @@ _: {
       "usbhid"
       "sd_mod"
     ];
+    kernelParams = [
+      "zswap.enabled=1"
+      "zswap.shrinker_enabled=1"
+    ];
   };
 
   # Prevent immediate wake-up from suspend caused by the logi bolt receiver

@@ -18,6 +18,10 @@
       "usb_storage"
       "sd_mod"
     ];
+    kernelParams = [
+      "zswap.enabled=1"
+      "zswap.shrinker_enabled=1"
+    ];
   };
 
   services = {

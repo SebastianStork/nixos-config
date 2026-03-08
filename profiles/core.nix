@@ -93,8 +93,6 @@
     vimAlias = true;
   };
 
-  zramSwap.enable = true;
-
   environment.systemPackages = [
     (lib.hiPrio pkgs.uutils-coreutils-noprefix)
     pkgs.git

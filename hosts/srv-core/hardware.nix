@@ -10,6 +10,10 @@ _: {
       "sd_mod"
       "sdhci_pci"
     ];
+    kernelParams = [
+      "zswap.enabled=1"
+      "zswap.shrinker_enabled=1"
+    ];
 
     supportedFilesystems = [ "bcachefs" ];
 
