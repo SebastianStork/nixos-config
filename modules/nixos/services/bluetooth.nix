@@ -6,7 +6,7 @@
     hardware = {
       bluetooth = {
         enable = true;
-        powerOnBoot = true;
+        powerOnBoot = false;
       };
       logitech.wireless.enable = true;
     };
