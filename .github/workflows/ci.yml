@@ -88,7 +88,6 @@ jobs:
       - name: Build check
         run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
   build-server:
-    name: ${{ matrix.server }}
     needs: parse-flake
     uses: ./.github/workflows/build-host.yml
     with:
@@ -133,10 +132,9 @@ jobs:
             if [[ "$deployed_sha" == "$expected_sha" ]]; then
               echo "✅ ${{ matrix.server }} deployed $expected_sha"
               exit 0
-            else
-              echo "⏳ ${{ matrix.server }}: deployed ${deployed_sha::7}, waiting for ${expected_sha::7}..."
             fi
 
+            echo "⏳ ${{ matrix.server }}: deployed ${deployed_sha::7}, waiting for ${expected_sha::7}..."
             sleep 5
           done
   notify:
@@ -146,6 +144,10 @@ jobs:
     steps:
       - name: Notify success
         if: needs.await-deploy.result == 'success'
+        env:
+          BODY: |-
+            Commit `${{ github.sha }}` deployed successfully.
+            > ${{ github.event.head_commit.message }}
         run: |
           curl -s \
             -H "Title: CI: Deployment succeeded" \
@@ -153,10 +155,14 @@ jobs:
             -H "Tags: white_check_mark" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d $'Commit `'"${GITHUB_SHA::7}"$'` deployed successfully.\n> ${{ github.event.head_commit.message }}' \
+            -d "$BODY" \
             https://ntfy.sh/splitleaf
       - name: Notify failure
         if: needs.await-deploy.result == 'failure'
+        env:
+          BODY: |-
+            Commit `${{ github.sha }}` failed to deploy.
+            > ${{ github.event.head_commit.message }}
         run: |
           curl -s \
             -H "Title: CI: Deployment failed" \
@@ -164,5 +170,5 @@ jobs:
             -H "Tags: rotating_light" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d $'Commit `'"${GITHUB_SHA::7}"$'` failed to deploy.\n> ${{ github.event.head_commit.message }}' \
+            -d "$BODY" \
             https://ntfy.sh/splitleaf
