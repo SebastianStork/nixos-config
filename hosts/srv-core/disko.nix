@@ -16,7 +16,10 @@
           partitions = {
             swap = {
               size = "8G";
-              content.type = "swap";
+              content = {
+                type = "swap";
+                discardPolicy = "both";
+              };
             };
             root = {
               size = "100%";
