@@ -1,4 +1,7 @@
-_: {
+{ inputs, ... }:
+{
+  imports = [ inputs.nixos-hardware.nixosModules.hardkernel-odroid-h4 ];
+
   nixpkgs.hostPlatform = "x86_64-linux";
 
   boot = {
