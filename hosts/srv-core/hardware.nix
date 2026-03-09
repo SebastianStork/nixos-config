@@ -7,8 +7,8 @@
   boot = {
     kernelModules = [
       "kvm-intel"
-      "k10temp"
-      "nct6775"
+      "coretemp"
+      "it87"
     ];
     initrd.availableKernelModules = [
       "xhci_pci"
