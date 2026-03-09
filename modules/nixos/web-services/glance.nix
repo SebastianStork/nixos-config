@@ -24,7 +24,7 @@ in
     services.glance = {
       enable = true;
       settings = {
-        inherit (cfg) port;
+        server.port = cfg.port;
 
         pages = lib.singleton {
           name = "Services";
