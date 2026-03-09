@@ -46,7 +46,7 @@ in
                     |> lib.concatLists
                     |> lib.map (domain: {
                       title = domain;
-                      url = domain;
+                      url = "https://${domain}";
                     });
                 }
               ];
