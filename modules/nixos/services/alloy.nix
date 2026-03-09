@@ -133,7 +133,7 @@ in
 
       meta.services.${cfg.domain} = lib.mkIf (cfg.domain != null) {
         name = "Alloy";
-        icon = "sh:alloy";
+        icon = "sh:grafana-alloy";
       };
     };
   };
