@@ -28,30 +28,31 @@ in
 
         pages = lib.singleton {
           name = "Services";
-          columns = [
-            {
-              size = "full";
-              widgets = [
+          columns = lib.singleton {
+            size = "full";
+            widgets =
+              allHosts
+              |> lib.attrValues
+              |> lib.map (host: {
+                hostName = host.config.networking.hostName;
+                domains =
+                  host.config.custom.services.caddy.virtualHosts |> lib.attrValues |> lib.map (vHost: vHost.domain);
+              })
+              |> lib.map (
+                { hostName, domains }:
                 {
                   type = "monitor";
                   cache = "1m";
-                  title = "Services";
+                  title = "Services - ${hostName}";
                   sites =
-                    allHosts
-                    |> lib.attrValues
-                    |> lib.map (
-                      host:
-                      host.config.custom.services.caddy.virtualHosts |> lib.attrValues |> lib.map (vHost: vHost.domain)
-                    )
-                    |> lib.concatLists
+                    domains
                     |> lib.map (domain: {
                       title = domain;
                       url = "https://${domain}";
                     });
                 }
-              ];
-            }
-          ];
+              );
+          };
         };
       };
     };
