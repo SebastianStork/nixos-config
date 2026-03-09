@@ -6,6 +6,36 @@
 }:
 let
   cfg = config.custom.web-services.glance;
+
+  servicesWidgets =
+    allHosts
+    |> lib.attrValues
+    |> lib.map (host: {
+      hostName = host.config.networking.hostName;
+      services = host.config.custom.meta.services |> lib.attrValues;
+    })
+    |> lib.filter ({ services, ... }: services != [ ])
+    |> lib.map (
+      { hostName, services }:
+      {
+        type = "monitor";
+        cache = "1m";
+        title = "Services - ${hostName}";
+        sites =
+          services
+          |> lib.map (
+            {
+              name,
+              url,
+              icon,
+            }:
+            {
+              title = name;
+              inherit url icon;
+            }
+          );
+      }
+    );
 in
 {
   options.custom.web-services.glance = {
@@ -27,38 +57,22 @@ in
         server.port = cfg.port;
 
         pages = lib.singleton {
-          name = "Services";
+          name = "Home";
+          center-vertically = true;
+          hide-desktop-navigation = true;
           columns = lib.singleton {
             size = "full";
-            widgets =
-              allHosts
-              |> lib.attrValues
-              |> lib.map (host: {
-                hostName = host.config.networking.hostName;
-                services = host.config.custom.meta.services |> lib.attrValues;
-              })
-              |> lib.filter ({ services, ... }: services != [ ])
-              |> lib.map (
-                { hostName, services }:
-                {
-                  type = "monitor";
-                  cache = "1m";
-                  title = "Services - ${hostName}";
-                  sites =
-                    services
-                    |> lib.map (
-                      {
-                        name,
-                        url,
-                        icon,
-                      }:
-                      {
-                        title = name;
-                        inherit url icon;
-                      }
-                    );
-                }
-              );
+            widgets = [
+              {
+                type = "search";
+                search-engine = "google";
+                autofocus = true;
+              }
+              {
+                type = "split-column";
+                widgets = servicesWidgets;
+              }
+            ];
           };
         };
       };
