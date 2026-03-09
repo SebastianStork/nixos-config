@@ -145,30 +145,30 @@ jobs:
       - name: Notify success
         if: needs.await-deploy.result == 'success'
         env:
-          BODY: |-
-            Commit `${{ github.sha }}` deployed successfully.
-            > ${{ github.event.head_commit.message }}
+          SHA: ${{ github.sha }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
         run: |
+          body=$(printf 'Commit `%s` deployed successfully.\n> %s' "${SHA::7}" "$COMMIT_MSG")
           curl -s \
             -H "Title: CI: Deployment succeeded" \
             -H "Priority: low" \
             -H "Tags: white_check_mark" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d "$BODY" \
+            -d "$body" \
             https://ntfy.sh/splitleaf
       - name: Notify failure
         if: needs.await-deploy.result == 'failure'
         env:
-          BODY: |-
-            Commit `${{ github.sha }}` failed to deploy.
-            > ${{ github.event.head_commit.message }}
+          SHA: ${{ github.sha }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
         run: |
+          body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "$COMMIT_MSG")
           curl -s \
             -H "Title: CI: Deployment failed" \
             -H "Priority: default" \
             -H "Tags: rotating_light" \
             -H "Actions: view, Open workflow run, ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             -H "Markdown: yes" \
-            -d "$BODY" \
+            -d "$body" \
             https://ntfy.sh/splitleaf
