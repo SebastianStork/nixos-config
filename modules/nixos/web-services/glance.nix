@@ -38,7 +38,8 @@ in
                   title = "Services";
                   sites =
                     allHosts
-                    |> lib.attrValues (
+                    |> lib.attrValues
+                    |> lib.map (
                       host:
                       host.config.custom.services.caddy.virtualHosts |> lib.attrValues |> lib.map (vHost: vHost.domain)
                     )
