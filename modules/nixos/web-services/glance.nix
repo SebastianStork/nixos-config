@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  allHosts,
+  ...
+}:
 let
   cfg = config.custom.web-services.glance;
 in
@@ -21,7 +26,32 @@ in
       settings = {
         inherit (cfg) port;
 
-        #pages
+        pages = lib.singleton {
+          name = "Services";
+          columns = [
+            {
+              size = "full";
+              widgets = [
+                {
+                  type = "monitor";
+                  cache = "1m";
+                  title = "Services";
+                  sites =
+                    allHosts
+                    |> lib.attrValues (
+                      host:
+                      host.config.custom.services.caddy.virtualHosts |> lib.attrValues |> lib.map (vHost: vHost.domain)
+                    )
+                    |> lib.concatLists
+                    |> lib.map (domain: {
+                      title = domain;
+                      url = domain;
+                    });
+                }
+              ];
+            }
+          ];
+        };
       };
     };
 
