@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ config, inputs, ... }:
 {
   imports = [ inputs.nixos-hardware.nixosModules.hardkernel-odroid-h4 ];
 
@@ -10,6 +10,7 @@
       "coretemp"
       "it87"
     ];
+    extraModulePackages = [ config.boot.kernelPackages.it87 ];
     initrd.availableKernelModules = [
       "xhci_pci"
       "ahci"
