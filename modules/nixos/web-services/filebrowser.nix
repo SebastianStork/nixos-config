@@ -51,7 +51,7 @@ in
 
       meta.services.${cfg.domain} = {
         name = "File Browser";
-        icon = "sh:filebrowser";
+        icon = "sh:file-browser";
       };
     };
   };

@@ -103,7 +103,7 @@ in
 
       meta.services.${cfg.domain} = {
         name = "Alertmanager";
-        icon = "di:alertmanager";
+        icon = "sh:alertmanager";
       };
     };
   };

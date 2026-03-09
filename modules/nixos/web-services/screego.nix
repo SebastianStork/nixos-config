@@ -31,7 +31,7 @@ in
 
       meta.services.${cfg.domain} = {
         name = "Screego";
-        icon = "sh:screego";
+        icon = "mdi:projector-screen-outline";
       };
     };
   };

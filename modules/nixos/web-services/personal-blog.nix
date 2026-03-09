@@ -32,7 +32,7 @@ in
 
       meta.services.${cfg.domain} = {
         name = "Blog";
-        icon = "sh:ghost";
+        icon = "sh:zola";
       };
     };
   };
