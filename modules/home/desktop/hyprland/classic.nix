@@ -18,8 +18,11 @@
 
       services = {
         wpaperd.enable = true;
-        hypridle.enable = true;
         cliphist.enable = true;
+        hypridle = {
+          enable = true;
+          lockCommand = "pidof hyprlock || hyprlock";
+        };
       };
     };
 

@@ -4,17 +4,26 @@
   lib,
   ...
 }:
+let
+  cfg = config.custom.services.hypridle;
+in
 {
-  options.custom.services.hypridle.enable = lib.mkEnableOption "";
+  options.custom.services.hypridle = {
+    enable = lib.mkEnableOption "";
+    lockCommand = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = "";
+    };
+  };
 
-  config = lib.mkIf config.custom.services.hypridle.enable {
+  config = lib.mkIf cfg.enable {
     services.hypridle = {
       enable = true;
       package = pkgs-unstable.hypridle;
 
       settings = {
         general = {
-          lock_cmd = lib.mkIf config.custom.programs.hyprlock.enable "pidof hyprlock || hyprlock";
+          lock_cmd = cfg.lockCommand;
           before_sleep_cmd = "loginctl lock-session";
           after_sleep_cmd = "hyprctl dispatch dpms on";
         };

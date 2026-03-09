@@ -96,7 +96,7 @@
           largeButtonsStyle = false;
           countdownDuration = 3000;
         };
-        idle.enabled = true;
+        idle.enabled = false;
         audio.mprisBlacklist = [ "firefox" ];
         network.bluetoothAutoConnect = false;
         location = {

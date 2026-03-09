@@ -14,7 +14,13 @@
         noctalia-shell.enable = true;
       };
 
-      services.cliphist.enable = true;
+      services = {
+        cliphist.enable = true;
+        hypridle = {
+          enable = true;
+          lockCommand = "noctalia-shell ipc call lockScreen lock";
+        };
+      };
     };
 
     home.packages = [ pkgs.grimblast ];
@@ -35,8 +41,8 @@
       bind = SUPER, V, exec, $ipc launcher clipboard
 
       # Manage session
-      bindrl = SUPER CONTROL, L, exec, $ipc lockScreen lock
-      bindrl = SUPER CONTROL, S, exec, $ipc sessionMenu lockAndSuspend
+      bindrl = SUPER CONTROL, L, exec, loginctl lock-session
+      bindrl = SUPER CONTROL, S, exec, systemctl sleep
     '';
   };
 }
