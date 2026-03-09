@@ -6,7 +6,7 @@
         { name, ... }:
         {
           options = {
-            name = lib.mkOption {
+            title = lib.mkOption {
               type = lib.types.nonEmptyStr;
               default = name;
             };

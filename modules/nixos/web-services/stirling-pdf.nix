@@ -44,7 +44,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.services.${cfg.domain} = {
-        name = "Stirling PDF";
+        title = "Stirling PDF";
         icon = "sh:stirling-pdf";
       };
     };

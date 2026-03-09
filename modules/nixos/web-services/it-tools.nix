@@ -21,7 +21,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.files = "${pkgs.it-tools}/lib";
 
       meta.services.${cfg.domain} = {
-        name = "IT-Tools";
+        title = "IT-Tools";
         icon = "sh:it-tools";
       };
     };

@@ -87,7 +87,7 @@ in
         ];
 
         meta.services.${cfg.domain} = {
-          name = "Outline";
+          title = "Outline";
           icon = "sh:outline";
         };
       };

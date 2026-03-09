@@ -102,7 +102,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.services.${cfg.domain} = {
-        name = "Alertmanager";
+        title = "Alertmanager";
         icon = "sh:prometheus";
       };
     };

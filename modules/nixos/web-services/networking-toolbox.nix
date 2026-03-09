@@ -26,7 +26,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.services.${cfg.domain} = {
-        name = "Networking Toolbox";
+        title = "Networking Toolbox";
         icon = "sh:networking-toolbox";
       };
     };

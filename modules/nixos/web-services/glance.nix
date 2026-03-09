@@ -21,19 +21,7 @@ let
         type = "monitor";
         cache = "1m";
         title = "Services - ${hostName}";
-        sites =
-          services
-          |> lib.map (
-            {
-              name,
-              url,
-              icon,
-            }:
-            {
-              title = name;
-              inherit url icon;
-            }
-          );
+        sites = services;
       }
     );
 in
@@ -60,19 +48,16 @@ in
           name = "Home";
           center-vertically = true;
           hide-desktop-navigation = true;
+
           columns = lib.singleton {
             size = "full";
-            widgets = [
-              {
+            widgets =
+              lib.singleton {
                 type = "search";
                 search-engine = "google";
                 autofocus = true;
               }
-              {
-                type = "split-column";
-                widgets = servicesWidgets;
-              }
-            ];
+              ++ servicesWidgets;
           };
         };
       };
@@ -82,7 +67,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.services.${cfg.domain} = {
-        name = "Glance";
+        title = "Glance";
         icon = "sh:glance";
       };
     };

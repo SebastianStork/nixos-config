@@ -89,7 +89,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.services.${cfg.domain} = {
-        name = "Grafana";
+        title = "Grafana";
         icon = "sh:grafana";
       };
     };

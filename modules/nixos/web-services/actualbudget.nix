@@ -54,7 +54,7 @@ in
       persistence.directories = [ dataDir ];
 
       meta.services.${cfg.domain} = {
-        name = "Actual Budget";
+        title = "Actual Budget";
         icon = "sh:actual-budget";
       };
     };

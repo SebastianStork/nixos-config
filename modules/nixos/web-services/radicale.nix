@@ -111,7 +111,7 @@ in
       persistence.directories = [ dataDir ];
 
       meta.services.${cfg.domain} = {
-        name = "Radicale";
+        title = "Radicale";
         icon = "sh:radicale";
       };
     };

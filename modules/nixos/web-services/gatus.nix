@@ -212,7 +212,7 @@ in
       persistence.directories = [ dataDir ];
 
       meta.services.${cfg.domain} = {
-        name = "Gatus";
+        title = "Gatus";
         icon = "sh:gatus";
       };
     };

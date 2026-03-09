@@ -30,7 +30,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.services.${cfg.domain} = {
-        name = "ntfy";
+        title = "ntfy";
         icon = "sh:ntfy";
       };
     };

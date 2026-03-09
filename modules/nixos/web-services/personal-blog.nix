@@ -31,7 +31,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.files = dataDir;
 
       meta.services.${cfg.domain} = {
-        name = "Blog";
+        title = "Blog";
         icon = "sh:zola";
       };
     };

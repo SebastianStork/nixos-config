@@ -30,7 +30,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.services.${cfg.domain} = {
-        name = "Screego";
+        title = "Screego";
         icon = "mdi:projector-screen-outline";
       };
     };

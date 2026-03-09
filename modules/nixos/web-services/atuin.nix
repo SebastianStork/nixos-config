@@ -49,7 +49,7 @@ in
       persistence.directories = [ dataDir ];
 
       meta.services.${cfg.domain} = {
-        name = "Atuin";
+        title = "Atuin";
         icon = "sh:atuin";
       };
     };

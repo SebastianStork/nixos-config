@@ -59,7 +59,7 @@ in
       ];
 
       meta.services.${cfg.domain} = {
-        name = "Karakeep";
+        title = "Karakeep";
         icon = "sh:karakeep";
       };
     };

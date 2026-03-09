@@ -41,7 +41,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.services.${cfg.domain} = {
-        name = "PrivateBin";
+        title = "PrivateBin";
         icon = "sh:privatebin";
       };
     };
