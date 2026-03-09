@@ -37,6 +37,13 @@ in
       };
     };
 
-    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+      meta.services.${cfg.domain} = {
+        title = "PrivateBin";
+        icon = "sh:privatebin";
+      };
+    };
   };
 }

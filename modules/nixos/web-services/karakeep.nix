@@ -57,6 +57,11 @@ in
         "/var/lib/karakeep"
         "/var/lib/meilisearch"
       ];
+
+      meta.services.${cfg.domain} = {
+        title = "Karakeep";
+        icon = "sh:karakeep";
+      };
     };
   };
 }

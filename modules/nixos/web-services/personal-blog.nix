@@ -27,6 +27,13 @@ in
       script = "nix build github:SebastianStork/blog --out-link ${dataDir} --refresh";
     };
 
-    custom.services.caddy.virtualHosts.${cfg.domain}.files = dataDir;
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.files = dataDir;
+
+      meta.services.${cfg.domain} = {
+        title = "Blog";
+        icon = "sh:hugo";
+      };
+    };
   };
 }

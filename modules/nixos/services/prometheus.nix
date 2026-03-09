@@ -125,6 +125,11 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       persistence.directories = [ "/var/lib/${config.services.prometheus.stateDir}" ];
+
+      meta.services.${cfg.domain} = {
+        title = "Prometheus";
+        icon = "sh:prometheus";
+      };
     };
   };
 }

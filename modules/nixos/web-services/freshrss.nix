@@ -49,6 +49,11 @@ in
       };
 
       persistence.directories = [ dataDir ];
+
+      meta.services.${cfg.domain} = {
+        title = "FreshRSS";
+        icon = "sh:freshrss";
+      };
     };
   };
 }

@@ -52,6 +52,11 @@ in
       };
 
       persistence.directories = [ dataDir ];
+
+      meta.services.${cfg.domain} = {
+        title = "Actual Budget";
+        icon = "sh:actual-budget";
+      };
     };
   };
 }

@@ -170,6 +170,11 @@ in
       };
 
       persistence.directories = [ dataDir ];
+
+      meta.services.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
+        title = "Syncthing";
+        icon = "sh:syncthing";
+      };
     };
   };
 }

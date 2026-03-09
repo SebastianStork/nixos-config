@@ -26,6 +26,13 @@ in
       };
     };
 
-    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+      meta.services.${cfg.domain} = {
+        title = "ntfy";
+        icon = "sh:ntfy";
+      };
+    };
   };
 }

@@ -40,6 +40,13 @@ in
       };
     };
 
-    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+      meta.services.${cfg.domain} = {
+        title = "Stirling PDF";
+        icon = "sh:stirling-pdf";
+      };
+    };
   };
 }
