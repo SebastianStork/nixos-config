@@ -38,6 +38,7 @@ in
                 domains =
                   host.config.custom.services.caddy.virtualHosts |> lib.attrValues |> lib.map (vHost: vHost.domain);
               })
+              |> lib.filter ({ domains, ... }: domains != [ ])
               |> lib.map (
                 { hostName, domains }:
                 {
