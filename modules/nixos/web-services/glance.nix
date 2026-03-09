@@ -44,7 +44,19 @@ in
                   type = "monitor";
                   cache = "1m";
                   title = "Services - ${hostName}";
-                  sites = services;
+                  sites =
+                    services
+                    |> lib.map (
+                      {
+                        name,
+                        url,
+                        icon,
+                      }:
+                      {
+                        title = name;
+                        inherit url icon;
+                      }
+                    );
                 }
               );
           };
