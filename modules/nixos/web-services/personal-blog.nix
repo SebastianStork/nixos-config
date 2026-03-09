@@ -32,7 +32,7 @@ in
 
       meta.services.${cfg.domain} = {
         title = "Blog";
-        icon = "sh:zola";
+        icon = "auto-invert sh:zola";
       };
     };
   };
