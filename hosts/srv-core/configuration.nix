@@ -72,6 +72,11 @@
         domain = "status.${config.custom.networking.overlay.domain}";
         generateDefaultEndpoints = true;
       };
+
+      glance = {
+        enable = true;
+        domain = "home.${config.custom.networking.overlay.domain}";
+      };
     };
   };
 }
