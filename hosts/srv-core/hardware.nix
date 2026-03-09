@@ -5,7 +5,11 @@
   nixpkgs.hostPlatform = "x86_64-linux";
 
   boot = {
-    kernelModules = [ "kvm-intel" ];
+    kernelModules = [
+      "kvm-intel"
+      "k10temp"
+      "nct6775"
+    ];
     initrd.availableKernelModules = [
       "xhci_pci"
       "ahci"
