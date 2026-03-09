@@ -67,12 +67,6 @@
         domain = "grafana.${config.custom.networking.overlay.domain}";
       };
 
-      gatus = {
-        enable = true;
-        domain = "status.${config.custom.networking.overlay.domain}";
-        generateDefaultEndpoints = true;
-      };
-
       glance = {
         enable = true;
         domain = "home.${config.custom.networking.overlay.domain}";
