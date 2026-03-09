@@ -47,7 +47,10 @@ in
       remotes = lib.singleton {
         name = "origin";
         url = "https://github.com/SebastianStork/nixos-config.git";
-        branches.main.name = "deploy";
+        branches = {
+          main.name = "deploy";
+          testing.operation = "switch";
+        };
       };
       exporter = {
         listen_address = "127.0.0.1";
