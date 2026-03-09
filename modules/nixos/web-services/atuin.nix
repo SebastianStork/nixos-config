@@ -47,6 +47,11 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       persistence.directories = [ dataDir ];
+
+      meta.services.${cfg.domain} = {
+        name = "Atuin";
+        icon = "sh:atuin";
+      };
     };
   };
 }

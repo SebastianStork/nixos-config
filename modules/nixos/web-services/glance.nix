@@ -35,22 +35,16 @@ in
               |> lib.attrValues
               |> lib.map (host: {
                 hostName = host.config.networking.hostName;
-                domains =
-                  host.config.custom.services.caddy.virtualHosts |> lib.attrValues |> lib.map (vHost: vHost.domain);
+                services = host.config.custom.meta.services |> lib.attrValues;
               })
-              |> lib.filter ({ domains, ... }: domains != [ ])
+              |> lib.filter ({ services, ... }: services != [ ])
               |> lib.map (
-                { hostName, domains }:
+                { hostName, services }:
                 {
                   type = "monitor";
                   cache = "1m";
                   title = "Services - ${hostName}";
-                  sites =
-                    domains
-                    |> lib.map (domain: {
-                      title = domain;
-                      url = "https://${domain}";
-                    });
+                  sites = services;
                 }
               );
           };
@@ -58,6 +52,13 @@ in
       };
     };
 
-    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+      meta.services.${cfg.domain} = {
+        name = "Glance";
+        icon = "sh:glance";
+      };
+    };
   };
 }

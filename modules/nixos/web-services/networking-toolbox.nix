@@ -22,6 +22,13 @@ in
       pull = "newer";
     };
 
-    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+      meta.services.${cfg.domain} = {
+        name = "Networking Toolbox";
+        icon = "sh:networking-toolbox";
+      };
+    };
   };
 }

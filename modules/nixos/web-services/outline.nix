@@ -85,6 +85,11 @@ in
           dataDir
           config.services.postgresql.dataDir
         ];
+
+        meta.services.${cfg.domain} = {
+          name = "Outline";
+          icon = "sh:outline";
+        };
       };
   };
 }

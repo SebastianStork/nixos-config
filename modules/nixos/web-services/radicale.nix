@@ -109,6 +109,11 @@ in
       };
 
       persistence.directories = [ dataDir ];
+
+      meta.services.${cfg.domain} = {
+        name = "Radicale";
+        icon = "sh:radicale";
+      };
     };
   };
 }

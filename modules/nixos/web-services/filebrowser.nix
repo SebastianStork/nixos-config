@@ -48,6 +48,11 @@ in
       };
 
       persistence.directories = [ dataDir ];
+
+      meta.services.${cfg.domain} = {
+        name = "File Browser";
+        icon = "sh:filebrowser";
+      };
     };
   };
 }

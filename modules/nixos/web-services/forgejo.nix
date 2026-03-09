@@ -83,6 +83,11 @@ in
       };
 
       persistence.directories = [ config.services.forgejo.stateDir ];
+
+      meta.services.${cfg.domain} = {
+        name = "Forgejo";
+        icon = "sh:forgejo";
+      };
     };
   };
 }

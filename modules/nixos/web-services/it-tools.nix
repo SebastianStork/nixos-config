@@ -17,6 +17,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    custom.services.caddy.virtualHosts.${cfg.domain}.files = "${pkgs.it-tools}/lib";
+    custom = {
+      services.caddy.virtualHosts.${cfg.domain}.files = "${pkgs.it-tools}/lib";
+
+      meta.services.${cfg.domain} = {
+        name = "IT-Tools";
+        icon = "sh:it-tools";
+      };
+    };
   };
 }
