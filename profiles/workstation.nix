@@ -4,6 +4,7 @@
   self,
   pkgs,
   pkgs-unstable,
+  allHosts,
   ...
 }:
 {
@@ -40,7 +41,14 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit inputs self pkgs-unstable; };
+    extraSpecialArgs = {
+      inherit
+        inputs
+        self
+        pkgs-unstable
+        allHosts
+        ;
+    };
     users.seb = "${self}/users/seb/@${config.networking.hostName}/home.nix";
   };
 }

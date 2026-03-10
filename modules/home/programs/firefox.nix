@@ -3,6 +3,7 @@
   inputs,
   pkgs,
   lib,
+  allHosts,
   ...
 }:
 let
@@ -29,6 +30,16 @@ in
 {
   options.custom.programs.firefox = {
     enable = lib.mkEnableOption "";
+    homepage = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default =
+        allHosts
+        |> lib.attrValues
+        |> lib.map (host: host.config.custom.web-services.glance)
+        |> lib.filter (glance: glance.enable)
+        |> lib.map (glance: glance.domain)
+        |> lib.head;
+    };
     extensions = lib.mkOption {
       type = lib.types.attrsOf (
         lib.types.submodule (
@@ -86,6 +97,7 @@ in
           {
             "intl.accept_languages" = "en-us,en,de-de,de";
             "browser.uiCustomization.state" = uiState;
+            "browser.startup.homepage" = cfg.homepage;
             "sidebar.position_start" = false;
             "browser.toolbars.bookmarks.visibility" = "always";
             "browser.bookmarks.restore_default_bookmarks" = false;
