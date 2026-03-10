@@ -130,12 +130,12 @@ jobs:
             deployed_sha=$(git ls-remote "$repo_url" "$branch" | cut -f1)
 
             if [[ "$deployed_sha" == "$expected_sha" ]]; then
-              echo "✅ ${{ matrix.server }} deployed $expected_sha"
+              echo "Deployed $expected_sha"
               exit 0
             fi
-
-            echo "⏳ ${{ matrix.server }}: deployed ${deployed_sha::7}, waiting for ${expected_sha::7}..."
-            sleep 5
+            
+            echo "Deployed ${deployed_sha::7}, waiting for ${expected_sha::7}..."
+            sleep 10
           done
   notify:
     if: always()
