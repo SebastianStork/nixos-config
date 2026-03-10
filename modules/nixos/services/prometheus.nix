@@ -58,25 +58,25 @@ in
       scrapeConfigs = [
         {
           job_name = "prometheus";
-          static_configs = lib.singleton {
-            targets =
-              allHosts
-              |> lib.attrValues
-              |> lib.map (host: host.config.custom.services.prometheus)
-              |> lib.filter (prometheus: prometheus.enable)
-              |> lib.map (prometheus: prometheus.domain);
-          };
+          static_configs =
+            allHosts
+            |> lib.attrValues
+            |> lib.filter (host: host.config.custom.services.prometheus.enable)
+            |> lib.map (host: {
+              targets = lib.singleton host.config.custom.services.prometheus.domain;
+              labels.instance = host.config.networking.hostName;
+            });
         }
         {
           job_name = "alertmanager";
-          static_configs = lib.singleton {
-            targets =
-              allHosts
-              |> lib.attrValues
-              |> lib.map (host: host.config.custom.services.alertmanager)
-              |> lib.filter (alertmanager: alertmanager.enable)
-              |> lib.map (alertmanager: alertmanager.domain);
-          };
+          static_configs =
+            allHosts
+            |> lib.attrValues
+            |> lib.filter (host: host.config.custom.services.alertmanager.enable)
+            |> lib.map (host: {
+              targets = lib.singleton host.config.custom.services.alertmanager.domain;
+              labels.instance = host.config.networking.hostName;
+            });
         }
       ];
 
@@ -84,39 +84,55 @@ in
         {
           groups = lib.singleton {
             name = "Rules";
-            rules = [
-              {
-                alert = "InstanceDown";
-                expr = "up == 0";
-                for = "2m";
-                labels.severity = "critical";
-                annotations = {
-                  summary = "{{ $labels.instance }} is DOWN";
-                  description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes.";
-                };
-              }
-              {
-                alert = "CominDeploymentFailed";
-                expr = ''comin_deployment_info{status!="done"}'';
-                annotations = {
-                  summary = "{{ $labels.instance }} deployment failed";
-                  description = "The deployment of {{ $labels.instance }} with comin is failing.";
-                };
-              }
-              {
-                alert = "CominDeploymentCommitMismatch";
-                expr = "count(count by (commit_id) (comin_deployment_info)) > 1";
-                for = "10m";
-                annotations = {
-                  summary = "Hosts are running different commits";
-                  description = "Not all hosts are running the same git commit, which may indicate a failed deployment and could lead to incompatible configurations.";
-                };
-              }
-            ];
+            rules =
+              (
+                allHosts
+                |> lib.attrValues
+                |> lib.filter (host: host.config.custom.services.alloy.enable)
+                |> lib.filter (host: host.config.custom.networking.overlay.role == "server")
+                |> lib.map (host: host.config.networking.hostName)
+                |> lib.map (hostName: {
+                  alert = "InstanceDown";
+                  expr = ''absent_over_time(up{instance="${hostName}", job="node"}[2m])'';
+                  labels.severity = "critical";
+                  annotations = {
+                    summary = "${hostName} is DOWN";
+                    description = "${hostName} has not reported any metrics for more than 2 minutes.";
+                  };
+                })
+              )
+              ++ [
+                {
+                  alert = "ServiceDown";
+                  expr = ''up{job=~"prometheus|alertmanager"} == 0'';
+                  for = "2m";
+                  annotations = {
+                    summary = "{{ $labels.job }} on {{ $labels.instance }} is DOWN";
+                    description = "{{ $labels.job }} on {{ $labels.instance }} has been down for more than 2 minutes.";
+                  };
+                }
+                {
+                  alert = "CominDeploymentFailed";
+                  expr = ''comin_deployment_info{status!="done"}'';
+                  annotations = {
+                    summary = "{{ $labels.instance }} deployment failed";
+                    description = "The deployment of {{ $labels.instance }} with comin is failing.";
+                  };
+                }
+                {
+                  alert = "CominDeploymentCommitMismatch";
+                  expr = "count(count by (commit_id) (comin_deployment_info)) > 1";
+                  for = "10m";
+                  annotations = {
+                    summary = "Hosts are running different commits";
+                    description = "Not all hosts are running the same git commit, which may indicate a failed deployment and could lead to incompatible configurations.";
+                  };
+                }
+              ];
           };
         }
         |> lib.strings.toJSON
-        |> pkgs.writeText "prometheus-instance-down-rule"
+        |> pkgs.writeText "prometheus-rules"
         |> toString
         |> lib.singleton;
     };
