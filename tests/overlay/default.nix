@@ -1,31 +1,16 @@
 {
-  inputs,
-  self,
   lib,
   ...
 }:
 {
-  node.specialArgs = { inherit inputs self; };
-
   defaults =
-    { nodes, config, ... }:
+    { config, ... }:
     {
-      imports = [ self.nixosModules.default ];
-
-      _module.args.allHosts = nodes |> lib.mapAttrs (_: node: { config = node; });
-
-      users = {
-        mutableUsers = false;
-        users.seb = {
-          isNormalUser = true;
-          password = "seb";
-          openssh.authorizedKeys.keyFiles = lib.mkIf config.custom.services.sshd.enable [
-            ./keys/server-ssh.pub
-            ./keys/client1-ssh.pub
-            ./keys/client2-ssh.pub
-          ];
-        };
-      };
+      users.users.seb.openssh.authorizedKeys.keyFiles = lib.mkIf config.custom.services.sshd.enable [
+        ./keys/server-ssh.pub
+        ./keys/client1-ssh.pub
+        ./keys/client2-ssh.pub
+      ];
 
       environment.etc."ssh-key" = lib.mkIf (lib.pathExists ./keys/${config.networking.hostName}-ssh) {
         source = ./keys/${config.networking.hostName}-ssh;
@@ -39,7 +24,6 @@
       };
 
       networking.extraHosts = lib.mkForce "";
-      services.resolved.dnssec = lib.mkForce "false";
     };
 
   nodes = {
@@ -52,7 +36,6 @@
             role = "server";
           };
           underlay = {
-            interface = "eth1";
             cidr = "192.168.0.1/16";
             isPublic = true;
           };
@@ -73,7 +56,6 @@
             role = "server";
           };
           underlay = {
-            interface = "eth1";
             cidr = "192.168.0.2/16";
             isPublic = true;
           };
@@ -91,10 +73,7 @@
             address = "10.254.250.3";
             role = "client";
           };
-          underlay = {
-            interface = "eth1";
-            cidr = "192.168.0.3/16";
-          };
+          underlay.cidr = "192.168.0.3/16";
         };
 
         environment.systemPackages = [ pkgs.openssh ];
@@ -107,10 +86,7 @@
             address = "10.254.250.4";
             role = "client";
           };
-          underlay = {
-            interface = "eth1";
-            cidr = "192.168.0.4/16";
-          };
+          underlay.cidr = "192.168.0.4/16";
         };
 
         services.sshd.enable = true;

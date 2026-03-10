@@ -1,30 +1,12 @@
 {
-  inputs,
-  self,
   lib,
   ...
 }:
 {
-  node.specialArgs = { inherit inputs self; };
-
   defaults =
-    { nodes, config, ... }:
+    { config, ... }:
     {
-      imports = [ self.nixosModules.default ];
-
-      _module.args.allHosts = nodes |> lib.mapAttrs (_: node: { config = node; });
-
-      users = {
-        mutableUsers = false;
-        users.seb = {
-          isNormalUser = true;
-          password = "seb";
-        };
-      };
-
       custom = {
-        networking.underlay.interface = "eth1";
-
         services = {
           nebula = {
             caCertificateFile = ./keys/nebula/ca.crt;
