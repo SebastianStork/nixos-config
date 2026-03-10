@@ -43,10 +43,6 @@ in
       useDHCP = false;
     };
 
-    services.resolved = {
-      enable = true;
-      dnssec = "allow-downgrade";
-      dnsovertls = "opportunistic";
-    };
+    services.resolved.enable = true;
   };
 }
