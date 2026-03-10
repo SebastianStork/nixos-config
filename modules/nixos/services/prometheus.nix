@@ -98,6 +98,8 @@ in
                   annotations = {
                     summary = "${hostName} is DOWN";
                     summary_resolved = "${hostName} is up again";
+                    description = "No metrics received for over 2 minutes.";
+                    description_resolved = "Metrics are being received again.";
                   };
                 })
               )
@@ -107,8 +109,10 @@ in
                   expr = ''up{job=~"prometheus|alertmanager"} == 0'';
                   for = "2m";
                   annotations = {
-                    summary = "{{ $labels.job }} on {{ $labels.instance }} is DOWN";
-                    summary_resolved = "{{ $labels.job }} on {{ $labels.instance }} is up again";
+                    summary = "{{ $labels.job | title }} on {{ $labels.instance }} is DOWN";
+                    summary_resolved = "{{ $labels.job | title }} on {{ $labels.instance }} is up again";
+                    description = "Unresponsive for over 2 minutes.";
+                    description_resolved = "Responding normally.";
                   };
                 }
                 {
@@ -117,6 +121,8 @@ in
                   annotations = {
                     summary = "{{ $labels.instance }} deployment failed";
                     summary_resolved = "{{ $labels.instance }} deployment recovered";
+                    description = "Deployment is not reaching \"done\" status.";
+                    description_resolved = "Deployment completed successfully.";
                   };
                 }
                 {
@@ -126,6 +132,8 @@ in
                   annotations = {
                     summary = "Hosts are running different commits";
                     summary_resolved = "All hosts are running the same commit again";
+                    description = "Possibly a failed deployment or incompatible configurations.";
+                    description_resolved = "All hosts are in sync.";
                   };
                 }
               ];
