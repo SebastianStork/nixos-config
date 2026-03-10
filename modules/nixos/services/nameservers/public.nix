@@ -46,7 +46,12 @@ let
     in
     inputs.dns.lib.toString zone {
       SOA = {
-        nameServer = "${netCfg.hostName}.${zone}.";
+        nameServer =
+          nsRecords
+          |> lib.map (record: record.name)
+          |> lib.naturalSort
+          |> lib.head
+          |> (hostName: "${hostName}.${zone}.");
         adminEmail = "hostmaster@sstork.dev";
         serial = 1;
       };
