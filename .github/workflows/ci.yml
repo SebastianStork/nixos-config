@@ -120,7 +120,7 @@ jobs:
         server: ${{ fromJson(needs.parse-flake.outputs.servers) }}
     steps:
       - name: Wait for deployment
-        timeout-minutes: 5
+        timeout-minutes: 10
         run: |
           repo_url="https://github.com/${{ github.repository }}.git"
           expected_sha="${{ github.sha }}"
