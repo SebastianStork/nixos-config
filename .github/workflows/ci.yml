@@ -89,14 +89,14 @@ jobs:
         run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
   build-server:
     needs: parse-flake
-    uses: ./.github/workflows/build-host.yml
+    uses: ./.github/workflows/_build-host.yml
     with:
       hosts: ${{ needs.parse-flake.outputs.servers }}
     secrets:
       CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
   build-workstation:
     needs: parse-flake
-    uses: ./.github/workflows/build-host.yml
+    uses: ./.github/workflows/_build-host.yml
     with:
       hosts: ${{ needs.parse-flake.outputs.workstations }}
     secrets:
