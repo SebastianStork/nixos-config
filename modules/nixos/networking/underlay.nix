@@ -40,11 +40,6 @@ in
 
   config = lib.mkMerge [
     {
-      networking = {
-        useNetworkd = true;
-        useDHCP = false;
-      };
-
       systemd.network = {
         enable = true;
         networks."10-${cfg.interface}" = {
@@ -58,12 +53,6 @@ in
             GatewayOnLink = true;
           };
         };
-      };
-
-      services.resolved = {
-        enable = true;
-        dnssec = "allow-downgrade";
-        dnsovertls = "opportunistic";
       };
     }
 

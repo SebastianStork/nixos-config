@@ -36,4 +36,17 @@ in
       readOnly = true;
     };
   };
+
+  config = {
+    networking = {
+      useNetworkd = true;
+      useDHCP = false;
+    };
+
+    services.resolved = {
+      enable = true;
+      dnssec = "allow-downgrade";
+      dnsovertls = "opportunistic";
+    };
+  };
 }
