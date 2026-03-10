@@ -58,7 +58,7 @@ in
         "/var/lib/meilisearch"
       ];
 
-      meta.services.${cfg.domain} = {
+      meta.sites.${cfg.domain} = {
         title = "Karakeep";
         icon = "sh:karakeep";
       };

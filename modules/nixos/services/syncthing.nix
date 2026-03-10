@@ -171,7 +171,7 @@ in
 
       persistence.directories = [ dataDir ];
 
-      meta.services.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
+      meta.sites.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
         title = "Syncthing";
         icon = "sh:syncthing";
       };

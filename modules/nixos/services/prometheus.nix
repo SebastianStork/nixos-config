@@ -126,7 +126,7 @@ in
 
       persistence.directories = [ "/var/lib/${config.services.prometheus.stateDir}" ];
 
-      meta.services.${cfg.domain} = {
+      meta.sites.${cfg.domain} = {
         title = "Prometheus";
         icon = "sh:prometheus";
       };

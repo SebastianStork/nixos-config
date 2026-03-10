@@ -101,7 +101,7 @@ in
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
-      meta.services.${cfg.domain} = {
+      meta.sites.${cfg.domain} = {
         title = "Alertmanager";
         icon = "sh:prometheus";
       };

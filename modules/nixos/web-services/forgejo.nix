@@ -84,7 +84,7 @@ in
 
       persistence.directories = [ config.services.forgejo.stateDir ];
 
-      meta.services.${cfg.domain} = {
+      meta.sites.${cfg.domain} = {
         title = "Forgejo";
         icon = "sh:forgejo";
       };

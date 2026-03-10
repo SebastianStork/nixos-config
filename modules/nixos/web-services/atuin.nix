@@ -48,7 +48,7 @@ in
 
       persistence.directories = [ dataDir ];
 
-      meta.services.${cfg.domain} = {
+      meta.sites.${cfg.domain} = {
         title = "Atuin";
         icon = "sh:atuin";
       };

@@ -131,7 +131,7 @@ in
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.port = lib.mkIf (cfg.domain != null) cfg.port;
 
-      meta.services.${cfg.domain} = lib.mkIf (cfg.domain != null) {
+      meta.sites.${cfg.domain} = lib.mkIf (cfg.domain != null) {
         title = "Alloy";
         icon = "sh:grafana-alloy";
       };

@@ -50,7 +50,7 @@ in
 
       persistence.directories = [ dataDir ];
 
-      meta.services.${cfg.domain} = {
+      meta.sites.${cfg.domain} = {
         title = "FreshRSS";
         icon = "sh:freshrss";
       };

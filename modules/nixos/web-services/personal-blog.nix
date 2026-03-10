@@ -30,7 +30,7 @@ in
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.files = dataDir;
 
-      meta.services.${cfg.domain} = {
+      meta.sites.${cfg.domain} = {
         title = "Blog";
         icon = "sh:hugo";
       };

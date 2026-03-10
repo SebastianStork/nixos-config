@@ -86,7 +86,7 @@ in
           config.services.postgresql.dataDir
         ];
 
-        meta.services.${cfg.domain} = {
+        meta.sites.${cfg.domain} = {
           title = "Outline";
           icon = "sh:outline";
         };

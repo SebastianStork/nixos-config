@@ -18,7 +18,7 @@ let
 
   applicationSites =
     hosts
-    |> lib.concatMap (host: host.config.custom.meta.services |> lib.attrValues)
+    |> lib.concatMap (host: host.config.custom.meta.sites |> lib.attrValues)
     |> lib.filter (service: !lib.elem service.title observabilityTitles)
     |> lib.groupBy (
       service:
@@ -46,7 +46,7 @@ let
       cache = "1m";
       title = host.config.networking.hostName;
       sites =
-        host.config.custom.meta.services
+        host.config.custom.meta.sites
         |> lib.attrValues
         |> lib.filter (service: lib.elem service.title observabilityTitles);
     })

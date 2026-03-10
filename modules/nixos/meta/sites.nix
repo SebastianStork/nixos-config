@@ -1,6 +1,6 @@
 { lib, ... }:
 {
-  options.custom.meta.services = lib.mkOption {
+  options.custom.meta.sites = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule (
         { name, config, ... }:
