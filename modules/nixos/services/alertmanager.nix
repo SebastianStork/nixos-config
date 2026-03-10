@@ -63,6 +63,14 @@ in
             name = "ntfy";
             webhook_configs = lib.singleton { url = "http://localhost:${toString cfg.ntfyBridgePort}/hook"; };
           };
+          inhibit_rules = lib.singleton {
+            source_matchers = [
+              ''alertname="InstanceDown"''
+              ''job="node"''
+            ];
+            target_matchers = lib.singleton ''alertname!="InstanceDown"'';
+            equal = [ "instance" ];
+          };
         };
       };
 
