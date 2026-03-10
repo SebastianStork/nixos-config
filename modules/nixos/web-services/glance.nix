@@ -1,5 +1,6 @@
 {
   config,
+  self,
   lib,
   allHosts,
   ...
@@ -7,23 +8,55 @@
 let
   cfg = config.custom.web-services.glance;
 
-  servicesWidgets =
-    allHosts
-    |> lib.attrValues
-    |> lib.map (host: {
-      hostName = host.config.networking.hostName;
-      services = host.config.custom.meta.services |> lib.attrValues;
-    })
-    |> lib.filter ({ services, ... }: services != [ ])
-    |> lib.map (
-      { hostName, services }:
-      {
+  observabilityTitles = [
+    "Alloy"
+    "Prometheus"
+    "Alertmanager"
+  ];
+
+  hosts = allHosts |> lib.attrValues;
+
+  applicationSites =
+    hosts
+    |> lib.concatMap (host: host.config.custom.meta.services |> lib.attrValues)
+    |> lib.filter (service: !lib.elem service.title observabilityTitles)
+    |> lib.groupBy (
+      service:
+      service.domain |> self.lib.isPrivateDomain |> (isPrivate: if isPrivate then "Private" else "Public")
+    )
+    |> lib.mapAttrsToList (
+      name: value: {
         type = "monitor";
         cache = "1m";
-        title = "Services - ${hostName}";
-        sites = services;
+        title = "${name} Services";
+        sites = value;
       }
-    );
+    )
+    |> (widgets: {
+      type = "split-column";
+      max-columns = 2;
+      inherit widgets;
+    })
+    |> lib.singleton;
+
+  observabilitySites =
+    hosts
+    |> lib.map (host: {
+      type = "monitor";
+      cache = "1m";
+      title = host.config.networking.hostName;
+      sites =
+        host.config.custom.meta.services
+        |> lib.attrValues
+        |> lib.filter (service: lib.elem service.title observabilityTitles);
+    })
+    |> lib.filter ({ sites, ... }: sites != [ ])
+    |> (widgets: {
+      type = "split-column";
+      max-columns = widgets |> lib.length;
+      inherit widgets;
+    })
+    |> lib.singleton;
 in
 {
   options.custom.web-services.glance = {
@@ -57,7 +90,8 @@ in
                 search-engine = "google";
                 autofocus = true;
               }
-              ++ servicesWidgets;
+              ++ applicationSites
+              ++ observabilitySites;
           };
         };
       };
