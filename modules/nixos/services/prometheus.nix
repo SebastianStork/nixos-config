@@ -97,7 +97,7 @@ in
                   labels.severity = "critical";
                   annotations = {
                     summary = "${hostName} is DOWN";
-                    description = "${hostName} has not reported any metrics for more than 2 minutes.";
+                    summary_resolved = "${hostName} is up again";
                   };
                 })
               )
@@ -108,7 +108,7 @@ in
                   for = "2m";
                   annotations = {
                     summary = "{{ $labels.job }} on {{ $labels.instance }} is DOWN";
-                    description = "{{ $labels.job }} on {{ $labels.instance }} has been down for more than 2 minutes.";
+                    summary_resolved = "{{ $labels.job }} on {{ $labels.instance }} is up again";
                   };
                 }
                 {
@@ -116,7 +116,7 @@ in
                   expr = ''comin_deployment_info{status!="done"}'';
                   annotations = {
                     summary = "{{ $labels.instance }} deployment failed";
-                    description = "The deployment of {{ $labels.instance }} with comin is failing.";
+                    summary_resolved = "{{ $labels.instance }} deployment recovered";
                   };
                 }
                 {
@@ -125,7 +125,7 @@ in
                   for = "10m";
                   annotations = {
                     summary = "Hosts are running different commits";
-                    description = "Not all hosts are running the same git commit, which may indicate a failed deployment and could lead to incompatible configurations.";
+                    summary_resolved = "All hosts are running the same commit again";
                   };
                 }
               ];

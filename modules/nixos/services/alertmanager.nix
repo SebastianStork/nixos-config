@@ -83,7 +83,10 @@ in
             notification = {
               topic = "splitleaf";
               priority = "default";
-              templates.title = ''{{ index .Annotations "summary" }}'';
+              templates = {
+                title = ''{{ if eq .Status "firing" }}{{ index .Annotations "summary" }}{{ else }}{{ index .Annotations "summary_resolved" }}{{ end }}'';
+                description = ".";
+              };
               tags = [
                 {
                   condition = ''status == "resolved"'';
