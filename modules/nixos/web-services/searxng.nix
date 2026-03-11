@@ -20,7 +20,7 @@ in
       enable = true;
       settings = {
         server = {
-          port = cfg.port;
+          inherit (cfg) port;
           secret_key = "unnecessary";
         };
         ui.center_alignment = true;
