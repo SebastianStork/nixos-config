@@ -33,6 +33,7 @@ in
           autocomplete = "duckduckgo";
           favicon_resolver = "duckduckgo";
         };
+        hostnames.remove = [ ''(.*\.)?nixos.wiki'' ];
       };
     };
 
