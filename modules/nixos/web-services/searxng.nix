@@ -28,6 +28,7 @@ in
           "searx.plugins.calculator.SXNGPlugin".active = true;
           "searx.plugins.infinite_scroll.SXNGPlugin".active = true;
           "searx.plugins.self_info.SXNGPlugin".active = true;
+          "searx.plugins.hostnames.SXNGPlugin".active = true;
         };
         search = {
           autocomplete = "duckduckgo";
