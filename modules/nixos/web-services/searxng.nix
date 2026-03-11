@@ -29,6 +29,10 @@ in
           "searx.plugins.infinite_scroll.SXNGPlugin".active = true;
           "searx.plugins.self_info.SXNGPlugin".active = true;
         };
+        search = {
+          autocomplete = "duckduckgo";
+          favicon_resolver = "duckduckgo";
+        };
       };
     };
 
