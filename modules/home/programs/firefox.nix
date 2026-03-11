@@ -40,6 +40,16 @@ in
         |> lib.map (glance: glance.domain)
         |> lib.head;
     };
+    searchEngine = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default =
+        allHosts
+        |> lib.attrValues
+        |> lib.map (host: host.config.custom.web-services.searxng)
+        |> lib.filter (searxng: searxng.enable)
+        |> lib.map (searxng: searxng.domain)
+        |> lib.head;
+    };
     extensions = lib.mkOption {
       type = lib.types.attrsOf (
         lib.types.submodule (
@@ -115,6 +125,16 @@ in
           };
 
         extraConfig = lib.readFile "${inputs.betterfox}/user.js";
+
+        search = {
+          force = true;
+          default = "searxng";
+          privateDefault = "searxng";
+          engines.searxng = {
+            name = "searxng";
+            urls = lib.singleton { template = "https://${cfg.searchEngine}/search?q={searchTerms}"; };
+          };
+        };
       };
 
       policies.ExtensionSettings =
