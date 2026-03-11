@@ -87,7 +87,7 @@ in
             widgets =
               lib.singleton {
                 type = "search";
-                search-engine = "google";
+                search-engine = "https://search.splitleaf.de/search?q={QUERY}";
                 autofocus = true;
               }
               ++ applicationSites
