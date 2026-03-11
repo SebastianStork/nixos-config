@@ -71,6 +71,11 @@
         enable = true;
         domain = "home.${config.custom.networking.overlay.domain}";
       };
+
+      searxng = {
+        enable = true;
+        domain = "search.${config.custom.networking.overlay.domain}";
+      };
     };
   };
 }
