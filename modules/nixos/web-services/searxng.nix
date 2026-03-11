@@ -34,7 +34,14 @@ in
           autocomplete = "duckduckgo";
           favicon_resolver = "duckduckgo";
         };
-        hostnames.remove = [ ''(.*\.)?nixos.wiki'' ];
+        hostnames = {
+          remove = [ "(.*\.)?nixos.wiki$" ];
+          high_priority = [
+            "(.*\.)?reddit.com$"
+            "(.*\.)?nixos.org$"
+            "(.*\.)archlinux.org$"
+          ];
+        };
       };
     };
 
