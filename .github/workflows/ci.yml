@@ -158,7 +158,7 @@ jobs:
             -d "$body" \
             https://ntfy.sh/splitleaf
       - name: Notify failure
-        if: needs.await-deploy.result == 'failure'
+        if: needs.await-deploy.result == 'failure' || needs.await-deploy.result == 'skipped'
         env:
           SHA: ${{ github.sha }}
           COMMIT_MSG: ${{ github.event.head_commit.message }}
