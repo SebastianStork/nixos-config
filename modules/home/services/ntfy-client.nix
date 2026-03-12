@@ -49,7 +49,7 @@ in
       {
         default-host = cfg.server;
         subscribe = lib.singleton {
-          topic = cfg.topic;
+          inherit (cfg) topic;
           command = lib.getExe notifyScript;
         };
       }
