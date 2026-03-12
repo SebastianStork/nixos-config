@@ -115,7 +115,6 @@ in
             "browser.uiCustomization.state" = uiState;
             "browser.startup.homepage" = lib.mkIf (cfg.homepage != null) cfg.homepage;
             "sidebar.position_start" = false;
-            "browser.toolbars.bookmarks.visibility" = "always";
             "browser.bookmarks.restore_default_bookmarks" = false;
             "browser.bookmarks.file" = "";
             "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
