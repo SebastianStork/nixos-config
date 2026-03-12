@@ -145,6 +145,10 @@ in
                         url = "https://wiki.nixos.org/wiki/Main_Page";
                       }
                       {
+                        title = "NixOS Manual";
+                        url = "https://nixos.org/manual/nixos/stable/";
+                      }
+                      {
                         title = "Packages Search";
                         url = "https://search.nixos.org/packages";
                       }
@@ -161,8 +165,8 @@ in
                         url = "https://home-manager-options.extranix.com/";
                       }
                       {
-                        title = "NixOS Manual";
-                        url = "https://nixos.org/manual/nixos/stable/";
+                        title = "GitHub Code Search";
+                        url = "https://github.com/search?q=lang%3Anix%20&type=code";
                       }
                     ];
                   }
