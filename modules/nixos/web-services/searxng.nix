@@ -37,9 +37,10 @@ in
         hostnames = {
           remove = [ "(.*\.)?nixos.wiki$" ];
           high_priority = [
-            "(.*\.)?reddit.com$"
+            "(.*\.)?github.com$"
             "(.*\.)?nixos.org$"
             "(.*\.)archlinux.org$"
+            "(.*\.)?reddit.com$"
           ];
         };
       };
