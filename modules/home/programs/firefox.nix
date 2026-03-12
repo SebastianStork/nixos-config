@@ -31,24 +31,24 @@ in
   options.custom.programs.firefox = {
     enable = lib.mkEnableOption "";
     homepage = lib.mkOption {
-      type = lib.types.nonEmptyStr;
+      type = lib.types.nullOr lib.types.nonEmptyStr;
       default =
         allHosts
         |> lib.attrValues
         |> lib.map (host: host.config.custom.web-services.glance)
         |> lib.filter (glance: glance.enable)
         |> lib.map (glance: glance.domain)
-        |> lib.head;
+        |> (domains: if (lib.length domains != 0) then domains |> lib.head else null);
     };
     searchEngine = lib.mkOption {
-      type = lib.types.nonEmptyStr;
+      type = lib.types.nullOr lib.types.nonEmptyStr;
       default =
         allHosts
         |> lib.attrValues
         |> lib.map (host: host.config.custom.web-services.searxng)
         |> lib.filter (searxng: searxng.enable)
         |> lib.map (searxng: searxng.domain)
-        |> lib.head;
+        |> (domains: if (lib.length domains != 0) then domains |> lib.head else null);
     };
     extensions = lib.mkOption {
       type = lib.types.attrsOf (
@@ -107,7 +107,7 @@ in
           {
             "intl.accept_languages" = "en-us,en,de-de,de";
             "browser.uiCustomization.state" = uiState;
-            "browser.startup.homepage" = cfg.homepage;
+            "browser.startup.homepage" = lib.mkIf (cfg.homepage != null) cfg.homepage;
             "sidebar.position_start" = false;
             "browser.toolbars.bookmarks.visibility" = "always";
             "browser.bookmarks.restore_default_bookmarks" = false;
@@ -126,7 +126,7 @@ in
 
         extraConfig = lib.readFile "${inputs.betterfox}/user.js";
 
-        search = {
+        search = lib.mkIf (cfg.searchEngine != null) {
           force = true;
           default = "searxng";
           privateDefault = "searxng";
