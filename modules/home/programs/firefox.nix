@@ -9,6 +9,13 @@
 let
   cfg = config.custom.programs.firefox;
 
+  firefoxAddons =
+    (import inputs.nixpkgs {
+      inherit (pkgs.stdenv.hostPlatform) system;
+      config.allowUnfree = true;
+      overlays = [ inputs.firefox-addons.overlays.default ];
+    }).firefox-addons;
+
   mkExtension =
     {
       name,
@@ -19,9 +26,7 @@ let
     {
       name = uuid;
       value = {
-        install_url = "file:///${
-          inputs.firefox-addons.packages.${pkgs.stdenv.hostPlatform.system}.${name}
-        }/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/${uuid}.xpi";
+        install_url = "file:///${firefoxAddons.${name}}/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/${uuid}.xpi";
         installation_mode = "force_installed";
         default_area = defaultArea;
       };
@@ -90,6 +95,7 @@ in
       return-youtube-dislikes.uuid = "{762f9885-5a13-4abd-9c77-433dcd38b8fd}";
       sponsorblock.uuid = "sponsorBlocker@ajay.app";
       clearurls.uuid = "{74145f27-f039-47ce-a470-a662b129930a}";
+      languagetool.uuid = "languagetool-webextension@languagetool.org";
       karakeep = {
         uuid = "addon@karakeep.app";
         defaultArea = "navbar";
