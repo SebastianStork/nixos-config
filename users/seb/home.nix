@@ -21,6 +21,8 @@
 
     desktop.hyprland.noctalia.enable = true;
 
+    services.ntfy-client.enable = true;
+
     programs = {
       shell = {
         zsh.enable = true;
