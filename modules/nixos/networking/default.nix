@@ -16,7 +16,7 @@ in
     };
 
     nodes = lib.mkOption {
-      type = lib.types.anything;
+      type = lib.types.listOf lib.types.attrs;
       default =
         allHosts
         |> lib.attrValues
@@ -31,7 +31,7 @@ in
       readOnly = true;
     };
     peers = lib.mkOption {
-      type = lib.types.anything;
+      type = lib.types.listOf lib.types.attrs;
       default = cfg.nodes |> lib.filter (node: node.hostName != cfg.hostName);
       readOnly = true;
     };

@@ -31,7 +31,7 @@ in
               default = [ ];
             };
             extraConfig = lib.mkOption {
-              type = lib.types.attrsOf lib.types.anything;
+              type = lib.types.attrs;
               default = { };
             };
           };

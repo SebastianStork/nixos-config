@@ -59,7 +59,7 @@ in
     };
 
     dnsServers = lib.mkOption {
-      type = lib.types.anything;
+      type = lib.types.listOf lib.types.nonEmptyStr;
       default =
         allHosts
         |> lib.attrValues

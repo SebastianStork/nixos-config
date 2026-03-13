@@ -26,7 +26,7 @@ in
       default = "${self}/users/${config.home.username}/@${osConfig.networking.hostName}/secrets.json";
     };
     secretsData = lib.mkOption {
-      type = lib.types.anything;
+      type = lib.types.attrs;
       default = cfg.secretsFile |> lib.readFile |> lib.strings.fromJSON;
     };
   };
