@@ -43,7 +43,7 @@ in
         |> lib.attrNames
         |> lib.map (secretPath: {
           assertion = cfg.secretsData |> lib.hasAttrByPath (secretPath |> lib.splitString "/");
-          message = "Sops secret `${secretPath}` is used in a module but not defined in secrets.json";
+          message = self.lib.mkInvalidConfigMessage "SOPS secret `${secretPath}`" "it is used in a module but not defined in `secrets.json`";
         })
       )
       ++ (
@@ -51,7 +51,7 @@ in
         |> lib.mapAttrsToListRecursive (path: _: path |> lib.concatStringsSep "/")
         |> lib.map (secretPath: {
           assertion = config.sops.secrets |> lib.hasAttr secretPath;
-          message = "Sops secret `${secretPath}` is defined in secrets.json but not used in any module";
+          message = self.lib.mkInvalidConfigMessage "SOPS secret `${secretPath}`" "it is defined in `secrets.json` but not used in any module";
         })
       );
   };

@@ -58,7 +58,7 @@ in
     systemd.user.services.ntfy-client = {
       Install.WantedBy = [ "graphical-session.target" ];
       Unit = {
-        Description = "ntfy client subscriber";
+        Description = "ntfy client subscription";
         PartOf = [ "graphical-session.target" ];
         After = [ "graphical-session.target" ];
         X-Restart-Triggers = [ config.xdg.configFile."ntfy/client.yml".source ];

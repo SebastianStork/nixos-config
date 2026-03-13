@@ -62,7 +62,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
       assertion = netCfg.overlay.isLighthouse -> cfg.advertise.address != null;
-      message = "`${netCfg.hostName}` is a Nebula lighthouse, but `underlay.isPublic` or `overlay.advertise.address` are not set. Lighthouses must be publicly reachable.";
+      message = self.lib.mkInvalidConfigMessage "Nebula lighthouse `${netCfg.hostName}`" "`underlay.isPublic` must be enabled or `services.nebula.advertise.address` must be set so the host is publicly reachable";
     };
 
     sops.secrets."nebula/host-key" = lib.mkIf (cfg.privateKeyFile == null) {

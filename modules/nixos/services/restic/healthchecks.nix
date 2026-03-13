@@ -26,7 +26,7 @@ in
 
     systemd.services = {
       "healthcheck-ping@" = {
-        description = "Pings healthcheck (%i)";
+        description = "Ping Healthchecks for %i";
         serviceConfig.Type = "oneshot";
         scriptArgs = "%i";
         script = ''

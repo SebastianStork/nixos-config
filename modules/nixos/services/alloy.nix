@@ -1,5 +1,6 @@
 {
   config,
+  self,
   lib,
   allHosts,
   ...
@@ -38,7 +39,7 @@ in
       |> lib.filter (name: name != "system")
       |> lib.map (name: {
         assertion = cfg.collect.metrics.${name} -> config.services.${name}.enable;
-        message = "Alloy cannot collect `${name}` metrics without the `${name}` service";
+        message = self.lib.mkInvalidConfigMessage "Alloy metric collection for `${name}`" "the `${name}` service is not enabled";
       });
 
     services.alloy = {

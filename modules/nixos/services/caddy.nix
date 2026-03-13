@@ -91,11 +91,11 @@ in
           |> lib.concatMap (vHost: [
             {
               assertion = (vHost.port == null) || (vHost.files == null);
-              message = "Caddy virtual host `${vHost.domain}` cannot set both `port` and `files`";
+              message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "`port` and `files` cannot be set at the same time";
             }
             {
               assertion = (vHost.port != null) || (vHost.files != null) || (vHost.extraConfig != null);
-              message = "Caddy virtual host `${vHost.domain}` must set at least one of `port`, `files` or `extraConfig`";
+              message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "one of `port`, `files` or `extraConfig` must be set";
             }
           ]);
 

@@ -96,10 +96,10 @@ in
                   expr = ''absent_over_time(up{instance="${hostName}", job="node"}[2m])'';
                   labels.severity = "critical";
                   annotations = {
-                    summary = "${hostName} is DOWN";
-                    summary_resolved = "${hostName} is up again";
-                    description = "No metrics received for over 2 minutes.";
-                    description_resolved = "Metrics are being received again.";
+                    summary = "Host ${hostName} is down";
+                    summary_resolved = "Host ${hostName} is up again";
+                    description = "Prometheus has not received node metrics from ${hostName} for 2 minutes.";
+                    description_resolved = "Prometheus is receiving node metrics from ${hostName} again.";
                   };
                 })
               )
@@ -109,20 +109,20 @@ in
                   expr = ''up{job=~"prometheus|alertmanager"} == 0'';
                   for = "2m";
                   annotations = {
-                    summary = "{{ $labels.job | title }} on {{ $labels.instance }} is DOWN";
-                    summary_resolved = "{{ $labels.job | title }} on {{ $labels.instance }} is up again";
-                    description = "Unresponsive for over 2 minutes.";
-                    description_resolved = "Responding normally.";
+                    summary = "Service {{ $labels.job | title }} on {{ $labels.instance }} is down";
+                    summary_resolved = "Service {{ $labels.job | title }} on {{ $labels.instance }} is up again";
+                    description = "Prometheus has not received scrape data for 2 minutes.";
+                    description_resolved = "Prometheus is receiving scrape data again.";
                   };
                 }
                 {
                   alert = "CominDeploymentFailed";
                   expr = ''comin_deployment_info{status!="done"}'';
                   annotations = {
-                    summary = "{{ $labels.instance }} deployment failed";
-                    summary_resolved = "{{ $labels.instance }} deployment recovered";
-                    description = "Deployment is not reaching \"done\" status.";
-                    description_resolved = "Deployment completed successfully.";
+                    summary = "Deployment on {{ $labels.instance }} failed";
+                    summary_resolved = "Deployment on {{ $labels.instance }} succeeded again";
+                    description = "Comin reports a deployment status other than \"done\".";
+                    description_resolved = "Comin reports the deployment status as \"done\" again.";
                   };
                 }
                 {
@@ -130,10 +130,10 @@ in
                   expr = "count(count by (commit_id) (comin_deployment_info)) > 1";
                   for = "10m";
                   annotations = {
-                    summary = "Hosts are running different commits";
-                    summary_resolved = "All hosts are running the same commit again";
-                    description = "Possibly a failed deployment or incompatible configurations.";
-                    description_resolved = "All hosts are in sync.";
+                    summary = "Deployment commits are out of sync";
+                    summary_resolved = "Deployment commits are in sync again";
+                    description = "Comin reports different deployed commits across hosts.";
+                    description_resolved = "Comin reports the same deployed commit across all hosts again.";
                   };
                 }
               ];

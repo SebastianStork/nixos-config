@@ -11,8 +11,11 @@
 
     genAttrs = f: names: lib.genAttrs names f;
 
+    mkInvalidConfigMessage = subject: reason: "Invalid configuration for ${subject}: ${reason}.";
+
     mkUnprotectedMessage =
-      name: "${name} should only be exposed on private networks; access control isn't yet configured";
+      name:
+      self.lib.mkInvalidConfigMessage name "the service must use a private domain until access control is configured";
 
     relativePath = path: path |> toString |> lib.removePrefix "${self}/";
 
