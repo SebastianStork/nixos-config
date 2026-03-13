@@ -6,21 +6,11 @@
   defaults =
     { config, ... }:
     {
-      custom = {
-        services = {
-          nebula = {
-            caCertificateFile = ./keys/nebula/ca.crt;
-            certificateFile = ./keys/nebula/${config.networking.hostName}.crt;
-            privateKeyFile = ./keys/nebula/${config.networking.hostName}.key;
-          };
-
-          syncthing = {
-            enable = true;
-            deviceId = ./keys/syncthing/${config.networking.hostName}.id |> lib.readFile |> lib.trim;
-            certFile = ./keys/syncthing/${config.networking.hostName}.cert;
-            keyFile = ./keys/syncthing/${config.networking.hostName}.key;
-          };
-        };
+      custom.services.syncthing = {
+        enable = true;
+        deviceId = ./keys/${config.networking.hostName}/syncthing.id |> lib.readFile |> lib.trim;
+        certFile = ./keys/${config.networking.hostName}/syncthing.cert;
+        keyFile = ./keys/${config.networking.hostName}/syncthing.key;
       };
     };
 

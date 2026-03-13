@@ -7,23 +7,15 @@
     { config, ... }:
     {
       users.users.seb.openssh.authorizedKeys.keyFiles = lib.mkIf config.custom.services.sshd.enable [
-        ./keys/server-ssh.pub
-        ./keys/client1-ssh.pub
-        ./keys/client2-ssh.pub
+        ./keys/server/ssh.pub
+        ./keys/client1/ssh.pub
+        ./keys/client2/ssh.pub
       ];
 
-      environment.etc."ssh-key" = lib.mkIf (lib.pathExists ./keys/${config.networking.hostName}-ssh) {
-        source = ./keys/${config.networking.hostName}-ssh;
+      environment.etc."ssh-key" = lib.mkIf (lib.pathExists ./keys/${config.networking.hostName}/ssh) {
+        source = ./keys/${config.networking.hostName}/ssh;
         mode = "0600";
       };
-
-      custom.services.nebula = {
-        caCertificateFile = ./keys/ca.crt;
-        certificateFile = ./keys/${config.networking.hostName}.crt;
-        privateKeyFile = ./keys/${config.networking.hostName}.key;
-      };
-
-      networking.extraHosts = lib.mkForce "";
     };
 
   nodes = {
