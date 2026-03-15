@@ -96,7 +96,6 @@ in
       sponsorblock.uuid = "sponsorBlocker@ajay.app";
       clearurls.uuid = "{74145f27-f039-47ce-a470-a662b129930a}";
       languagetool.uuid = "languagetool-webextension@languagetool.org";
-      new-tab-override.uuid = "newtaboverride@agenedia.com";
       karakeep = {
         uuid = "addon@karakeep.app";
         defaultArea = "navbar";
@@ -117,7 +116,7 @@ in
             "browser.uiCustomization.state" = uiState;
             "browser.startup.homepage" = lib.mkIf (cfg.homepage != null) cfg.homepage;
             "sidebar.position_start" = false;
-            "browser.toolbars.bookmarks.visibility" = "never";
+            "browser.toolbars.bookmarks.visibility" = "always";
             "browser.bookmarks.restore_default_bookmarks" = false;
             "browser.bookmarks.file" = "";
             "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
