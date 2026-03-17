@@ -6,6 +6,24 @@
 }:
 let
   cfg = config.custom.networking.overlay;
+
+  blocking-nameservers =
+    allHosts
+    |> lib.attrValues
+    |> lib.filter (host: host.config.custom.services.blocking-nameserver.enable)
+    |> lib.map (
+      host:
+      "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.blocking-nameserver.port}"
+    );
+
+  recursive-nameservers =
+    allHosts
+    |> lib.attrValues
+    |> lib.filter (host: host.config.custom.services.recursive-nameserver.enable)
+    |> lib.map (
+      host:
+      "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.recursive-nameserver.port}"
+    );
 in
 {
   options.custom.networking.overlay = {
@@ -60,14 +78,7 @@ in
 
     dnsServers = lib.mkOption {
       type = lib.types.listOf lib.types.nonEmptyStr;
-      default =
-        allHosts
-        |> lib.attrValues
-        |> lib.filter (host: host.config.custom.services.recursive-nameserver.enable)
-        |> lib.map (
-          host:
-          "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.recursive-nameserver.port}"
-        );
+      default = if (blocking-nameservers != [ ]) then blocking-nameservers else recursive-nameservers;
     };
 
     implementation = lib.mkOption {

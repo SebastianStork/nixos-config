@@ -105,7 +105,7 @@
       client2.wait_for_unit("${client2NetCfg.overlay.systemdUnit}")
 
       lighthouse.wait_for_unit("unbound.service")
-      lighthouse.wait_for_open_port(53, "${lighthouseNetCfg.overlay.address}")
+      lighthouse.wait_for_open_port(${toString nodes.lighthouse.custom.services.recursive-nameserver.port}, "${lighthouseNetCfg.overlay.address}")
 
       server.wait_for_unit("sshd.service")
       client2.wait_for_unit("sshd.service")
