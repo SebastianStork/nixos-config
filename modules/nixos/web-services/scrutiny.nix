@@ -29,6 +29,8 @@ in
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
+      persistence.directories = [ "/var/lib/scrutiny" ];
+
       meta.sites.${cfg.domain} = {
         title = "Scrutiny";
         icon = "sh:scrutiny";
