@@ -78,7 +78,12 @@ in
 
     dnsServers = lib.mkOption {
       type = lib.types.listOf lib.types.nonEmptyStr;
-      default = if (blocking-nameservers != [ ]) then blocking-nameservers else recursive-nameservers;
+      default =
+        {
+          "client" = blocking-nameservers;
+          "server" = recursive-nameservers;
+        }
+        .${cfg.role};
     };
 
     implementation = lib.mkOption {
