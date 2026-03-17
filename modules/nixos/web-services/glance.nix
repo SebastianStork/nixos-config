@@ -92,6 +92,17 @@ let
       </div>
     '';
   };
+
+  dnsWidgets =
+    allHosts
+    |> lib.attrValues
+    |> lib.filter (host: host.config.custom.services.blocking-nameserver.enable)
+    |> lib.map (host: {
+      type = "dns-stats";
+      title = host.config.networking.hostName;
+      service = "adguard";
+      url = "https://${host.config.custom.services.blocking-nameserver.gui.domain}/";
+    });
 in
 {
   options.custom.web-services.glance = {
@@ -132,7 +143,7 @@ in
             }
             {
               size = "small";
-              widgets = [ githubBadgeWidget ];
+              widgets = [ githubBadgeWidget ] ++ dnsWidgets;
             }
           ];
         };
