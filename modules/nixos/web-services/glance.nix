@@ -8,18 +8,33 @@
 let
   cfg = config.custom.web-services.glance;
 
-  observabilityTitles = [
-    "Alloy"
-    "Prometheus"
-    "Alertmanager"
-  ];
+  perHostDomains =
+    perHostSitesWidget.widgets |> lib.concatMap (widget: widget.sites) |> lib.map (site: site.domain);
 
-  hosts = allHosts |> lib.attrValues;
+  perHostSitesWidget =
+    allHosts
+    |> lib.attrValues
+    |> lib.map (host: {
+      type = "monitor";
+      cache = "1m";
+      title = host.config.networking.hostName;
+      sites =
+        host.config.custom.meta.sites
+        |> lib.attrValues
+        |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn);
+    })
+    |> lib.filter ({ sites, ... }: sites != [ ])
+    |> (widgets: {
+      type = "split-column";
+      max-columns = widgets |> lib.length;
+      inherit widgets;
+    });
 
   applicationSitesWidget =
-    hosts
+    allHosts
+    |> lib.attrValues
     |> lib.concatMap (host: host.config.custom.meta.sites |> lib.attrValues)
-    |> lib.filter (service: !lib.elem service.title observabilityTitles)
+    |> lib.filter (service: !lib.elem service.domain perHostDomains)
     |> lib.groupBy (
       service:
       service.domain |> self.lib.isPrivateDomain |> (isPrivate: if isPrivate then "Private" else "Public")
@@ -35,24 +50,6 @@ let
     |> (widgets: {
       type = "split-column";
       max-columns = 2;
-      inherit widgets;
-    });
-
-  observabilitySitesWidget =
-    hosts
-    |> lib.map (host: {
-      type = "monitor";
-      cache = "1m";
-      title = host.config.networking.hostName;
-      sites =
-        host.config.custom.meta.sites
-        |> lib.attrValues
-        |> lib.filter (service: lib.elem service.title observabilityTitles);
-    })
-    |> lib.filter ({ sites, ... }: sites != [ ])
-    |> (widgets: {
-      type = "split-column";
-      max-columns = widgets |> lib.length;
       inherit widgets;
     });
 
@@ -129,7 +126,7 @@ in
                   autofocus = false;
                 }
                 applicationSitesWidget
-                observabilitySitesWidget
+                perHostSitesWidget
               ];
             }
             {
