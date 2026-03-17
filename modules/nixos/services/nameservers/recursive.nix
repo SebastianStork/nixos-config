@@ -1,7 +1,5 @@
 {
   config,
-  inputs,
-  pkgs,
   lib,
   allHosts,
   ...
@@ -10,27 +8,21 @@ let
   cfg = config.custom.services.recursive-nameserver;
   netCfg = config.custom.networking;
 
-  blocklist =
-    pkgs.runCommand "blocklist.conf" { } ''
-      echo "server:" > $out
-      cat ${inputs.blocklist}/hosts \
-        | grep '^0.0.0.0 ' \
-        | awk '$2 != "0.0.0.0" {print "  local-zone: \"" $2 "\" refuse"}' \
-        >> $out
-    ''
-    |> toString;
-
   privateNameservers =
     allHosts
     |> lib.attrValues
-    |> lib.filter (host: host.config.custom.services.private-nameserver.enable);
+    |> lib.filter (host: host.config.custom.services.private-nameserver.enable)
+    |> lib.map (
+      host:
+      "${host.config.custom.networking.overlay.address}@${toString host.config.custom.services.private-nameserver.port}"
+    );
 in
 {
   options.custom.services.recursive-nameserver = {
     enable = lib.mkEnableOption "";
     port = lib.mkOption {
       type = lib.types.port;
-      default = 53;
+      default = 5336;
     };
     blockAds = lib.mkEnableOption "";
   };
@@ -41,13 +33,10 @@ in
         services = {
           unbound = {
             enable = true;
-            settings = {
-              server = {
-                interface = [ "${netCfg.overlay.address}@${toString cfg.port}" ];
-                access-control = [ "${toString netCfg.overlay.networkCidr} allow" ];
-                prefetch = true;
-              };
-              include-toplevel = lib.mkIf cfg.blockAds blocklist;
+            settings.server = {
+              interface = [ "${netCfg.overlay.address}@${toString cfg.port}" ];
+              access-control = [ "${toString netCfg.overlay.networkCidr} allow" ];
+              prefetch = true;
             };
           };
 
@@ -73,12 +62,7 @@ in
 
           stub-zone = lib.singleton {
             name = netCfg.overlay.domain;
-            stub-addr =
-              privateNameservers
-              |> lib.map (
-                host:
-                "${host.config.custom.networking.overlay.address}@${toString host.config.custom.services.private-nameserver.port}"
-              );
+            stub-addr = privateNameservers;
           };
         };
       })

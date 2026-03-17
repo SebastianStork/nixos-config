@@ -1,0 +1,95 @@
+{
+  config,
+  lib,
+  allHosts,
+  ...
+}:
+let
+  cfg = config.custom.services.blocking-nameserver;
+  netCfg = config.custom.networking;
+
+  recursiveNameservers =
+    allHosts
+    |> lib.attrValues
+    |> lib.filter (host: host.config.custom.services.recursive-nameserver.enable)
+    |> lib.map (
+      host:
+      "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.recursive-nameserver.port}"
+    );
+in
+{
+  options.custom.services.blocking-nameserver = {
+    enable = lib.mkEnableOption "";
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 53;
+    };
+    gui = {
+      domain = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default = "";
+      };
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 58479;
+      };
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    services = {
+      adguardhome = {
+        enable = true;
+        mutableSettings = false;
+
+        host = "127.0.0.1";
+        inherit (cfg.gui) port;
+
+        settings = {
+          dns = {
+            bind_hosts = [ netCfg.overlay.address ];
+            inherit (cfg) port;
+
+            upstream_dns =
+              if (recursiveNameservers != [ ]) then recursiveNameservers else [ "9.9.9.9#dns.quad9.net" ];
+            upstream_mode = "parallel";
+            bootstrap_dns = [
+              "1.1.1.1"
+              "8.8.8.8"
+            ];
+          };
+
+          filtering = {
+            protection_enabled = true;
+            filtering_enabled = true;
+          };
+          filters = lib.singleton {
+            enabled = true;
+            url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt";
+          };
+        };
+      };
+
+      nebula.networks.mesh.firewall.inbound = lib.singleton {
+        inherit (cfg) port;
+        proto = "any";
+        host = "any";
+      };
+    };
+
+    systemd.services.adguardhome = {
+      enableStrictShellChecks = false;
+      requires = [ netCfg.overlay.systemdUnit ];
+      after = [ netCfg.overlay.systemdUnit ];
+    };
+
+    custom = {
+      services.caddy.virtualHosts.${cfg.gui.domain}.port = lib.mkIf (cfg.gui.domain != null) cfg.gui.port;
+
+      meta.sites.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
+        title = "Adguard Home";
+        icon = "sh:adguard-home";
+      };
+    };
+  };
+}
