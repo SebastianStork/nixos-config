@@ -8,6 +8,9 @@
 let
   cfg = config.custom.web-services.glance;
 
+  perHostDomains =
+    perHostSitesWidget.widgets |> lib.concatMap (widget: widget.sites) |> lib.map (site: site.domain);
+
   perHostSitesWidget =
     allHosts
     |> lib.attrValues
@@ -18,8 +21,7 @@ let
       sites =
         host.config.custom.meta.sites
         |> lib.attrValues
-        |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn)
-        |> lib.map (site: site // { timeout = "5s"; });
+        |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn);
     })
     |> lib.filter ({ sites, ... }: sites != [ ])
     |> (widgets: {
@@ -28,24 +30,21 @@ let
       inherit widgets;
     });
 
-  perHostDomains =
-    perHostSitesWidget.widgets |> lib.concatMap (widget: widget.sites) |> lib.map (site: site.domain);
-
   applicationSitesWidget =
     allHosts
     |> lib.attrValues
     |> lib.concatMap (host: host.config.custom.meta.sites |> lib.attrValues)
-    |> lib.filter (site: !lib.elem site.domain perHostDomains)
+    |> lib.filter (service: !lib.elem service.domain perHostDomains)
     |> lib.groupBy (
-      site:
-      site.domain |> self.lib.isPrivateDomain |> (isPrivate: if isPrivate then "Private" else "Public")
+      service:
+      service.domain |> self.lib.isPrivateDomain |> (isPrivate: if isPrivate then "Private" else "Public")
     )
     |> lib.mapAttrsToList (
       name: value: {
         type = "monitor";
         cache = "1m";
         title = "${name} Services";
-        sites = value |> lib.map (site: site // { timeout = "5s"; });
+        sites = value;
       }
     )
     |> (widgets: {
