@@ -20,7 +20,7 @@ in
       type = lib.types.nonEmptyStr;
       default = "${self}/hosts/${netCfg.hostName}/keys/syncthing.id" |> lib.readFile |> lib.trim;
     };
-    syncPort = lib.mkOption {
+    port = lib.mkOption {
       type = lib.types.port;
       default = 22000;
     };
@@ -120,7 +120,7 @@ in
               |> lib.mapAttrs (
                 _: host: {
                   id = host.config.custom.services.syncthing.deviceId;
-                  addresses = lib.singleton "tcp://${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.syncthing.syncPort}";
+                  addresses = lib.singleton "tcp://${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.syncthing.port}";
                 }
               );
 
@@ -135,7 +135,7 @@ in
               });
 
             options = {
-              listenAddress = "tcp://${netCfg.overlay.address}:${toString cfg.syncPort}";
+              listenAddress = "tcp://${netCfg.overlay.address}:${toString cfg.port}";
               globalAnnounceEnabled = false;
               localAnnounceEnabled = false;
               relaysEnabled = false;
@@ -149,7 +149,7 @@ in
       };
 
       nebula.networks.mesh.firewall.inbound = lib.singleton {
-        port = cfg.syncPort;
+        inherit (cfg) port;
         proto = "tcp";
         group = "syncthing";
       };
