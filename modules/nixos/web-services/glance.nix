@@ -34,10 +34,10 @@ let
     allHosts
     |> lib.attrValues
     |> lib.concatMap (host: host.config.custom.meta.sites |> lib.attrValues)
-    |> lib.filter (service: !lib.elem service.domain perHostDomains)
+    |> lib.filter (site: !lib.elem site.domain perHostDomains)
     |> lib.groupBy (
-      service:
-      service.domain |> self.lib.isPrivateDomain |> (isPrivate: if isPrivate then "Private" else "Public")
+      site:
+      site.domain |> self.lib.isPrivateDomain |> (isPrivate: if isPrivate then "Private" else "Public")
     )
     |> lib.mapAttrsToList (
       name: value: {
@@ -134,7 +134,7 @@ in
                 {
                   type = "search";
                   search-engine = "https://search.splitleaf.de/search?q={QUERY}";
-                  autofocus = false;
+                  autofocus = true;
                 }
                 applicationSitesWidget
                 perHostSitesWidget
