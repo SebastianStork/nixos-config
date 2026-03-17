@@ -1,4 +1,4 @@
-{ self, ... }:
+{ config, self, ... }:
 {
   imports = [ self.nixosModules.server-profile ];
 
@@ -21,10 +21,11 @@
     };
 
     services = {
-      recursive-nameserver = {
+      blocking-nameserver = {
         enable = true;
-        blockAds = true;
+        gui.domain = "adguard.${config.custom.networking.overlay.fqdn}";
       };
+      recursive-nameserver.enable = true;
       private-nameserver.enable = true;
       public-nameserver = {
         enable = true;
