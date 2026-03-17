@@ -80,7 +80,7 @@ in
       type = lib.types.listOf lib.types.nonEmptyStr;
       default =
         {
-          "client" = blocking-nameservers;
+          "client" = if (blocking-nameservers != [ ]) then blocking-nameservers else recursive-nameservers;
           "server" = recursive-nameservers;
         }
         .${cfg.role};
