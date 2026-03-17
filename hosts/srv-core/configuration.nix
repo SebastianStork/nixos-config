@@ -77,6 +77,11 @@
         enable = true;
         domain = "search.${config.custom.networking.overlay.domain}";
       };
+
+      scrutiny = {
+        enable = true;
+        domain = "scrutiny.${config.custom.networking.overlay.domain}";
+      };
     };
   };
 }
