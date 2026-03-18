@@ -5,7 +5,7 @@
     {
       packages.sops-config =
         let
-          adminPublicKey = "age1mpq8m4p7dnxh5ze3fh7etd2k6sp85zdnmp9te3e9chcw4pw07pcq960zh5";
+          adminPublicKey = "age1ftexg8phw860f06gg45tu4l480nqe7yw8cp2qkn4x88nmuj5cv0q95hpxc";
 
           mkCreationRule = sopsCfg: {
             path_regex = self.lib.relativePath sopsCfg.secretsFile;
