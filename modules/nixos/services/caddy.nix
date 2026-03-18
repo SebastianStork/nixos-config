@@ -13,6 +13,12 @@ let
   publicHostsExist = virtualHosts |> lib.any (vHost: (!self.lib.isPrivateDomain vHost.domain));
   privateHostsExist = virtualHosts |> lib.any (vHost: self.lib.isPrivateDomain vHost.domain);
 
+  privateDomains =
+    virtualHosts
+    |> lib.filter (vHost: self.lib.isPrivateDomain vHost.domain)
+    |> lib.map (vHost: vHost.domain)
+    |> lib.unique;
+
   mkVirtualHost =
     {
       domain,
@@ -138,11 +144,7 @@ in
             reloadServices = [ "caddy.service" ];
           };
 
-          certs =
-            virtualHosts
-            |> lib.filter (host: self.lib.isPrivateDomain host.domain)
-            |> lib.map (host: lib.nameValuePair host.domain { })
-            |> lib.listToAttrs;
+          certs = privateDomains |> lib.map (domain: lib.nameValuePair domain { }) |> lib.listToAttrs;
         };
 
         services.nebula.networks.mesh.firewall.inbound = [
@@ -160,7 +162,11 @@ in
 
         systemd.services.caddy = {
           requires = [ netCfg.overlay.systemdUnit ];
-          after = [ netCfg.overlay.systemdUnit ];
+          wants = privateDomains |> lib.map (domain: "acme-${domain}.service");
+          after = [
+            netCfg.overlay.systemdUnit
+          ]
+          ++ (privateDomains |> lib.map (domain: "acme-${domain}.service"));
         };
 
         custom.persistence.directories = [ "/var/lib/acme" ];
