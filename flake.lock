@@ -16,22 +16,6 @@
         "type": "github"
       }
     },
-    "blocklist": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1773514984,
-        "narHash": "sha256-c6qB3i3wetKEp/uD+dR51v9Izbshhy+ECqi2K+1HSoc=",
-        "owner": "StevenBlack",
-        "repo": "hosts",
-        "rev": "24b12bd67d953a1afbfed3ae85c080b033b47c36",
-        "type": "github"
-      },
-      "original": {
-        "owner": "StevenBlack",
-        "repo": "hosts",
-        "type": "github"
-      }
-    },
     "comin": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -369,7 +353,6 @@
     "root": {
       "inputs": {
         "betterfox": "betterfox",
-        "blocklist": "blocklist",
         "comin": "comin",
         "disko": "disko",
         "dns": "dns",
