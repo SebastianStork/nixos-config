@@ -34,7 +34,16 @@ in
       };
     };
 
-    systemd.services.scrutiny.enableStrictShellChecks = false;
+    systemd.services.scrutiny = {
+      enableStrictShellChecks = false;
+      serviceConfig = {
+        DynamicUser = lib.mkForce false;
+        ProtectSystem = "strict";
+        ProtectHome = "read-only";
+        PrivateTmp = true;
+        RemoveIPC = true;
+      };
+    };
 
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
