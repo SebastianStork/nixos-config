@@ -10,7 +10,10 @@ let
   netCfg = config.custom.networking;
 
   lighthouses =
-    netCfg.peers
+    allHosts
+    |> lib.attrValues
+    |> lib.map (host: host.config.custom.networking)
+    |> lib.filter (node: node.hostName != netCfg.hostName)
     |> lib.filter (peer: peer.overlay.isLighthouse)
     |> lib.map (lighthouse: lighthouse.overlay.address);
 in

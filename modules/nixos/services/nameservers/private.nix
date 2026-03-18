@@ -33,7 +33,9 @@ let
           };
 
         nodeRecords =
-          netCfg.nodes
+          allHosts
+          |> lib.attrValues
+          |> lib.map (host: host.config.custom.networking)
           |> lib.map (node: {
             name = node.hostName;
             inherit (node.overlay) address;
