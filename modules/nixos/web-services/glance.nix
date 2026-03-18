@@ -17,7 +17,7 @@ let
     |> lib.map (host: {
       type = "monitor";
       cache = "1m";
-      title = host.config.networking.hostName;
+      title = "${host.config.networking.hostName} Services";
       sites =
         host.config.custom.meta.sites
         |> lib.attrValues
