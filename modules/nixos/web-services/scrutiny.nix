@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  self,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.web-services.scrutiny;
 in
@@ -16,6 +21,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = lib.singleton {
+      assertion = self.lib.isPrivateDomain cfg.domain;
+      message = self.lib.mkUnprotectedMessage "Scrutiny";
+    };
+
     services.scrutiny = {
       enable = true;
       settings.web.listen = {

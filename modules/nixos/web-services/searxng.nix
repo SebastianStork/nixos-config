@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  self,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.web-services.searxng;
 in
@@ -16,6 +21,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = lib.singleton {
+      assertion = self.lib.isPrivateDomain cfg.domain;
+      message = self.lib.mkUnprotectedMessage "SearXNG";
+    };
+
     services.searx = {
       enable = true;
       settings = {
