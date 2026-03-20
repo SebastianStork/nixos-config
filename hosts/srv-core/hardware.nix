@@ -43,18 +43,6 @@
     };
   };
 
-  # Ensure pwm2_enable is set to 2 (automatic) before fancontrol starts,
-  # because the IT8613E can't transition 0 -> 1 (manual) directly,
-  # but can do 2 -> 1 which fancontrol requires.
-  systemd.services.fancontrol-pwm-init = {
-    description = "Initialize IT8613E PWM mode for fancontrol";
-    before = [ "fancontrol.service" ];
-    requiredBy = [ "fancontrol.service" ];
-    serviceConfig.Type = "oneshot";
-    script = "echo 2 > /sys/devices/platform/it87.2608/hwmon/hwmon*/pwm2_enable";
-    unitConfig.ConditionPathExists = "/sys/devices/platform/it87.2608";
-  };
-
   hardware.fancontrol = {
     enable = true;
     config = ''
@@ -69,4 +57,5 @@
       MINSTOP=hwmon2/pwm2=25
     '';
   };
+  systemd.services.fancontrol.preStart = "echo 2 > /sys/devices/platform/it87.2608/hwmon/hwmon*/pwm2_enable";
 }
