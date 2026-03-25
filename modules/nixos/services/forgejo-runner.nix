@@ -6,6 +6,18 @@
 }:
 let
   cfg = config.custom.services.forgejo-runner;
+
+  hostPackages = with pkgs; [
+    bash
+    coreutils
+    curl
+    gawk
+    gitMinimal
+    gnused
+    nodejs
+    wget
+    nix
+  ];
 in
 {
   options.custom.services.forgejo-runner = {
@@ -35,7 +47,7 @@ in
         tokenFile = config.sops.templates."forgejo-runner.env".path;
         settings.runner.capacity = cfg.capacity;
         labels = [ "nixos:host" ];
-        hostPackages = [ pkgs.nix ];
+        inherit hostPackages;
       };
     };
   };
