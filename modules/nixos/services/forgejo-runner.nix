@@ -33,8 +33,9 @@ in
         name = config.networking.hostName;
         url = cfg.forgejoUrl;
         tokenFile = config.sops.templates."forgejo-runner.env".path;
-        labels = [ "nixos:host" ];
         settings.runner.capacity = cfg.capacity;
+        labels = [ "nixos:host" ];
+        hostPackages = [ pkgs.nix ];
       };
     };
   };
