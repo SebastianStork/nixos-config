@@ -1,0 +1,16 @@
+name: "Update"
+on:
+  schedule:
+    - cron: "0 4 * * 2,6"
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: nixos
+    steps:
+      - uses: actions/checkout@v6
+      - name: Update and push
+        run: |
+          git config user.name "forgejo-actions[bot]"
+          git config user.email "forgejo-actions[bot]@noreply.codeberg.org"
+          nix flake update --commit-lock-file
+          git push
