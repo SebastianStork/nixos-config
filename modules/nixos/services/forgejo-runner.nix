@@ -50,5 +50,7 @@ in
         inherit hostPackages;
       };
     };
+
+    nix.settings.allowed-users = [ config.systemd.services."gitea-runner-default".serviceConfig.User ];
   };
 }
