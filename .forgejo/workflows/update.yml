@@ -8,9 +8,11 @@ jobs:
     runs-on: nixos
     steps:
       - uses: actions/checkout@v6
-      - name: Update and push
+      - name: Configure git user
         run: |
           git config user.name "forgejo-actions[bot]"
           git config user.email "forgejo-actions[bot]@noreply.codeberg.org"
-          nix flake update --commit-lock-file
-          git push
+      - name: Update
+        run: nix flake update --commit-lock-file
+      - name: Push
+        run: git push
