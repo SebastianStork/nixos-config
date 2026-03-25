@@ -32,6 +32,11 @@
       };
 
       prometheus.storageRetentionSize = "20GB";
+
+      forgejo-runner = {
+        enable = true;
+        forgejoUrl = "https://codeberg.org";
+      };
     };
 
     web-services = {
