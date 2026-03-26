@@ -53,40 +53,42 @@ let
       inherit widgets;
     });
 
-  githubWorkflowFiles =
+  nixosRepoUrl = "https://codeberg.org/SebastianStork/nixos-config";
+
+  workflowFiles =
     "${self}/.forgejo/workflows"
     |> builtins.readDir
     |> lib.attrNames
     |> lib.filter (file: file |> lib.hasSuffix ".yml")
     |> lib.filter (file: file |> lib.hasPrefix "_" |> (hasPrefix: !hasPrefix));
 
-  mkGithubWorkflowBadge =
+  mkWorkflowBadge =
     workflowFile:
     let
       workflowName = workflowFile |> lib.removeSuffix ".yml";
-      workflowUrl = "https://codeberg.org/SebastianStork/nixos-config/badges/workflows/${workflowFile}";
+      workflowBadge = "${nixosRepoUrl}/badges/workflows/${workflowFile}/badge.svg?label=${workflowName}";
+      workflowLink = "${nixosRepoUrl}/actions?workflow=${workflowFile}";
     in
     ''
-      <a class="block" href="${workflowUrl}" target="_blank" rel="noopener noreferrer">
+      <a class="block" href="${workflowLink}" target="_blank" rel="noopener noreferrer">
         <img
           class="block"
-          src="${workflowUrl}/badge.svg"
+          src="${workflowBadge}"
           alt="${workflowName} workflow status"
         />
       </a>
     '';
 
-  githubWorkflowBadges =
-    githubWorkflowFiles |> lib.map mkGithubWorkflowBadge |> lib.concatStringsSep "\n";
+  workflowBadges = workflowFiles |> lib.map mkWorkflowBadge |> lib.concatStringsSep "\n";
 
-  githubBadgeWidget = {
+  codebergBadgeWidget = {
     type = "custom-api";
     title = "nixos-config";
-    title-url = "https://github.com/SebastianStork/nixos-config";
+    title-url = nixosRepoUrl;
     template = ''
       <div class="flex flex-col items-start gap-10">
         <div class="flex flex-wrap gap-10">
-          ${githubWorkflowBadges}
+          ${workflowBadges}
         </div>
       </div>
     '';
@@ -142,7 +144,7 @@ in
             }
             {
               size = "small";
-              widgets = [ githubBadgeWidget ] ++ dnsWidgets;
+              widgets = [ codebergBadgeWidget ] ++ dnsWidgets;
             }
           ];
         };
