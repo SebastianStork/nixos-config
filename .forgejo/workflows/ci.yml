@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build package
-        run: nix build .#packages.x86_64-linux.${{ matrix.package }} --print-build-logs
+        run: nix build .#packages.x86_64-linux.${{ matrix.package }} --verbose --print-build-logs
   build-check:
     needs: parse-flake
     runs-on: nixos
@@ -65,7 +65,7 @@ jobs:
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build check
-        run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
+        run: nix build .#checks.x86_64-linux.${{ matrix.check }} --verbose --print-build-logs
   build-server:
     needs: parse-flake
     runs-on: nixos
@@ -76,7 +76,7 @@ jobs:
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build host
-        run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --print-build-logs
+        run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --verbose --print-build-logs
   build-workstation:
     needs: parse-flake
     runs-on: nixos
@@ -87,7 +87,7 @@ jobs:
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build host
-        run: nix build .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel --print-build-logs
+        run: nix build .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel --verbose --print-build-logs
   trigger-deploy:
     needs: [build-check, build-server]
     runs-on: nixos
