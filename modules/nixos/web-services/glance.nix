@@ -54,7 +54,7 @@ let
     });
 
   githubWorkflowFiles =
-    "${self}/.github/workflows"
+    "${self}/.forgejo/workflows"
     |> builtins.readDir
     |> lib.attrNames
     |> lib.filter (file: file |> lib.hasSuffix ".yml")
@@ -64,7 +64,7 @@ let
     workflowFile:
     let
       workflowName = workflowFile |> lib.removeSuffix ".yml";
-      workflowUrl = "https://github.com/SebastianStork/nixos-config/actions/workflows/${workflowFile}";
+      workflowUrl = "https://codeberg.org/SebastianStork/nixos-config/badges/workflows/${workflowFile}";
     in
     ''
       <a class="block" href="${workflowUrl}" target="_blank" rel="noopener noreferrer">
