@@ -1,0 +1,165 @@
+name: "CI"
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+concurrency:
+  group: ${{ forgejo.workflow }}-${{ forgejo.ref }}
+  cancel-in-progress: true
+jobs:
+  parse-flake:
+    runs-on: nixos
+    outputs:
+      packages: ${{ steps.packages.outputs.packages }}
+      checks: ${{ steps.checks.outputs.checks }}
+      servers: ${{ steps.servers.outputs.servers }}
+      workstations: ${{ steps.workstations.outputs.workstations }}
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Get packages
+        id: packages
+        run: |
+          packages=$(nix flake show --json | jq -c '.packages."x86_64-linux" | keys')
+          printf "packages=%s" "$packages" >> "$FORGEJO_OUTPUT"
+      - name: Get checks
+        id: checks
+        run: |
+          checks=$(nix flake show --json | jq -c '.checks."x86_64-linux" | keys')
+          printf "checks=%s" "$checks" >> "$FORGEJO_OUTPUT"
+      - name: Get servers
+        id: servers
+        run: |
+          servers=$(nix eval .#nixosConfigurations --apply 'configs:
+            configs
+            |> builtins.attrNames
+            |> builtins.filter (hostName: configs.${hostName}.config.custom.services.comin.enable)
+          ' --json)
+          printf "servers=%s" "$servers" >> "$FORGEJO_OUTPUT"
+      - name: Get workstations
+        id: workstations
+        run: |
+          workstations=$(nix eval .#nixosConfigurations --apply 'configs:
+            configs
+            |> builtins.attrNames
+            |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.comin.enable)
+          ' --json)
+          printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
+  build-package:
+    name: ${{ matrix.package }}
+    needs: parse-flake
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.parse-flake.outputs.packages) }}
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build package
+        run: nix build .#packages.x86_64-linux.${{ matrix.package }} --print-build-logs
+  build-check:
+    name: ${{ matrix.check }}
+    needs: parse-flake
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        check: ${{ fromJSON(needs.parse-flake.outputs.checks) }}
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build check
+        run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
+  build-server:
+    name: ${{ matrix.server }}
+    needs: parse-flake
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        server: ${{ fromJSON(needs.parse-flake.outputs.servers) }}
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build host
+        run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --print-build-logs
+  build-workstation:
+    name: ${{ matrix.workstation }}
+    needs: parse-flake
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        workstation: ${{ fromJSON(needs.parse-flake.outputs.workstations) }}
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build host
+        run: nix build .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel --print-build-logs
+  trigger-deploy:
+    needs: [build-check, build-server]
+    runs-on: nixos
+    permissions:
+      contents: write
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Push to deploy branch
+        run: git push --force origin HEAD:refs/heads/deploy
+  await-deploy:
+    name: ${{ matrix.server }}
+    needs: [parse-flake, trigger-deploy]
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        server: ${{ fromJSON(needs.parse-flake.outputs.servers) }}
+    steps:
+      - name: Wait for deployment
+        timeout-minutes: 10
+        run: |
+          repo_url="${{ forgejo.server_url }}/${{ forgejo.repository }}.git"
+          expected_sha="${{ forgejo.sha }}"
+          branch="deployed/${{ matrix.server }}"
+
+          while true; do
+            deployed_sha=$(git ls-remote "$repo_url" "$branch" | cut -f1)
+
+            if [[ "$deployed_sha" == "$expected_sha" ]]; then
+              echo "Deployed $expected_sha"
+              exit 0
+            fi
+            
+            echo "Deployed ${deployed_sha::7}, waiting for ${expected_sha::7}..."
+            sleep 10
+          done
+  notify:
+    if: always()
+    needs: [await-deploy]
+    runs-on: nixos
+    steps:
+      - name: Notify success
+        if: needs.await-deploy.result == 'success'
+        env:
+          SHA: ${{ forgejo.sha }}
+          COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
+        run: |
+          body=$(printf 'Commit `%s` deployed successfully.\n> %s' "${SHA::7}" "$COMMIT_MSG")
+          curl -s \
+            -H "Title: CI: Deployment succeeded" \
+            -H "Priority: low" \
+            -H "Tags: white_check_mark" \
+            -H "Actions: view, Open workflow run, ${{ forgejo.server_url }}/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_id }}" \
+            -H "Markdown: yes" \
+            -d "$body" \
+            https://ntfy.sh/splitleaf
+      - name: Notify failure
+        if: needs.await-deploy.result == 'failure' || needs.await-deploy.result == 'skipped'
+        env:
+          SHA: ${{ forgejo.sha }}
+          COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
+        run: |
+          body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "$COMMIT_MSG")
+          curl -s \
+            -H "Title: CI: Deployment failed" \
+            -H "Priority: default" \
+            -H "Tags: rotating_light" \
+            -H "Actions: view, Open workflow run, ${{ forgejo.server_url }}/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_id }}" \
+            -H "Markdown: yes" \
+            -d "$body" \
+            https://ntfy.sh/splitleaf
