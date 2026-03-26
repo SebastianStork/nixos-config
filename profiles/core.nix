@@ -41,11 +41,6 @@
 
         min-free = 4 * 1024 * 1024 * 1024;
         max-free = 6 * 1024 * 1024 * 1024;
-
-        substituters = [ "https://sebastian-stork.cachix.org" ];
-        trusted-public-keys = [
-          "sebastian-stork.cachix.org-1:PAgwmtq5BF/UlUoXdBC2sX2EKZQ2vCjo3iGySujbaME="
-        ];
       };
     };
 
