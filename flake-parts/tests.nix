@@ -30,11 +30,18 @@
               networking.extraHosts = lib.mkForce "";
               custom = {
                 networking.underlay.interface = "eth1";
-                services.nebula = {
-                  caCertificateFile = "${self}/tests/${dir}/keys/nebula-ca.crt";
-                  certificateFile = "${self}/tests/${dir}/keys/${config.networking.hostName}/nebula.crt";
-                  privateKeyFile = "${self}/tests/${dir}/keys/${config.networking.hostName}/nebula.key";
-                };
+                services.nebula =
+                  let
+                    keysRoot = builtins.path {
+                      path = "${self}/tests/${dir}/keys";
+                      name = "${dir}-test-keys";
+                    };
+                  in
+                  {
+                    caCertificateFile = "${keysRoot}/nebula-ca.crt";
+                    certificateFile = "${keysRoot}/${config.networking.hostName}/nebula.crt";
+                    privateKeyFile = "${keysRoot}/${config.networking.hostName}/nebula.key";
+                  };
               };
             };
         };
