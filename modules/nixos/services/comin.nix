@@ -46,7 +46,7 @@ in
       enable = true;
       remotes = lib.singleton {
         name = "origin";
-        url = "https://github.com/SebastianStork/nixos-config.git";
+        url = "https://codeberg.org/SebastianStork/nixos-config.git";
         branches = {
           main.name = "deploy";
           testing.operation = "switch";
