@@ -19,7 +19,7 @@ let
         fi
 
         token=$(cat "${config.sops.secrets."git/push-token".path}")
-        repo_url="https://x-access-token:$token@github.com/SebastianStork/nixos-config.git"
+        repo_url="https://x-access-token:$token@codeberg.org/SebastianStork/nixos-config.git"
 
         git -C /var/lib/comin/repository push --force "$repo_url" "$COMIN_GIT_SHA:refs/heads/deployed/$COMIN_HOSTNAME"
 
