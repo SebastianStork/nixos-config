@@ -45,7 +45,6 @@ jobs:
           ' --json)
           printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
   build-package:
-    name: ${{ matrix.package }}
     needs: parse-flake
     runs-on: nixos
     strategy:
@@ -57,7 +56,6 @@ jobs:
       - name: Build package
         run: nix build .#packages.x86_64-linux.${{ matrix.package }} --print-build-logs
   build-check:
-    name: ${{ matrix.check }}
     needs: parse-flake
     runs-on: nixos
     strategy:
@@ -69,7 +67,6 @@ jobs:
       - name: Build check
         run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
   build-server:
-    name: ${{ matrix.server }}
     needs: parse-flake
     runs-on: nixos
     strategy:
@@ -81,7 +78,6 @@ jobs:
       - name: Build host
         run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --print-build-logs
   build-workstation:
-    name: ${{ matrix.workstation }}
     needs: parse-flake
     runs-on: nixos
     strategy:
@@ -102,7 +98,6 @@ jobs:
       - name: Push to deploy branch
         run: git push --force origin HEAD:refs/heads/deploy
   await-deploy:
-    name: ${{ matrix.server }}
     needs: [parse-flake, trigger-deploy]
     runs-on: nixos
     strategy:
