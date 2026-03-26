@@ -16,6 +16,7 @@ let
     gnused
     nodejs
     wget
+    jq
     nix
   ];
 in
