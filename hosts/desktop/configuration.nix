@@ -15,6 +15,12 @@
       };
     };
 
+    services.forgejo-runner = {
+      enable = true;
+      forgejoUrl = "https://codeberg.org";
+      capacity = 3;
+    };
+
     programs.steam.enable = true;
   };
 }
