@@ -7,13 +7,25 @@ concurrency:
   group: ${{ forgejo.workflow }}-${{ forgejo.ref }}
   cancel-in-progress: true
 jobs:
-  parse-hosts:
+  parse-flake:
     runs-on: nixos
     outputs:
+      packages: ${{ steps.packages.outputs.packages }}
+      checks: ${{ steps.checks.outputs.checks }}
       servers: ${{ steps.servers.outputs.servers }}
       workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Get packages
+        id: packages
+        run: |
+          packages=$(nix flake show --json | jq -c '.packages."x86_64-linux" | keys')
+          printf "packages=%s" "$packages" >> "$FORGEJO_OUTPUT"
+      - name: Get checks
+        id: checks
+        run: |
+          checks=$(nix flake show --json | jq -c '.checks."x86_64-linux" | keys')
+          printf "checks=%s" "$checks" >> "$FORGEJO_OUTPUT"
       - name: Get servers
         id: servers
         run: |
@@ -32,42 +44,52 @@ jobs:
             |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.comin.enable)
           ' --json)
           printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
-  build-packages:
-    runs-on: nixos
-    steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
-      - name: Build packages
-        run: nix-fast-build --flake .#packages --no-nom --skip-cached
-  build-checks:
-    runs-on: nixos
-    steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
-      - name: Build checks
-        run: nix-fast-build --flake .#checks --no-nom --skip-cached
-  build-server:
-    needs: parse-hosts
+  build-package:
+    needs: parse-flake
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-hosts.outputs.servers) }}
+        package: ${{ fromJSON(needs.parse-flake.outputs.packages) }}
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build package
+        run: nix build .#packages.x86_64-linux.${{ matrix.package }} --print-build-logs
+  build-check:
+    needs: parse-flake
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        check: ${{ fromJSON(needs.parse-flake.outputs.checks) }}
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build check
+        run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
+  build-server:
+    needs: parse-flake
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        server: ${{ fromJSON(needs.parse-flake.outputs.servers) }}
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build host
         run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --print-build-logs
   build-workstation:
-    needs: parse-hosts
+    needs: parse-flake
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        workstation: ${{ fromJSON(needs.parse-hosts.outputs.workstations) }}
+        workstation: ${{ fromJSON(needs.parse-flake.outputs.workstations) }}
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build host
         run: nix build .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel --print-build-logs
   trigger-deploy:
-    needs: [build-checks, build-server]
+    needs: [build-check, build-server]
     runs-on: nixos
     permissions:
       contents: write
@@ -76,12 +98,12 @@ jobs:
       - name: Push to deploy branch
         run: git push --force origin HEAD:refs/heads/deploy
   await-deploy:
-    needs: [parse-hosts, trigger-deploy]
+    needs: [parse-flake, trigger-deploy]
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-hosts.outputs.servers) }}
+        server: ${{ fromJSON(needs.parse-flake.outputs.servers) }}
     steps:
       - name: Wait for deployment
         timeout-minutes: 10
