@@ -68,7 +68,7 @@ jobs:
         run: nix build .#tests.x86_64-linux.${{ matrix.test }} --print-build-logs
   build-server:
     needs: parse-flake
-    runs-on: nixos
+    runs-on: [nixos, big]
     strategy:
       fail-fast: false
       matrix:
