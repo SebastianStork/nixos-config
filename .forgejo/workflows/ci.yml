@@ -10,8 +10,6 @@ jobs:
   parse-hosts:
     runs-on: nixos
     outputs:
-      packages: ${{ steps.packages.outputs.packages }}
-      checks: ${{ steps.checks.outputs.checks }}
       servers: ${{ steps.servers.outputs.servers }}
       workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
@@ -41,6 +39,7 @@ jobs:
       - name: Build packages
         run: nix-fast-build --flake .#packages --no-nom --skip-cached
   build-checks:
+    runs-on: nixos
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build checks
