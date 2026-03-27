@@ -18,6 +18,7 @@ let
     wget
     jq
     nix
+    nix-fast-build
   ];
 in
 {
