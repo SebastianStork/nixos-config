@@ -11,6 +11,7 @@ jobs:
     runs-on: nixos
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
+      tests: ${{ steps.tests.outputs.tests }}
       servers: ${{ steps.servers.outputs.servers }}
       workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
@@ -18,8 +19,13 @@ jobs:
       - name: Get checks
         id: checks
         run: |
-          checks=$(nix flake show --json | jq -c '.checks."x86_64-linux" | keys')
+          checks=$(nix eval .#checks.x86_64-linux --apply builtins.attrNames --json)
           printf "checks=%s" "$checks" >> "$FORGEJO_OUTPUT"
+      - name: Get tests
+        id: tests
+        run: |
+          tests=$(nix eval .#tests.x86_64-linux --apply builtins.attrNames --json)
+          printf "tests=%s" "$tests" >> "$FORGEJO_OUTPUT"
       - name: Get servers
         id: servers
         run: |
@@ -49,6 +55,17 @@ jobs:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build check
         run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
+  build-test:
+    needs: parse-flake
+    runs-on: [nixos, big]
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ${{ fromJSON(needs.parse-flake.outputs.tests) }}
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build test
+        run: nix build .#tests.x86_64-linux.${{ matrix.test }} --print-build-logs
   build-server:
     needs: parse-flake
     runs-on: nixos
@@ -62,7 +79,7 @@ jobs:
         run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --print-build-logs
   build-workstation:
     needs: parse-flake
-    runs-on: nixos
+    runs-on: [nixos, big]
     strategy:
       fail-fast: false
       matrix:
@@ -72,7 +89,7 @@ jobs:
       - name: Build host
         run: nix build .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel --print-build-logs
   trigger-deploy:
-    needs: [build-check, build-server]
+    needs: [build-check, build-test, build-server]
     runs-on: nixos
     permissions:
       contents: write
