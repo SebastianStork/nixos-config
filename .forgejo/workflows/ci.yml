@@ -10,17 +10,11 @@ jobs:
   parse-flake:
     runs-on: nixos
     outputs:
-      packages: ${{ steps.packages.outputs.packages }}
       checks: ${{ steps.checks.outputs.checks }}
       servers: ${{ steps.servers.outputs.servers }}
       workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
-      - name: Get packages
-        id: packages
-        run: |
-          packages=$(nix flake show --json | jq -c '.packages."x86_64-linux" | keys')
-          printf "packages=%s" "$packages" >> "$FORGEJO_OUTPUT"
       - name: Get checks
         id: checks
         run: |
@@ -44,17 +38,6 @@ jobs:
             |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.comin.enable)
           ' --json)
           printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
-  build-package:
-    needs: parse-flake
-    runs-on: nixos
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJSON(needs.parse-flake.outputs.packages) }}
-    steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
-      - name: Build package
-        run: nix build .#packages.x86_64-linux.${{ matrix.package }} --print-build-logs
   build-check:
     needs: parse-flake
     runs-on: nixos
