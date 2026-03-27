@@ -17,10 +17,5 @@
     };
 
     services.bluetooth.enable = true;
-
-    programs = {
-      winboat.enable = true;
-      wireshark.enable = true;
-    };
   };
 }
