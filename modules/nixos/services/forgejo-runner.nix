@@ -30,7 +30,6 @@ in
     };
     capacity = lib.mkOption {
       type = lib.types.int;
-      default = 3;
     };
   };
 
