@@ -6,20 +6,6 @@
 }:
 let
   cfg = config.custom.services.forgejo-runner;
-
-  hostPackages = with pkgs; [
-    bash
-    coreutils
-    curl
-    gawk
-    gitMinimal
-    gnused
-    nodejs
-    wget
-    jq
-    nix
-    nix-fast-build
-  ];
 in
 {
   options.custom.services.forgejo-runner = {
@@ -52,7 +38,11 @@ in
         tokenFile = config.sops.templates."forgejo-runner.env".path;
         settings.runner.capacity = cfg.capacity;
         labels = [ "nixos:host" ] ++ (cfg.extraLabels |> map (label: "${label}:host"));
-        inherit hostPackages;
+        hostPackages = lib.mkOptionDefault [
+          pkgs.jq
+          pkgs.nix
+          pkgs.nix-fast-build
+        ];
       };
     };
 
