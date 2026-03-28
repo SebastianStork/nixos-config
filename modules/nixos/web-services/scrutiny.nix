@@ -34,10 +34,20 @@ in
       };
     };
 
+    users = {
+      users.scrutiny = {
+        isSystemUser = true;
+        group = config.users.groups.scrutiny.name;
+      };
+      groups.scrutiny = { };
+    };
+
     systemd.services.scrutiny = {
       enableStrictShellChecks = false;
       serviceConfig = {
         DynamicUser = lib.mkForce false;
+        User = config.users.users.scrutiny.name;
+        Group = config.users.groups.scrutiny.name;
         ProtectSystem = "strict";
         ProtectHome = "read-only";
         PrivateTmp = true;
