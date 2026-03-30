@@ -41,6 +41,11 @@
     };
 
     web-services = {
+      harmonia = {
+        enable = true;
+        domain = "cache.${config.custom.networking.overlay.domain}";
+      };
+
       atuin = {
         enable = true;
         domain = "atuin.${config.custom.networking.overlay.domain}";
