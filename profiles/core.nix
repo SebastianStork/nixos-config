@@ -41,9 +41,6 @@
 
         min-free = 4 * 1024 * 1024 * 1024;
         max-free = 6 * 1024 * 1024 * 1024;
-
-        substituters = [ "https://cache.${config.custom.networking.overlay.domain}" ];
-        trusted-public-keys = [ "cache.splitleaf.de-0:CTODFhds2alvbrRi8t1Go8OxkLyeuUP4a7y6frW8mrA=" ];
       };
     };
 

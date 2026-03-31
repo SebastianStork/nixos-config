@@ -44,6 +44,7 @@
       harmonia = {
         enable = true;
         domain = "cache.${config.custom.networking.overlay.domain}";
+        publicKey = "cache.splitleaf.de-0:CTODFhds2alvbrRi8t1Go8OxkLyeuUP4a7y6frW8mrA=";
       };
 
       atuin = {
