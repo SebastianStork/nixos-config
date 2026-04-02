@@ -50,6 +50,11 @@ in
       ];
     };
 
+    systemd.services.alloy = {
+      wants = [ "network-online.target" ];
+      after = [ "network-online.target" ];
+    };
+
     environment.etc =
       let
         anyIsTrue = attrs: attrs |> lib.attrValues |> lib.any lib.id;
