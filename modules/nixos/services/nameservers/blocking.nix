@@ -63,10 +63,16 @@ in
             protection_enabled = true;
             filtering_enabled = true;
           };
-          filters = lib.singleton {
-            enabled = true;
-            url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt";
-          };
+          filters =
+            [
+              "https://adguardteam.github.io/HostlistsRegistry/assets/filter_48.txt"
+              "https://adguardteam.github.io/HostlistsRegistry/assets/filter_44.txt"
+              "https://adguardteam.github.io/HostlistsRegistry/assets/filter_12.txt"
+            ]
+            |> lib.map (url: {
+              enabled = true;
+              inherit url;
+            });
         };
       };
 
