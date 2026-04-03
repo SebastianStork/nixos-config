@@ -16,6 +16,15 @@
       };
     };
 
-    services.bluetooth.enable = true;
+    services = {
+      bluetooth.enable = true;
+
+      forgejo-runner = {
+        enable = true;
+        forgejoUrl = "https://codeberg.org";
+        capacity = 2;
+        extraLabels = [ "big" ];
+      };
+    };
   };
 }
