@@ -47,5 +47,7 @@ in
     };
 
     nix.settings.allowed-users = [ config.systemd.services."gitea-runner-default".serviceConfig.User ];
+
+    custom.persistence.directories = [ "/var/lib/gitea-runner" ];
   };
 }
