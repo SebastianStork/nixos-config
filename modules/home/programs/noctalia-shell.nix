@@ -67,7 +67,6 @@
                 hideWhenZeroUnread = true;
               }
               { id = "Volume"; }
-              (lib.optionalAttrs osConfig.custom.networking.underlay.wireless.enable { id = "Network"; })
               (lib.optionalAttrs osConfig.custom.services.bluetooth.enable { id = "Bluetooth"; })
               (lib.optionalAttrs config.custom.programs.brightnessctl.enable { id = "Brightness"; })
               {
