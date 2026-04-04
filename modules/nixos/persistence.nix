@@ -40,5 +40,7 @@ in
         "/etc/ssh/ssh_host_ed25519_key.pub"
       ];
     };
+
+    systemd.tmpfiles.rules = [ "d /persist/var/lib/private 0700 root root -" ];
   };
 }
