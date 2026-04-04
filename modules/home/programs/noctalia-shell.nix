@@ -71,7 +71,7 @@
               (lib.optionalAttrs config.custom.programs.brightnessctl.enable { id = "Brightness"; })
               {
                 id = "Battery";
-                displayMode = "icon-hover";
+                displayMode = "icon-always";
               }
             ];
           };
