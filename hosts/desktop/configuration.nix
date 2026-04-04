@@ -18,7 +18,7 @@
     services.forgejo-runner = {
       enable = true;
       forgejoUrl = "https://codeberg.org";
-      capacity = 3;
+      capacity = 4;
       extraLabels = [ "big" ];
     };
 
