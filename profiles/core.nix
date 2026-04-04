@@ -24,7 +24,6 @@
       settings = {
         flake-registry = "";
         nix-path = config.nix.nixPath;
-
         experimental-features = [
           "nix-command"
           "flakes"
@@ -38,9 +37,9 @@
         ];
         commit-lock-file-summary = "flake.lock: Update";
         allow-import-from-derivation = false;
-
         min-free = 4 * 1024 * 1024 * 1024;
         max-free = 6 * 1024 * 1024 * 1024;
+        fallback = true;
       };
     };
 
