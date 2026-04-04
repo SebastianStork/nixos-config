@@ -2,6 +2,7 @@
   config,
   osConfig,
   inputs,
+  pkgs-unstable,
   lib,
   ...
 }:
@@ -13,6 +14,7 @@
   config = lib.mkIf config.custom.programs.noctalia-shell.enable {
     programs.noctalia-shell = {
       enable = true;
+      package = pkgs-unstable.noctalia-shell;
       systemd.enable = true;
       settings = {
         general = {
