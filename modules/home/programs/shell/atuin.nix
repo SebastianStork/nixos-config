@@ -16,6 +16,7 @@
       settings = {
         sync_address = "https://atuin.${osConfig.custom.networking.overlay.domain}";
         key_path = pkgs.writeText "atuin-key" "3AAgzNnMicyALmrMt8ywzL/Mv3LMkEI/zKdPzLDMwCB9KCAwWsybzOrMn8zmzLZszIgMMQ==\n";
+        sync_frequency = "10m";
       };
     };
   };
