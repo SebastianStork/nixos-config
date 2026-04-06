@@ -30,7 +30,7 @@
     };
 
     # For Workstations
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -38,7 +38,7 @@
     };
 
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell?ref=v4.7.1";
+      url = "github:noctalia-dev/noctalia-shell/v4.7.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
