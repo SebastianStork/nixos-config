@@ -6,6 +6,8 @@
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+
     disko = {
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -30,15 +32,13 @@
     };
 
     # For Workstations
-    nixos-hardware.url = "github:NixOS/nixos-hardware";
-
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell/v4.7.1";
+      url = "github:noctalia-dev/noctalia-shell/v4.7.5";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
