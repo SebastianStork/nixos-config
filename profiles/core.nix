@@ -31,6 +31,7 @@
         ];
         auto-optimise-store = true;
         warn-dirty = false;
+        allowed-users = [ ];
         trusted-users = [
           "root"
           "@wheel"
