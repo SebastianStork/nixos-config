@@ -1,6 +1,4 @@
 _: {
-  imports = [ ../home.nix ];
-
   home.stateVersion = "23.11";
 
   custom.theme = "dark";

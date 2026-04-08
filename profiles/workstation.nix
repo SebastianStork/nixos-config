@@ -26,10 +26,7 @@
     services = {
       sound.enable = true;
       syncthing.enable = true;
-      alloy = {
-        enable = true;
-        domain = null;
-      };
+      alloy.enable = true;
     };
   };
 
@@ -49,6 +46,9 @@
         allHosts
         ;
     };
-    users.seb = "${self}/users/seb/@${config.networking.hostName}/home.nix";
+    users.seb.imports = [
+      "${self}/users/seb/home.nix"
+      "${self}/users/seb/@${config.networking.hostName}/home.nix"
+    ];
   };
 }
