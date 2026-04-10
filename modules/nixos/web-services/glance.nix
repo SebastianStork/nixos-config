@@ -8,9 +8,6 @@
 let
   cfg = config.custom.web-services.glance;
 
-  perHostDomains =
-    perHostSitesWidget.widgets |> lib.concatMap (widget: widget.sites) |> lib.map (site: site.domain);
-
   perHostSitesWidget =
     allHosts
     |> lib.attrValues
@@ -21,7 +18,8 @@ let
       sites =
         host.config.custom.meta.sites
         |> lib.attrValues
-        |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn);
+        |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn)
+        |> lib.sort (a: b: a.title < b.title);
     })
     |> lib.filter ({ sites, ... }: sites != [ ])
     |> (widgets: {
@@ -29,6 +27,9 @@ let
       max-columns = widgets |> lib.length;
       inherit widgets;
     });
+
+  perHostDomains =
+    perHostSitesWidget.widgets |> lib.concatMap (widget: widget.sites) |> lib.map (site: site.domain);
 
   applicationSitesWidget =
     allHosts
@@ -44,7 +45,7 @@ let
         type = "monitor";
         cache = "1m";
         title = "${name} Services";
-        sites = value;
+        sites = value |> lib.sort (a: b: a.title < b.title);
       }
     )
     |> (widgets: {
