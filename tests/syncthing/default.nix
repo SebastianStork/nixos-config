@@ -70,17 +70,18 @@
     ''
       start_all()
 
-      server.wait_for_unit("syncthing.service")
-      client1.wait_for_unit("syncthing.service")
-      client2.wait_for_unit("syncthing.service")
+      with subtest("Syncthing readiness"):
+        server.wait_for_unit("syncthing.service")
+        client1.wait_for_unit("syncthing.service")
+        client2.wait_for_unit("syncthing.service")
+        
+        server.wait_for_unit("syncthing-init.service")
+        client1.wait_for_unit("syncthing-init.service")
+        client2.wait_for_unit("syncthing-init.service")
 
-      server.wait_for_unit("syncthing-init.service")
-      client1.wait_for_unit("syncthing-init.service")
-      client2.wait_for_unit("syncthing-init.service")
-
-      server.wait_for_open_port(${getSyncPort "server"}, "${serverNetCfg.address}")
-      client1.wait_for_open_port(${getSyncPort "client1"}, "${client1NetCfg.address}")
-      client2.wait_for_open_port(${getSyncPort "client2"}, "${client2NetCfg.address}")
+        server.wait_for_open_port(${getSyncPort "server"}, "${serverNetCfg.address}")
+        client1.wait_for_open_port(${getSyncPort "client1"}, "${client1NetCfg.address}")
+        client2.wait_for_open_port(${getSyncPort "client2"}, "${client2NetCfg.address}")
 
       with subtest("Three way sync of Documents"):
         server.wait_for_file("/var/lib/syncthing/Documents")

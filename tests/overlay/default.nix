@@ -83,17 +83,19 @@
     ''
       start_all()
 
-      server.wait_for_unit("${serverNetCfg.overlay.systemdUnit}")
-      client1.wait_for_unit("${client1NetCfg.overlay.systemdUnit}")
-      client2.wait_for_unit("${client2NetCfg.overlay.systemdUnit}")
+      with subtest("Overlay readiness"):
+        server.wait_for_unit("${serverNetCfg.overlay.systemdUnit}")
+        client1.wait_for_unit("${client1NetCfg.overlay.systemdUnit}")
+        client2.wait_for_unit("${client2NetCfg.overlay.systemdUnit}")
 
       with subtest("Overlay connectivity between nodes"):
         client1.succeed("ping -c 1 ${serverNetCfg.overlay.address}")
         client1.succeed("ping -c 1 ${client2NetCfg.overlay.address}")
         server.succeed("ping -c 1 ${client2NetCfg.overlay.address}")
 
-      server.wait_for_unit("unbound.service")
-      server.wait_for_open_port(${toString nodes.server.custom.services.recursive-nameserver.port}, "${serverNetCfg.overlay.address}")
+      with subtest("DNS readiness"):
+        server.wait_for_unit("unbound.service")
+        server.wait_for_open_port(${toString nodes.server.custom.services.recursive-nameserver.port}, "${serverNetCfg.overlay.address}")
 
       with subtest("DNS resolution of FQDNs"):
         client1.wait_until_succeeds("getent ahostsv4 ${serverNetCfg.overlay.fqdn} | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
@@ -105,12 +107,13 @@
         client1.wait_until_succeeds("getent ahostsv4 client2 | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
         server.wait_until_succeeds("getent ahostsv4 client2 | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
 
-      server.wait_for_unit("sshd.service")
-      client2.wait_for_unit("sshd.service")
-      server.wait_for_open_port(22, "${serverNetCfg.overlay.address}")
-      client2.wait_for_open_port(22, "${client2NetCfg.overlay.address}")
-      client1.wait_until_succeeds("timeout 5 nc -z ${serverNetCfg.overlay.address} 22", timeout=30)
-      client1.wait_until_succeeds("timeout 5 nc -z ${client2NetCfg.overlay.address} 22", timeout=30)
+      with subtest("SSH readiness"):
+        server.wait_for_unit("sshd.service")
+        client2.wait_for_unit("sshd.service")
+        server.wait_for_open_port(22, "${serverNetCfg.overlay.address}")
+        client2.wait_for_open_port(22, "${client2NetCfg.overlay.address}")
+        client1.wait_until_succeeds("timeout 5 nc -z ${serverNetCfg.overlay.address} 22", timeout=30)
+        client1.wait_until_succeeds("timeout 5 nc -z ${client2NetCfg.overlay.address} 22", timeout=30)
 
       with subtest("SSH access restricted by role"):
         client1.succeed("${ssh} seb@server 'echo Hello'")
