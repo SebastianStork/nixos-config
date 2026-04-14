@@ -16,5 +16,12 @@
         gateway = "172.31.1.1";
       };
     };
+
+    services.forgejo-runner = {
+      enable = true;
+      forgejoUrl = "https://codeberg.org";
+      capacity = 4;
+      extraLabels = [ "big" ];
+    };
   };
 }
