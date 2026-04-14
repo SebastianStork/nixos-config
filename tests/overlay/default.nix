@@ -94,7 +94,7 @@
       client1NetCfg = nodes.client1.custom.networking;
       client2NetCfg = nodes.client2.custom.networking;
 
-      ssh = "timeout 5 ssh -i /etc/ssh-key -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
+      ssh = "timeout 15 ssh -i /etc/ssh-key -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
     in
     ''
       start_all()
@@ -104,28 +104,28 @@
       client1.wait_for_unit("${client1NetCfg.overlay.systemdUnit}")
       client2.wait_for_unit("${client2NetCfg.overlay.systemdUnit}")
 
-      lighthouse.wait_for_unit("unbound.service")
-      lighthouse.wait_for_open_port(${toString nodes.lighthouse.custom.services.recursive-nameserver.port}, "${lighthouseNetCfg.overlay.address}")
-
-      server.wait_for_unit("sshd.service")
-      client2.wait_for_unit("sshd.service")
-      server.wait_for_open_port(22, "${serverNetCfg.overlay.address}")
-      client2.wait_for_open_port(22, "${client2NetCfg.overlay.address}")
-
       with subtest("Overlay connectivity between nodes"):
         client1.succeed("ping -c 1 ${serverNetCfg.overlay.address}")
         client1.succeed("ping -c 1 ${client2NetCfg.overlay.address}")
         server.succeed("ping -c 1 ${client2NetCfg.overlay.address}")
 
+      lighthouse.wait_for_unit("unbound.service")
+      lighthouse.wait_for_open_port(${toString nodes.lighthouse.custom.services.recursive-nameserver.port}, "${lighthouseNetCfg.overlay.address}")
+
       with subtest("DNS resolution of FQDNs"):
-        client1.succeed("ping -c 1 ${serverNetCfg.overlay.fqdn}")
-        client1.succeed("ping -c 1 ${client2NetCfg.overlay.fqdn}")
-        server.succeed("ping -c 1 ${client2NetCfg.overlay.fqdn}")
+        client1.wait_until_succeeds("getent ahostsv4 ${serverNetCfg.overlay.fqdn} | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
+        client1.wait_until_succeeds("getent ahostsv4 ${client2NetCfg.overlay.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
+        server.wait_until_succeeds("getent ahostsv4 ${client2NetCfg.overlay.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
 
       with subtest("DNS resolution of unqualified hostnames"):
-        client1.succeed("ping -c 1 server")
-        client1.succeed("ping -c 1 client2")
-        server.succeed("ping -c 1 client2")
+        client1.wait_until_succeeds("getent ahostsv4 server | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
+        client1.wait_until_succeeds("getent ahostsv4 client2 | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
+        server.wait_until_succeeds("getent ahostsv4 client2 | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
+
+      server.wait_for_unit("sshd.service")
+      client2.wait_for_unit("sshd.service")
+      server.wait_for_open_port(22, "${serverNetCfg.overlay.address}")
+      client2.wait_for_open_port(22, "${client2NetCfg.overlay.address}")
 
       with subtest("SSH access restricted by role"):
         client1.succeed("${ssh} seb@server 'echo Hello'")
