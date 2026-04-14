@@ -19,32 +19,12 @@
     };
 
   nodes = {
-    lighthouse = {
-      custom = {
-        networking = {
-          overlay = {
-            address = "10.254.250.1";
-            isLighthouse = true;
-            role = "server";
-          };
-          underlay = {
-            cidr = "192.168.0.1/16";
-            isPublic = true;
-          };
-        };
-
-        services = {
-          recursive-nameserver.enable = true;
-          private-nameserver.enable = true;
-        };
-      };
-    };
-
     server = {
       custom = {
         networking = {
           overlay = {
             address = "10.254.250.2";
+            isLighthouse = true;
             role = "server";
           };
           underlay = {
@@ -53,7 +33,12 @@
           };
         };
 
-        services.sshd.enable = true;
+        services = {
+          recursive-nameserver.enable = true;
+          private-nameserver.enable = true;
+
+          sshd.enable = true;
+        };
       };
     };
 
@@ -89,7 +74,6 @@
   testScript =
     { nodes, ... }:
     let
-      lighthouseNetCfg = nodes.lighthouse.custom.networking;
       serverNetCfg = nodes.server.custom.networking;
       client1NetCfg = nodes.client1.custom.networking;
       client2NetCfg = nodes.client2.custom.networking;
@@ -99,7 +83,6 @@
     ''
       start_all()
 
-      lighthouse.wait_for_unit("${lighthouseNetCfg.overlay.systemdUnit}")
       server.wait_for_unit("${serverNetCfg.overlay.systemdUnit}")
       client1.wait_for_unit("${client1NetCfg.overlay.systemdUnit}")
       client2.wait_for_unit("${client2NetCfg.overlay.systemdUnit}")
@@ -109,8 +92,8 @@
         client1.succeed("ping -c 1 ${client2NetCfg.overlay.address}")
         server.succeed("ping -c 1 ${client2NetCfg.overlay.address}")
 
-      lighthouse.wait_for_unit("unbound.service")
-      lighthouse.wait_for_open_port(${toString nodes.lighthouse.custom.services.recursive-nameserver.port}, "${lighthouseNetCfg.overlay.address}")
+      server.wait_for_unit("unbound.service")
+      server.wait_for_open_port(${toString nodes.server.custom.services.recursive-nameserver.port}, "${serverNetCfg.overlay.address}")
 
       with subtest("DNS resolution of FQDNs"):
         client1.wait_until_succeeds("getent ahostsv4 ${serverNetCfg.overlay.fqdn} | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
