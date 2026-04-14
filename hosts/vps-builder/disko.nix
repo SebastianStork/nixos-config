@@ -21,14 +21,14 @@
             };
           };
           swap = {
-            size = "8G";
+            size = "16G";
             content = {
               type = "swap";
               discardPolicy = "both";
             };
           };
           nix = {
-            size = "40G";
+            size = "80G";
             content = {
               type = "filesystem";
               format = "xfs";
