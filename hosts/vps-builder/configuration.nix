@@ -1,4 +1,4 @@
-{ self, lib, ... }:
+{ self, ... }:
 {
   imports = [ self.nixosModules.server-profile ];
 
@@ -15,13 +15,6 @@
         isPublic = true;
         gateway = "172.31.1.1";
       };
-    };
-
-    services = {
-      comin.enable = lib.mkForce false;
-      alloy.enable = lib.mkForce false;
-      prometheus.enable = lib.mkForce false;
-      alertmanager.enable = lib.mkForce false;
     };
   };
 }
