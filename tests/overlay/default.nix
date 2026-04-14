@@ -78,7 +78,7 @@
       client1NetCfg = nodes.client1.custom.networking;
       client2NetCfg = nodes.client2.custom.networking;
 
-      ssh = "timeout 15 ssh -i /etc/ssh-key -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
+      ssh = "timeout 10 ssh -i /etc/ssh-key -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
     in
     ''
       start_all()
@@ -109,6 +109,8 @@
       client2.wait_for_unit("sshd.service")
       server.wait_for_open_port(22, "${serverNetCfg.overlay.address}")
       client2.wait_for_open_port(22, "${client2NetCfg.overlay.address}")
+      client1.wait_until_succeeds("timeout 5 nc -z ${serverNetCfg.overlay.address} 22", timeout=30)
+      client1.wait_until_succeeds("timeout 5 nc -z ${client2NetCfg.overlay.address} 22", timeout=30)
 
       with subtest("SSH access restricted by role"):
         client1.succeed("${ssh} seb@server 'echo Hello'")
