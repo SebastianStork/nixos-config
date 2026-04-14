@@ -1,0 +1,27 @@
+{ self, lib, ... }:
+{
+  imports = [ self.nixosModules.server-profile ];
+
+  system.stateVersion = "25.11";
+
+  custom = {
+    boot.loader.systemd-boot.enable = true;
+
+    networking = {
+      overlay.address = "10.254.250.7";
+      underlay = {
+        interface = "enp1s0";
+        cidr = "188.34.160.80/32";
+        isPublic = true;
+        gateway = "172.31.1.1";
+      };
+    };
+
+    services = {
+      comin.enable = lib.mkForce false;
+      alloy.enable = lib.mkForce false;
+      prometheus.enable = lib.mkForce false;
+      alertmanager.enable = lib.mkForce false;
+    };
+  };
+}
