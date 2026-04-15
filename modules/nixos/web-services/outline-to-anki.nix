@@ -5,12 +5,12 @@
   ...
 }:
 let
-  cfg = config.custom.web-services.anki-outline;
+  cfg = config.custom.web-services.outline-to-anki;
 
-  dataDir = "/var/lib/anki-outline";
+  dataDir = "/var/lib/outline-to-anki";
 in
 {
-  options.custom.web-services.anki-outline = {
+  options.custom.web-services.outline-to-anki = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
@@ -21,18 +21,18 @@ in
   config = lib.mkIf cfg.enable {
     sops = {
       secrets = {
-        "anki-outline/ssh-key".restartUnits = [ "anki-outline.service" ];
-        "anki-outline/api-token".restartUnits = [ "anki-outline.service" ];
+        "outline-to-anki/ssh-key".restartUnits = [ "outline-to-anki.service" ];
+        "outline-to-anki/api-token".restartUnits = [ "outline-to-anki.service" ];
       };
-      templates."anki-outline-config.toml".content = ''
+      templates."outline-to-anki-config.toml".content = ''
         [outline]
         url = "https://${config.custom.web-services.outline.domain}"
-        api_token = "${config.sops.placeholder."anki-outline/api-token"}"
+        api_token = "${config.sops.placeholder."outline-to-anki/api-token"}"
         output_dir = "${dataDir}"
       '';
     };
 
-    systemd.services.anki-outline = {
+    systemd.services.outline-to-anki = {
       serviceConfig.Type = "oneshot";
       wantedBy = [ "multi-user.target" ];
       startAt = "hourly";
@@ -42,10 +42,10 @@ in
         pkgs.openssh
       ];
       environment.GIT_SSH_COMMAND = "ssh -i ${
-        config.sops.secrets."anki-outline/ssh-key".path
+        config.sops.secrets."outline-to-anki/ssh-key".path
       } -o IdentitiesOnly=yes -o StrictHostKeyChecking=no";
       script = "nix run git+ssh://git@github.com/NebelToast/anki_outline --refresh -- -c ${
-        config.sops.templates."anki-outline-config.toml".path
+        config.sops.templates."outline-to-anki-config.toml".path
       }";
     };
 

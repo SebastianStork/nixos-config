@@ -32,7 +32,7 @@
         domain = "sstork.dev";
       };
 
-      anki-outline = {
+      outline-to-anki = {
         enable = true;
         domain = "anki-decks.sprouted.cloud";
       };
