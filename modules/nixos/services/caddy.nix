@@ -40,7 +40,7 @@ let
           ])
           (lib.optional (port != null) "reverse_proxy localhost:${toString port}")
           (lib.optionals (files != null) [
-            "root * ${files}"
+            "root ${files}"
             "encode"
             "file_server"
           ])
