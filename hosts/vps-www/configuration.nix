@@ -32,6 +32,11 @@
         domain = "sstork.dev";
       };
 
+      anki-outline = {
+        enable = true;
+        domain = "anki-outline.sprouted.cloud";
+      };
+
       forgejo = {
         enable = true;
         domain = "git.sstork.dev";
