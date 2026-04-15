@@ -16,6 +16,10 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
+    webhookPort = lib.mkOption {
+      type = lib.types.port;
+      default = 44519;
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -49,8 +53,45 @@ in
       }";
     };
 
+    services.webhook = {
+      enable = true;
+      ip = "127.0.0.1";
+      port = cfg.webhookPort;
+      hooks.outline-to-anki = {
+        execute-command = "/run/wrappers/bin/sudo";
+        pass-arguments-to-command = [
+          {
+            source = "string";
+            name = lib.getExe' pkgs.systemd "systemctl";
+          }
+          {
+            source = "string";
+            name = "start";
+          }
+          {
+            source = "string";
+            name = "outline-to-anki.service";
+          }
+        ];
+        response-message = "outline-to-anki started";
+      };
+    };
+
+    security.sudo.extraRules = lib.singleton {
+      users = [ "webhook" ];
+      commands = lib.singleton {
+        command = "${lib.getExe' pkgs.systemd "systemctl"} start outline-to-anki.service";
+        options = [ "NOPASSWD" ];
+      };
+    };
+
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.extraConfig = ''
+        handle /update {
+          rewrite /hooks/outline-to-anki
+          reverse_proxy localhost:${toString cfg.webhookPort}
+        }
+
         root ${dataDir}
         file_server browse
       '';
