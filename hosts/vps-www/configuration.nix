@@ -34,7 +34,7 @@
 
       anki-outline = {
         enable = true;
-        domain = "anki-outline.sprouted.cloud";
+        domain = "anki-decks.sprouted.cloud";
       };
 
       forgejo = {

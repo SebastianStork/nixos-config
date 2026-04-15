@@ -56,7 +56,7 @@ in
       '';
 
       meta.sites.${cfg.domain} = {
-        title = "Anki Outline";
+        title = "Anki Decks";
         icon = "sh:anki";
       };
     };
