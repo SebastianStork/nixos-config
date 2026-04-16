@@ -28,12 +28,15 @@ in
         "outline-to-anki/ssh-key".restartUnits = [ "outline-to-anki.service" ];
         "outline-to-anki/api-token".restartUnits = [ "outline-to-anki.service" ];
       };
-      templates."outline-to-anki-config.toml".content = ''
-        [outline]
-        url = "https://${config.custom.web-services.outline.domain}"
-        api_token = "${config.sops.placeholder."outline-to-anki/api-token"}"
-        output_dir = "${dataDir}"
-      '';
+      templates."outline-to-anki-config.toml".file =
+        {
+          outline = {
+            url = "https://${config.custom.web-services.outline.domain}";
+            api_token = "${config.sops.placeholder."outline-to-anki/api-token"}";
+            output_dir = "${dataDir}";
+          };
+        }
+        |> (pkgs.formats.toml { }).generate "outline-to-anki-config.toml";
     };
 
     systemd.services.outline-to-anki = {
