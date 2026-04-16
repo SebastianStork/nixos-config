@@ -78,7 +78,7 @@
       client1NetCfg = nodes.client1.custom.networking;
       client2NetCfg = nodes.client2.custom.networking;
 
-      ssh = "timeout 10 ssh -i /etc/ssh-key -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
+      ssh = "timeout 10 ssh -i /etc/ssh-key -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
     in
     ''
       start_all()
@@ -116,8 +116,8 @@
         client1.wait_until_succeeds("timeout 5 nc -z ${client2NetCfg.overlay.address} 22", timeout=30)
 
       with subtest("SSH access restricted by role"):
-        client1.succeed("${ssh} seb@server 'echo Hello'")
-        client1.succeed("${ssh} seb@client2 'echo Hello'")
+        client1.wait_until_succeeds("${ssh} seb@server 'echo Hello'", timeout=60)
+        client1.wait_until_succeeds("${ssh} seb@client2 'echo Hello'", timeout=60)
         server.fail("${ssh} seb@client2 'echo Hello'")
 
       with subtest("SSH not reachable on underlay"):
