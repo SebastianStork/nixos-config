@@ -1,22 +1,5 @@
+{ inputs, self, ... }:
 {
-  inputs,
-  self,
-  lib,
-  flake-parts-lib,
-  ...
-}:
-{
-  imports =
-    (flake-parts-lib.mkTransposedPerSystemModule {
-      name = "tests";
-      option = lib.mkOption {
-        type = lib.types.lazyAttrsOf lib.types.package;
-        default = { };
-      };
-      file = ./tests.nix;
-    })
-    |> lib.singleton;
-
   perSystem =
     { pkgs, lib, ... }:
     let
@@ -65,6 +48,6 @@
       };
     in
     {
-      tests = "${self}/tests" |> self.lib.listDirectoryNames |> lib.map mkTest |> lib.listToAttrs;
+      checks = "${self}/tests" |> self.lib.listDirectoryNames |> lib.map mkTest |> lib.listToAttrs;
     };
 }
