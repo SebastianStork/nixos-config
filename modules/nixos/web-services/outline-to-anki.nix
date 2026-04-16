@@ -32,8 +32,8 @@ in
         {
           outline = {
             url = "https://${config.custom.web-services.outline.domain}";
-            api_token = "${config.sops.placeholder."outline-to-anki/api-token"}";
-            output_dir = "${dataDir}";
+            api_token = config.sops.placeholder."outline-to-anki/api-token";
+            output_dir = dataDir;
           };
         }
         |> (pkgs.formats.toml { }).generate "outline-to-anki-config.toml";
