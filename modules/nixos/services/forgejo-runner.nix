@@ -17,10 +17,6 @@ in
     capacity = lib.mkOption {
       type = lib.types.int;
     };
-    extraLabels = lib.mkOption {
-      type = lib.types.listOf lib.types.nonEmptyStr;
-      default = [ ];
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -37,7 +33,7 @@ in
         url = cfg.forgejoUrl;
         tokenFile = config.sops.templates."forgejo-runner.env".path;
         settings.runner.capacity = cfg.capacity;
-        labels = [ "nixos:host" ] ++ (cfg.extraLabels |> map (label: "${label}:host"));
+        labels = [ "nixos:host" ];
         hostPackages = lib.mkOptionDefault [
           pkgs.jq
           pkgs.nix

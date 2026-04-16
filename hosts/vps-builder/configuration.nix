@@ -21,7 +21,6 @@
       enable = true;
       forgejoUrl = "https://codeberg.org";
       capacity = 4;
-      extraLabels = [ "big" ];
     };
   };
 }
