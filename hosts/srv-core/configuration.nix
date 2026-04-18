@@ -88,6 +88,11 @@
         enable = true;
         domain = "scrutiny.${config.custom.networking.overlay.domain}";
       };
+
+      garage = {
+        enable = true;
+        rootDomain = "s3.${config.custom.networking.overlay.domain}";
+      };
     };
   };
 }
