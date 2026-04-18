@@ -226,6 +226,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-garage": {
+      "locked": {
+        "lastModified": 1776467686,
+        "narHash": "sha256-La8uqO9wtLA0OrDaL3yGlSRhFdUiRpPRgma6ml/WzO4=",
+        "owner": "herbetom",
+        "repo": "nixpkgs",
+        "rev": "81f2c23c8acc7e5d158b3c9657b677a1da664c2f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "herbetom",
+        "ref": "update-garage_2_x",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1774748309,
@@ -346,6 +362,7 @@
         "impermanence": "impermanence",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs-garage": "nixpkgs-garage",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "noctalia": "noctalia",
         "radicale-birthday-calendar": "radicale-birthday-calendar",

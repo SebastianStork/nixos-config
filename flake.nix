@@ -58,6 +58,8 @@
     };
 
     # For Servers
+    nixpkgs-garage.url = "github:herbetom/nixpkgs/update-garage_2_x";
+
     impermanence = {
       url = "github:nix-community/impermanence";
       inputs.home-manager.follows = "home-manager";
