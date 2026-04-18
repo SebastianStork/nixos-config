@@ -14,9 +14,13 @@
               type = lib.types.nonEmptyStr;
               default = name;
             };
+            path = lib.mkOption {
+              type = lib.types.str;
+              default = "";
+            };
             url = lib.mkOption {
               type = lib.types.nonEmptyStr;
-              default = "https://${config.domain}";
+              default = "https://${config.domain}${config.path}";
             };
             icon = lib.mkOption {
               type = lib.types.nonEmptyStr;
