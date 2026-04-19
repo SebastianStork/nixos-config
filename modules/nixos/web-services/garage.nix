@@ -106,6 +106,8 @@ in
         ${cfg.admin.domain}.port = cfg.admin.port;
       };
 
+      persistence.directories = [ "/var/lib/garage" ];
+
       meta.sites."${cfg.admin.domain}" = {
         title = "Garage";
         icon = "sh:garage";
