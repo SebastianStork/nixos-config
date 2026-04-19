@@ -101,7 +101,10 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.admin.domain}.port = cfg.admin.port;
+      services.caddy.virtualHosts = {
+        ${cfg.api.domain}.port = cfg.api.port;
+        ${cfg.admin.domain}.port = cfg.admin.port;
+      };
 
       meta.sites."${cfg.admin.domain}" = {
         title = "Garage";
