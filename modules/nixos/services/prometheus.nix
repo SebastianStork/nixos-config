@@ -107,11 +107,11 @@ in
                 {
                   alert = "ServiceDown";
                   expr = ''up{job=~"prometheus|alertmanager"} == 0'';
-                  for = "2m";
+                  for = "5m";
                   annotations = {
                     summary = "Service {{ $labels.job | title }} on {{ $labels.instance }} is down";
                     summary_resolved = "Service {{ $labels.job | title }} on {{ $labels.instance }} is up again";
-                    description = "Prometheus has not received scrape data for 2 minutes.";
+                    description = "Prometheus has not received scrape data for 5 minutes.";
                     description_resolved = "Prometheus is receiving scrape data again.";
                   };
                 }
@@ -121,8 +121,8 @@ in
                   annotations = {
                     summary = "Deployment on {{ $labels.instance }} failed";
                     summary_resolved = "Deployment on {{ $labels.instance }} succeeded again";
-                    description = "Comin reports a deployment status other than \"done\".";
-                    description_resolved = "Comin reports the deployment status as \"done\" again.";
+                    description = ''Comin reports a deployment status other than "done".'';
+                    description_resolved = ''Comin reports the deployment status as "done" again.'';
                   };
                 }
                 {
