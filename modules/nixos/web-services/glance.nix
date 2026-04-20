@@ -23,7 +23,8 @@ let
     })
     |> lib.filter ({ sites, ... }: sites != [ ])
     |> (widgets: {
-      type = "group";
+      type = "split-column";
+      max-columns = widgets |> lib.length;
       inherit widgets;
     });
 
