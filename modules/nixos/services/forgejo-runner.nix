@@ -50,6 +50,8 @@ in
       };
     };
 
+    systemd.services.gitea-runner-default.serviceConfig.PrivateTmp = lib.mkForce false;
+
     nix.settings.allowed-users = [ config.systemd.services."gitea-runner-default".serviceConfig.User ];
 
     custom.persistence.directories = [ "/var/lib/private/gitea-runner" ];
