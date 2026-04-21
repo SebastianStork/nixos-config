@@ -47,9 +47,9 @@ jobs:
         check: ${{ fromJSON(needs.parse-flake.outputs.checks) }}
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
-      - name: Build check
+      - name: Build
         run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
-      - name: Cache result
+      - name: Upload
         run: nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
   build-server:
     needs: parse-flake
@@ -60,9 +60,9 @@ jobs:
         server: ${{ fromJSON(needs.parse-flake.outputs.servers) }}
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
-      - name: Build host
+      - name: Build
         run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --print-build-logs
-      - name: Cache result
+      - name: Upload
         run: nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
   build-workstation:
     needs: parse-flake
@@ -73,9 +73,9 @@ jobs:
         workstation: ${{ fromJSON(needs.parse-flake.outputs.workstations) }}
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
-      - name: Build host
+      - name: Build
         run: nix build .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel --print-build-logs
-      - name: Cache result
+      - name: Upload
         run: nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
   trigger-deploy:
     needs: [build-check, build-server]
