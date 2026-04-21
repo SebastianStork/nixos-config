@@ -228,17 +228,17 @@
     },
     "nixpkgs-garage": {
       "locked": {
-        "lastModified": 1776467686,
-        "narHash": "sha256-La8uqO9wtLA0OrDaL3yGlSRhFdUiRpPRgma6ml/WzO4=",
-        "owner": "herbetom",
+        "lastModified": 1776681353,
+        "narHash": "sha256-GI+0g/Da9xc2fLEPgKwhrqtMkMS/XK80M5zz/CmWq9M=",
+        "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "81f2c23c8acc7e5d158b3c9657b677a1da664c2f",
+        "rev": "1339fb9d7de2e2aa5b284b79e29955a171af5063",
         "type": "github"
       },
       "original": {
-        "owner": "herbetom",
-        "ref": "update-garage_2_x",
+        "owner": "nixos",
         "repo": "nixpkgs",
+        "rev": "1339fb9d7de2e2aa5b284b79e29955a171af5063",
         "type": "github"
       }
     },
