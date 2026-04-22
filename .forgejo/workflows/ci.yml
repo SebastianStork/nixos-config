@@ -56,7 +56,7 @@ jobs:
       - name: Build
         run: nix build .#checks.x86_64-linux.${{ matrix.check }} --print-build-logs
       - name: Upload
-        run: nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+        run: TMPDIR=$HOME/tmp nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
   build-server:
     needs: parse-flake
     runs-on: nixos
@@ -69,7 +69,7 @@ jobs:
       - name: Build
         run: nix build .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --print-build-logs
       - name: Upload
-        run: nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+        run: TMPDIR=$HOME/tmp nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
   build-workstation:
     needs: parse-flake
     runs-on: nixos
@@ -82,7 +82,7 @@ jobs:
       - name: Build
         run: nix build .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel --print-build-logs
       - name: Upload
-        run: nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+        run: TMPDIR=$HOME/tmp nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
   build-package:
     needs: parse-flake
     runs-on: nixos
@@ -95,7 +95,7 @@ jobs:
       - name: Build
         run: nix build .#packages.x86_64-linux.${{ matrix.package }} --print-build-logs
       - name: Upload
-        run: nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+        run: TMPDIR=$HOME/tmp nix copy ./result --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
   trigger-deploy:
     needs: [build-check, build-server]
     runs-on: nixos
