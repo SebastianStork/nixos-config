@@ -35,11 +35,6 @@
     };
 
     web-services = {
-      atuin = {
-        enable = true;
-        domain = "atuin.${config.custom.networking.overlay.domain}";
-      };
-
       filebrowser = {
         enable = true;
         domain = "files.${config.custom.networking.overlay.domain}";
@@ -56,6 +51,11 @@
         enable = true;
         domain = "budget.${config.custom.networking.overlay.domain}";
         doBackups = true;
+      };
+
+      atuin = {
+        enable = true;
+        domain = "atuin.${config.custom.networking.overlay.domain}";
       };
 
       karakeep = {
@@ -91,6 +91,14 @@
       s3-binary-cache = {
         enable = true;
         domain = "cache.${config.custom.networking.overlay.domain}";
+      };
+
+      librespeed = {
+        enable = true;
+        frontend = {
+          enable = true;
+          domain = "speedtest.${config.custom.networking.overlay.domain}";
+        };
       };
     };
   };

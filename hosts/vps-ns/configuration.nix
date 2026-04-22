@@ -36,5 +36,7 @@
         ];
       };
     };
+
+    web-services.librespeed.enable = true;
   };
 }

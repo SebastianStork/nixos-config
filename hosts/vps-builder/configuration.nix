@@ -22,5 +22,7 @@
       forgejoUrl = "https://codeberg.org";
       capacity = 4;
     };
+
+    web-services.librespeed.enable = true;
   };
 }
