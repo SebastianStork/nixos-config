@@ -1,0 +1,21 @@
+name: Upload
+description: Upload result symlink closure to binary cache
+inputs:
+  cache-url:
+    description: Nix copy destination URL
+    required: false
+    default: s3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage
+  result-path:
+    description: Path to a build result symlink
+    required: false
+    default: ./result-
+runs:
+  using: composite
+  steps:
+    - name: Upload
+      shell: bash
+      run: |
+        if [[ -L "${{ inputs.result-path }}" ]]; then
+          TMPDIR="$HOME/tmp"
+          nix copy "${{ inputs.result-path }}" --to "${{ inputs.cache-url }}"
+        fi

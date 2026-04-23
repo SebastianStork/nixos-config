@@ -1,0 +1,19 @@
+name: Build
+description: Build a flake output
+inputs:
+  flake-output:
+    description: Flake output to build
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Build
+      shell: bash
+      run: |
+        nix-fast-build \
+          --flake "${{ inputs.flake-output }}" \
+          --no-nom \
+          --skip-cached \
+          --eval-workers 1 \
+          --eval-max-memory-size 512 \
+          --max-jobs 1
