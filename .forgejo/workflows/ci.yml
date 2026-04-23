@@ -15,7 +15,8 @@ jobs:
       workstations: ${{ steps.workstations.outputs.workstations }}
       packages: ${{ steps.packages.outputs.packages }}
     steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
       - name: Get checks
         id: checks
         run: |
@@ -52,11 +53,14 @@ jobs:
       matrix:
         check: ${{ fromJSON(needs.parse-flake.outputs.checks) }}
     steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
-      - uses: ./.forgejo/actions/build
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build
+        uses: ./.forgejo/actions/build
         with:
           flake-output: .#checks.x86_64-linux.${{ matrix.check }}
-      - uses: ./.forgejo/actions/upload
+      - name: Upload
+        uses: ./.forgejo/actions/upload
   build-server:
     needs: parse-flake
     runs-on: nixos
@@ -65,11 +69,14 @@ jobs:
       matrix:
         server: ${{ fromJSON(needs.parse-flake.outputs.servers) }}
     steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
-      - uses: ./.forgejo/actions/build
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build
+        uses: ./.forgejo/actions/build
         with:
           flake-output: .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel
-      - uses: ./.forgejo/actions/upload
+      - name: Upload
+        uses: ./.forgejo/actions/upload
   build-workstation:
     needs: parse-flake
     runs-on: nixos
@@ -78,11 +85,14 @@ jobs:
       matrix:
         workstation: ${{ fromJSON(needs.parse-flake.outputs.workstations) }}
     steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
-      - uses: ./.forgejo/actions/build
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build
+        uses: ./.forgejo/actions/build
         with:
           flake-output: .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel
-      - uses: ./.forgejo/actions/upload
+      - name: Upload
+        uses: ./.forgejo/actions/upload
   build-package:
     needs: parse-flake
     runs-on: nixos
@@ -91,18 +101,22 @@ jobs:
       matrix:
         package: ${{ fromJSON(needs.parse-flake.outputs.packages) }}
     steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
-      - uses: ./.forgejo/actions/build
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build
+        uses: ./.forgejo/actions/build
         with:
           flake-output: .#packages.x86_64-linux.${{ matrix.package }}
-      - uses: ./.forgejo/actions/upload
+      - name: Upload
+        uses: ./.forgejo/actions/upload
   trigger-deploy:
     needs: [build-check, build-server]
     runs-on: nixos
     permissions:
       contents: write
     steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
       - name: Push to deploy branch
         run: git push --force origin HEAD:refs/heads/deploy
   await-deploy:
