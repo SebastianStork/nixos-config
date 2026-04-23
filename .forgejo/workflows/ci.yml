@@ -56,7 +56,11 @@ jobs:
       - name: Build
         run: nix-fast-build --flake .#checks.x86_64-linux.${{ matrix.check }} --no-nom --skip-cached
       - name: Upload
-        run: TMPDIR=$HOME/tmp nix copy ./result- --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+        run: |
+          if [[ -L ./result- ]]; then
+            TMPDIR=$HOME/tmp
+            nix copy ./result- --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+          fi
   build-server:
     needs: parse-flake
     runs-on: nixos
@@ -69,7 +73,11 @@ jobs:
       - name: Build
         run: nix-fast-build --flake .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --no-nom --skip-cached
       - name: Upload
-        run: TMPDIR=$HOME/tmp nix copy ./result- --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+        run: |
+          if [[ -L ./result- ]]; then
+            TMPDIR=$HOME/tmp
+            nix copy ./result- --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+          fi
   build-workstation:
     needs: parse-flake
     runs-on: nixos
@@ -82,7 +90,11 @@ jobs:
       - name: Build
         run: nix-fast-build --flake .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel --no-nom --skip-cached
       - name: Upload
-        run: TMPDIR=$HOME/tmp nix copy ./result- --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+        run: |
+          if [[ -L ./result- ]]; then
+            TMPDIR=$HOME/tmp
+            nix copy ./result- --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+          fi
   build-package:
     needs: parse-flake
     runs-on: nixos
@@ -95,7 +107,11 @@ jobs:
       - name: Build
         run: nix-fast-build --flake .#packages.x86_64-linux.${{ matrix.package }} --no-nom --skip-cached
       - name: Upload
-        run: TMPDIR=$HOME/tmp nix copy ./result- --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+        run: |
+          if [[ -L ./result- ]]; then
+            TMPDIR=$HOME/tmp
+            nix copy ./result- --to 's3://cache.splitleaf.de?endpoint=api.s3.splitleaf.de&region=garage'
+          fi
   trigger-deploy:
     needs: [build-check, build-server]
     runs-on: nixos
