@@ -54,7 +54,14 @@ jobs:
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build
-        run: nix-fast-build --flake .#checks.x86_64-linux.${{ matrix.check }} --no-nom --skip-cached
+        run: |
+          nix-fast-build \
+            --flake .#checks.x86_64-linux.${{ matrix.check }} \
+            --no-nom \
+            --skip-cached \
+            --eval-workers 1 \
+            --eval-max-memory-size 512 \
+            --max-jobs 1
       - name: Upload
         run: |
           if [[ -L ./result- ]]; then
@@ -71,7 +78,14 @@ jobs:
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build
-        run: nix-fast-build --flake .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel --no-nom --skip-cached
+        run: |
+          nix-fast-build \
+            --flake .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel \
+            --no-nom \
+            --skip-cached \
+            --eval-workers 1 \
+            --eval-max-memory-size 512 \
+            --max-jobs 1
       - name: Upload
         run: |
           if [[ -L ./result- ]]; then
@@ -88,7 +102,14 @@ jobs:
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build
-        run: nix-fast-build --flake .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel --no-nom --skip-cached
+        run: |
+          nix-fast-build \
+            --flake .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel \
+            --no-nom \
+            --skip-cached \
+            --eval-workers 1 \
+            --eval-max-memory-size 512 \
+            --max-jobs 1
       - name: Upload
         run: |
           if [[ -L ./result- ]]; then
@@ -105,7 +126,14 @@ jobs:
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build
-        run: nix-fast-build --flake .#packages.x86_64-linux.${{ matrix.package }} --no-nom --skip-cached
+        run: |
+          nix-fast-build \
+            --flake .#packages.x86_64-linux.${{ matrix.package }} \
+            --no-nom \
+            --skip-cached \
+            --eval-workers 1 \
+            --eval-max-memory-size 512 \
+            --max-jobs 1
       - name: Upload
         run: |
           if [[ -L ./result- ]]; then
