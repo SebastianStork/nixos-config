@@ -20,6 +20,10 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
+    rpcPort = lib.mkOption {
+      type = lib.types.port;
+      default = 3901;
+    };
     api = {
       domain = lib.mkOption {
         type = lib.types.nonEmptyStr;
@@ -63,7 +67,7 @@ in
         db_engine = "sqlite";
         replication_factor = 1;
 
-        rpc_bind_addr = "127.0.0.1:3901";
+        rpc_bind_addr = "127.0.0.1:${toString cfg.rpcPort}";
         rpc_secret_file = config.sops.secrets."garage/rpc-secret".path;
 
         s3_api = {
