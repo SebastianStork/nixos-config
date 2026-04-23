@@ -60,9 +60,7 @@ in
       services.caddy.virtualHosts.${cfg.frontend.domain}.extraConfig = ''
         route {
           root ${config.services.librespeed.settings.assets_path}
-          reverse_proxy /backend/* ${config.custom.networking.overlay.address}:${toString cfg.port} {
-            header_up X-Real-IP {http.request.remote.host}
-          }
+          reverse_proxy /backend/* ${config.custom.networking.overlay.address}:${toString cfg.port}
           respond /servers.json <<JSON
             ${builtins.toJSON config.services.librespeed.frontend.servers}
             JSON 200
