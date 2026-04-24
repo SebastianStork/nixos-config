@@ -9,11 +9,4 @@ runs:
   steps:
     - name: Build
       shell: bash
-      run: |
-        nix-fast-build \
-          --flake "${{ inputs.flake-output }}" \
-          --no-nom \
-          --skip-cached \
-          --eval-workers 1 \
-          --eval-max-memory-size 512 \
-          --max-jobs 1
+      run: nix build "${{ inputs.flake-output }}" --print-build-logs
