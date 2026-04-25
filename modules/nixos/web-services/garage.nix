@@ -1,17 +1,11 @@
 {
   config,
-  inputs,
-  pkgs,
+  pkgs-unstable,
   lib,
   ...
 }:
 let
   cfg = config.custom.web-services.garage;
-
-  pkgs' = import inputs.nixpkgs-garage {
-    inherit (pkgs.stdenv.hostPlatform) system;
-    inherit (config.nixpkgs) config;
-  };
 in
 {
   options.custom.web-services.garage = {
@@ -61,7 +55,7 @@ in
 
     services.garage = {
       enable = true;
-      package = pkgs'.garage_2; # https://github.com/NixOS/nixpkgs/pull/510680
+      package = pkgs-unstable.garage_2;
 
       settings = {
         db_engine = "sqlite";
