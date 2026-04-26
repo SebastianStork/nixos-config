@@ -27,11 +27,6 @@
     };
 
     web-services = {
-      personal-blog = {
-        enable = true;
-        domain = "sstork.dev";
-      };
-
       outline-to-anki = {
         enable = true;
         domain = "anki-decks.sprouted.cloud";
