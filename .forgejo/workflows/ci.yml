@@ -13,7 +13,6 @@ jobs:
       checks: ${{ steps.checks.outputs.checks }}
       servers: ${{ steps.servers.outputs.servers }}
       workstations: ${{ steps.workstations.outputs.workstations }}
-      packages: ${{ steps.packages.outputs.packages }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -40,11 +39,6 @@ jobs:
             |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.comin.enable)
           ' --json)
           printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
-      - name: Get packages
-        id: packages
-        run: |
-          packages=$(nix eval .#packages.x86_64-linux --apply builtins.attrNames --json)
-          printf "packages=%s" "$packages" >> "$FORGEJO_OUTPUT"
   build-check:
     needs: parse-flake
     runs-on: nixos
@@ -91,22 +85,6 @@ jobs:
         uses: ./.forgejo/actions/build
         with:
           flake-output: .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel
-      - name: Upload
-        uses: ./.forgejo/actions/upload
-  build-package:
-    needs: parse-flake
-    runs-on: nixos
-    strategy:
-      fail-fast: false
-      matrix:
-        package: ${{ fromJSON(needs.parse-flake.outputs.packages) }}
-    steps:
-      - name: Checkout
-        uses: https://code.forgejo.org/actions/checkout@v4
-      - name: Build
-        uses: ./.forgejo/actions/build
-        with:
-          flake-output: .#packages.x86_64-linux.${{ matrix.package }}
       - name: Upload
         uses: ./.forgejo/actions/upload
   trigger-deploy:
