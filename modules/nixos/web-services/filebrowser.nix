@@ -6,7 +6,6 @@
 }:
 let
   cfg = config.custom.web-services.filebrowser;
-
   dataDir = "/var/lib/filebrowser";
 in
 {
@@ -35,6 +34,15 @@ in
         inherit (cfg) port;
         noauth = true;
       };
+    };
+
+    users.users.seb.extraGroups = [ config.services.filebrowser.group ];
+
+    systemd = {
+      services.filebrowser.serviceConfig.UMask = lib.mkForce "0007";
+
+      tmpfiles.settings.filebrowser.${config.services.filebrowser.settings.root}.d.mode =
+        lib.mkForce "2770";
     };
 
     custom = {
