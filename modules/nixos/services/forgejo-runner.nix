@@ -21,16 +21,8 @@ in
 
   config = lib.mkIf cfg.enable {
     sops = {
-      secrets = {
-        "forgejo-runner/token" = { };
-        "forgejo-runner/s3-binary-cache/key-id" = { };
-        "forgejo-runner/s3-binary-cache/secret-key" = { };
-      };
-      templates."forgejo-runner.env".content = ''
-        TOKEN=${config.sops.placeholder."forgejo-runner/token"}
-        AWS_ACCESS_KEY_ID=${config.sops.placeholder."forgejo-runner/s3-binary-cache/key-id"}
-        AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."forgejo-runner/s3-binary-cache/secret-key"}
-      '';
+      secrets."forgejo-runner/token" = { };
+      templates."forgejo-runner.env".content = "TOKEN=${config.sops.placeholder."forgejo-runner/token"}";
     };
 
     services.gitea-actions-runner = {
