@@ -55,7 +55,7 @@ jobs:
           flake-output: .#checks.x86_64-linux.${{ matrix.check }}
       - name: Upload
         uses: ./.forgejo/actions/upload
-        env: &s3_upload_env
+        env:
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
   build-server:
@@ -74,7 +74,9 @@ jobs:
           flake-output: .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel
       - name: Upload
         uses: ./.forgejo/actions/upload
-        env: *s3_upload_env
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
   build-workstation:
     needs: parse-flake
     runs-on: nixos
@@ -91,7 +93,9 @@ jobs:
           flake-output: .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel
       - name: Upload
         uses: ./.forgejo/actions/upload
-        env: *s3_upload_env
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
   trigger-deploy:
     needs: [build-check, build-server]
     runs-on: nixos
