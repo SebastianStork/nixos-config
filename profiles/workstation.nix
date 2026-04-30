@@ -13,7 +13,7 @@
     inputs.home-manager.nixosModules.home-manager
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_6_19;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   custom = {
     networking.overlay.role = "client";
