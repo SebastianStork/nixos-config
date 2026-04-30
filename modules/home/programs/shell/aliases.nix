@@ -100,7 +100,7 @@
                 }
                 .${config.custom.theme};
             in
-            "bat --plain --theme=${theme}";
+            "bat --plain --theme=${theme} --paging=never";
         };
     };
   };
