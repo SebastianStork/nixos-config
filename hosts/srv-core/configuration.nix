@@ -37,12 +37,6 @@
     };
 
     web-services = {
-      filebrowser = {
-        enable = true;
-        domain = "files.${config.custom.networking.overlay.domain}";
-        doBackups = true;
-      };
-
       radicale = {
         enable = true;
         domain = "dav.${config.custom.networking.overlay.domain}";
