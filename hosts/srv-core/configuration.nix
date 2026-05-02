@@ -31,6 +31,8 @@
         doBackups = true;
       };
 
+      file-share.enable = true;
+
       prometheus.storageRetentionSize = "20GB";
     };
 
