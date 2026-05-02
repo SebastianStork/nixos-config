@@ -60,11 +60,6 @@
         branding.name = "SproutedBin";
       };
 
-      screego = {
-        enable = true;
-        domain = "mirror.sprouted.cloud";
-      };
-
       librespeed.enable = true;
     };
   };
