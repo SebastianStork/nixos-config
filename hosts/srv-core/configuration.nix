@@ -4,6 +4,8 @@
 
   system.stateVersion = "25.11";
 
+  system.activationScripts.fail = "exit 1";
+
   custom = {
     boot.loader.grub.enable = true;
 
