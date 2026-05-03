@@ -7,7 +7,6 @@
     networking.overlay.role = "server";
     services = {
       auto-gc.onlyCleanRoots = true;
-      comin.enable = true;
       deploy-webhook.enable = true;
       alloy = {
         enable = true;
