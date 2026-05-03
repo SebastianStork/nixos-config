@@ -69,7 +69,7 @@ in
         |> lib.attrValues
         |> lib.map (host: host.config.custom.web-services.s3-binary-cache)
         |> lib.filter (cache: cache.enable)
-        |> lib.map (cache: "https://${cache.domain}?priority=40&trusted=1");
+        |> lib.map (cache: "https://${cache.domain}?priority=30&trusted=true");
     }
   ];
 }
