@@ -106,7 +106,7 @@ jobs:
     steps:
       - name: Deploy
         timeout-minutes: 10
-        run: curl --fail https://${{ matrix.server }}.splitleaf.de/hooks/deploy
+        run: curl --fail-with-body https://${{ matrix.server }}.splitleaf.de/hooks/deploy
   notify:
     if: always()
     needs: [deploy]
