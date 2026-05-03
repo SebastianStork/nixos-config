@@ -7,8 +7,8 @@
 let
   cfg = config.custom.services.deploy-webhook;
 
-  nixos-switch = pkgs.writeShellApplication {
-    name = "nixos-switch";
+  deploy = pkgs.writeShellApplication {
+    name = "deploy";
     runtimeInputs = [
       pkgs.nixos-rebuild
       pkgs.git
@@ -30,11 +30,11 @@ in
       enable = true;
       ip = "127.0.0.1";
       port = cfg.webhookPort;
-      hooks.nixos-switch = {
+      hooks.deploy = {
         execute-command = "/run/wrappers/bin/sudo";
         pass-arguments-to-command = lib.singleton {
           source = "string";
-          name = lib.getExe nixos-switch;
+          name = lib.getExe deploy;
         };
         include-command-output-in-response = true;
         include-command-output-in-response-on-error = true;
@@ -44,7 +44,7 @@ in
     security.sudo.extraRules = lib.singleton {
       users = [ "webhook" ];
       commands = lib.singleton {
-        command = lib.getExe nixos-switch;
+        command = lib.getExe deploy;
         options = [ "NOPASSWD" ];
       };
     };
