@@ -27,7 +27,7 @@ jobs:
           servers=$(nix eval .#nixosConfigurations --apply 'configs:
             configs
             |> builtins.attrNames
-            |> builtins.filter (hostName: configs.${hostName}.config.custom.services.comin.enable)
+            |> builtins.filter (hostName: configs.${hostName}.config.custom.services.deploy-webhook.enable)
           ' --json)
           printf "servers=%s" "$servers" >> "$FORGEJO_OUTPUT"
       - name: Get workstations
@@ -36,7 +36,7 @@ jobs:
           workstations=$(nix eval .#nixosConfigurations --apply 'configs:
             configs
             |> builtins.attrNames
-            |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.comin.enable)
+            |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.deploy-webhook.enable)
           ' --json)
           printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
   build-check:
@@ -96,49 +96,24 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
-  trigger-deploy:
-    needs: [build-check, build-server]
-    runs-on: nixos
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout
-        uses: https://code.forgejo.org/actions/checkout@v4
-      - name: Push to deploy branch
-        run: git push --force origin HEAD:refs/heads/deploy
-  await-deploy:
-    needs: [parse-flake, trigger-deploy]
+  deploy:
+    needs: [parse-flake, build-check, build-server]
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
         server: ${{ fromJSON(needs.parse-flake.outputs.servers) }}
     steps:
-      - name: Wait for deployment
+      - name: Deploy
         timeout-minutes: 10
-        run: |
-          repo_url="${{ forgejo.server_url }}/${{ forgejo.repository }}.git"
-          expected_sha="${{ forgejo.sha }}"
-          branch="deployed/${{ matrix.server }}"
-
-          while true; do
-            deployed_sha=$(git ls-remote "$repo_url" "$branch" | cut -f1)
-
-            if [[ "$deployed_sha" == "$expected_sha" ]]; then
-              echo "Deployed $expected_sha"
-              exit 0
-            fi
-            
-            echo "Deployed ${deployed_sha::7}, waiting for ${expected_sha::7}..."
-            sleep 10
-          done
+        run: curl --fail https://${{ matrix.server }}.splitleaf.de/hooks/deploy
   notify:
     if: always()
-    needs: [await-deploy]
+    needs: [deploy]
     runs-on: nixos
     steps:
       - name: Notify success
-        if: needs.await-deploy.result == 'success'
+        if: needs.deploy.result == 'success'
         env:
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
@@ -153,7 +128,7 @@ jobs:
             -d "$body" \
             https://ntfy.sh/splitleaf
       - name: Notify failure
-        if: needs.await-deploy.result == 'failure' || needs.await-deploy.result == 'skipped'
+        if: needs.deploy.result == 'failure' || needs.deploy.result == 'skipped'
         env:
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
