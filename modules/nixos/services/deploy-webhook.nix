@@ -18,8 +18,10 @@ let
     text = ''
       old_system=$(readlink /run/current-system)
       old_unit=$(systemctl cat webhook.service 2>/dev/null || true)
+
       nixos-rebuild switch --flake git+https://codeberg.org/SebastianStork/nixos-config --refresh
       dix "$old_system" /run/current-system
+
       new_unit=$(systemctl cat webhook.service 2>/dev/null || true)
       if [ "$old_unit" != "$new_unit" ]; then
         systemd-run --on-active=30 -- systemctl restart webhook.service
