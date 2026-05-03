@@ -63,14 +63,6 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    comin = {
-      url = "github:nlewo/comin";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        treefmt-nix.follows = "treefmt";
-      };
-    };
-
     dns = {
       url = "github:kirelagin/dns.nix";
       inputs.nixpkgs.follows = "nixpkgs";

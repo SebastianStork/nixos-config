@@ -103,40 +103,17 @@ in
                   };
                 })
               )
-              ++ [
-                {
-                  alert = "ServiceDown";
-                  expr = ''up{job=~"prometheus|alertmanager"} == 0'';
-                  for = "5m";
-                  annotations = {
-                    summary = "Service {{ $labels.job | title }} on {{ $labels.instance }} is down";
-                    summary_resolved = "Service {{ $labels.job | title }} on {{ $labels.instance }} is up again";
-                    description = "Prometheus has not received scrape data for 5 minutes.";
-                    description_resolved = "Prometheus is receiving scrape data again.";
-                  };
-                }
-                {
-                  alert = "CominDeploymentFailed";
-                  expr = ''comin_deployment_info{status!="done"}'';
-                  annotations = {
-                    summary = "Deployment on {{ $labels.instance }} failed";
-                    summary_resolved = "Deployment on {{ $labels.instance }} succeeded again";
-                    description = ''Comin reports a deployment status other than "done".'';
-                    description_resolved = ''Comin reports the deployment status as "done" again.'';
-                  };
-                }
-                {
-                  alert = "CominDeploymentCommitMismatch";
-                  expr = "count(count by (commit_id) (comin_deployment_info)) > 1";
-                  for = "10m";
-                  annotations = {
-                    summary = "Deployment commits are out of sync";
-                    summary_resolved = "Deployment commits are in sync again";
-                    description = "Comin reports different deployed commits across hosts.";
-                    description_resolved = "Comin reports the same deployed commit across all hosts again.";
-                  };
-                }
-              ];
+              ++ lib.singleton {
+                alert = "ServiceDown";
+                expr = ''up{job=~"prometheus|alertmanager"} == 0'';
+                for = "5m";
+                annotations = {
+                  summary = "Service {{ $labels.job | title }} on {{ $labels.instance }} is down";
+                  summary_resolved = "Service {{ $labels.job | title }} on {{ $labels.instance }} is up again";
+                  description = "Prometheus has not received scrape data for 5 minutes.";
+                  description_resolved = "Prometheus is receiving scrape data again.";
+                };
+              };
           };
         }
         |> lib.strings.toJSON

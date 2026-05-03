@@ -26,9 +26,6 @@ in
       caddy = lib.mkEnableOption "" // {
         default = config.services.caddy.enable;
       };
-      comin = lib.mkEnableOption "" // {
-        default = config.services.comin.enable;
-      };
     };
   };
 
@@ -111,20 +108,6 @@ in
               targets = [{
                 __address__ = "localhost:${toString config.custom.services.caddy.metricsPort}",
                 job = "caddy",
-                instance = constants.hostname,
-              }]
-              forward_to = [prometheus.remote_write.default.receiver]
-              scrape_interval = "30s"
-            }
-          '';
-        };
-        "alloy/comin-metrics.alloy" = {
-          enable = cfg.collect.metrics.comin;
-          text = ''
-            prometheus.scrape "comin" {
-              targets = [{
-                __address__ = "localhost:${toString config.custom.services.comin.metricsPort}",
-                job = "comin",
                 instance = constants.hostname,
               }]
               forward_to = [prometheus.remote_write.default.receiver]
