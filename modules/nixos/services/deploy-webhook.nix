@@ -12,8 +12,13 @@ let
     runtimeInputs = [
       pkgs.nixos-rebuild
       pkgs.git
+      pkgs.dix
     ];
-    text = "nixos-rebuild switch --flake git+https://codeberg.org/SebastianStork/nixos-config --refresh";
+    text = ''
+      old_system=$(readlink /run/current-system)
+      nixos-rebuild switch --flake git+https://codeberg.org/SebastianStork/nixos-config --refresh
+      dix "$old_system" /run/current-system
+    '';
   };
 in
 {
