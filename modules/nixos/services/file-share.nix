@@ -1,7 +1,6 @@
 { config, lib, ... }:
 let
   cfg = config.custom.services.file-share;
-  shareDir = "/home/seb/share";
 in
 {
   options.custom.services.file-share = {
@@ -10,12 +9,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.user.tmpfiles.users."seb".rules = [ "d ${shareDir} - - - -" ];
+    environment.persistence."/persist".users.seb.directories = [ "share" ];
 
-    custom = {
-      services.restic.backups.filebrowser.paths = lib.mkIf cfg.doBackups [ shareDir ];
-
-      persistence.directories = [ shareDir ];
-    };
+    custom.services.restic.backups.filebrowser.paths = lib.mkIf cfg.doBackups [ "/home/seb/share" ];
   };
 }
