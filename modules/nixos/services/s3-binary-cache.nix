@@ -6,10 +6,10 @@
   ...
 }:
 let
-  cfg = config.custom.web-services.s3-binary-cache;
+  cfg = config.custom.services.s3-binary-cache;
 in
 {
-  options.custom.web-services.s3-binary-cache = {
+  options.custom.services.s3-binary-cache = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
@@ -20,7 +20,7 @@ in
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
       assertions = lib.singleton {
-        assertion = config.custom.web-services.garage.enable;
+        assertion = config.custom.services.garage.enable;
         message = self.lib.mkInvalidConfigMessage "S3-Binary-Cache on ${config.networking.hostName}" "Garage must be enabled";
       };
 
@@ -53,7 +53,7 @@ in
       };
 
       custom = {
-        services.caddy.virtualHosts.${cfg.domain}.port = config.custom.web-services.garage.web.port;
+        services.caddy.virtualHosts.${cfg.domain}.port = config.custom.services.garage.web.port;
 
         meta.sites.${cfg.domain} = {
           title = "S3 Binary Cache";
@@ -67,7 +67,7 @@ in
       nix.settings.substituters =
         allHosts
         |> lib.attrValues
-        |> lib.map (host: host.config.custom.web-services.s3-binary-cache)
+        |> lib.map (host: host.config.custom.services.s3-binary-cache)
         |> lib.filter (cache: cache.enable)
         |> lib.map (cache: "https://${cache.domain}?priority=30&trusted=true");
     }

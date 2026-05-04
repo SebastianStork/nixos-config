@@ -1,10 +1,10 @@
 { config, lib, ... }:
 let
-  cfg = config.custom.web-services.atuin;
+  cfg = config.custom.services.atuin;
   dataDir = "/var/lib/atuin";
 in
 {
-  options.custom.web-services.atuin = {
+  options.custom.services.atuin = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;

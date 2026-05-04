@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.web-services.garage;
+  cfg = config.custom.services.garage;
 in
 {
-  options.custom.web-services.garage = {
+  options.custom.services.garage = {
     enable = lib.mkEnableOption "";
     rootDomain = lib.mkOption {
       type = lib.types.nonEmptyStr;

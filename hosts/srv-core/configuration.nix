@@ -34,6 +34,21 @@
       file-share.enable = true;
 
       prometheus.storageRetentionSize = "20GB";
+
+      atuin = {
+        enable = true;
+        domain = "atuin.${config.custom.networking.overlay.domain}";
+      };
+
+      garage = {
+        enable = true;
+        rootDomain = "s3.${config.custom.networking.overlay.domain}";
+      };
+
+      s3-binary-cache = {
+        enable = true;
+        domain = "cache.${config.custom.networking.overlay.domain}";
+      };
     };
 
     web-services = {
@@ -47,11 +62,6 @@
         enable = true;
         domain = "budget.${config.custom.networking.overlay.domain}";
         doBackups = true;
-      };
-
-      atuin = {
-        enable = true;
-        domain = "atuin.${config.custom.networking.overlay.domain}";
       };
 
       karakeep = {
@@ -77,16 +87,6 @@
       scrutiny = {
         enable = true;
         domain = "scrutiny.${config.custom.networking.overlay.domain}";
-      };
-
-      garage = {
-        enable = true;
-        rootDomain = "s3.${config.custom.networking.overlay.domain}";
-      };
-
-      s3-binary-cache = {
-        enable = true;
-        domain = "cache.${config.custom.networking.overlay.domain}";
       };
 
       librespeed = {
