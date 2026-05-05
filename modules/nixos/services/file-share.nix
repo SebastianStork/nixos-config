@@ -11,6 +11,6 @@ in
   config = lib.mkIf cfg.enable {
     environment.persistence."/persist".users.seb.directories = [ "share" ];
 
-    custom.services.restic.backups.filebrowser.paths = lib.mkIf cfg.doBackups [ "/home/seb/share" ];
+    custom.services.restic.backups.file-share.paths = lib.mkIf cfg.doBackups [ "/home/seb/share" ];
   };
 }
