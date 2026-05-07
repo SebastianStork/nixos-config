@@ -1,6 +1,6 @@
 {
   config,
-  pkgs-unstable,
+  pkgs,
   lib,
   ...
 }:
@@ -55,7 +55,7 @@ in
 
     services.garage = {
       enable = true;
-      package = pkgs-unstable.garage_2;
+      package = pkgs.garage_2;
 
       settings = {
         db_engine = "sqlite";
