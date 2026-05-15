@@ -112,11 +112,7 @@ in
 
         services.caddy = {
           enable = true;
-          enableReload = false;
-          globalConfig = ''
-            admin off
-            metrics { per_host }
-          '';
+          globalConfig = "metrics { per_host }";
           extraConfig = ":${toString cfg.metricsPort} { metrics /metrics }";
           virtualHosts = virtualHosts |> lib.map mkVirtualHost |> lib.listToAttrs;
         };
