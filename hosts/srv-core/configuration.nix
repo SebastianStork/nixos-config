@@ -89,6 +89,11 @@
         domain = "scrutiny.${config.custom.networking.overlay.domain}";
       };
 
+      homebox = {
+        enable = true;
+        domain = "inventory.${config.custom.networking.overlay.domain}";
+      };
+
       librespeed = {
         enable = true;
         frontend = {
