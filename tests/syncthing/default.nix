@@ -68,11 +68,12 @@
       getSyncPort = hostName: nodes.${hostName}.custom.services.syncthing.port |> toString;
     in
     ''
-      start_all()
-
       with subtest("Syncthing readiness"):
+        server.start()
         server.wait_for_unit("syncthing.service")
+        client1.start()
         client1.wait_for_unit("syncthing.service")
+        client2.start()
         client2.wait_for_unit("syncthing.service")
         
         server.wait_for_unit("syncthing-init.service")

@@ -81,11 +81,12 @@
       ssh = "timeout 10 ssh -i /etc/ssh-key -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
     in
     ''
-      start_all()
-
       with subtest("Overlay readiness"):
+        server.start()
         server.wait_for_unit("${serverNetCfg.overlay.systemdUnit}")
+        client1.start()
         client1.wait_for_unit("${client1NetCfg.overlay.systemdUnit}")
+        client2.start()
         client2.wait_for_unit("${client2NetCfg.overlay.systemdUnit}")
 
       with subtest("Overlay connectivity between nodes"):
