@@ -31,7 +31,7 @@ let
   perHostDomains =
     perHostSitesWidget.widgets |> lib.concatMap (widget: widget.sites) |> lib.map (site: site.domain);
 
-  applicationSitesWidget =
+  applicationSitesWidgets =
     allHosts
     |> lib.attrValues
     |> lib.concatMap (host: host.config.custom.meta.sites |> lib.attrValues)
@@ -47,12 +47,7 @@ let
         title = "${name} Services";
         sites = value |> lib.sort (a: b: a.title < b.title);
       }
-    )
-    |> (widgets: {
-      type = "split-column";
-      max-columns = 2;
-      inherit widgets;
-    });
+    );
 
   nixosRepoUrl = "https://codeberg.org/SebastianStork/nixos-config";
 
@@ -133,15 +128,14 @@ in
           columns = [
             {
               size = "full";
-              widgets = [
-                {
+              widgets =
+                lib.singleton {
                   type = "search";
                   search-engine = "https://search.splitleaf.de/search?q={QUERY}";
                   autofocus = true;
                 }
-                applicationSitesWidget
-                perHostSitesWidget
-              ];
+                ++ applicationSitesWidgets
+                ++ lib.singleton perHostSitesWidget;
             }
             {
               size = "small";
