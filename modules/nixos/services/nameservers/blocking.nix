@@ -83,34 +83,16 @@ in
       };
     };
 
-    users = {
-      users.adguardhome = {
-        isSystemUser = true;
-        group = config.users.groups.adguardhome.name;
-      };
-      groups.adguardhome = { };
-    };
-
     systemd.services.adguardhome = {
       enableStrictShellChecks = false;
       requires = [ netCfg.overlay.systemdUnit ];
       after = [ netCfg.overlay.systemdUnit ];
-
-      serviceConfig = {
-        DynamicUser = lib.mkForce false;
-        User = config.users.users.adguardhome.name;
-        Group = config.users.groups.adguardhome.name;
-        ProtectSystem = "strict";
-        ProtectHome = "read-only";
-        PrivateTmp = true;
-        RemoveIPC = true;
-      };
     };
 
     custom = {
       services.caddy.virtualHosts.${cfg.gui.domain}.port = lib.mkIf (cfg.gui.domain != null) cfg.gui.port;
 
-      persistence.directories = [ "/var/lib/AdGuardHome/" ];
+      persistence.directories = [ "/var/lib/private/AdGuardHome" ];
 
       meta.sites.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
         title = "Adguard Home";
