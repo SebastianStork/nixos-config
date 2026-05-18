@@ -27,8 +27,8 @@ let
 in
 {
   flake = {
-    nixosConfigurations = mkHosts "${self}/hosts";
-    externalConfigurations = mkHosts "${self}/external-hosts";
+    nixosConfigurations = mkHosts "${self}/hosts/nixos";
+    externalConfigurations = mkHosts "${self}/hosts/external";
     allHosts = self.nixosConfigurations // self.externalConfigurations;
   };
 }

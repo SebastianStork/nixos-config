@@ -50,11 +50,11 @@ in
     };
     publicKeyFile = lib.mkOption {
       type = self.lib.types.existingPath;
-      default = "${self}/hosts/${netCfg.hostName}/keys/nebula.pub";
+      default = "${self}/hosts/nixos/${netCfg.hostName}/keys/nebula.pub";
     };
     certificateFile = lib.mkOption {
       type = self.lib.types.existingPath;
-      default = "${self}/hosts/${netCfg.hostName}/keys/nebula.crt";
+      default = "${self}/hosts/nixos/${netCfg.hostName}/keys/nebula.crt";
     };
     privateKeyFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;

@@ -15,11 +15,12 @@ in
     enable = lib.mkEnableOption "";
     agePublicKey = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "${self}/hosts/${config.networking.hostName}/keys/age.pub" |> lib.readFile |> lib.trim;
+      default =
+        "${self}/hosts/nixos/${config.networking.hostName}/keys/age.pub" |> lib.readFile |> lib.trim;
     };
     secretsFile = lib.mkOption {
       type = self.lib.types.existingPath;
-      default = "${self}/hosts/${config.networking.hostName}/secrets.json";
+      default = "${self}/hosts/nixos/${config.networking.hostName}/secrets.json";
     };
     secretsData = lib.mkOption {
       type = lib.types.attrs;
