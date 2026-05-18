@@ -25,5 +25,7 @@
         capacity = 2;
       };
     };
+
+    programs.docker.enable = true;
   };
 }
