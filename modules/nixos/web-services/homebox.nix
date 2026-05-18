@@ -29,7 +29,7 @@ in
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
-      persistence.directories = lib.singleton "${config.services.homebox.settings.HOME}/${config.services.homebox.settings.HBOX_STORAGE_PREFIX_PATH}";
+      persistence.directories = lib.singleton config.services.homebox.settings.HOME;
 
       meta.sites.${cfg.domain} = {
         title = "HomeBox";
