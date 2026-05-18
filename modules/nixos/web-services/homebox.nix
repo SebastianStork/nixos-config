@@ -1,6 +1,7 @@
 { config, lib, ... }:
 let
   cfg = config.custom.web-services.homebox;
+  dataDir = config.services.homebox.settings.HOME;
 in
 {
   options.custom.web-services.homebox = {
@@ -13,6 +14,7 @@ in
       type = lib.types.port;
       default = 7745;
     };
+    doBackups = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -27,9 +29,16 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      services = {
+        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
-      persistence.directories = lib.singleton config.services.homebox.settings.HOME;
+        restic.backups.homebox = lib.mkIf cfg.doBackups {
+          conflictingService = "homebox.service";
+          paths = [ dataDir ];
+        };
+      };
+
+      persistence.directories = [ dataDir ];
 
       meta.sites.${cfg.domain} = {
         title = "HomeBox";

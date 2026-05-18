@@ -64,6 +64,12 @@
         doBackups = true;
       };
 
+      homebox = {
+        enable = true;
+        domain = "inventory.${config.custom.networking.overlay.domain}";
+        doBackups = true;
+      };
+
       karakeep = {
         enable = true;
         domain = "bookmarks.${config.custom.networking.overlay.domain}";
@@ -87,11 +93,6 @@
       scrutiny = {
         enable = true;
         domain = "scrutiny.${config.custom.networking.overlay.domain}";
-      };
-
-      homebox = {
-        enable = true;
-        domain = "inventory.${config.custom.networking.overlay.domain}";
       };
 
       librespeed = {
