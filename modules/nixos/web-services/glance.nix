@@ -15,6 +15,7 @@ let
       type = "monitor";
       cache = "1m";
       title = "${host.config.networking.hostName} Services";
+      style = "compact";
       sites =
         host.config.custom.meta.sites
         |> lib.attrValues
