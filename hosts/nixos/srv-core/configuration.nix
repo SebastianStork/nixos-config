@@ -35,7 +35,7 @@
 
       prometheus.storageRetentionSize = "20GB";
 
-      atuin = {
+      atuin-server = {
         enable = true;
         domain = "atuin.${config.custom.networking.overlay.domain}";
       };
