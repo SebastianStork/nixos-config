@@ -86,7 +86,7 @@ jobs:
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
         run: |
-          body=$(printf 'Commit `%s` deployed successfully.\n> %s' "${SHA::7}" "$COMMIT_MSG")
+          body=$(printf 'Commit `%s` deployed successfully.\n> %s' "${SHA::7}" "${COMMIT_MSG%%$'\n'*}")
           curl -s \
             -H "Title: CI: Deployment succeeded" \
             -H "Priority: low" \
@@ -101,7 +101,7 @@ jobs:
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
         run: |
-          body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "$COMMIT_MSG")
+          body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "${COMMIT_MSG%%$'\n'*}")
           curl -s \
             -H "Title: CI: Deployment failed" \
             -H "Priority: default" \
