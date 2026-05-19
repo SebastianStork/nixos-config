@@ -21,6 +21,9 @@
       capacity = 4;
     };
 
-    programs.steam.enable = true;
+    programs = {
+      docker.enable = true;
+      steam.enable = true;
+    };
   };
 }
