@@ -89,9 +89,9 @@ jobs:
           body=$(printf 'Commit `%s` deployed successfully.\n> %s' "${SHA::7}" "${COMMIT_MSG%%$'\n'*}")
           curl -s \
             -H "Title: CI: Deployment succeeded" \
-            -H "Priority: low" \
+            -H "Priority: default" \
             -H "Tags: white_check_mark" \
-            -H "Actions: view, Open workflow run, ${{ forgejo.server_url }}/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_id }}" \
+            -H "Actions: view, Open workflow run, ${{ forgejo.server_url }}/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_number }}" \
             -H "Markdown: yes" \
             -d "$body" \
             https://ntfy.sh/splitleaf
@@ -106,7 +106,7 @@ jobs:
             -H "Title: CI: Deployment failed" \
             -H "Priority: default" \
             -H "Tags: rotating_light" \
-            -H "Actions: view, Open workflow run, ${{ forgejo.server_url }}/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_id }}" \
+            -H "Actions: view, Open workflow run, ${{ forgejo.server_url }}/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_number }}" \
             -H "Markdown: yes" \
             -d "$body" \
             https://ntfy.sh/splitleaf
