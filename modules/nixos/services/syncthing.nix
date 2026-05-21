@@ -155,6 +155,11 @@ in
       };
     };
 
+    systemd.services.syncthing = {
+      requires = [ netCfg.overlay.systemdUnit ];
+      after = [ netCfg.overlay.systemdUnit ];
+    };
+
     custom = {
       services = {
         caddy.virtualHosts.${cfg.gui.domain}.port = lib.mkIf (cfg.gui.domain != null) cfg.gui.port;
