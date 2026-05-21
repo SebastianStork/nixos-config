@@ -103,6 +103,12 @@
       with subtest("Two way sync of Pictures"):
         server.wait_for_file("/var/lib/syncthing/Pictures")
         client1.wait_for_file("/home/seb/Pictures")
+
+        server.succeed("sudo --user=syncthing touch /var/lib/syncthing/Pictures/server")
+        client1.succeed("sudo --user=seb touch /home/seb/Pictures/client1")
+
+        server.wait_for_file("/var/lib/syncthing/Pictures/client1")
+        client1.wait_for_file("/home/seb/Pictures/server")
         client2.fail("test -d /home/seb/Pictures")
     '';
 }
