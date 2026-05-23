@@ -96,7 +96,6 @@ in
       sponsorblock.uuid = "sponsorBlocker@ajay.app";
       clearurls.uuid = "{74145f27-f039-47ce-a470-a662b129930a}";
       languagetool.uuid = "languagetool-webextension@languagetool.org";
-      ruffle_rs.uuid = "{b5501fd1-7084-45c5-9aa6-567c2fcf5dc6}";
       karakeep = {
         uuid = "addon@karakeep.app";
         defaultArea = "navbar";
