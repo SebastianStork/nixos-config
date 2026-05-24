@@ -89,7 +89,7 @@ jobs:
           body=$(printf 'Commit `%s` deployed successfully.\n> %s' "${SHA::7}" "${COMMIT_MSG%%$'\n'*}")
           curl -s \
             -H "Title: CI: Deployment succeeded" \
-            -H "Priority: default" \
+            -H "Priority: low" \
             -H "Tags: white_check_mark" \
             -H "Actions: view, Open workflow run, ${{ forgejo.server_url }}/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_number }}" \
             -H "Markdown: yes" \
