@@ -6,24 +6,18 @@
 }:
 let
   mkHost =
-    hostDir:
+    baseDir: hostName:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs self;
         inherit (self) allHosts;
       };
       modules =
-        (lib.singleton {
-          networking.hostName = hostDir |> lib.baseNameOf |> lib.unsafeDiscardStringContext;
-        })
-        ++ self.lib.listNixFilesRecursively hostDir;
+        lib.singleton { networking.hostName = hostName; }
+        ++ self.lib.listNixFilesRecursively "${baseDir}/${hostName}";
     };
 
-  mkHosts =
-    baseDir:
-    baseDir
-    |> self.lib.listDirectoryNames
-    |> self.lib.genAttrs (hostName: mkHost "${baseDir}/${hostName}");
+  mkHosts = baseDir: baseDir |> self.lib.listDirectoryNames |> self.lib.genAttrs (mkHost baseDir);
 in
 {
   flake = {
