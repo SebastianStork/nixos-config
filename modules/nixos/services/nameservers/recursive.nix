@@ -24,7 +24,6 @@ in
       type = lib.types.port;
       default = 5336;
     };
-    blockAds = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable (
