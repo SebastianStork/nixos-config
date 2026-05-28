@@ -13,6 +13,7 @@
         interface = "enp2s0";
         cidr = "192.168.0.64/24";
         gateway = "192.168.0.1";
+        trusted = true;
       };
     };
 

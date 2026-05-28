@@ -25,6 +25,7 @@ in
       default = if cfg.cidr != null then cfg.cidr |> lib.splitString "/" |> lib.head else null;
       readOnly = true;
     };
+    trusted = lib.mkEnableOption "";
     gateway = lib.mkOption {
       type = lib.types.nullOr lib.types.nonEmptyStr;
       default = null;

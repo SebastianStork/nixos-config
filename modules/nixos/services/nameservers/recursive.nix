@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  self,
   allHosts,
   ...
 }:
@@ -15,6 +16,19 @@ let
     |> lib.map (
       host:
       "${host.config.custom.networking.overlay.address}@${toString host.config.custom.services.private-nameserver.port}"
+    );
+
+  lanLocalData =
+    allHosts
+    |> lib.attrValues
+    |> lib.filter (host: host.config.custom.networking.underlay.trusted)
+    |> lib.filter (host: host.config.custom.networking.underlay.cidr == netCfg.underlay.cidr)
+    |> lib.concatMap (
+      host:
+      host.config.custom.services.caddy.virtualHosts
+      |> lib.attrValues
+      |> lib.filter (vHost: vHost.enable && self.lib.isPrivateDomain vHost.domain)
+      |> lib.map (vHost: ''"${vHost.domain}. A ${host.config.custom.networking.underlay.address}"'')
     );
 in
 {
@@ -34,7 +48,7 @@ in
             enable = true;
             settings.server = {
               interface = [ "${netCfg.overlay.address}@${toString cfg.port}" ];
-              access-control = [ "${toString netCfg.overlay.networkCidr} allow" ];
+              access-control = [ "${netCfg.overlay.networkCidr} allow" ];
               prefetch = true;
             };
           };
@@ -63,6 +77,23 @@ in
             name = netCfg.overlay.domain;
             stub-addr = privateNameservers;
           };
+        };
+      })
+
+      (lib.mkIf netCfg.underlay.trusted {
+        services.unbound.settings = {
+          server = {
+            interface = [ "127.0.0.1@${toString cfg.port}" ];
+            access-control = [ "127.0.0.1/32 allow" ];
+            access-control-view = "127.0.0.1/32 lan";
+          };
+          view = [
+            {
+              name = "lan";
+              local-zone = ''"${netCfg.overlay.domain}." static'';
+              local-data = lanLocalData;
+            }
+          ];
         };
       })
     ]

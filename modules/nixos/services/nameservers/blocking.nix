@@ -47,7 +47,10 @@ in
 
         settings = {
           dns = {
-            bind_hosts = [ netCfg.overlay.address ];
+            bind_hosts = [
+              netCfg.overlay.address
+            ]
+            ++ lib.optional netCfg.underlay.trusted netCfg.underlay.address;
             inherit (cfg) port;
 
             upstream_dns =
@@ -58,6 +61,17 @@ in
               "8.8.8.8"
             ];
           };
+
+          clients.persistent =
+            lib.optional (netCfg.underlay.trusted && config.custom.services.recursive-nameserver.enable)
+              {
+                name = "LAN";
+                ids = [ netCfg.underlay.cidr ];
+                upstreams = [
+                  "[/${netCfg.overlay.domain}/]127.0.0.1:${toString config.custom.services.recursive-nameserver.port}"
+                ]
+                ++ recursiveNameservers;
+              };
 
           filtering = {
             protection_enabled = true;
@@ -81,6 +95,11 @@ in
         proto = "any";
         host = "any";
       };
+    };
+
+    networking.firewall.interfaces.${netCfg.underlay.interface} = lib.mkIf netCfg.underlay.trusted {
+      allowedTCPPorts = [ cfg.port ];
+      allowedUDPPorts = [ cfg.port ];
     };
 
     systemd.services.adguardhome = {

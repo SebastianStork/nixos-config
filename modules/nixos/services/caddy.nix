@@ -36,7 +36,7 @@ let
         [
           (lib.optionals (self.lib.isPrivateDomain domain) [
             "tls ${certDir}/fullchain.pem ${certDir}/key.pem"
-            "bind ${config.custom.networking.overlay.address}"
+            "bind ${config.custom.networking.overlay.address} ${lib.optionalString netCfg.underlay.trusted netCfg.underlay.address}"
           ])
           (lib.optional (port != null) "reverse_proxy localhost:${toString port}")
           (lib.optionals (files != null) [
@@ -155,6 +155,13 @@ in
             host = "any";
           }
         ];
+
+        networking.firewall.interfaces.${netCfg.underlay.interface}.allowedTCPPorts =
+          lib.mkIf netCfg.underlay.trusted
+            [
+              80
+              443
+            ];
 
         systemd.services.caddy = {
           requires = [ netCfg.overlay.systemdUnit ];
