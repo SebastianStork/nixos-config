@@ -8,7 +8,7 @@ let
   cfg = config.custom.services.caddy;
   netCfg = config.custom.networking;
 
-  virtualHosts = cfg.virtualHosts |> lib.attrValues |> lib.filter (vHost: vHost.enable);
+  virtualHosts = cfg.virtualHosts |> lib.attrValues;
 
   publicHostsExist = virtualHosts |> lib.any (vHost: (!self.lib.isPrivateDomain vHost.domain));
   privateHostsExist = virtualHosts |> lib.any (vHost: self.lib.isPrivateDomain vHost.domain);
@@ -62,9 +62,6 @@ in
           { name, ... }:
           {
             options = {
-              enable = lib.mkEnableOption "" // {
-                default = true;
-              };
               domain = lib.mkOption {
                 type = lib.types.nonEmptyStr;
                 default = name;

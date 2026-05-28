@@ -27,7 +27,7 @@ let
       host:
       host.config.custom.services.caddy.virtualHosts
       |> lib.attrValues
-      |> lib.filter (vHost: vHost.enable && self.lib.isPrivateDomain vHost.domain)
+      |> lib.filter (vHost: self.lib.isPrivateDomain vHost.domain)
       |> lib.map (vHost: ''"${vHost.domain}. A ${host.config.custom.networking.underlay.address}"'')
     );
 in
