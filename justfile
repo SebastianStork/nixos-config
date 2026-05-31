@@ -1,4 +1,4 @@
-set quiet := true
+set quiet
 
 _list:
     just --list --unsorted

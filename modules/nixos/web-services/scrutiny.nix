@@ -43,13 +43,11 @@ in
     };
 
     systemd.services.scrutiny = {
-      enableStrictShellChecks = false;
       serviceConfig = {
         DynamicUser = lib.mkForce false;
         User = config.users.users.scrutiny.name;
         Group = config.users.groups.scrutiny.name;
         ProtectSystem = "strict";
-        ProtectHome = "read-only";
         PrivateTmp = true;
         RemoveIPC = true;
       };

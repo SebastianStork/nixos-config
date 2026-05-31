@@ -31,7 +31,7 @@ in
             "--sessions '${sessionData}/share/wayland-sessions:${sessionData}/share/xsessions'"
           ];
         initial_session = lib.mkIf (cfg.autoLogin && config.custom.desktop.hyprland.enable) {
-          command = lib.getExe pkgs.hyprland;
+          command = lib.getExe' pkgs.hyprland "start-hyprland";
           user = "seb";
         };
       };

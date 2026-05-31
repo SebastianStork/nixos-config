@@ -43,6 +43,8 @@
     };
   };
 
+  fileSystems."/persist".depends = [ "/nix" ];
+
   hardware.fancontrol = {
     enable = true;
     config = ''

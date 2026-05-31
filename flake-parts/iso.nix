@@ -25,7 +25,7 @@
 
               networking = {
                 hostName = "installer";
-                wireless.enable = false;
+                wireless.enable = lib.mkForce false;
                 networkmanager.enable = true;
               };
 

@@ -40,7 +40,10 @@ in
           enforce_domain = true;
           enable_gzip = true;
         };
-        security.admin_password = "$__file{${config.sops.secrets."grafana/admin-password".path}}";
+        security = {
+          admin_password = "$__file{${config.sops.secrets."grafana/admin-password".path}}";
+          secret_key = "SW2YcwTIb9zpOOhoPsMm"; # Grafana doesn't store any secrets and is only accessible over vpn anyway
+        };
         users.default_theme = "system";
         analytics.reporting_enabled = false;
       };

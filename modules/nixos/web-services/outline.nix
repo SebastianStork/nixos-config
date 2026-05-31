@@ -60,8 +60,6 @@ in
         };
     };
 
-    systemd.services.outline.enableStrictShellChecks = false;
-
     custom =
       let
         dataDir = "/var/lib/outline";

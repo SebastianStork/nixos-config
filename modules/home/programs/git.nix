@@ -41,7 +41,7 @@
 
       lazygit.enable = true;
 
-      ssh.matchBlocks =
+      ssh.settings =
         config.custom.sops.secretsData.ssh-key
         |> lib.mapAttrs (name: _: { identityFile = config.sops.secrets."ssh-key/${name}".path; });
     };

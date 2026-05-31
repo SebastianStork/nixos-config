@@ -60,8 +60,8 @@
             "git.suggestSmartCommit" = false;
             "nix.enableLanguageServer" = true;
             "nix.serverPath" = lib.getExe pkgs.nixd;
-            "nix.formatterPath" = lib.getExe pkgs.nixfmt-rfc-style;
-            "nix.serverSettings.nixd.formatting.command" = [ (lib.getExe pkgs.nixfmt-rfc-style) ];
+            "nix.formatterPath" = lib.getExe pkgs.nixfmt;
+            "nix.serverSettings.nixd.formatting.command" = [ (lib.getExe pkgs.nixfmt) ];
             "github.copilot.enable"."*" = false;
             "chat.fontSize" = 15;
             "chat.editor.fontSize" = 15;
