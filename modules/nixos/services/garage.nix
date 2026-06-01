@@ -61,21 +61,21 @@ in
         db_engine = "sqlite";
         replication_factor = 1;
 
-        rpc_bind_addr = "127.0.0.1:${toString cfg.rpcPort}";
+        rpc_bind_addr = "127.0.0.1:${lib.toString cfg.rpcPort}";
         rpc_secret_file = config.sops.secrets."garage/rpc-secret".path;
 
         s3_api = {
-          api_bind_addr = "127.0.0.1:${toString cfg.api.port}";
+          api_bind_addr = "127.0.0.1:${lib.toString cfg.api.port}";
           s3_region = "garage";
           root_domain = ".${cfg.api.domain}";
         };
 
         s3_web = {
-          bind_addr = "127.0.0.1:${toString cfg.web.port}";
+          bind_addr = "127.0.0.1:${lib.toString cfg.web.port}";
           root_domain = ".${cfg.web.domain}";
         };
 
-        admin.api_bind_addr = "127.0.0.1:${toString cfg.admin.port}";
+        admin.api_bind_addr = "127.0.0.1:${lib.toString cfg.admin.port}";
       };
     };
 

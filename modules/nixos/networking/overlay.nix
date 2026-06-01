@@ -13,7 +13,7 @@ let
     |> lib.filter (host: host.config.custom.services.blocking-nameserver.enable)
     |> lib.map (
       host:
-      "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.blocking-nameserver.port}"
+      "${host.config.custom.networking.overlay.address}:${lib.toString host.config.custom.services.blocking-nameserver.port}"
     );
 
   recursive-nameservers =
@@ -22,7 +22,7 @@ let
     |> lib.filter (host: host.config.custom.services.recursive-nameserver.enable)
     |> lib.map (
       host:
-      "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.recursive-nameserver.port}"
+      "${host.config.custom.networking.overlay.address}:${lib.toString host.config.custom.services.recursive-nameserver.port}"
     );
 in
 {
@@ -56,7 +56,7 @@ in
     };
     cidr = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "${cfg.address}/${toString cfg.prefixLength}";
+      default = "${cfg.address}/${lib.toString cfg.prefixLength}";
       readOnly = true;
     };
     interface = lib.mkOption {

@@ -92,7 +92,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.extraConfig = ''
         handle /update {
           rewrite /hooks/outline-to-anki
-          reverse_proxy localhost:${toString cfg.webhookPort}
+          reverse_proxy localhost:${lib.toString cfg.webhookPort}
         }
 
         root ${dataDir}

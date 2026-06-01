@@ -38,7 +38,7 @@ let
             "tls ${certDir}/fullchain.pem ${certDir}/key.pem"
             "bind ${config.custom.networking.overlay.address} ${lib.optionalString netCfg.underlay.trusted netCfg.underlay.address}"
           ])
-          (lib.optional (port != null) "reverse_proxy localhost:${toString port}")
+          (lib.optional (port != null) "reverse_proxy localhost:${lib.toString port}")
           (lib.optionals (files != null) [
             "root ${files}"
             "encode"
@@ -110,7 +110,7 @@ in
         services.caddy = {
           enable = true;
           globalConfig = "metrics { per_host }";
-          extraConfig = ":${toString cfg.metricsPort} { metrics /metrics }";
+          extraConfig = ":${lib.toString cfg.metricsPort} { metrics /metrics }";
           virtualHosts = virtualHosts |> lib.map mkVirtualHost |> lib.listToAttrs;
         };
 

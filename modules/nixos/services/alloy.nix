@@ -42,7 +42,7 @@ in
     services.alloy = {
       enable = true;
       extraFlags = [
-        "--server.http.listen-addr=localhost:${toString cfg.port}"
+        "--server.http.listen-addr=localhost:${lib.toString cfg.port}"
         "--disable-reporting"
       ];
     };
@@ -106,7 +106,7 @@ in
           text = ''
             prometheus.scrape "caddy" {
               targets = [{
-                __address__ = "localhost:${toString config.custom.services.caddy.metricsPort}",
+                __address__ = "localhost:${lib.toString config.custom.services.caddy.metricsPort}",
                 job = "caddy",
                 instance = constants.hostname,
               }]

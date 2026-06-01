@@ -118,7 +118,7 @@ in
         }
         |> lib.strings.toJSON
         |> pkgs.writeText "prometheus-rules"
-        |> toString
+        |> lib.toString
         |> lib.singleton;
     };
 

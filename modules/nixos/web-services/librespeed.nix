@@ -41,7 +41,7 @@ in
             |> lib.filter (host: host.config.custom.web-services.librespeed.enable)
             |> lib.map (host: {
               name = host.config.networking.hostName;
-              server = "https://${host.config.custom.networking.overlay.fqdn}:${toString host.config.custom.web-services.librespeed.port}";
+              server = "https://${host.config.custom.networking.overlay.fqdn}:${lib.toString host.config.custom.web-services.librespeed.port}";
             })
             |> lib.mkForce;
         };
@@ -60,9 +60,9 @@ in
       services.caddy.virtualHosts.${cfg.frontend.domain}.extraConfig = ''
         route {
           root ${config.services.librespeed.settings.assets_path}
-          reverse_proxy /backend/* ${config.custom.networking.overlay.address}:${toString cfg.port}
+          reverse_proxy /backend/* ${config.custom.networking.overlay.address}:${lib.toString cfg.port}
           respond /servers.json <<JSON
-            ${builtins.toJSON config.services.librespeed.frontend.servers}
+            ${lib.toJSON config.services.librespeed.frontend.servers}
             JSON 200
           file_server
         }

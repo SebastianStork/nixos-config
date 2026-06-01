@@ -115,7 +115,7 @@ in
         |> lib.filter (host: host.config.custom.services.nebula.advertise.address != null)
         |> lib.map (host: {
           name = host.config.custom.networking.overlay.address;
-          value = lib.singleton "${host.config.custom.services.nebula.advertise.address}:${toString host.config.custom.services.nebula.advertise.port}";
+          value = lib.singleton "${host.config.custom.services.nebula.advertise.address}:${lib.toString host.config.custom.services.nebula.advertise.port}";
         })
         |> lib.listToAttrs;
 

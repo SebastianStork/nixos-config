@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}:
+{ lib, ... }:
 {
   defaults =
     { config, ... }:
@@ -65,7 +62,7 @@
       client1NetCfg = nodes.client1.custom.networking.overlay;
       client2NetCfg = nodes.client2.custom.networking.overlay;
 
-      getSyncPort = hostName: nodes.${hostName}.custom.services.syncthing.port |> toString;
+      getSyncPort = hostName: lib.toString nodes.${hostName}.custom.services.syncthing.port;
     in
     ''
       with subtest("Syncthing readiness"):

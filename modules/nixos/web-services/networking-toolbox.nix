@@ -18,7 +18,7 @@ in
   config = lib.mkIf cfg.enable {
     virtualisation.oci-containers.containers.networking-toolbox = {
       image = "lissy93/networking-toolbox";
-      ports = [ "127.0.0.1:${toString cfg.port}:3000" ];
+      ports = [ "127.0.0.1:${lib.toString cfg.port}:3000" ];
       pull = "newer";
     };
 

@@ -14,7 +14,7 @@ let
     |> lib.filter (host: host.config.custom.services.recursive-nameserver.enable)
     |> lib.map (
       host:
-      "${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.recursive-nameserver.port}"
+      "${host.config.custom.networking.overlay.address}:${lib.toString host.config.custom.services.recursive-nameserver.port}"
     );
 in
 {
@@ -68,7 +68,7 @@ in
                 name = "LAN";
                 ids = [ netCfg.underlay.cidr ];
                 upstreams = [
-                  "[/${netCfg.overlay.domain}/]127.0.0.1:${toString config.custom.services.recursive-nameserver.port}"
+                  "[/${netCfg.overlay.domain}/]127.0.0.1:${lib.toString config.custom.services.recursive-nameserver.port}"
                 ]
                 ++ recursiveNameservers;
               };

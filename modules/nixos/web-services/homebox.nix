@@ -21,7 +21,7 @@ in
     services.homebox = {
       enable = true;
       settings = {
-        HBOX_WEB_PORT = toString cfg.port;
+        HBOX_WEB_PORT = lib.toString cfg.port;
         HBOX_WEB_HOST = "127.0.0.1";
         HBOX_OPTIONS_TRUST_PROXY = "true";
         HBOX_OPTIONS_ALLOW_REGISTRATION = "true";

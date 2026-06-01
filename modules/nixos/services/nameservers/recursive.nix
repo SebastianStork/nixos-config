@@ -15,7 +15,7 @@ let
     |> lib.filter (host: host.config.custom.services.private-nameserver.enable)
     |> lib.map (
       host:
-      "${host.config.custom.networking.overlay.address}@${toString host.config.custom.services.private-nameserver.port}"
+      "${host.config.custom.networking.overlay.address}@${lib.toString host.config.custom.services.private-nameserver.port}"
     );
 
   lanLocalData =
@@ -47,7 +47,7 @@ in
           unbound = {
             enable = true;
             settings.server = {
-              interface = [ "${netCfg.overlay.address}@${toString cfg.port}" ];
+              interface = [ "${netCfg.overlay.address}@${lib.toString cfg.port}" ];
               access-control = [ "${netCfg.overlay.networkCidr} allow" ];
               prefetch = true;
             };
@@ -83,7 +83,7 @@ in
       (lib.mkIf netCfg.underlay.trusted {
         services.unbound.settings = {
           server = {
-            interface = [ "127.0.0.1@${toString cfg.port}" ];
+            interface = [ "127.0.0.1@${lib.toString cfg.port}" ];
             access-control = [ "127.0.0.1/32 allow" ];
             access-control-view = "127.0.0.1/32 lan";
           };

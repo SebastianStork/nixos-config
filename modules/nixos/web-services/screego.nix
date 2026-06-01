@@ -21,7 +21,7 @@ in
       openFirewall = true;
       settings = {
         SCREEGO_EXTERNAL_IP = config.custom.networking.underlay.address;
-        SCREEGO_SERVER_ADDRESS = "127.0.0.1:${toString cfg.port}";
+        SCREEGO_SERVER_ADDRESS = "127.0.0.1:${lib.toString cfg.port}";
         SCREEGO_TURN_ADDRESS = "${config.custom.networking.underlay.address}:3478";
       };
     };

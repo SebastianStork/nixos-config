@@ -1,4 +1,4 @@
-{ self, ... }:
+{ self, lib, ... }:
 {
   imports = [ self.nixosModules.default ];
 
@@ -15,8 +15,8 @@
 
     services = {
       nebula = {
-        publicKeyFile = toString ./keys/nebula.pub;
-        certificateFile = toString ./keys/nebula.crt;
+        publicKeyFile = lib.toString ./keys/nebula.pub;
+        certificateFile = lib.toString ./keys/nebula.crt;
       };
 
       syncthing = {

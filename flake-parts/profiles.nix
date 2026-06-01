@@ -2,7 +2,7 @@
 {
   flake.nixosModules =
     "${self}/profiles"
-    |> builtins.readDir
+    |> lib.readDir
     |> lib.attrNames
     |> lib.map (name: {
       name = "${name |> lib.removeSuffix ".nix"}-profile";

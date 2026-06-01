@@ -72,7 +72,7 @@ in
     services = {
       nsd = {
         enable = true;
-        interfaces = [ "${netCfg.overlay.address}@${toString cfg.port}" ];
+        interfaces = [ "${netCfg.overlay.address}@${lib.toString cfg.port}" ];
         zones.${netCfg.overlay.domain}.data = zoneData;
       };
 

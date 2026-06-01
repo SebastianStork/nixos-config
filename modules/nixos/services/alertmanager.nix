@@ -38,8 +38,8 @@ in
         webExternalUrl = "https://${cfg.domain}";
 
         extraFlags = [
-          "--cluster.advertise-address=${config.custom.networking.overlay.address}:${toString cfg.clusterPort}"
-          "--cluster.listen-address=${config.custom.networking.overlay.address}:${toString cfg.clusterPort}"
+          "--cluster.advertise-address=${config.custom.networking.overlay.address}:${lib.toString cfg.clusterPort}"
+          "--cluster.listen-address=${config.custom.networking.overlay.address}:${lib.toString cfg.clusterPort}"
         ]
         ++ (
           allHosts
@@ -47,7 +47,8 @@ in
           |> lib.filter (host: host.config.networking.hostName != config.networking.hostName)
           |> lib.filter (host: host.config.custom.services.alertmanager.enable)
           |> lib.map (
-            host: "--cluster.peer ${host.config.custom.networking.overlay.address}:${toString cfg.clusterPort}"
+            host:
+            "--cluster.peer ${host.config.custom.networking.overlay.address}:${lib.toString cfg.clusterPort}"
           )
         );
 
@@ -61,7 +62,9 @@ in
           };
           receivers = lib.singleton {
             name = "ntfy";
-            webhook_configs = lib.singleton { url = "http://localhost:${toString cfg.ntfyBridgePort}/hook"; };
+            webhook_configs = lib.singleton {
+              url = "http://localhost:${lib.toString cfg.ntfyBridgePort}/hook";
+            };
           };
           inhibit_rules = lib.singleton {
             source_matchers = [
@@ -77,7 +80,7 @@ in
       prometheus.alertmanager-ntfy = {
         enable = true;
         settings = {
-          http.addr = "localhost:${toString cfg.ntfyBridgePort}";
+          http.addr = "localhost:${lib.toString cfg.ntfyBridgePort}";
           ntfy = {
             baseurl = "https://ntfy.sh";
             notification = {

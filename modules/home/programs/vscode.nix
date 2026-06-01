@@ -41,7 +41,7 @@
     systemd.user.tmpfiles.rules =
       let
         settings = lib.replaceStrings [ "," ] [ ",\\n" ] (
-          builtins.toJSON {
+          lib.toJSON {
             "extensions.autoCheckUpdates" = false;
             "editor.fontFamily" = "JetBrainsMono Nerd Font";
             "workbench.iconTheme" = "material-icon-theme";

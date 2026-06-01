@@ -94,7 +94,7 @@ in
         group = lib.mkIf (!cfg.isServer) "users";
         dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
 
-        guiAddress = "localhost:${toString cfg.gui.port}";
+        guiAddress = "localhost:${lib.toString cfg.gui.port}";
 
         cert =
           if (cfg.certFile != null) then
@@ -120,7 +120,7 @@ in
               |> lib.mapAttrs (
                 _: host: {
                   id = host.config.custom.services.syncthing.deviceId;
-                  addresses = lib.singleton "tcp://${host.config.custom.networking.overlay.address}:${toString host.config.custom.services.syncthing.port}";
+                  addresses = lib.singleton "tcp://${host.config.custom.networking.overlay.address}:${lib.toString host.config.custom.services.syncthing.port}";
                 }
               );
 
@@ -135,7 +135,7 @@ in
               });
 
             options = {
-              listenAddress = "tcp://${netCfg.overlay.address}:${toString cfg.port}";
+              listenAddress = "tcp://${netCfg.overlay.address}:${lib.toString cfg.port}";
               globalAnnounceEnabled = false;
               localAnnounceEnabled = false;
               relaysEnabled = false;

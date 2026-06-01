@@ -29,7 +29,7 @@ in
       enable = true;
       environmentFile = config.sops.templates."karakeep.env".path;
       extraEnvironment = {
-        PORT = toString cfg.port;
+        PORT = lib.toString cfg.port;
         DISABLE_NEW_RELEASE_CHECK = "true";
         OCR_LANGS = "eng,deu";
       };

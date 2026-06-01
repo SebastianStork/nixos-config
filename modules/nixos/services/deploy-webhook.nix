@@ -66,7 +66,7 @@ in
 
     custom.services.caddy.virtualHosts.${config.custom.networking.overlay.fqdn}.extraConfig = ''
       handle /hooks/deploy {
-        reverse_proxy localhost:${toString cfg.webhookPort}
+        reverse_proxy localhost:${lib.toString cfg.webhookPort}
       }
     '';
   };

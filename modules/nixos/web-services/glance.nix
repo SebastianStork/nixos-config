@@ -54,7 +54,7 @@ let
 
   workflowFiles =
     "${self}/.forgejo/workflows"
-    |> builtins.readDir
+    |> lib.readDir
     |> lib.attrNames
     |> lib.filter (file: file |> lib.hasSuffix ".yml")
     |> lib.filter (file: file |> lib.hasPrefix "_" |> (hasPrefix: !hasPrefix));

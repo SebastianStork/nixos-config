@@ -84,7 +84,7 @@ in
     services.radicale = {
       enable = true;
       settings = {
-        server.hosts = "localhost:${toString cfg.port}";
+        server.hosts = "localhost:${lib.toString cfg.port}";
         auth = {
           type = "htpasswd";
           htpasswd_filename = config.sops.secrets."radicale/htpasswd".path;

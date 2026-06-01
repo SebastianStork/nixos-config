@@ -88,7 +88,7 @@ in
   config = lib.mkIf cfg.enable {
     services.nsd = {
       enable = true;
-      interfaces = [ "${netCfg.underlay.address}@${toString cfg.port}" ];
+      interfaces = [ "${netCfg.underlay.address}@${lib.toString cfg.port}" ];
       zones =
         cfg.zones
         |> lib.map (zone: {

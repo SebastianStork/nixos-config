@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}:
+{ lib, ... }:
 {
   defaults =
     { config, ... }:
@@ -96,7 +93,7 @@
 
       with subtest("DNS readiness"):
         server.wait_for_unit("unbound.service")
-        server.wait_for_open_port(${toString nodes.server.custom.services.recursive-nameserver.port}, "${serverNetCfg.overlay.address}")
+        server.wait_for_open_port(${lib.toString nodes.server.custom.services.recursive-nameserver.port}, "${serverNetCfg.overlay.address}")
 
       with subtest("DNS resolution of FQDNs"):
         client1.wait_until_succeeds("getent ahostsv4 ${serverNetCfg.overlay.fqdn} | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
