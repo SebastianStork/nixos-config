@@ -1,5 +1,6 @@
 {
   config,
+  self,
   pkgs,
   lib,
   ...
@@ -44,7 +45,7 @@ in
     }
     // (
       backupsWithHealthchecks
-      |> lib.map (backup: {
+      |> self.lib.genAttrs' (backup: {
         name = "restic-backups-${backup.name}";
         value = {
           wants = [ "healthcheck-ping@${backup.name}-backup_start.service" ];
@@ -52,7 +53,6 @@ in
           onFailure = [ "healthcheck-ping@${backup.name}-backup_fail.service" ];
         };
       })
-      |> lib.listToAttrs
     );
   };
 }

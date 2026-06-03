@@ -111,7 +111,7 @@ in
           enable = true;
           globalConfig = "metrics { per_host }";
           extraConfig = ":${lib.toString cfg.metricsPort} { metrics /metrics }";
-          virtualHosts = virtualHosts |> lib.map mkVirtualHost |> lib.listToAttrs;
+          virtualHosts = virtualHosts |> self.lib.genAttrs' mkVirtualHost;
         };
 
         custom.persistence.directories = [ "/var/lib/caddy" ];
@@ -137,7 +137,7 @@ in
             reloadServices = [ "caddy.service" ];
           };
 
-          certs = privateDomains |> lib.map (domain: lib.nameValuePair domain { }) |> lib.listToAttrs;
+          certs = privateDomains |> self.lib.genAttrs' (domain: lib.nameValuePair domain { });
         };
 
         services.nebula.networks.mesh.firewall.inbound = [

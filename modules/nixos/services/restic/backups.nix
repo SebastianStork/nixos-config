@@ -1,5 +1,6 @@
 {
   config,
+  self,
   pkgs,
   lib,
   ...
@@ -60,7 +61,7 @@ in
 
     services.restic.backups =
       backups
-      |> lib.map (backup: {
+      |> self.lib.genAttrs' (backup: {
         inherit (backup) name;
         value = lib.mkMerge [
           {
@@ -81,13 +82,12 @@ in
           }
           backup.extraConfig
         ];
-      })
-      |> lib.listToAttrs;
+      });
 
     systemd.services =
       backups
       |> lib.filter (backup: backup.conflictingService != null)
-      |> lib.map (backup: {
+      |> self.lib.genAttrs' (backup: {
         name = "restic-backups-${backup.name}";
         value = {
           unitConfig.Conflicts = [ backup.conflictingService ];
@@ -95,8 +95,7 @@ in
           onSuccess = [ backup.conflictingService ];
           onFailure = [ backup.conflictingService ];
         };
-      })
-      |> lib.listToAttrs;
+      });
 
     environment.systemPackages =
       let

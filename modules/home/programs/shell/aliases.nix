@@ -1,5 +1,6 @@
 {
   config,
+  self,
   pkgs,
   lib,
   ...
@@ -83,10 +84,9 @@
                 restriction
               ]
             )
-            |> lib.map (
+            |> self.lib.genAttrs' (
               aliasParts: lib.nameValuePair (lib.concatStrings aliasParts) (aliasPartsToCommand aliasParts)
-            )
-            |> lib.listToAttrs;
+            );
         in
         lsAliases
         // {

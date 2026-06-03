@@ -1,10 +1,31 @@
 {
   config,
+  self,
   pkgs,
   lib,
   allHosts,
   ...
 }:
+let
+  mkMount =
+    { what, where }:
+    {
+      name = where |> lib.removePrefix "/" |> lib.replaceString "/" "-";
+      value = {
+        Install.WantedBy = [ "default.target" ];
+        Unit = {
+          Wants = [ "network-online.target" ];
+          After = [ "network-online.target" ];
+        };
+        Mount = {
+          Type = "fuse.sshfs";
+          What = what;
+          Where = where;
+          Options = "_netdev,user,delay_connect,reconnect,ServerAliveInterval=15,dir_cache=yes,idmap=user,follow_symlinks,transform_symlinks,compression=yes";
+        };
+      };
+    };
+in
 {
   home.packages =
     allHosts
@@ -31,24 +52,5 @@
           where = "${config.home.homeDirectory}/Share/${hostName}";
         })
     )
-    |> lib.map (
-      { what, where }:
-      {
-        name = where |> lib.removePrefix "/" |> lib.replaceString "/" "-";
-        value = {
-          Install.WantedBy = [ "default.target" ];
-          Unit = {
-            Wants = [ "network-online.target" ];
-            After = [ "network-online.target" ];
-          };
-          Mount = {
-            Type = "fuse.sshfs";
-            What = what;
-            Where = where;
-            Options = "_netdev,user,delay_connect,reconnect,ServerAliveInterval=15,dir_cache=yes,idmap=user,follow_symlinks,transform_symlinks,compression=yes";
-          };
-        };
-      }
-    )
-    |> lib.listToAttrs;
+    |> self.lib.genAttrs' mkMount;
 }

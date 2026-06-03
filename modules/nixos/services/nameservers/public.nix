@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  self,
   lib,
   allHosts,
   ...
@@ -64,8 +65,7 @@ let
         serviceRecords
         |> lib.filter ({ name, ... }: name != "")
         |> (subRecords: nsRecords ++ subRecords)
-        |> lib.map mkSubdomain
-        |> lib.listToAttrs;
+        |> self.lib.genAttrs' mkSubdomain;
     };
 in
 {
@@ -89,13 +89,7 @@ in
     services.nsd = {
       enable = true;
       interfaces = [ "${netCfg.underlay.address}@${lib.toString cfg.port}" ];
-      zones =
-        cfg.zones
-        |> lib.map (zone: {
-          name = zone;
-          value.data = zoneData zone;
-        })
-        |> lib.listToAttrs;
+      zones = cfg.zones |> self.lib.genAttrs' (zone: lib.nameValuePair zone { data = zoneData zone; });
     };
 
     networking.firewall = {

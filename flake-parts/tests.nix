@@ -48,6 +48,6 @@
       };
     in
     {
-      checks = "${self}/tests" |> self.lib.listDirectoryNames |> lib.map mkTest |> lib.listToAttrs;
+      checks = "${self}/tests" |> self.lib.listDirectoryNames |> self.lib.genAttrs' mkTest;
     };
 }

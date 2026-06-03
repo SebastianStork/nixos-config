@@ -56,7 +56,7 @@ let
             })
           );
       in
-      (nodeRecords ++ serviceRecords) |> lib.map mkSubdomain |> lib.listToAttrs;
+      (nodeRecords ++ serviceRecords) |> self.lib.genAttrs' mkSubdomain;
   };
 in
 {

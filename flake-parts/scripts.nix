@@ -19,7 +19,6 @@
       };
     in
     {
-      packages =
-        "${self}/scripts" |> lib.filesystem.listFilesRecursive |> lib.map mkScript |> lib.listToAttrs;
+      packages = "${self}/scripts" |> lib.filesystem.listFilesRecursive |> self.lib.genAttrs' mkScript;
     };
 }

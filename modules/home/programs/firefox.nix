@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  self,
   pkgs,
   lib,
   allHosts,
@@ -147,9 +148,8 @@ in
         (
           cfg.extensions
           |> lib.attrValues
-          |> lib.filter ({ enable, ... }: enable)
-          |> lib.map mkExtension
-          |> lib.listToAttrs
+          |> lib.filter (extension: extension.enable)
+          |> self.lib.genAttrs' mkExtension
         )
         // {
           "*".installation_mode = "blocked";

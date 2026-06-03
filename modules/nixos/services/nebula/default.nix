@@ -113,11 +113,10 @@ in
         allHosts
         |> lib.attrValues
         |> lib.filter (host: host.config.custom.services.nebula.advertise.address != null)
-        |> lib.map (host: {
+        |> self.lib.genAttrs' (host: {
           name = host.config.custom.networking.overlay.address;
           value = lib.singleton "${host.config.custom.services.nebula.advertise.address}:${lib.toString host.config.custom.services.nebula.advertise.port}";
-        })
-        |> lib.listToAttrs;
+        });
 
       firewall = {
         outbound = lib.singleton {
