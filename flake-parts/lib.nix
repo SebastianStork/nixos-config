@@ -11,6 +11,8 @@
 
     genAttrs = f: names: lib.genAttrs names f;
 
+    genAttrs' = f: names: lib.genAttrs' names f;
+
     mkInvalidConfigMessage = subject: reason: "Invalid configuration for ${subject}: ${reason}.";
 
     mkUnprotectedMessage =
