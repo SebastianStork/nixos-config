@@ -38,7 +38,11 @@ in
     };
     prefixLength = lib.mkOption {
       type = lib.types.ints.between 0 32;
-      default = cfg.networkCidr |> lib.splitString "/" |> lib.last |> lib.toInt;
+      default =
+        cfg.networkCidr
+        |> lib.splitString "/"
+        |> lib.last
+        |> lib.toInt;
       readOnly = true;
     };
     domain = lib.mkOption {

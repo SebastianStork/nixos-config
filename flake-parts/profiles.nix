@@ -7,5 +7,8 @@ let
 in
 {
   flake.nixosModules =
-    "${self}/profiles" |> lib.readDir |> lib.attrNames |> self.lib.genAttrs' mkProfile;
+    "${self}/profiles"
+    |> lib.readDir
+    |> lib.attrNames
+    |> self.lib.genAttrs' mkProfile;
 }

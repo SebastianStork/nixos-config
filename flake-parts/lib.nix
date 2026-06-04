@@ -7,7 +7,11 @@
       dir: dir |> lib.filesystem.listFilesRecursive |> lib.filter (lib.hasSuffix ".nix");
 
     listDirectoryNames =
-      path: path |> lib.readDir |> lib.filterAttrs (_: type: type == "directory") |> lib.attrNames;
+      path:
+      path
+      |> lib.readDir
+      |> lib.filterAttrs (_: type: type == "directory")
+      |> lib.attrNames;
 
     genAttrs = f: names: lib.genAttrs names f;
 
