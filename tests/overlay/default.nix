@@ -1,5 +1,7 @@
 { lib, ... }:
 {
+  imports = [ (import ../common.nix ./.) ];
+
   defaults =
     { config, ... }:
     {
