@@ -51,6 +51,7 @@
     pkgs.obsidian
     pkgs.anki
     pkgs.discord
+    pkgs.zed-editor
 
     pkgs.corefonts
     pkgs.roboto
