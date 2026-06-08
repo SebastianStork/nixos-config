@@ -1,12 +1,12 @@
 { inputs, self, ... }:
 {
   perSystem =
-    { inputs', pkgs, ... }:
+    { pkgs, ... }:
     {
       checks = {
         formatting = (inputs.treefmt.lib.evalModule pkgs "${self}/treefmt.nix").config.build.check self;
 
-        statix = pkgs.runCommand "statix" { buildInputs = [ inputs'.statix.packages.statix ]; } ''
+        statix = pkgs.runCommand "statix" { buildInputs = [ pkgs.statix ]; } ''
           statix check ${self}
           touch $out
         '';

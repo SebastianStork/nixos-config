@@ -23,14 +23,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    statix = {
-      url = "github:oppiliappan/statix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
-
     # For Workstations
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
