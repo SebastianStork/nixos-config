@@ -131,6 +131,7 @@ in
             "browser.uidensity" = 1;
             "sidebar.revamp" = false;
             "media.eme.enabled" = true;
+            "ui.key.menuAccessKeyFocuses" = false;
           };
 
         search = lib.mkIf (cfg.searchEngine != null) {
