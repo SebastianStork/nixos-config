@@ -17,10 +17,17 @@
       };
     };
 
-    services.forgejo-runner = {
-      enable = true;
-      forgejoUrl = "https://codeberg.org";
-      capacity = 4;
+    services = {
+      forgejo-runner = {
+        enable = true;
+        forgejoUrl = "https://codeberg.org";
+        capacity = 4;
+      };
+      gitlab-runner = {
+        enable = true;
+        gitlabUrl = "https://code.fbi.h-da.de";
+        concurrent = 2;
+      };
     };
 
     web-services.librespeed.enable = true;
