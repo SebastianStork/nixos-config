@@ -25,6 +25,10 @@ in
 
     services.gitlab-runner = {
       enable = true;
+      clear-docker-cache = {
+        enable = true;
+        flags = [ "-af" ];
+      };
       settings.concurrent = cfg.concurrent;
       services.default = {
         description = config.networking.hostName;
@@ -36,10 +40,12 @@ in
           "/var/run/docker.sock:/var/run/docker.sock"
           "/cache"
         ];
-        registrationFlags = [ "--docker-network-mode=bridge" ];
       };
     };
 
-    custom.persistence.directories = [ "/var/lib/private/gitlab-runner" ];
+    custom.persistence.directories = [
+      "/var/lib/private/gitlab-runner"
+      "/var/lib/docker"
+    ];
   };
 }
