@@ -75,7 +75,7 @@
         );
       in
       [
-        "f+ %h/.config/Code/User/settings.json - - - - ${settings}"
+        "f+! %h/.config/Code/User/settings.json - - - - ${settings}"
         "f+ %h/.config/Code/User/settings-default.json - - - - ${settings}"
       ];
   };
