@@ -1,6 +1,8 @@
 { self, lib, ... }:
 {
   flake.lib = {
+    concatWords = words: words |> lib.concatStringsSep " ";
+
     isPrivateDomain = domain: domain |> lib.hasSuffix ".splitleaf.de";
 
     listNixFilesRecursively =
