@@ -9,23 +9,20 @@ let
 
   deploy = pkgs.writeShellApplication {
     name = "deploy";
-    runtimeInputs = [
-      pkgs.nixos-rebuild
-      pkgs.git
-      pkgs.dix
-      pkgs.systemd
-    ];
+    runtimeInputs = [ pkgs.systemd ];
     text = ''
-      old_system=$(readlink /run/current-system)
       old_unit=$(systemctl cat webhook.service 2>/dev/null || true)
 
-      nixos-rebuild switch --flake git+https://codeberg.org/SebastianStork/nixos-config --refresh
-      dix "$old_system" /run/current-system
+      rc=0
+      systemctl start --wait nixos-rebuild.service || rc=$?
+      journalctl --invocation=0 --unit=nixos-rebuild.service --output=cat --no-pager
 
       new_unit=$(systemctl cat webhook.service 2>/dev/null || true)
       if [ "$old_unit" != "$new_unit" ]; then
         systemd-run --on-active=30 -- systemctl restart webhook.service
       fi
+
+      exit "$rc"
     '';
   };
 in
@@ -39,7 +36,29 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.services.webhook.restartIfChanged = false;
+    systemd.services = {
+      webhook.restartIfChanged = false;
+
+      nixos-rebuild = {
+        description = "NixOS rebuild from latest commit";
+        path = [
+          pkgs.nixos-rebuild
+          pkgs.git
+          pkgs.dix
+        ];
+        serviceConfig.Type = "oneshot";
+        script = ''
+          old_system=$(readlink /run/current-system)
+
+          echo "==> nixos-rebuild"
+          nixos-rebuild switch --flake git+https://codeberg.org/SebastianStork/nixos-config --refresh
+
+          echo
+          echo "==> diff"
+          dix "$old_system" /run/current-system
+        '';
+      };
+    };
 
     services.webhook = {
       enable = true;
