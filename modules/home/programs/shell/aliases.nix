@@ -54,7 +54,7 @@
                   .${aliasPart}
                 )
                 |> (flags: eza ++ flags)
-                |> lib.concatStringsSep " ";
+                |> self.lib.concatWords;
             in
             {
               format = [

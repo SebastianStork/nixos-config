@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  self,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.services.auto-gc;
 in
@@ -20,7 +25,7 @@ in
             "--keep-since 7d"
           ]
           ++ lib.optional cfg.onlyCleanRoots "--no-gc"
-          |> lib.concatStringsSep " ";
+          |> self.lib.concatWords;
       };
     };
   };

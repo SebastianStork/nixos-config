@@ -1,5 +1,6 @@
 {
   config,
+  self,
   pkgs,
   lib,
   ...
@@ -22,7 +23,7 @@ in
           let
             sessionData = config.services.displayManager.sessionData.desktops;
           in
-          lib.concatStringsSep " " [
+          self.lib.concatWords [
             (lib.getExe pkgs.tuigreet)
             "--time"
             "--asterisks"
