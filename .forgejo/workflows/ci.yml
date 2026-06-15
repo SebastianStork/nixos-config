@@ -73,8 +73,23 @@ jobs:
         server: ${{ fromJSON(needs.parse-flake.outputs.servers) }}
     steps:
       - name: Deploy
-        timeout-minutes: 10
-        run: curl --fail-with-body https://${{ matrix.server }}.splitleaf.de/hooks/deploy
+        timeout-minutes: 30
+        env:
+          URL: https://${{ matrix.server }}.splitleaf.de/hooks/deploy
+        run: |
+          for attempt in $(seq 1 10); do
+            http_code=$(curl --silent --show-error --output response.txt --write-out '%{http_code}' --max-time 1800 "$URL" || echo 000)
+            case "$http_code" in
+              200) cat response.txt; exit 0 ;;
+              500) cat response.txt; exit 1 ;;
+              *)
+                echo "Transient error (HTTP $http_code), retry $attempt/10"
+                sleep 10
+                ;;
+            esac
+          done
+          echo "Max retries exceeded"
+          exit 1
   notify:
     if: always()
     needs: [deploy]
