@@ -50,12 +50,14 @@ in
         script = ''
           old_system=$(readlink /run/current-system)
 
+          echo " "
           echo "==> nixos-rebuild"
           nixos-rebuild switch --flake git+https://codeberg.org/SebastianStork/nixos-config --refresh
 
-          echo
+          echo " "
           echo "==> diff"
           dix "$old_system" /run/current-system
+          echo " "
         '';
       };
     };
