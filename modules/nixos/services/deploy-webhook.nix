@@ -41,6 +41,7 @@ in
 
       nixos-rebuild = {
         description = "NixOS rebuild from latest commit";
+        restartIfChanged = false;
         path = [
           pkgs.nixos-rebuild
           pkgs.git
