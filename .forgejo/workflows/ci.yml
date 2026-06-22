@@ -14,6 +14,7 @@ jobs:
     runs-on: nixos
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
+      tests: ${{ steps.tests.outputs.tests }}
       servers: ${{ steps.servers.outputs.servers }}
     steps:
       - name: Checkout
@@ -23,6 +24,11 @@ jobs:
         run: |
           checks=$(nix eval .#checks.x86_64-linux --apply builtins.attrNames --json)
           printf "checks=%s" "$checks" >> "$FORGEJO_OUTPUT"
+      - name: Get tests
+        id: tests
+        run: |
+          tests=$(nix eval .#tests.x86_64-linux --apply builtins.attrNames --json)
+          printf "tests=%s" "$tests" >> "$FORGEJO_OUTPUT"
       - name: Get servers
         id: servers
         run: |
@@ -48,6 +54,22 @@ jobs:
           flake-output: .#checks.x86_64-linux.${{ matrix.check }}
       - name: Upload
         uses: ./.forgejo/actions/upload
+  build-test:
+    needs: parse-flake
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ${{ fromJSON(needs.parse-flake.outputs.tests) }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build
+        uses: ./.forgejo/actions/build
+        with:
+          flake-output: .#tests.x86_64-linux.${{ matrix.test }}
+      - name: Upload
+        uses: ./.forgejo/actions/upload
   build-server:
     needs: parse-flake
     runs-on: nixos
@@ -65,7 +87,7 @@ jobs:
       - name: Upload
         uses: ./.forgejo/actions/upload
   deploy:
-    needs: [parse-flake, build-check, build-server]
+    needs: [parse-flake, build-check, build-test, build-server]
     runs-on: nixos
     strategy:
       fail-fast: false
