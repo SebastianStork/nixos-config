@@ -1,4 +1,9 @@
-{ config, inputs, ... }:
+{
+  config,
+  inputs,
+  lib,
+  ...
+}:
 {
   imports = [ inputs.nixos-hardware.nixosModules.hardkernel-odroid-h4 ];
 
@@ -10,7 +15,14 @@
       "coretemp"
       "it87"
     ];
-    extraModulePackages = [ config.boot.kernelPackages.it87 ];
+    extraModulePackages = [
+      # Compress + hiPrio so the fork overrides the in-tree it87.ko.xz (which lacks IT8613 support).
+      (lib.hiPrio (
+        config.boot.kernelPackages.it87.overrideAttrs {
+          postInstall = ''xz "$out/lib/modules/"*/kernel/drivers/hwmon/it87.ko'';
+        }
+      ))
+    ];
     initrd.availableKernelModules = [
       "xhci_pci"
       "ahci"
