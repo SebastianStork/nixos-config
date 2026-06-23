@@ -43,6 +43,7 @@ in
         "Pictures"
         "Projects"
         "Videos"
+        ".claude/projects"
       ];
     };
 
