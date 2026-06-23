@@ -7,6 +7,10 @@
     {
       custom.services.syncthing = {
         enable = true;
+        folders = lib.mkDefault [
+          "Documents"
+          "Pictures"
+        ];
         deviceId = ./keys/${config.networking.hostName}/syncthing.id |> lib.readFile |> lib.trim;
         certFile = ./keys/${config.networking.hostName}/syncthing.cert;
         keyFile = ./keys/${config.networking.hostName}/syncthing.key;
