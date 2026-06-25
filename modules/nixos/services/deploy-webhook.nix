@@ -41,7 +41,7 @@ in
         nh os switch \
           --bypass-root-check \
           --refresh \
-          --no-build-output \
+          --no-nom \
           --show-activation-logs \
           git+https://codeberg.org/SebastianStork/nixos-config
       '';
