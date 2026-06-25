@@ -32,22 +32,18 @@ in
       description = "NixOS rebuild from latest commit";
       restartIfChanged = false;
       path = [
-        pkgs.nixos-rebuild
+        pkgs.nh
+        pkgs.nix
         pkgs.git
-        pkgs.dix
       ];
       serviceConfig.Type = "oneshot";
       script = ''
-        old_system=$(readlink /run/current-system)
-
-        echo " "
-        echo "==> nixos-rebuild"
-        nixos-rebuild switch --flake git+https://codeberg.org/SebastianStork/nixos-config --refresh
-
-        echo " "
-        echo "==> diff"
-        dix "$old_system" /run/current-system
-        echo " "
+        nh os switch \
+          --bypass-root-check \
+          --refresh \
+          --no-build-output \
+          --show-activation-logs \
+          git+https://codeberg.org/SebastianStork/nixos-config
       '';
     };
 
