@@ -43,6 +43,7 @@ in
     };
 
     systemd.services.gitea-runner-default = {
+      restartIfChanged = false;
       preStart = ''mkdir -p "$HOME/tmp"'';
       postStop = ''rm -rf "$HOME/tmp"'';
     };
