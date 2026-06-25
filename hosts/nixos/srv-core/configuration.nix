@@ -22,8 +22,10 @@
         enable = true;
         gui.domain = "adguard.${config.custom.networking.overlay.fqdn}";
       };
-      recursive-nameserver.enable = true;
-      private-nameserver.enable = true;
+      recursive-nameserver = {
+        enable = true;
+        serveAuthoritatively = true;
+      };
 
       syncthing = {
         enable = true;
