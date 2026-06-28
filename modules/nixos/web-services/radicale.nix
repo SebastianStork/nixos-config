@@ -1,65 +1,7 @@
-{
-  config,
-  inputs,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   cfg = config.custom.web-services.radicale;
   dataDir = config.services.radicale.settings.storage.filesystem_folder;
-
-  initScript =
-    let
-      gitignore = pkgs.writeText "radicale-collection-gitignore" ''
-        .Radicale.cache
-        .Radicale.lock
-        .Radicale.tmp-*
-      '';
-    in
-    pkgs.writeShellApplication {
-      name = "radicale-git-init";
-      runtimeInputs = [ pkgs.git ];
-      text = ''
-        cd ${dataDir}
-
-        if [[ ! -e .git ]]; then
-          git init --initial-branch main
-        fi
-
-        git config user.name "Radicale"
-        git config user.email "radicale@${config.networking.hostName}"
-
-        cat ${gitignore} > .gitignore
-        git add .gitignore
-        if ! git diff --cached --quiet; then
-          git commit --message "Update .gitignore"
-        fi
-      '';
-    };
-
-  hookScript = pkgs.writeShellApplication {
-    name = "radicale-git-hook";
-    runtimeInputs = [
-      pkgs.git
-      pkgs.gawk
-      (pkgs.python3.withPackages (python-pkgs: [
-        python-pkgs.python-dateutil
-        python-pkgs.vobject
-      ]))
-    ];
-    text = ''
-      username="$1"
-      create_birthday_calendar="${inputs.radicale-birthday-calendar}/create_birthday_calendar.py"
-
-      git status --porcelain | awk '{print $2}' | python3 $create_birthday_calendar
-
-      git add -A
-      if ! git diff --cached --quiet; then
-        git commit --message "Changes by $username"
-      fi
-    '';
-  };
 in
 {
   options.custom.web-services.radicale = {
@@ -91,12 +33,8 @@ in
           htpasswd_encryption = "bcrypt";
         };
         storage.filesystem_folder = "/var/lib/radicale/collections";
-
-        storage.hook = "${lib.getExe hookScript} %(user)s";
       };
     };
-
-    systemd.services.radicale.serviceConfig.ExecStartPre = lib.getExe initScript;
 
     custom = {
       services = {
