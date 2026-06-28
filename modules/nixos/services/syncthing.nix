@@ -15,6 +15,9 @@ let
     "(?d)target/"
     "(?d).direnv/"
     "(?d)result"
+    "(?d)*.db-wal"
+    "(?d)*.db-shm"
+    "(?d)*.db-journal"
   ];
 in
 {
