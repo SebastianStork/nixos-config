@@ -53,6 +53,7 @@
     pkgs.anki
     pkgs.discord
     pkgs.zed-editor
+    pkgs.calibre
 
     pkgs.corefonts
     pkgs.roboto
