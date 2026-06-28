@@ -10,6 +10,12 @@ let
   netCfg = config.custom.networking;
 
   inherit (config.services.syncthing) dataDir;
+
+  ignorePatterns = [
+    "(?d)target/"
+    "(?d).direnv/"
+    "(?d)result"
+  ];
 in
 {
   options.custom.services.syncthing = {
@@ -129,6 +135,7 @@ in
               cfg.folders
               |> self.lib.genAttrs (folder: {
                 path = "${dataDir}/${folder}";
+                inherit ignorePatterns;
                 devices =
                   hosts
                   |> lib.filterAttrs (_: host: host.config.custom.services.syncthing.folders |> lib.elem folder)
