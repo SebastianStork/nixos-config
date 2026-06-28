@@ -73,6 +73,11 @@
         doBackups = true;
       };
 
+      calibre-server = {
+        enable = true;
+        domain = "library.${config.custom.networking.overlay.domain}";
+      };
+
       karakeep = {
         enable = true;
         domain = "bookmarks.${config.custom.networking.overlay.domain}";
