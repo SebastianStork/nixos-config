@@ -46,7 +46,7 @@ in
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.sites.${cfg.domain} = {
-        title = "Calibre-Server";
+        title = "Calibre";
         icon = "sh:calibre";
       };
     };
