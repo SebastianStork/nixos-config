@@ -7,6 +7,21 @@
 let
   cfg = config.custom.services.deploy-webhook;
 
+  nh = pkgs.nh.override {
+    nh-unwrapped = pkgs.nh-unwrapped.overrideAttrs (old: {
+      src = pkgs.applyPatches {
+        inherit (old) src;
+        patches = [
+          (pkgs.fetchpatch {
+            url = "https://github.com/nix-community/nh/commit/b22d44c.patch";
+            includes = [ "crates/nh-core/src/command.rs" ];
+            hash = "sha256-OjpoivBdEqX8mhqvy/6qSO07Kq9LXCIX9lB5++r/LsQ=";
+          })
+        ];
+      };
+    });
+  };
+
   deploy = pkgs.writeShellApplication {
     name = "deploy";
     runtimeInputs = [ pkgs.systemd ];
@@ -32,7 +47,7 @@ in
       description = "NixOS rebuild from latest commit";
       restartIfChanged = false;
       path = [
-        pkgs.nh
+        nh
         pkgs.nix
         pkgs.git
       ];
