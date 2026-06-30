@@ -28,10 +28,11 @@ let
 in
 {
   home.packages =
-    allHosts
-    |> lib.attrValues
-    |> lib.any (host: host.config.custom.services.file-share.enable)
-    |> (hasFileShare: lib.optional hasFileShare pkgs.sshfs);
+    let
+      hasFileShare =
+        allHosts |> lib.attrValues |> lib.any (host: host.config.custom.services.file-share.enable);
+    in
+    lib.optional hasFileShare pkgs.sshfs;
 
   systemd.user.mounts =
     allHosts

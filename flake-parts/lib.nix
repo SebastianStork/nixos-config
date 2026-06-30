@@ -3,6 +3,8 @@
   flake.lib = {
     concatWords = words: words |> lib.concatStringsSep " ";
 
+    headOrNull = list: if list == [ ] then null else list |> lib.head;
+
     isPrivateDomain = domain: domain |> lib.hasSuffix ".splitleaf.de";
 
     listNixFilesRecursively =

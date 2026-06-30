@@ -9,25 +9,28 @@ let
   cfg = config.custom.web-services.glance;
 
   perHostSitesWidget =
-    allHosts
-    |> lib.attrValues
-    |> lib.map (host: {
-      type = "monitor";
-      cache = "1m";
-      title = "${host.config.networking.hostName} Services";
-      style = "compact";
-      sites =
-        host.config.custom.meta.sites
+    let
+      widgets =
+        allHosts
         |> lib.attrValues
-        |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn)
-        |> lib.sort (a: b: a.title < b.title);
-    })
-    |> lib.filter ({ sites, ... }: sites != [ ])
-    |> (widgets: {
+        |> lib.map (host: {
+          type = "monitor";
+          cache = "1m";
+          title = "${host.config.networking.hostName} Services";
+          style = "compact";
+          sites =
+            host.config.custom.meta.sites
+            |> lib.attrValues
+            |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn)
+            |> lib.sort (a: b: a.title < b.title);
+        })
+        |> lib.filter ({ sites, ... }: sites != [ ]);
+    in
+    {
       type = "split-column";
       max-columns = widgets |> lib.length;
       inherit widgets;
-    });
+    };
 
   perHostDomains =
     perHostSitesWidget.widgets |> lib.concatMap (widget: widget.sites) |> lib.map (site: site.domain);
@@ -57,7 +60,7 @@ let
     |> lib.readDir
     |> lib.attrNames
     |> lib.filter (file: file |> lib.hasSuffix ".yml")
-    |> lib.filter (file: file |> lib.hasPrefix "_" |> (hasPrefix: !hasPrefix));
+    |> lib.filter (file: !(file |> lib.hasPrefix "_"));
 
   mkWorkflowBadge =
     workflowFile:

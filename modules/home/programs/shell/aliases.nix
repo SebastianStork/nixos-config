@@ -39,22 +39,24 @@
 
               aliasPartsToCommand =
                 aliasParts:
-                aliasParts
-                |> lib.filter (aliasPart: aliasPart != "")
-                |> lib.map (
-                  aliasPart:
-                  {
-                    "l" = "--oneline --dereference";
-                    "ll" = "--long";
-                    "lt" = "--tree";
-                    "a" = "--all";
-                    "d" = "--only-dirs";
-                    "f" = "--only-files";
-                  }
-                  .${aliasPart}
-                )
-                |> (flags: eza ++ flags)
-                |> self.lib.concatWords;
+                let
+                  flags =
+                    aliasParts
+                    |> lib.filter (aliasPart: aliasPart != "")
+                    |> lib.map (
+                      aliasPart:
+                      {
+                        "l" = "--oneline --dereference";
+                        "ll" = "--long";
+                        "lt" = "--tree";
+                        "a" = "--all";
+                        "d" = "--only-dirs";
+                        "f" = "--only-files";
+                      }
+                      .${aliasPart}
+                    );
+                in
+                eza ++ flags |> self.lib.concatWords;
             in
             {
               format = [

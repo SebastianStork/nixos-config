@@ -62,9 +62,7 @@ let
       A = serviceRecords |> lib.filter ({ name, ... }: name == "") |> lib.map (record: record.address);
 
       subdomains =
-        serviceRecords
-        |> lib.filter ({ name, ... }: name != "")
-        |> (subRecords: nsRecords ++ subRecords)
+        (nsRecords ++ (serviceRecords |> lib.filter (record: record.name != "")))
         |> self.lib.genAttrs' mkSubdomain;
     };
 in
