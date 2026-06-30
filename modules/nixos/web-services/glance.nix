@@ -1,7 +1,6 @@
 {
   config,
   self,
-  pkgs,
   lib,
   allHosts,
   ...
@@ -119,24 +118,6 @@ in
   config = lib.mkIf cfg.enable {
     services.glance = {
       enable = true;
-
-      package = pkgs.buildGoModule (finalAttrs: {
-        pname = "dynacat";
-        version = "2.3.1";
-        src = pkgs.fetchFromGitHub {
-          owner = "Panonim";
-          repo = "dynacat";
-          rev = finalAttrs.version;
-          hash = "sha256-A3xN9baR/ARUxkqjUX7nHI54YkSm8ntq8QDU6zpM8LM=";
-        };
-        vendorHash = "sha256-3aPmZ2lg+h3iO66wqq58fqSjYXXRCIfTk3ghiPLX9Ek=";
-        ldflags = [
-          "-s"
-          "-w"
-          "-X github.com/Panonim/dynacat/internal/dynacat.buildVersion=${finalAttrs.version}"
-        ];
-        meta.mainProgram = "dynacat";
-      });
 
       settings = {
         server.port = cfg.port;
