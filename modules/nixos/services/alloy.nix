@@ -49,7 +49,10 @@ in
 
     systemd.services.alloy = {
       wants = [ "network-online.target" ];
-      after = [ "network-online.target" ];
+      after = [
+        "network-online.target"
+        config.custom.networking.overlay.systemdUnit
+      ];
     };
 
     environment.etc =
