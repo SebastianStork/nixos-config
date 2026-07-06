@@ -53,6 +53,7 @@ in
         "Projects"
         "Videos"
         ".claude/projects"
+        ".pi/agent/sessions"
       ];
     };
 
