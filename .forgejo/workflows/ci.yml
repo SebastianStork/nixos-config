@@ -16,6 +16,7 @@ jobs:
       checks: ${{ steps.checks.outputs.checks }}
       tests: ${{ steps.tests.outputs.tests }}
       servers: ${{ steps.servers.outputs.servers }}
+      workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -38,6 +39,15 @@ jobs:
             |> builtins.filter (hostName: configs.${hostName}.config.custom.services.deploy-webhook.enable)
           ' --json)
           printf "servers=%s" "$servers" >> "$FORGEJO_OUTPUT"
+      - name: Get workstations
+        id: workstations
+        run: |
+          workstations=$(nix eval .#nixosConfigurations --apply 'configs:
+            configs
+            |> builtins.attrNames
+            |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.deploy-webhook.enable)
+          ' --json)
+          printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
   build-check:
     needs: parse-flake
     runs-on: nixos
@@ -86,6 +96,23 @@ jobs:
           flake-output: .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel
       - name: Upload
         uses: ./.forgejo/actions/upload
+  build-workstation:
+    needs: parse-flake
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        workstation: ${{ fromJSON(needs.parse-flake.outputs.workstations) }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Build
+        uses: ./.forgejo/actions/build
+        with:
+          flake-output: .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel
+      - name: Upload
+        uses: ./.forgejo/actions/upload
+
   deploy:
     needs: [parse-flake, build-check, build-test, build-server]
     runs-on: nixos
