@@ -11,6 +11,7 @@
       overlay = {
         address = "10.254.250.5";
         isLighthouse = true;
+        isExitNode = true;
       };
       underlay = {
         interface = "enp1s0";
