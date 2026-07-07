@@ -3,14 +3,21 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+  pull_request:
 concurrency:
   group: ${{ forgejo.workflow }}-${{ forgejo.ref }}
   cancel-in-progress: true
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 jobs:
   parse-flake:
+    if: >-
+      ${{
+        forgejo.event_name != 'pull_request' ||
+        (
+          forgejo.event.pull_request.base.ref == 'main' &&
+          forgejo.event.pull_request.head.repo.full_name == forgejo.repository &&
+          forgejo.event.pull_request.head.ref == 'automation/flake-update'
+        )
+      }}
     runs-on: nixos
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
@@ -20,6 +27,8 @@ jobs:
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Get checks
         id: checks
         run: |
@@ -58,12 +67,18 @@ jobs:
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Build
         uses: ./.forgejo/actions/build
         with:
           flake-output: .#checks.x86_64-linux.${{ matrix.check }}
       - name: Upload
         uses: ./.forgejo/actions/upload
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+
   build-test:
     needs: parse-flake
     runs-on: nixos
@@ -74,14 +89,20 @@ jobs:
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Build
         uses: ./.forgejo/actions/build
         with:
           flake-output: .#tests.x86_64-linux.${{ matrix.test }}
       - name: Upload
         uses: ./.forgejo/actions/upload
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
   build-server:
     needs: parse-flake
+    if: forgejo.event_name != 'pull_request'
     runs-on: nixos
     strategy:
       fail-fast: false
@@ -90,14 +111,21 @@ jobs:
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Build
         uses: ./.forgejo/actions/build
         with:
           flake-output: .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel
       - name: Upload
         uses: ./.forgejo/actions/upload
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+
   build-workstation:
     needs: parse-flake
+    if: forgejo.event_name != 'pull_request'
     runs-on: nixos
     strategy:
       fail-fast: false
@@ -106,15 +134,20 @@ jobs:
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Build
         uses: ./.forgejo/actions/build
         with:
           flake-output: .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel
       - name: Upload
         uses: ./.forgejo/actions/upload
-
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
   deploy:
     needs: [parse-flake, build-check, build-test, build-server]
+    if: forgejo.event_name != 'pull_request'
     runs-on: nixos
     strategy:
       fail-fast: false
@@ -140,8 +173,8 @@ jobs:
           echo "Max retries exceeded"
           exit 1
   notify:
-    if: always()
-    needs: [deploy]
+    if: always() && forgejo.event_name != 'pull_request'
+    needs: deploy
     runs-on: nixos
     steps:
       - name: Notify success

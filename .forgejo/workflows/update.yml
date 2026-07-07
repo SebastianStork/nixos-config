@@ -11,11 +11,37 @@ jobs:
         uses: https://code.forgejo.org/actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
-      - name: Configure git user
+      - name: Update flake lock
+        run: nix flake update
+      - name: Create pull request
+        id: cpr
+        uses: https://codeberg.org/maymeow/create-pull-request@7d834b0b4a2d3a2b13099d21e0fbe474081ff935
+        with:
+          token: ${{ secrets.PAT }}
+          api-version: v1
+          branch: automation/flake-update
+          base: main
+          delete-branch: true
+          add-paths: flake.lock
+          commit-message: "flake.lock: Update"
+          committer: "forgejo-actions[bot] <forgejo-actions[bot]@noreply.codeberg.org>"
+          author: "forgejo-actions[bot] <forgejo-actions[bot]@noreply.codeberg.org>"
+          title: "Update flake.lock"
+          body: "Automated flake input update. This PR will be merged automatically after CI checks and tests pass."
+      - name: Enable auto-merge after checks pass
+        if: steps.cpr.outputs.pull-request-number
+        env:
+          TOKEN: ${{ secrets.PAT }}
+          PR_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
         run: |
-          git config --local user.name "forgejo-actions[bot]"
-          git config --local user.email "forgejo-actions[bot]@noreply.codeberg.org"
-      - name: Update
-        run: nix flake update --commit-lock-file
-      - name: Push
-        run: git push
+          http_code=$(curl --silent --show-error --output response.txt --write-out '%{http_code}' \
+            -X POST \
+            -H "Authorization: token $TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"Do":"rebase","delete_branch_after_merge":true,"merge_when_checks_succeed":true}' \
+            "$FORGEJO_API_URL/repos/$FORGEJO_REPOSITORY/pulls/$PR_NUMBER/merge")
+
+          case "$http_code" in
+            200|201|204) cat response.txt ;;
+            *) cat response.txt; echo "Failed to enable auto-merge (HTTP $http_code)" >&2; exit 1 ;;
+          esac
