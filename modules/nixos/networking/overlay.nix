@@ -73,6 +73,7 @@ in
     };
 
     isLighthouse = lib.mkEnableOption "";
+    isExitNode = lib.mkEnableOption "";
     role = lib.mkOption {
       type = lib.types.enum [
         "client"

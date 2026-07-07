@@ -60,6 +60,11 @@ in
       type = lib.types.nullOr lib.types.path;
       default = null;
     };
+
+    unsafeNetworks = lib.mkOption {
+      type = lib.types.listOf lib.types.nonEmptyStr;
+      default = lib.optional netCfg.overlay.isExitNode "0.0.0.0/0";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -124,11 +129,17 @@ in
           proto = "any";
           host = "any";
         };
-        inbound = lib.singleton {
-          port = "any";
-          proto = "icmp";
-          host = "any";
-        };
+        inbound =
+          lib.singleton {
+            port = "any";
+            proto = "icmp";
+            host = "any";
+          }
+          ++ lib.optional netCfg.overlay.isExitNode {
+            port = "any";
+            proto = "any";
+            group = "client";
+          };
       };
 
       settings = {
@@ -137,7 +148,14 @@ in
       };
     };
 
-    networking.firewall.trustedInterfaces = [ netCfg.overlay.interface ];
+    networking = {
+      firewall.trustedInterfaces = [ netCfg.overlay.interface ];
+      nat = lib.mkIf netCfg.overlay.isExitNode {
+        enable = true;
+        externalInterface = netCfg.underlay.interface;
+        internalInterfaces = [ netCfg.overlay.interface ];
+      };
+    };
 
     systemd = {
       services."nebula@mesh" = {

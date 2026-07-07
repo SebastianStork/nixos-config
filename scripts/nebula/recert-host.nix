@@ -13,6 +13,7 @@
 
     hostname="$1"
     address="$(nix eval --raw ".#allHosts.$hostname.config.custom.networking.overlay.cidr")"
+    unsafe_networks="$(nix eval --raw ".#allHosts.$hostname.config.custom.services.nebula.unsafeNetworks" --apply 'builtins.concatStringsSep ","')"
     groups="$(nix eval --raw ".#allHosts.$hostname.config.custom.services.nebula.groups" --apply 'builtins.concatStringsSep ","')"
     ca_cert="$(nix eval --raw ".#allHosts.$hostname.config.custom.services.nebula.caCertificateFile")"
     host_pub="$(nix eval --raw ".#allHosts.$hostname.config.custom.services.nebula.publicKeyFile")"
@@ -37,6 +38,7 @@
     nebula-cert sign \
       -name "$hostname" \
       -networks "$address" \
+      -unsafe-networks "$unsafe_networks" \
       -groups "$groups" \
       -ca-crt "$ca_cert" \
       -ca-key "$ca_key" \
