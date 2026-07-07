@@ -54,7 +54,6 @@ in
         "Videos"
         ".claude/projects"
         ".pi/agent/sessions"
-        ".pi/agent/AGENTS.md"
       ];
     };
 
