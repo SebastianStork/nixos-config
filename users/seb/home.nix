@@ -39,13 +39,13 @@
       firefox.enable = true;
       libreoffice.enable = true;
       btop.enable = true;
+      pi-coding-agent.enable = true;
     };
   };
 
   home.packages = [
     pkgs.fastfetch
     pkgs-unstable.claude-code
-    pkgs-unstable.pi-coding-agent
 
     pkgs.nemo-with-extensions
     pkgs.vlc
