@@ -1,20 +1,67 @@
 name: "PR Checks"
 on:
   pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ forgejo.workflow }}-${{ forgejo.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-checks-and-tests:
-    if: >-
-      ${{
-        forgejo.event.pull_request.base.ref == 'main' &&
-        forgejo.event.pull_request.head.repo.full_name == forgejo.repository &&
-        forgejo.event.pull_request.head.ref == 'automation/flake-update'
-      }}
-    uses: ./.forgejo/workflows/check-test.yml
-    secrets:
-      S3_KEY_ID: ${{ secrets.S3_KEY_ID }}
-      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+  validate-trigger:
+    runs-on: nixos
+    steps:
+      - name: Verify allowed trigger
+        env:
+          EVENT_NAME: ${{ forgejo.event_name }}
+          BASE_REF: ${{ forgejo.event.pull_request.base.ref }}
+          HEAD_REPO: ${{ forgejo.event.pull_request.head.repo.full_name }}
+          HEAD_REF: ${{ forgejo.event.pull_request.head.ref }}
+          REPOSITORY: ${{ forgejo.repository }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            exit 0
+          fi
+
+          if [[ "$BASE_REF" == "main" && "$HEAD_REPO" == "$REPOSITORY" && "$HEAD_REF" == "automation/flake-update" ]]; then
+            exit 0
+          fi
+
+          echo "PR Checks only run automatically for automation/flake-update PRs targeting main from this repository, or by manual dispatch." >&2
+          exit 1
+
+  parse-outputs:
+    needs: validate-trigger
+    runs-on: nixos
+    outputs:
+      outputs: ${{ steps.flake_outputs.outputs.outputs }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Get outputs
+        id: flake_outputs
+        run: |
+          outputs=$(jq --slurp --compact-output add \
+            <(nix eval .#checks.x86_64-linux --apply 'checks: builtins.map (name: "checks.x86_64-linux.${name}") (builtins.attrNames checks)' --json) \
+            <(nix eval .#tests.x86_64-linux --apply 'tests: builtins.map (name: "tests.x86_64-linux.${name}") (builtins.attrNames tests)' --json) \
+            <(nix eval .#nixosConfigurations --apply 'hosts: builtins.map (name: "nixosConfigurations.${name}.config.system.build.toplevel") (builtins.attrNames hosts)' --json))
+          printf "outputs=%s" "$outputs" >> "$FORGEJO_OUTPUT"
+
+  build-output:
+    needs: parse-outputs
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        output: ${{ fromJSON(needs.parse-outputs.outputs.outputs) }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build
+        uses: ./.forgejo/actions/build
+        with:
+          flake-output: .#${{ matrix.output }}

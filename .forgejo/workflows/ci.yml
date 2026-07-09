@@ -9,15 +9,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-checks-and-tests:
-    uses: ./.forgejo/workflows/check-test.yml
-    secrets:
-      S3_KEY_ID: ${{ secrets.S3_KEY_ID }}
-      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
-
-  parse-systems:
+  parse-outputs:
     runs-on: nixos
     outputs:
+      checks: ${{ steps.checks.outputs.checks }}
+      tests: ${{ steps.tests.outputs.tests }}
       servers: ${{ steps.servers.outputs.servers }}
       workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
@@ -25,6 +21,16 @@ jobs:
         uses: https://code.forgejo.org/actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Get checks
+        id: checks
+        run: |
+          checks=$(nix eval .#checks.x86_64-linux --apply builtins.attrNames --json)
+          printf "checks=%s" "$checks" >> "$FORGEJO_OUTPUT"
+      - name: Get tests
+        id: tests
+        run: |
+          tests=$(nix eval .#tests.x86_64-linux --apply builtins.attrNames --json)
+          printf "tests=%s" "$tests" >> "$FORGEJO_OUTPUT"
       - name: Get servers
         id: servers
         run: |
@@ -44,13 +50,57 @@ jobs:
           ' --json)
           printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
 
-  build-server:
-    needs: parse-systems
+  build-check:
+    needs: parse-outputs
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-systems.outputs.servers) }}
+        check: ${{ fromJSON(needs.parse-outputs.outputs.checks) }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build
+        uses: ./.forgejo/actions/build
+        with:
+          flake-output: .#checks.x86_64-linux.${{ matrix.check }}
+      - name: Upload
+        uses: ./.forgejo/actions/upload
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+
+  build-test:
+    needs: parse-outputs
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ${{ fromJSON(needs.parse-outputs.outputs.tests) }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build
+        uses: ./.forgejo/actions/build
+        with:
+          flake-output: .#tests.x86_64-linux.${{ matrix.test }}
+      - name: Upload
+        uses: ./.forgejo/actions/upload
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+
+  build-server:
+    needs: parse-outputs
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        server: ${{ fromJSON(needs.parse-outputs.outputs.servers) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -67,12 +117,12 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   build-workstation:
-    needs: parse-systems
+    needs: parse-outputs
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        workstation: ${{ fromJSON(needs.parse-systems.outputs.workstations) }}
+        workstation: ${{ fromJSON(needs.parse-outputs.outputs.workstations) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -89,12 +139,12 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   deploy:
-    needs: [build-checks-and-tests, parse-systems, build-server]
+    needs: [build-check, build-test, parse-outputs, build-server]
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-systems.outputs.servers) }}
+        server: ${{ fromJSON(needs.parse-outputs.outputs.servers) }}
     steps:
       - name: Deploy
         timeout-minutes: 30
