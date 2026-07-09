@@ -1,24 +1,16 @@
 { self, ... }:
 {
   perSystem =
-    {
-      self',
-      pkgs,
-      lib,
-      ...
-    }:
+    { self', pkgs, ... }:
     let
-      mkScript = file: rec {
-        name =
-          file
-          |> lib.unsafeDiscardStringContext
-          |> lib.removePrefix "${self}/scripts/"
-          |> lib.removeSuffix ".nix"
-          |> lib.replaceString "/" "-";
-        value = pkgs.writeShellApplication ({ inherit name; } // import file { inherit self' pkgs lib; });
+      callScript = pkgs.newScope { inherit self'; };
+
+      mkScript = name: {
+        inherit name;
+        value = callScript "${self}/scripts/${name}" { };
       };
     in
     {
-      packages = "${self}/scripts" |> lib.filesystem.listFilesRecursive |> self.lib.genAttrs' mkScript;
+      packages = "${self}/scripts" |> self.lib.listDirectoryNames |> self.lib.genAttrs' mkScript;
     };
 }
