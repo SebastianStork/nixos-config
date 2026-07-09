@@ -65,3 +65,17 @@ jobs:
         uses: ./.forgejo/actions/build
         with:
           flake-output: .#${{ matrix.output }}
+
+  merge-gate:
+    if: always()
+    needs: build-output
+    runs-on: nixos
+    steps:
+      - name: Verify PR checks passed
+        env:
+          BUILD_OUTPUT_RESULT: ${{ needs.build-output.result }}
+        run: |
+          if [[ "$BUILD_OUTPUT_RESULT" != "success" ]]; then
+            echo "build-output result was $BUILD_OUTPUT_RESULT" >&2
+            exit 1
+          fi
