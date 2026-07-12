@@ -85,9 +85,8 @@ func failIfProblems(problems []string) {
 }
 
 func fail(problems []string) {
-	fmt.Fprintf(os.Stderr, "nebula certificate check failed:\n")
 	for _, problem := range problems {
-		fmt.Fprintf(os.Stderr, "- %s\n", problem)
+		fmt.Fprintf(os.Stderr, "%s\n", problem)
 	}
 	os.Exit(1)
 }

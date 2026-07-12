@@ -1,7 +1,7 @@
 {
+  self',
   lib,
   writeShellApplication,
-  nebula,
   bitwarden-cli,
   ...
 }:
@@ -9,9 +9,12 @@ writeShellApplication {
   name = "nebula-recert-host";
 
   runtimeInputs = [
-    nebula
     bitwarden-cli
+    self'.packages.nebula-recert
   ];
 
-  text = lib.readFile ./script.sh;
+  text = ''
+    inventory_nix=${./inventory.nix}
+  ''
+  + lib.readFile ./script.sh;
 }

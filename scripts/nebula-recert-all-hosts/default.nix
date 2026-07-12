@@ -3,7 +3,6 @@
   lib,
   writeShellApplication,
   bitwarden-cli,
-  jq,
   ...
 }:
 writeShellApplication {
@@ -11,9 +10,11 @@ writeShellApplication {
 
   runtimeInputs = [
     bitwarden-cli
-    jq
-    self'.packages.nebula-recert-host
+    self'.packages.nebula-recert
   ];
 
-  text = lib.readFile ./script.sh;
+  text = ''
+    inventory_nix=${./inventory.nix}
+  ''
+  + lib.readFile ./script.sh;
 }

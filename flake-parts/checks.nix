@@ -27,21 +27,7 @@
               self.allHosts
               |> lib.attrValues
               |> lib.filter (host: host.config.custom.services.nebula.enable)
-              |> lib.map (
-                host:
-                let
-                  cfg = host.config.custom.services.nebula;
-                  netCfg = host.config.custom.networking;
-                in
-                {
-                  name = netCfg.hostName;
-                  certificate = toString cfg.certificateFile;
-                  publicKey = toString cfg.publicKeyFile;
-                  ca = toString cfg.caCertificateFile;
-                  networks = [ netCfg.overlay.cidr ];
-                  inherit (cfg) unsafeNetworks groups;
-                }
-              )
+              |> lib.map self.lib.nebulaHostInventory
               |> lib.toJSON
               |> pkgs.writeText "nebula-hosts.json";
           in

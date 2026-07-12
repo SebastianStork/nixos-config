@@ -3,7 +3,7 @@
   perSystem =
     { self', pkgs, ... }:
     let
-      callScript = pkgs.newScope { inherit self'; };
+      callScript = pkgs.newScope { inherit self self'; };
 
       mkScript = name: {
         inherit name;

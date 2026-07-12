@@ -29,6 +29,22 @@
 
     relativePath = path: path |> lib.toString |> lib.removePrefix "${self}/";
 
+    nebulaHostInventory =
+      host:
+      let
+        inherit (host.config.custom.services) nebula;
+        netCfg = host.config.custom.networking;
+      in
+      {
+        name = netCfg.hostName;
+        certificate = lib.toString nebula.certificateFile;
+        certificateOutput = self.lib.relativePath nebula.certificateFile;
+        publicKey = lib.toString nebula.publicKeyFile;
+        ca = lib.toString nebula.caCertificateFile;
+        networks = [ netCfg.overlay.cidr ];
+        inherit (nebula) unsafeNetworks groups;
+      };
+
     types.existingPath = (lib.types.addCheck lib.types.path lib.pathExists) // {
       description = "path that exists";
     };
