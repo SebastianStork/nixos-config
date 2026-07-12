@@ -3,20 +3,16 @@ if [[ $# -ne 0 ]]; then
   exit 1
 fi
 
+if [ -z "${NEBULA_CA_KEY:-}" ]; then
+  echo "Missing NEBULA_CA_KEY; enter the nebula dev shell first: nix develop .#nebula" >&2
+  exit 1
+fi
+
 hosts_json="$(mktemp)"
-ca_key="$(mktemp)"
-chmod 600 "$ca_key"
-trap 'rm -f "$hosts_json" "$ca_key"' EXIT
+trap 'rm -f "$hosts_json"' EXIT
 
 nix eval --json --impure --expr 'builtins.getFlake ("git+file://" + toString ./.)' --apply "import $inventory_nix" > "$hosts_json"
 
-if ! declare -px BW_SESSION >/dev/null 2>&1; then
-  BW_SESSION="$(bw unlock --raw || bw login --raw)"
-  export BW_SESSION
-fi
-
-bw get notes 'nebula ca-key' > "$ca_key"
-
-nebula-recert "$hosts_json" "$ca_key"
+nebula-recert "$hosts_json" <(printf '%s\n' "$NEBULA_CA_KEY")
 
 echo "Done!"

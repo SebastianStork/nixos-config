@@ -9,6 +9,7 @@ _: {
             pkgs.age
             pkgs.ssh-to-age
             pkgs.bitwarden-cli
+            self'.packages.install-anywhere
           ];
 
           shellHook = ''
@@ -37,6 +38,10 @@ _: {
             if ! declare -px BW_SESSION >/dev/null 2>&1; then
               BW_SESSION="$(bw unlock --raw || bw login --raw)"
               export BW_SESSION
+            fi
+            if ! declare -px NEBULA_CA_KEY >/dev/null 2>&1; then
+              NEBULA_CA_KEY="$(bw get notes 'nebula ca-key')"
+              export NEBULA_CA_KEY
             fi
           '';
         };

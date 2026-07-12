@@ -59,28 +59,20 @@ install host destination='root@installer':
 
 [group('sops')]
 sops-edit path:
-    just _sops-do "sops edit {{ path }}"
+    sops edit {{ path }}
 
 [group('sops')]
 sops-update path:
-    just _sops-do "sops updatekeys {{ path }}"
+    sops updatekeys {{ path }}
 
 [group('sops')]
 sops-update-all:
-    just _sops-do "find . -type f -name 'secrets.json' -exec sops updatekeys --yes {} \;"
+    find . -type f -name 'secrets.json' -exec sops updatekeys --yes {} \;
 
 [group('sops')]
 sops-rotate path:
-    just _sops-do "sops rotate --in-place {{ path }}"
+    sops rotate --in-place {{ path }}
 
 [group('sops')]
 sops-rotate-all:
-    just _sops-do "find . -type f -name 'secrets.json' -exec sops rotate --in-place {} \;"
-
-_sops-do command:
-    if command -v sops > /dev/null 2>&1; then \
-        {{ command }}; \
-    else \
-        nix develop .#sops --command bash -c "{{ command }}; \
-        exec zsh"; \
-    fi
+    find . -type f -name 'secrets.json' -exec sops rotate --in-place {} \;

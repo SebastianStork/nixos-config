@@ -2,14 +2,12 @@
   self',
   lib,
   writeShellApplication,
-  bitwarden-cli,
   ...
 }:
 writeShellApplication {
   name = "nebula-recert-host";
 
   runtimeInputs = [
-    bitwarden-cli
     self'.packages.nebula-recert
   ];
 

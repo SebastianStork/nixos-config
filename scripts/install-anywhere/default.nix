@@ -3,7 +3,6 @@
   writeShellApplication,
   sops,
   ssh-to-age,
-  bitwarden-cli,
   ...
 }:
 writeShellApplication {
@@ -12,7 +11,6 @@ writeShellApplication {
   runtimeInputs = [
     sops
     ssh-to-age
-    bitwarden-cli
   ];
 
   text = lib.readFile ./script.sh;
