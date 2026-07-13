@@ -31,8 +31,8 @@
               |> lib.toJSON
               |> pkgs.writeText "nebula-hosts.json";
           in
-          pkgs.runCommandLocal "nebula-certs" { } ''
-            ${lib.getExe self'.packages.nebula-check-certs} ${nebulaHostsJson}
+          pkgs.runCommand "nebula-certs" { buildInputs = [ self'.packages.nebula-check-certs ]; } ''
+            nebula-check-certs ${nebulaHostsJson}
             touch $out
           '';
       };
