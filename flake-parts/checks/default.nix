@@ -35,6 +35,20 @@
             nebula-check-certs ${nebulaHostsJson}
             touch $out
           '';
+
+        hash-stability =
+          let
+            unstableHosts = import ./unstable-hosts.nix { inherit inputs self lib; };
+          in
+          if unstableHosts == [ ] then
+            pkgs.runCommand "hash-stability" { } "touch $out"
+          else
+            throw ''
+              hash stability regression: host derivations changed when only the flake source store path changed
+
+              unstable hosts:
+              ${unstableHosts |> lib.map (host: "- ${host}") |> lib.concatStringsSep "\n"}
+            '';
       };
     };
 }

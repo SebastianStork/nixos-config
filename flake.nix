@@ -67,10 +67,14 @@
   };
 
   outputs =
-    { flake-parts, nixpkgs, ... }@inputs:
+    { flake-parts, ... }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
 
-      imports = nixpkgs.lib.filesystem.listFilesRecursive ./flake-parts;
+      imports =
+        ./flake-parts
+        |> builtins.readDir
+        |> builtins.attrNames
+        |> map (name: ./flake-parts/${name});
     };
 }
