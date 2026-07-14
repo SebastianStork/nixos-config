@@ -33,7 +33,7 @@ in
       age.sshKeyPaths = [
         "${lib.optionalString config.custom.persistence.enable "/persist"}/etc/ssh/ssh_host_ed25519_key"
       ];
-      defaultSopsFile = cfg.secretsFile;
+      defaultSopsFile = self.lib.isolateStorePath cfg.secretsFile;
     };
 
     assertions =

@@ -85,7 +85,7 @@ in
         user = config.systemd.services."nebula@mesh".serviceConfig.User;
       };
       "nebula/host.crt" = {
-        source = cfg.certificateFile;
+        source = self.lib.isolateStorePath cfg.certificateFile;
         mode = "0440";
         user = config.systemd.services."nebula@mesh".serviceConfig.User;
       };

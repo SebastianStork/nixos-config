@@ -34,7 +34,7 @@ in
   config = lib.mkIf cfg.enable {
     sops = {
       age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
-      defaultSopsFile = cfg.secretsFile;
+      defaultSopsFile = self.lib.isolateStorePath cfg.secretsFile;
     };
 
     assertions =

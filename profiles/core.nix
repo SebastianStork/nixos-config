@@ -18,7 +18,10 @@
     in
     {
       channel.enable = false;
-      registry = flakeInputs |> lib.mapAttrs (_: flake: { inherit flake; });
+      registry =
+        flakeInputs
+        |> lib.filterAttrs (name: _: name != "self")
+        |> lib.mapAttrs (_: flake: { inherit flake; });
       nixPath = flakeInputs |> lib.attrNames |> lib.map (name: "${name}=flake:${name}");
 
       settings = {

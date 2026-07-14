@@ -29,6 +29,16 @@
 
     relativePath = path: path |> lib.toString |> lib.removePrefix "${self}/";
 
+    isolateStorePath =
+      path:
+      if path |> lib.hasPrefix "${self}/" then
+        builtins.path {
+          inherit path;
+          name = path |> lib.removePrefix "${self}/" |> lib.strings.sanitizeDerivationName;
+        }
+      else
+        path;
+
     nebulaHostInventory =
       host:
       let
