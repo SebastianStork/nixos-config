@@ -9,6 +9,7 @@
 {
   imports = [
     self.nixosModules.default
+    self.nixosModules.pkgs-registry
     inputs.disko.nixosModules.default
   ];
 

@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 let
   nixpkgsConfig = {
     allowUnfree = true;
@@ -10,8 +10,49 @@ let
       config = nixpkgsConfig;
       inherit system;
     };
+
+  mkRegistryFlake =
+    pkgs: nixpkgs:
+    let
+      system = pkgs.stdenv.hostPlatform.system;
+    in
+    pkgs.writeTextDir "flake.nix" ''
+      {
+        outputs = { self }:
+          let
+            nixpkgs = builtins.getFlake "path:${nixpkgs.outPath}?narHash=${nixpkgs.narHash}";
+          in
+          {
+            legacyPackages."${system}" = import nixpkgs.outPath {
+              system = "${system}";
+              config = ${lib.generators.toPretty { } nixpkgsConfig};
+            };
+          };
+      }
+    '';
 in
 {
+  flake.nixosModules.pkgs-registry =
+    { pkgs, ... }:
+    {
+      nix = {
+        registry = {
+          pkgs.to = {
+            type = "path";
+            path = mkRegistryFlake pkgs inputs.nixpkgs;
+          };
+          pkgs-unstable.to = {
+            type = "path";
+            path = mkRegistryFlake pkgs inputs.nixpkgs-unstable;
+          };
+        };
+        nixPath = [
+          "pkgs=flake:pkgs"
+          "pkgs-unstable=flake:pkgs-unstable"
+        ];
+      };
+    };
+
   perSystem =
     { system, ... }:
     let
