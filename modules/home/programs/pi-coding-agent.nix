@@ -25,6 +25,19 @@
         editorPaddingX = 1;
       };
 
+      keybindings = {
+        "tui.editor.deleteWordBackward" = [
+          "ctrl+w"
+          "alt+backspace"
+          "ctrl+backspace"
+        ];
+        "tui.editor.deleteWordForward" = [
+          "alt+d"
+          "alt+delete"
+          "ctrl+delete"
+        ];
+      };
+
       context = ''
         # Agent Rules
 
