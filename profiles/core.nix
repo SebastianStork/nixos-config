@@ -101,13 +101,6 @@
     pkgs.btop
   ];
 
-  nixpkgs.config.allowUnfree = true;
-
-  _module.args.pkgs-unstable = import inputs.nixpkgs-unstable {
-    inherit (pkgs.stdenv.hostPlatform) system;
-    inherit (config.nixpkgs) config;
-  };
-
   custom = {
     sops.enable = true;
     services = {

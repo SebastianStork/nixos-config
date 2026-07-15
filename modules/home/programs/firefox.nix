@@ -10,12 +10,7 @@
 let
   cfg = config.custom.programs.firefox;
 
-  firefoxAddons =
-    (import inputs.nixpkgs {
-      inherit (pkgs.stdenv.hostPlatform) system;
-      config.allowUnfree = true;
-      overlays = [ inputs.firefox-addons.overlays.default ];
-    }).firefox-addons;
+  firefoxAddons = (pkgs.extend inputs.firefox-addons.overlays.default).firefox-addons;
 
   mkExtension =
     {

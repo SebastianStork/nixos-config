@@ -2,6 +2,7 @@
   inputs,
   self,
   lib,
+  withSystem,
   ...
 }:
 let
@@ -13,7 +14,17 @@ let
         inherit (self) allHosts;
       };
       modules =
-        lib.singleton { networking.hostName = hostName; }
+        lib.singleton (
+          { config, ... }:
+          let
+            configuredPkgs = withSystem config.nixpkgs.hostPlatform.system;
+          in
+          {
+            networking.hostName = hostName;
+            nixpkgs.pkgs = configuredPkgs ({ pkgs, ... }: pkgs);
+            _module.args.pkgs-unstable = configuredPkgs ({ pkgs-unstable, ... }: pkgs-unstable);
+          }
+        )
         ++ self.lib.listNixFilesRecursively "${baseDir}/${hostName}";
     };
 
