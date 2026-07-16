@@ -15,16 +15,6 @@
       enable = true;
       package = pkgs-unstable.pi-coding-agent;
 
-      settings = {
-        lastChangelogVersion = "0.80.3";
-        defaultProvider = "openai-codex";
-        defaultModel = "gpt-5.5";
-        defaultThinkingLevel = "high";
-        hideThinkingBlock = true;
-        theme = config.custom.theme;
-        editorPaddingX = 1;
-      };
-
       keybindings = {
         "tui.editor.deleteWordBackward" = [
           "ctrl+w"
