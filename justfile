@@ -29,7 +29,7 @@ repl host='$(hostname)':
 
 [group('rebuild')]
 rebuild mode:
-    nh os {{ mode }} .
+    nh os {{ mode }} --show-activation-logs .
 
 [group('rebuild')]
 switch:
