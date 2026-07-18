@@ -85,14 +85,14 @@ let
     <a class="block" href="${nixosRepoUrl}/issues" target="_blank" rel="noopener noreferrer">
       <img
         class="block"
-        src="${nixosRepoUrl}/badges/issues/open.svg"
+        src="${nixosRepoUrl}/badges/issues/open.svg?label=issues"
         alt="Open issues"
       />
     </a>
     <a class="block" href="${nixosRepoUrl}/pulls" target="_blank" rel="noopener noreferrer">
       <img
         class="block"
-        src="${nixosRepoUrl}/badges/pulls/open.svg"
+        src="${nixosRepoUrl}/badges/pulls/open.svg?label=pull requests"
         alt="Open pull requests"
       />
     </a>
