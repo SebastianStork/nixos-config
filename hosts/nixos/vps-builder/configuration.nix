@@ -28,6 +28,10 @@
         gitlabUrl = "https://code.fbi.h-da.de";
         concurrent = 2;
       };
+      renovate = {
+        enable = true;
+        forgejoUrl = "https://codeberg.org";
+      };
     };
 
     web-services.librespeed.enable = true;
