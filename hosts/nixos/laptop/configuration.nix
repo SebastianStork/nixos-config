@@ -22,7 +22,7 @@
       forgejo-runner = {
         enable = true;
         forgejoUrl = "https://codeberg.org";
-        capacity = 2;
+        maxConcurrentJobs = 2;
       };
     };
 

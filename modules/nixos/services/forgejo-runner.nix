@@ -14,7 +14,7 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
-    capacity = lib.mkOption {
+    maxConcurrentJobs = lib.mkOption {
       type = lib.types.int;
     };
   };
@@ -32,7 +32,7 @@ in
         name = config.networking.hostName;
         url = cfg.forgejoUrl;
         tokenFile = config.sops.templates."forgejo-runner.env".path;
-        settings.runner.capacity = cfg.capacity;
+        settings.runner.capacity = cfg.maxConcurrentJobs;
         labels = [ "nixos:host" ];
         hostPackages = lib.mkOptionDefault [
           pkgs.jq

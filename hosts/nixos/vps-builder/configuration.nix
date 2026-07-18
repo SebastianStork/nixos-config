@@ -21,12 +21,12 @@
       forgejo-runner = {
         enable = true;
         forgejoUrl = "https://codeberg.org";
-        capacity = 4;
+        maxConcurrentJobs = 4;
       };
       gitlab-runner = {
         enable = true;
         gitlabUrl = "https://code.fbi.h-da.de";
-        concurrent = 2;
+        maxConcurrentJobs = 2;
       };
       renovate = {
         enable = true;

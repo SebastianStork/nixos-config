@@ -9,7 +9,7 @@ in
       type = lib.types.nonEmptyStr;
       default = "";
     };
-    concurrent = lib.mkOption {
+    maxConcurrentJobs = lib.mkOption {
       type = lib.types.int;
     };
   };
@@ -29,11 +29,11 @@ in
         enable = true;
         flags = [ "-af" ];
       };
-      settings.concurrent = cfg.concurrent;
+      settings.concurrent = cfg.maxConcurrentJobs;
       services.default = {
         description = config.networking.hostName;
         authenticationTokenConfigFile = config.sops.templates."gitlab-runner.env".path;
-        requestConcurrency = cfg.concurrent;
+        requestConcurrency = cfg.maxConcurrentJobs;
         executor = "docker";
         dockerImage = "docker:latest";
         dockerVolumes = [
