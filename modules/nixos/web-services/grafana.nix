@@ -44,6 +44,11 @@ in
           admin_password = "$__file{${config.sops.secrets."grafana/admin-password".path}}";
           secret_key = "SW2YcwTIb9zpOOhoPsMm"; # Grafana doesn't store any secrets and is only accessible over vpn anyway
         };
+        "auth.anonymous" = {
+          enabled = true;
+          org_name = "Main Org.";
+          org_role = "Viewer";
+        };
         users.default_theme = "system";
         analytics.reporting_enabled = false;
       };
