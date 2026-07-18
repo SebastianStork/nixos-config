@@ -23,11 +23,11 @@ jobs:
             exit 0
           fi
 
-          if [[ "$BASE_REF" == "main" && "$HEAD_REPO" == "$REPOSITORY" && "$HEAD_REF" == "automation/flake-update" ]]; then
+          if [[ "$BASE_REF" == "main" && "$HEAD_REPO" == "$REPOSITORY" && "$HEAD_REF" == renovate/* ]]; then
             exit 0
           fi
 
-          echo "PR Checks only run automatically for automation/flake-update PRs targeting main from this repository, or by manual dispatch." >&2
+          echo "PR Checks only run automatically for Renovate PRs targeting main from this repository, or by manual dispatch." >&2
           exit 1
 
   parse-outputs:
