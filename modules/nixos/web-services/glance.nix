@@ -81,6 +81,23 @@ let
 
   workflowBadges = workflowFiles |> lib.map mkWorkflowBadge |> lib.concatStringsSep "\n";
 
+  repositoryBadges = ''
+    <a class="block" href="${nixosRepoUrl}/issues" target="_blank" rel="noopener noreferrer">
+      <img
+        class="block"
+        src="${nixosRepoUrl}/badges/issues/open.svg"
+        alt="Open issues"
+      />
+    </a>
+    <a class="block" href="${nixosRepoUrl}/pulls" target="_blank" rel="noopener noreferrer">
+      <img
+        class="block"
+        src="${nixosRepoUrl}/badges/pulls/open.svg"
+        alt="Open pull requests"
+      />
+    </a>
+  '';
+
   codebergBadgeWidget = {
     type = "custom-api";
     title = "nixos-config";
@@ -88,6 +105,7 @@ let
     template = ''
       <div class="flex flex-col items-start gap-10">
         <div class="flex flex-wrap gap-10">
+          ${repositoryBadges}
           ${workflowBadges}
         </div>
       </div>
