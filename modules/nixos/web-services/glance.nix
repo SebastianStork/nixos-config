@@ -79,7 +79,7 @@ let
       </a>
     '';
 
-  workflowBadges = workflowFiles |> lib.map mkWorkflowBadge |> lib.concatStringsSep "\n";
+  workflowBadges = workflowFiles |> lib.map mkWorkflowBadge |> lib.concatLines;
 
   repositoryBadges = ''
     <a class="block" href="${nixosRepoUrl}/issues" target="_blank" rel="noopener noreferrer">

@@ -47,7 +47,7 @@
                   hash stability regression: host derivations changed when only the flake source store path changed
 
                   unstable hosts:
-                  ${unstableHosts |> lib.map (host: "- ${host}") |> lib.concatStringsSep "\n"}
+                  ${unstableHosts |> lib.map (host: "- ${host}") |> lib.concatLines}
                 '';
           in
           lib.lazyDerivation {
