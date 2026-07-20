@@ -2,7 +2,6 @@
   config,
   self,
   pkgs,
-  pkgs-unstable,
   ...
 }:
 {
