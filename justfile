@@ -4,20 +4,12 @@ _list:
     just --list --unsorted
 
 [group('utility')]
-update:
-    nix flake update --commit-lock-file
-
-[group('utility')]
 fmt:
     nix fmt
 
 [group('utility')]
 check:
     nix flake check
-
-[group('utility')]
-check-lite:
-    nix flake check --no-build
 
 [group('utility')]
 repair:
