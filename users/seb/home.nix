@@ -45,7 +45,6 @@
 
   home.packages = [
     pkgs.fastfetch
-    pkgs-unstable.claude-code
 
     pkgs.nemo-with-extensions
     pkgs.vlc
