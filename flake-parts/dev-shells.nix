@@ -6,6 +6,7 @@ _: {
         sops = pkgs.mkShellNoCC {
           packages = [
             pkgs.sops
+            pkgs.jq
             pkgs.age
             pkgs.ssh-to-age
             pkgs.bitwarden-cli

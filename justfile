@@ -54,6 +54,18 @@ sops-edit path:
     sops edit {{ path }}
 
 [group('sops')]
+sops-set path key:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    tmp=$(mktemp)
+    trap 'rm -f "$tmp"' EXIT
+    "${EDITOR:-vi}" "$tmp"
+    key={{ quote(key) }}
+    index="[\"${key//\//\"][\"}\"]"
+    jq -Rs 'rtrimstr("\n")' "$tmp" \
+        | sops set --value-stdin {{ quote(path) }} "$index"
+
+[group('sops')]
 sops-update path:
     sops updatekeys {{ path }}
 
