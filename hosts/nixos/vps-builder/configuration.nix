@@ -23,11 +23,6 @@
         forgejoUrl = "https://codeberg.org";
         maxConcurrentJobs = 4;
       };
-      gitlab-runner = {
-        enable = true;
-        gitlabUrl = "https://code.fbi.h-da.de";
-        maxConcurrentJobs = 2;
-      };
       renovate = {
         enable = true;
         forgejoUrl = "https://codeberg.org";
