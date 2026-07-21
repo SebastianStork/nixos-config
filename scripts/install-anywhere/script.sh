@@ -27,12 +27,12 @@ ssh-keygen -C "root@$host" -f "$ssh_dir/ssh_host_ed25519_key" -N "" -q
 
 echo "==> Replacing old age key with new age key..."
 new_age_key="$(ssh-to-age -i "$ssh_dir/ssh_host_ed25519_key.pub")"
-echo "$new_age_key" > "hosts/$host/keys/age.pub"
+echo "$new_age_key" > "hosts/nixos/$host/keys/age.pub"
 
 echo "==> Updating SOPS secrets..."
 SOPS_CONFIG="$(nix build .#sops-config --print-out-paths)"
 export SOPS_CONFIG
-sops updatekeys --yes "hosts/$host/secrets.json"
+sops updatekeys --yes "hosts/nixos/$host/secrets.json"
 
 echo "==> Installing system..."
 nix run github:nix-community/nixos-anywhere -- \
