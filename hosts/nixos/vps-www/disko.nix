@@ -6,12 +6,8 @@
       content = {
         type = "gpt";
         partitions = {
-          boot = {
-            size = "1M";
-            type = "EF02";
-          };
           ESP = {
-            size = "512M";
+            size = "1G";
             type = "EF00";
             content = {
               type = "filesystem";
@@ -20,8 +16,15 @@
               mountOptions = [ "umask=0077" ];
             };
           };
+          swap = {
+            size = "16G";
+            content = {
+              type = "swap";
+              discardPolicy = "both";
+            };
+          };
           nix = {
-            size = "20G";
+            size = "60G";
             content = {
               type = "filesystem";
               format = "xfs";

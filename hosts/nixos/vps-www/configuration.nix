@@ -11,19 +11,32 @@
       overlay.address = "10.254.250.4";
       underlay = {
         interface = "enp1s0";
-        cidr = "167.235.73.246/32";
+        cidr = "188.34.160.80/32";
         isPublic = true;
         gateway = "172.31.1.1";
       };
     };
 
-    services.public-nameserver = {
-      enable = true;
-      publicHostName = "ns2";
-      zones = [
-        "sprouted.cloud"
-        "sstork.dev"
-      ];
+    services = {
+      public-nameserver = {
+        enable = true;
+        publicHostName = "ns2";
+        zones = [
+          "sprouted.cloud"
+          "sstork.dev"
+        ];
+      };
+
+      forgejo-runner = {
+        enable = true;
+        forgejoUrl = "https://codeberg.org";
+        maxConcurrentJobs = 4;
+      };
+
+      renovate = {
+        enable = true;
+        forgejoUrl = "https://codeberg.org";
+      };
     };
 
     web-services = {

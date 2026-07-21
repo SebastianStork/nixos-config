@@ -4,14 +4,18 @@
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  boot.initrd.availableKernelModules = [
-    "ahci"
-    "xhci_pci"
-    "virtio_pci"
-    "virtio_scsi"
-    "sd_mod"
-    "sr_mod"
-  ];
-
-  zramSwap.enable = true;
+  boot = {
+    initrd.availableKernelModules = [
+      "ahci"
+      "xhci_pci"
+      "virtio_pci"
+      "virtio_scsi"
+      "sd_mod"
+      "sr_mod"
+    ];
+    kernelParams = [
+      "zswap.enabled=1"
+      "zswap.shrinker_enabled=1"
+    ];
+  };
 }
