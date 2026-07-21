@@ -103,12 +103,9 @@
         domain = "scrutiny.${config.custom.networking.overlay.domain}";
       };
 
-      librespeed = {
+      librespeed.frontend = {
         enable = true;
-        frontend = {
-          enable = true;
-          domain = "speedtest.${config.custom.networking.overlay.domain}";
-        };
+        domain = "speedtest.${config.custom.networking.overlay.domain}";
       };
     };
   };

@@ -21,5 +21,6 @@
         domain = "alertmanager.${config.custom.networking.overlay.fqdn}";
       };
     };
+    web-services.librespeed.enable = true;
   };
 }

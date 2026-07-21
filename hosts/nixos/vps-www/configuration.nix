@@ -72,8 +72,6 @@
         domain = "pastebin.sprouted.cloud";
         branding.name = "SproutedBin";
       };
-
-      librespeed.enable = true;
     };
   };
 }
