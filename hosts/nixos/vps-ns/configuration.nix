@@ -26,16 +26,18 @@
         enable = true;
         gui.domain = "adguard.${config.custom.networking.overlay.fqdn}";
       };
+
       recursive-nameserver = {
         enable = true;
         serveAuthoritatively = true;
       };
+
       public-nameserver = {
         enable = true;
         publicHostName = "ns1";
         zones = [
           "sprouted.cloud"
-          "sstork.dev"
+          "web.sstork.dev"
         ];
       };
     };

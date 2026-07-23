@@ -23,7 +23,7 @@
         publicHostName = "ns2";
         zones = [
           "sprouted.cloud"
-          "sstork.dev"
+          "web.sstork.dev"
         ];
       };
 
@@ -37,17 +37,16 @@
         enable = true;
         forgejoUrl = "https://codeberg.org";
       };
+
+      caddy.virtualHosts."git.sstork.dev".extraConfig = ''
+        redir https://git.web.sstork.dev{uri} permanent
+      '';
     };
 
     web-services = {
-      outline-to-anki = {
-        enable = true;
-        domain = "anki-decks.sprouted.cloud";
-      };
-
       forgejo = {
         enable = true;
-        domain = "git.sstork.dev";
+        domain = "git.web.sstork.dev";
         doBackups = true;
       };
 
@@ -55,6 +54,11 @@
         enable = true;
         domain = "wiki.sprouted.cloud";
         doBackups = true;
+      };
+
+      outline-to-anki = {
+        enable = true;
+        domain = "anki-decks.sprouted.cloud";
       };
 
       it-tools = {
