@@ -48,6 +48,7 @@
         enable = true;
         domain = "git.web.sstork.dev";
         doBackups = true;
+        ssh.enable = true;
       };
 
       outline = {

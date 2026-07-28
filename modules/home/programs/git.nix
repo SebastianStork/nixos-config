@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  allHosts,
+  ...
+}:
 {
   options.custom.programs.git.enable = lib.mkEnableOption "";
 
@@ -42,8 +47,31 @@
       lazygit.enable = true;
 
       ssh.settings =
-        config.custom.sops.secretsData.ssh-key
-        |> lib.mapAttrs (name: _: { identityFile = config.sops.secrets."ssh-key/${name}".path; });
+        let
+          sshKeySettings =
+            config.custom.sops.secretsData.ssh-key
+            |> lib.mapAttrs (name: _: { identityFile = config.sops.secrets."ssh-key/${name}".path; });
+
+          forgejoSshSettings =
+            allHosts
+            |> lib.attrValues
+            |> lib.filter (host: host.config.custom.web-services.forgejo.enable)
+            |> lib.filter (host: host.config.custom.web-services.forgejo.ssh.enable)
+            |> lib.map (host: {
+              name = host.config.custom.web-services.forgejo.domain;
+              value = {
+                hostName = host.config.custom.networking.overlay.fqdn;
+                user = host.config.services.forgejo.user;
+                port = host.config.custom.web-services.forgejo.ssh.port;
+                identitiesOnly = true;
+              };
+            })
+            |> lib.listToAttrs;
+        in
+        lib.mkMerge [
+          sshKeySettings
+          forgejoSshSettings
+        ];
     };
   };
 }
