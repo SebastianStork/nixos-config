@@ -93,7 +93,7 @@ in
       nebula.networks.mesh.firewall.inbound = lib.singleton {
         inherit (cfg) port;
         proto = "any";
-        host = "any";
+        group = "client";
       };
     };
 

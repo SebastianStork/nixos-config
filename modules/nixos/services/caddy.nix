@@ -8,6 +8,11 @@ let
   cfg = config.custom.services.caddy;
   netCfg = config.custom.networking;
 
+  allowedGroups = [
+    "client"
+    "server"
+  ];
+
   virtualHosts = cfg.virtualHosts |> lib.attrValues;
 
   publicHostsExist = virtualHosts |> lib.any (vHost: (!self.lib.isPrivateDomain vHost.domain));
@@ -140,18 +145,20 @@ in
           certs = privateDomains |> self.lib.genAttrs' (domain: lib.nameValuePair domain { });
         };
 
-        services.nebula.networks.mesh.firewall.inbound = [
-          {
-            port = "80";
-            proto = "tcp";
-            host = "any";
-          }
-          {
-            port = "443";
-            proto = "tcp";
-            host = "any";
-          }
-        ];
+        services.nebula.networks.mesh.firewall.inbound =
+          allowedGroups
+          |> lib.concatMap (group: [
+            {
+              port = "80";
+              proto = "tcp";
+              inherit group;
+            }
+            {
+              port = "443";
+              proto = "tcp";
+              inherit group;
+            }
+          ]);
 
         networking.firewall.interfaces.${netCfg.underlay.interface}.allowedTCPPorts =
           lib.mkIf netCfg.underlay.trusted

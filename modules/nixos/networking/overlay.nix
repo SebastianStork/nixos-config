@@ -78,6 +78,7 @@ in
       type = lib.types.enum [
         "client"
         "server"
+        "agent"
       ];
     };
 
@@ -87,6 +88,7 @@ in
         {
           "client" = if (blocking-nameservers != [ ]) then blocking-nameservers else recursive-nameservers;
           "server" = recursive-nameservers;
+          "agent" = recursive-nameservers;
         }
         .${cfg.role};
     };
