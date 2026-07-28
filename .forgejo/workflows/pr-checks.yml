@@ -34,28 +34,41 @@ jobs:
     needs: validate-trigger
     runs-on: nixos
     outputs:
-      outputs: ${{ steps.flake_outputs.outputs.outputs }}
+      checks: ${{ steps.checks.outputs.checks }}
+      tests: ${{ steps.tests.outputs.tests }}
+      servers: ${{ steps.servers.outputs.servers }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Get outputs
-        id: flake_outputs
+      - name: Get checks
+        id: checks
         run: |
-          outputs=$(jq --slurp --compact-output add \
-            <(nix eval .#checks.x86_64-linux --apply 'checks: builtins.map (name: "checks.x86_64-linux.${name}") (builtins.attrNames checks)' --json) \
-            <(nix eval .#tests.x86_64-linux --apply 'tests: builtins.map (name: "tests.x86_64-linux.${name}") (builtins.attrNames tests)' --json) \
-            <(nix eval .#nixosConfigurations --apply 'hosts: builtins.map (name: "nixosConfigurations.${name}.config.system.build.toplevel") (builtins.attrNames hosts)' --json))
-          printf "outputs=%s" "$outputs" >> "$FORGEJO_OUTPUT"
+          checks=$(nix eval .#checks.x86_64-linux --apply builtins.attrNames --json)
+          printf "checks=%s" "$checks" >> "$FORGEJO_OUTPUT"
+      - name: Get tests
+        id: tests
+        run: |
+          tests=$(nix eval .#tests.x86_64-linux --apply builtins.attrNames --json)
+          printf "tests=%s" "$tests" >> "$FORGEJO_OUTPUT"
+      - name: Get servers
+        id: servers
+        run: |
+          servers=$(nix eval .#nixosConfigurations --apply 'configs:
+            configs
+            |> builtins.attrNames
+            |> builtins.filter (hostName: configs.${hostName}.config.custom.services.deploy-webhook.enable)
+          ' --json)
+          printf "servers=%s" "$servers" >> "$FORGEJO_OUTPUT"
 
-  build-output:
+  build-check:
     needs: parse-outputs
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        output: ${{ fromJSON(needs.parse-outputs.outputs.outputs) }}
+        check: ${{ fromJSON(needs.parse-outputs.outputs.checks) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -64,18 +77,54 @@ jobs:
       - name: Build
         uses: ./.forgejo/actions/build
         with:
-          flake-output: .#${{ matrix.output }}
+          flake-output: .#checks.x86_64-linux.${{ matrix.check }}
+
+  build-test:
+    needs: parse-outputs
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ${{ fromJSON(needs.parse-outputs.outputs.tests) }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build
+        uses: ./.forgejo/actions/build
+        with:
+          flake-output: .#tests.x86_64-linux.${{ matrix.test }}
+
+  build-server:
+    needs: parse-outputs
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        server: ${{ fromJSON(needs.parse-outputs.outputs.servers) }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build
+        uses: ./.forgejo/actions/build
+        with:
+          flake-output: .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel
 
   merge-gate:
     if: always()
-    needs: build-output
+    needs: [build-check, build-test, build-server]
     runs-on: nixos
     steps:
       - name: Verify PR checks passed
         env:
-          BUILD_OUTPUT_RESULT: ${{ needs.build-output.result }}
+          BUILD_CHECK_RESULT: ${{ needs.build-check.result }}
+          BUILD_TEST_RESULT: ${{ needs.build-test.result }}
+          BUILD_SERVER_RESULT: ${{ needs.build-server.result }}
         run: |
-          if [[ "$BUILD_OUTPUT_RESULT" != "success" ]]; then
-            echo "build-output result was $BUILD_OUTPUT_RESULT" >&2
+          if [[ "$BUILD_CHECK_RESULT" != "success" || "$BUILD_TEST_RESULT" != "success" || "$BUILD_SERVER_RESULT" != "success" ]]; then
+            echo "Build results: checks=$BUILD_CHECK_RESULT tests=$BUILD_TEST_RESULT servers=$BUILD_SERVER_RESULT" >&2
             exit 1
           fi
