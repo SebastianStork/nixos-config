@@ -26,6 +26,10 @@ in
           KbdInteractiveAuthentication = false;
           PermitRootLogin = "no";
         };
+        extraConfig = ''
+          Match LocalPort 22
+            AllowUsers seb
+        '';
       };
 
       nebula.networks.mesh.firewall.inbound = lib.singleton {
