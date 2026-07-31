@@ -3,6 +3,7 @@
   inputs,
   self,
   pkgs,
+  pkgs-unstable,
   lib,
   allHosts,
   ...
@@ -100,6 +101,7 @@ in
 
     programs.firefox = {
       enable = true;
+      package = pkgs-unstable.firefox;
       configPath = "${config.xdg.configHome}/mozilla/firefox";
 
       profiles.default = {
