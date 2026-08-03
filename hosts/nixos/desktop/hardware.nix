@@ -26,6 +26,8 @@ _: {
     ];
   };
 
+  systemd.sleep.settings.Sleep.HibernateDelaySec = "4h";
+
   # Prevent immediate wake-up from suspend caused by the logi bolt receiver
   services.udev.extraRules = ''
     ACTION=="add" SUBSYSTEM=="pci" ATTR{vendor}=="0x1022" ATTR{device}=="0x43ee" ATTR{power/wakeup}="disabled"
