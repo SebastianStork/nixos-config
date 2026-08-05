@@ -62,8 +62,9 @@ in
         prometheusEndpoints =
           allHosts
           |> lib.attrValues
-          |> lib.filter (host: host.config.custom.services.prometheus.enable)
-          |> lib.map (host: "https://${host.config.custom.services.prometheus.domain}/api/v1/write");
+          |> lib.map (host: host.config.custom.services.prometheus)
+          |> lib.filter (prometheus: prometheus.enable)
+          |> lib.map (prometheus: "http://${prometheus.domain}:${lib.toString prometheus.port}/api/v1/write");
       in
       {
         "alloy/prometheus-endpoint.alloy" = {

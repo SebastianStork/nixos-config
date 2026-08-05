@@ -7,6 +7,12 @@
 }:
 let
   cfg = config.custom.services.prometheus;
+
+  allowedGroups = [
+    "client"
+    "server"
+    "agent"
+  ];
 in
 {
   options.custom.services.prometheus = {
@@ -26,100 +32,110 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.prometheus = {
-      enable = true;
-      stateDir = "prometheus";
+    services = {
+      prometheus = {
+        enable = true;
+        stateDir = "prometheus";
 
-      listenAddress = "localhost";
-      inherit (cfg) port;
-      webExternalUrl = "https://${cfg.domain}";
+        listenAddress = "0.0.0.0";
+        inherit (cfg) port;
+        webExternalUrl = "https://${cfg.domain}";
 
-      extraFlags = [
-        "--web.enable-remote-write-receiver"
-        "--storage.tsdb.retention.size=${cfg.storageRetentionSize}"
-      ];
-      globalConfig = {
-        scrape_interval = "30s";
-        external_labels.monitor = "global";
-      };
-
-      alertmanagers = lib.singleton {
-        scheme = "https";
-        static_configs = lib.singleton {
-          targets =
-            allHosts
-            |> lib.attrValues
-            |> lib.map (host: host.config.custom.services.alertmanager)
-            |> lib.filter (alertmanager: alertmanager.enable)
-            |> lib.map (alertmanager: alertmanager.domain);
+        extraFlags = [
+          "--web.enable-remote-write-receiver"
+          "--storage.tsdb.retention.size=${cfg.storageRetentionSize}"
+        ];
+        globalConfig = {
+          scrape_interval = "30s";
+          external_labels.monitor = "global";
         };
+
+        alertmanagers = lib.singleton {
+          scheme = "https";
+          static_configs = lib.singleton {
+            targets =
+              allHosts
+              |> lib.attrValues
+              |> lib.map (host: host.config.custom.services.alertmanager)
+              |> lib.filter (alertmanager: alertmanager.enable)
+              |> lib.map (alertmanager: alertmanager.domain);
+          };
+        };
+
+        scrapeConfigs = [
+          {
+            job_name = "prometheus";
+            static_configs =
+              allHosts
+              |> lib.attrValues
+              |> lib.filter (host: host.config.custom.services.prometheus.enable)
+              |> lib.map (host: {
+                targets = lib.singleton host.config.custom.services.prometheus.domain;
+                labels.instance = host.config.networking.hostName;
+              });
+          }
+          {
+            job_name = "alertmanager";
+            static_configs =
+              allHosts
+              |> lib.attrValues
+              |> lib.filter (host: host.config.custom.services.alertmanager.enable)
+              |> lib.map (host: {
+                targets = lib.singleton host.config.custom.services.alertmanager.domain;
+                labels.instance = host.config.networking.hostName;
+              });
+          }
+        ];
+
+        ruleFiles =
+          {
+            groups = lib.singleton {
+              name = "Rules";
+              rules =
+                (
+                  allHosts
+                  |> lib.attrValues
+                  |> lib.filter (host: host.config.custom.services.alloy.enable)
+                  |> lib.filter (host: host.config.custom.networking.overlay.role == "server")
+                  |> lib.map (host: host.config.networking.hostName)
+                  |> lib.map (hostName: {
+                    alert = "InstanceDown";
+                    expr = ''absent_over_time(up{instance="${hostName}", job="node"}[2m])'';
+                    labels.severity = "critical";
+                    annotations = {
+                      summary = "Host ${hostName} is down";
+                      summary_resolved = "Host ${hostName} is up again";
+                      description = "Prometheus has not received node metrics from ${hostName} for 2 minutes.";
+                      description_resolved = "Prometheus is receiving node metrics from ${hostName} again.";
+                    };
+                  })
+                )
+                ++ lib.singleton {
+                  alert = "ServiceDown";
+                  expr = ''up{job=~"prometheus|alertmanager"} == 0'';
+                  for = "5m";
+                  annotations = {
+                    summary = "Service {{ $labels.job | title }} on {{ $labels.instance }} is down";
+                    summary_resolved = "Service {{ $labels.job | title }} on {{ $labels.instance }} is up again";
+                    description = "Prometheus has not received scrape data for 5 minutes.";
+                    description_resolved = "Prometheus is receiving scrape data again.";
+                  };
+                };
+            };
+          }
+          |> lib.strings.toJSON
+          |> pkgs.writeText "prometheus-rules"
+          |> lib.toString
+          |> lib.singleton;
       };
 
-      scrapeConfigs = [
-        {
-          job_name = "prometheus";
-          static_configs =
-            allHosts
-            |> lib.attrValues
-            |> lib.filter (host: host.config.custom.services.prometheus.enable)
-            |> lib.map (host: {
-              targets = lib.singleton host.config.custom.services.prometheus.domain;
-              labels.instance = host.config.networking.hostName;
-            });
-        }
-        {
-          job_name = "alertmanager";
-          static_configs =
-            allHosts
-            |> lib.attrValues
-            |> lib.filter (host: host.config.custom.services.alertmanager.enable)
-            |> lib.map (host: {
-              targets = lib.singleton host.config.custom.services.alertmanager.domain;
-              labels.instance = host.config.networking.hostName;
-            });
-        }
-      ];
-
-      ruleFiles =
-        {
-          groups = lib.singleton {
-            name = "Rules";
-            rules =
-              (
-                allHosts
-                |> lib.attrValues
-                |> lib.filter (host: host.config.custom.services.alloy.enable)
-                |> lib.filter (host: host.config.custom.networking.overlay.role == "server")
-                |> lib.map (host: host.config.networking.hostName)
-                |> lib.map (hostName: {
-                  alert = "InstanceDown";
-                  expr = ''absent_over_time(up{instance="${hostName}", job="node"}[2m])'';
-                  labels.severity = "critical";
-                  annotations = {
-                    summary = "Host ${hostName} is down";
-                    summary_resolved = "Host ${hostName} is up again";
-                    description = "Prometheus has not received node metrics from ${hostName} for 2 minutes.";
-                    description_resolved = "Prometheus is receiving node metrics from ${hostName} again.";
-                  };
-                })
-              )
-              ++ lib.singleton {
-                alert = "ServiceDown";
-                expr = ''up{job=~"prometheus|alertmanager"} == 0'';
-                for = "5m";
-                annotations = {
-                  summary = "Service {{ $labels.job | title }} on {{ $labels.instance }} is down";
-                  summary_resolved = "Service {{ $labels.job | title }} on {{ $labels.instance }} is up again";
-                  description = "Prometheus has not received scrape data for 5 minutes.";
-                  description_resolved = "Prometheus is receiving scrape data again.";
-                };
-              };
-          };
-        }
-        |> lib.strings.toJSON
-        |> pkgs.writeText "prometheus-rules"
-        |> lib.toString
-        |> lib.singleton;
+      nebula.networks.mesh.firewall.inbound =
+        allowedGroups
+        |> lib.map (group: {
+          inherit (cfg) port;
+          proto = "tcp";
+          inherit group;
+        });
     };
 
     custom = {
