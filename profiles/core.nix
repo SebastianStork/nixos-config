@@ -92,15 +92,19 @@
     vimAlias = true;
   };
 
-  environment.systemPackages = [
-    (lib.hiPrio pkgs.uutils-coreutils-noprefix)
-    pkgs.git
-    pkgs.just
-    pkgs.nh
-    pkgs.dust
-    pkgs.comma
-    pkgs.btop
-  ];
+  environment = {
+    systemPackages = [
+      (lib.hiPrio pkgs.uutils-coreutils-noprefix)
+      pkgs.git
+      pkgs.just
+      pkgs.nh
+      pkgs.dust
+      pkgs.comma
+      pkgs.btop
+    ];
+
+    variables.COMMA_NIXPKGS_FLAKE = "pkgs";
+  };
 
   custom = {
     sops.enable = true;
