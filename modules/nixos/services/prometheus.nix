@@ -100,12 +100,11 @@ in
                   |> lib.map (host: host.config.networking.hostName)
                   |> lib.map (hostName: {
                     alert = "InstanceDown";
-                    expr = ''absent_over_time(up{instance="${hostName}", job="node"}[2m])'';
-                    labels.severity = "critical";
+                    expr = ''absent_over_time(up{instance="${hostName}", job="node"}[5m])'';
                     annotations = {
                       summary = "Host ${hostName} is down";
                       summary_resolved = "Host ${hostName} is up again";
-                      description = "Prometheus has not received node metrics from ${hostName} for 2 minutes.";
+                      description = "Prometheus has not received node metrics from ${hostName} for 5 minutes.";
                       description_resolved = "Prometheus is receiving node metrics from ${hostName} again.";
                     };
                   })
