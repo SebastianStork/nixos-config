@@ -89,7 +89,7 @@
         # Large outer gaps on special workspaces
         "s[true], gapsout:60"
 
-        "special:flake, on-created-empty:kitty --directory ~/Projects/nixos-config"
+        "special:flake, on-created-empty:kitty herdr"
         "special:music, on-created-empty:spotify"
         "special:chat, on-created-empty:discord"
         "special:monitor, on-created-empty:kitty btop"
