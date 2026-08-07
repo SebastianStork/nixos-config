@@ -121,6 +121,26 @@ in
                   };
                 }
                 {
+                  alert = "SystemdUnitFailed";
+                  expr =
+                    allHosts
+                    |> lib.attrValues
+                    |> lib.filter (host: host.config.custom.services.alloy.enable)
+                    |> lib.filter (host: host.config.custom.networking.overlay.role == "server")
+                    |> lib.map (host: host.config.networking.hostName)
+                    |> lib.concatStringsSep "|"
+                    |> (
+                      instances: ''node_systemd_unit_state{instance=~"${instances}", job="node", state="failed"} == 1''
+                    );
+                  for = "5m";
+                  annotations = {
+                    summary = "Systemd unit {{ $labels.name }} on {{ $labels.instance }} has failed";
+                    summary_resolved = "Systemd unit {{ $labels.name }} on {{ $labels.instance }} has recovered";
+                    description = "The systemd unit has remained in the failed state for 5 minutes.";
+                    description_resolved = "The systemd unit has left the failed state.";
+                  };
+                }
+                {
                   alert = "PersistVolumeNearlyFull";
                   expr = ''100 * (1 - node_filesystem_avail_bytes{job="node", mountpoint="/persist"} / node_filesystem_size_bytes{job="node", mountpoint="/persist"}) > 90'';
                   for = "10m";
