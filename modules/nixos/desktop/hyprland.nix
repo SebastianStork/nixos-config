@@ -1,17 +1,9 @@
-{
-  config,
-  pkgs-unstable,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 {
   options.custom.desktop.hyprland.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.desktop.hyprland.enable {
-    programs.hyprland = {
-      enable = true;
-      package = pkgs-unstable.hyprland;
-    };
+    programs.hyprland.enable = true;
 
     environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
