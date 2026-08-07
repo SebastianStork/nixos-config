@@ -119,6 +119,17 @@ in
                     description = "Prometheus has not received scrape data for 5 minutes.";
                     description_resolved = "Prometheus is receiving scrape data again.";
                   };
+                }
+                ++ lib.singleton {
+                  alert = "PersistVolumeNearlyFull";
+                  expr = ''100 * (1 - node_filesystem_avail_bytes{job="node", mountpoint="/persist"} / node_filesystem_size_bytes{job="node", mountpoint="/persist"}) > 90'';
+                  for = "10m";
+                  annotations = {
+                    summary = "/persist on {{ $labels.instance }} is over 90% full";
+                    summary_resolved = "/persist on {{ $labels.instance }} is below 90% full again";
+                    description = ''The /persist volume on {{ $labels.instance }} has been above 90% usage for 10 minutes (currently {{ printf "%.1f" $value }}%).'';
+                    description_resolved = ''The /persist volume on {{ $labels.instance }} is back below 90% usage (currently {{ printf "%.1f" $value }}%).'';
+                  };
                 };
             };
           }
