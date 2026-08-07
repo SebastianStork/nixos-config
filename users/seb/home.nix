@@ -2,6 +2,7 @@
   config,
   self,
   pkgs,
+  pkgs-unstable,
   ...
 }:
 {
@@ -44,6 +45,7 @@
 
   home.packages = [
     pkgs.fastfetch
+    pkgs-unstable.herdr
 
     pkgs.nemo-with-extensions
     pkgs.vlc
