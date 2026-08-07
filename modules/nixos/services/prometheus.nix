@@ -91,25 +91,25 @@ in
           {
             groups = lib.singleton {
               name = "Rules";
-              rules =
-                (
-                  allHosts
-                  |> lib.attrValues
-                  |> lib.filter (host: host.config.custom.services.alloy.enable)
-                  |> lib.filter (host: host.config.custom.networking.overlay.role == "server")
-                  |> lib.map (host: host.config.networking.hostName)
-                  |> lib.map (hostName: {
-                    alert = "InstanceDown";
-                    expr = ''absent_over_time(up{instance="${hostName}", job="node"}[5m])'';
-                    annotations = {
-                      summary = "Host ${hostName} is down";
-                      summary_resolved = "Host ${hostName} is up again";
-                      description = "Prometheus has not received node metrics from ${hostName} for 5 minutes.";
-                      description_resolved = "Prometheus is receiving node metrics from ${hostName} again.";
-                    };
-                  })
-                )
-                ++ lib.singleton {
+              rules = [
+                {
+                  alert = "InstanceDown";
+                  expr =
+                    allHosts
+                    |> lib.attrValues
+                    |> lib.filter (host: host.config.custom.services.alloy.enable)
+                    |> lib.filter (host: host.config.custom.networking.overlay.role == "server")
+                    |> lib.map (host: host.config.networking.hostName)
+                    |> lib.map (hostName: ''absent_over_time(up{instance="${hostName}", job="node"}[5m])'')
+                    |> lib.concatStringsSep " or ";
+                  annotations = {
+                    summary = "Host {{ $labels.instance }} is down";
+                    summary_resolved = "Host {{ $labels.instance }} is up again";
+                    description = "Prometheus has not received node metrics from {{ $labels.instance }} for 5 minutes.";
+                    description_resolved = "Prometheus is receiving node metrics from {{ $labels.instance }} again.";
+                  };
+                }
+                {
                   alert = "ServiceDown";
                   expr = ''up{job=~"prometheus|alertmanager"} == 0'';
                   for = "5m";
@@ -120,7 +120,7 @@ in
                     description_resolved = "Prometheus is receiving scrape data again.";
                   };
                 }
-                ++ lib.singleton {
+                {
                   alert = "PersistVolumeNearlyFull";
                   expr = ''100 * (1 - node_filesystem_avail_bytes{job="node", mountpoint="/persist"} / node_filesystem_size_bytes{job="node", mountpoint="/persist"}) > 90'';
                   for = "10m";
@@ -130,7 +130,8 @@ in
                     description = ''The /persist volume on {{ $labels.instance }} has been above 90% usage for 10 minutes (currently {{ printf "%.1f" $value }}%).'';
                     description_resolved = ''The /persist volume on {{ $labels.instance }} is back below 90% usage (currently {{ printf "%.1f" $value }}%).'';
                   };
-                };
+                }
+              ];
             };
           }
           |> lib.strings.toJSON
