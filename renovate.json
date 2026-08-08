@@ -9,6 +9,7 @@
   "lockFileMaintenance": {
     "enabled": true,
     "commitMessageAction": "flake.lock: Update",
+    "commitHourlyLimit": 1,
     "schedule": ["* 4 * * 2,4,6"],
     "automerge": true
   },
