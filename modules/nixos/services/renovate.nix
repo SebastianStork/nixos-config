@@ -42,13 +42,21 @@ in
       };
     };
 
-    systemd.services.renovate.serviceConfig = {
-      DynamicUser = lib.mkForce false;
-      User = config.users.users.renovate.name;
-      Group = config.users.groups.renovate.name;
-      ProtectSystem = "strict";
-      PrivateTmp = true;
-      RemoveIPC = true;
+    systemd.services.renovate = {
+      unitConfig = {
+        StartLimitIntervalSec = "10min";
+        StartLimitBurst = 3;
+      };
+      serviceConfig = {
+        DynamicUser = lib.mkForce false;
+        User = config.users.users.renovate.name;
+        Group = config.users.groups.renovate.name;
+        ProtectSystem = "strict";
+        PrivateTmp = true;
+        RemoveIPC = true;
+        Restart = "on-failure";
+        RestartSec = "1min";
+      };
     };
 
     nix.settings.allowed-users = [ config.users.users.renovate.name ];
