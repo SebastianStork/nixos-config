@@ -122,16 +122,7 @@ in
                 }
                 {
                   alert = "SystemdUnitFailed";
-                  expr =
-                    allHosts
-                    |> lib.attrValues
-                    |> lib.filter (host: host.config.custom.services.alloy.enable)
-                    |> lib.filter (host: host.config.custom.networking.overlay.role == "server")
-                    |> lib.map (host: host.config.networking.hostName)
-                    |> lib.concatStringsSep "|"
-                    |> (
-                      instances: ''node_systemd_unit_state{instance=~"${instances}", job="node", state="failed"} == 1''
-                    );
+                  expr = ''node_systemd_unit_state{job="node", state="failed"} == 1'';
                   for = "5m";
                   annotations = {
                     summary = "Systemd unit {{ $labels.name }} on {{ $labels.instance }} has failed";
