@@ -99,15 +99,13 @@
       pkgs.just
       pkgs.nh
       pkgs.dust
-      pkgs.comma
       pkgs.btop
     ];
-
-    variables.COMMA_NIXPKGS_FLAKE = "pkgs";
   };
 
   custom = {
     sops.enable = true;
+    programs.comma.enable = true;
     services = {
       auto-gc.enable = true;
       sshd.enable = true;
