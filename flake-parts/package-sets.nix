@@ -47,10 +47,6 @@ in
             path = mkRegistryFlake pkgs inputs.nixpkgs-unstable;
           };
         };
-        nixPath = [
-          "pkgs=flake:pkgs"
-          "pkgs-unstable=flake:pkgs-unstable"
-        ];
       };
     };
 

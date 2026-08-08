@@ -23,11 +23,9 @@
         flakeInputs
         |> lib.filterAttrs (name: _: name != "self")
         |> lib.mapAttrs (_: flake: { inherit flake; });
-      nixPath = flakeInputs |> lib.attrNames |> lib.map (name: "${name}=flake:${name}");
-
       settings = {
         flake-registry = "";
-        nix-path = config.nix.nixPath;
+        nix-path = [ ];
         experimental-features = [
           "nix-command"
           "flakes"
@@ -47,6 +45,8 @@
         fallback = true;
       };
     };
+
+  nixpkgs.flake.setNixPath = false;
 
   systemd.enableStrictShellChecks = true;
 
