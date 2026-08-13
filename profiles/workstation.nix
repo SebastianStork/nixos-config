@@ -25,7 +25,10 @@
     desktop.hyprland.enable = true;
     services = {
       sound.enable = true;
-      syncthing.enable = true;
+      syncthing = {
+        enable = true;
+        folders = config.home-manager.users.seb.custom.services.syncthing.folders;
+      };
       alloy.enable = true;
     };
   };

@@ -23,7 +23,17 @@
 
     desktop.hyprland.noctalia.enable = true;
 
-    services.ntfy-client.enable = true;
+    services = {
+      ntfy-client.enable = true;
+      syncthing.folders = [
+        "Documents"
+        "Downloads"
+        "Music"
+        "Pictures"
+        "Projects"
+        "Videos"
+      ];
+    };
 
     programs = {
       shell = {

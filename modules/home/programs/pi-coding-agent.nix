@@ -41,5 +41,7 @@
         - Never proactively create documentation files unless explicitly requested.
       '';
     };
+
+    custom.services.syncthing.folders = [ ".pi/agent/sessions" ];
   };
 }

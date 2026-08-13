@@ -44,17 +44,8 @@ in
       };
     };
     folders = lib.mkOption {
-      type = lib.types.nonEmptyListOf lib.types.nonEmptyStr;
-      default = [
-        "Documents"
-        "Downloads"
-        "Music"
-        "Pictures"
-        "Projects"
-        "Videos"
-        ".claude/projects"
-        ".pi/agent/sessions"
-      ];
+      type = lib.types.listOf lib.types.nonEmptyStr;
+      default = [ ];
     };
 
     certFile = lib.mkOption {
@@ -174,6 +165,16 @@ in
 
     custom = {
       services = {
+        syncthing.folders = lib.mkIf cfg.isServer (
+          allHosts
+          |> lib.attrValues
+          |> lib.map (host: host.config.custom.services.syncthing)
+          |> lib.filter (syncthing: syncthing.enable)
+          |> lib.filter (syncthing: !syncthing.isServer)
+          |> lib.concatMap (syncthing: syncthing.folders)
+          |> lib.unique
+        );
+
         caddy.virtualHosts.${cfg.gui.domain}.port = lib.mkIf (cfg.gui.domain != null) cfg.gui.port;
 
         restic.backups.syncthing = lib.mkIf cfg.doBackups {
