@@ -1,10 +1,13 @@
-{ self, lib, ... }:
+{ self, ... }:
 {
-  imports = [ self.nixosModules.default ];
+  imports = [ self.nixosModules.core-profile ];
 
-  nixpkgs.hostPlatform = "x86_64-linux";
+  system.stateVersion = "26.05";
 
   custom = {
+    persistence.enable = true;
+    boot.loader.systemd-boot.enable = true;
+
     networking = {
       overlay = {
         address = "10.254.250.7";
@@ -18,9 +21,6 @@
       };
     };
 
-    services.nebula = {
-      publicKeyFile = lib.toString ./keys/nebula.pub;
-      certificateFile = lib.toString ./keys/nebula.crt;
-    };
+    services.alloy.enable = true;
   };
 }
