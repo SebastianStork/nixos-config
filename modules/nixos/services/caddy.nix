@@ -139,10 +139,16 @@ in
               PORKBUN_API_KEY_FILE = config.sops.secrets."porkbun/api-key".path;
               PORKBUN_SECRET_API_KEY_FILE = config.sops.secrets."porkbun/secret-api-key".path;
             };
-            reloadServices = [ "caddy.service" ];
           };
 
-          certs = privateDomains |> self.lib.genAttrs' (domain: lib.nameValuePair domain { });
+          certs =
+            privateDomains
+            |> self.lib.genAttrs' (
+              domain:
+              lib.nameValuePair domain {
+                reloadServices = lib.mkAfter [ "caddy.service" ];
+              }
+            );
         };
 
         services.nebula.networks.mesh.firewall.inbound =
