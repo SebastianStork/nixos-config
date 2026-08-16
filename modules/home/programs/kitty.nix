@@ -31,7 +31,5 @@
           scrollback_lines = 10000;
         };
     };
-
-    home.shellAliases.ssh = "kitten ssh";
   };
 }
