@@ -89,15 +89,15 @@
         # Large outer gaps on special workspaces
         "s[true], gapsout:60"
 
-        "special:flake, on-created-empty:kitty herdr"
+        "special:flake, on-created-empty:footclient herdr"
         "special:music, on-created-empty:spotify"
         "special:chat, on-created-empty:discord"
-        "special:monitor, on-created-empty:kitty btop"
+        "special:monitor, on-created-empty:footclient btop"
         "special:files, on-created-empty:nemo"
         "special:notes, on-created-empty:obsidian"
       ];
 
-      exec-once = [ "[workspace special:monitor silent] kitty btop" ];
+      exec-once = [ "[workspace special:monitor silent] footclient btop" ];
     };
   };
 }

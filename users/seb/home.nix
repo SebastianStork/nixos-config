@@ -44,7 +44,7 @@
       };
       ssh.enable = true;
       git.enable = true;
-      kitty.enable = true;
+      foot.enable = true;
       vscode.enable = true;
       firefox.enable = true;
       libreoffice.enable = true;
