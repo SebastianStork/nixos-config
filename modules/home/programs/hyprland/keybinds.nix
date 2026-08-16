@@ -13,7 +13,7 @@
       bind = SUPER SHIFT, F, fullscreen, 0
 
       # Launch programs
-      bind = SUPER, RETURN, exec, footclient
+      bind = SUPER, RETURN, exec, kitty
       bind = SUPER, B, exec, firefox
       bind = SUPER, C, exec, code
 
