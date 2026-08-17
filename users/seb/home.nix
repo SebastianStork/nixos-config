@@ -73,14 +73,5 @@
     pkgs.nerd-fonts.symbols-only
   ];
 
-  fonts.fontconfig = {
-    enable = true;
-    antialiasing = true;
-    hinting = "slight";
-    defaultFonts = {
-      monospace = [ "JetBrainsMono Nerd Font" ];
-      sansSerif = [ "Open Sans" ];
-      emoji = [ "Noto Color Emoji" ];
-    };
-  };
+  fonts.fontconfig.enable = true;
 }
