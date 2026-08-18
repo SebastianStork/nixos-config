@@ -29,7 +29,7 @@ in
 
     services.renovate = {
       enable = true;
-      schedule = "*:0/15";
+      schedule = "hourly";
       credentials.RENOVATE_TOKEN = config.sops.secrets."renovate/token".path;
       runtimePackages = [ pkgs.nix ];
       settings = {
@@ -43,10 +43,6 @@ in
     };
 
     systemd.services.renovate = {
-      unitConfig = {
-        StartLimitIntervalSec = "10min";
-        StartLimitBurst = 3;
-      };
       serviceConfig = {
         DynamicUser = lib.mkForce false;
         User = config.users.users.renovate.name;
@@ -55,7 +51,7 @@ in
         PrivateTmp = true;
         RemoveIPC = true;
         Restart = "on-failure";
-        RestartSec = "1min";
+        RestartSec = "15min";
       };
     };
 
