@@ -37,6 +37,7 @@ jobs:
       checks: ${{ steps.checks.outputs.checks }}
       tests: ${{ steps.tests.outputs.tests }}
       servers: ${{ steps.servers.outputs.servers }}
+      workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -61,6 +62,15 @@ jobs:
             |> builtins.filter (hostName: configs.${hostName}.config.custom.services.deploy-webhook.enable)
           ' --json)
           printf "servers=%s" "$servers" >> "$FORGEJO_OUTPUT"
+      - name: Get workstations
+        id: workstations
+        run: |
+          workstations=$(nix eval .#nixosConfigurations --apply 'configs:
+            configs
+            |> builtins.attrNames
+            |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.deploy-webhook.enable)
+          ' --json)
+          printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
 
   build-check:
     needs: parse-outputs
@@ -113,9 +123,26 @@ jobs:
         with:
           flake-output: .#nixosConfigurations.${{ matrix.server }}.config.system.build.toplevel
 
+  build-workstation:
+    needs: parse-outputs
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        workstation: ${{ fromJSON(needs.parse-outputs.outputs.workstations) }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build
+        uses: ./.forgejo/actions/build
+        with:
+          flake-output: .#nixosConfigurations.${{ matrix.workstation }}.config.system.build.toplevel
+
   merge-gate:
     if: always()
-    needs: [build-check, build-test, build-server]
+    needs: [build-check, build-test, build-server, build-workstation]
     runs-on: nixos
     steps:
       - name: Verify PR checks passed
@@ -123,8 +150,9 @@ jobs:
           BUILD_CHECK_RESULT: ${{ needs.build-check.result }}
           BUILD_TEST_RESULT: ${{ needs.build-test.result }}
           BUILD_SERVER_RESULT: ${{ needs.build-server.result }}
+          BUILD_WORKSTATION_RESULT: ${{ needs.build-workstation.result }}
         run: |
-          if [[ "$BUILD_CHECK_RESULT" != "success" || "$BUILD_TEST_RESULT" != "success" || "$BUILD_SERVER_RESULT" != "success" ]]; then
-            echo "Build results: checks=$BUILD_CHECK_RESULT tests=$BUILD_TEST_RESULT servers=$BUILD_SERVER_RESULT" >&2
+          if [[ "$BUILD_CHECK_RESULT" != "success" || "$BUILD_TEST_RESULT" != "success" || "$BUILD_SERVER_RESULT" != "success" || "$BUILD_WORKSTATION_RESULT" != "success" ]]; then
+            echo "Build results: checks=$BUILD_CHECK_RESULT tests=$BUILD_TEST_RESULT servers=$BUILD_SERVER_RESULT workstations=$BUILD_WORKSTATION_RESULT" >&2
             exit 1
           fi
