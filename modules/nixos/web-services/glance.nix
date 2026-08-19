@@ -8,32 +8,27 @@
 let
   cfg = config.custom.web-services.glance;
 
-  perHostSitesWidget =
-    let
-      widgets =
-        allHosts
-        |> lib.attrValues
-        |> lib.map (host: {
-          type = "monitor";
-          cache = "1m";
-          title = "${host.config.networking.hostName} Services";
-          style = "compact";
-          sites =
-            host.config.custom.meta.sites
-            |> lib.attrValues
-            |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn)
-            |> lib.sort (a: b: a.title < b.title);
-        })
-        |> lib.filter ({ sites, ... }: sites != [ ]);
-    in
-    {
-      type = "split-column";
-      max-columns = widgets |> lib.length;
-      inherit widgets;
-    };
+  perHostSites =
+    allHosts
+    |> lib.attrValues
+    |> lib.concatMap (
+      host:
+      host.config.custom.meta.sites
+      |> lib.attrValues
+      |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn)
+      |> lib.map (site: site // { title = "[${host.config.networking.hostName}] ${site.title}"; })
+    )
+    |> lib.sort (a: b: a.title < b.title);
 
-  perHostDomains =
-    perHostSitesWidget.widgets |> lib.concatMap (widget: widget.sites) |> lib.map (site: site.domain);
+  perHostSitesWidget = {
+    type = "monitor";
+    cache = "1m";
+    title = "Per-Host Services";
+    style = "compact";
+    sites = perHostSites;
+  };
+
+  perHostDomains = perHostSites |> lib.map (site: site.domain);
 
   applicationSitesWidgets =
     allHosts
