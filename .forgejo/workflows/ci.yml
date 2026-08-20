@@ -34,7 +34,7 @@ jobs:
       - name: Get changed servers
         id: servers
         run: |
-          servers=$(.forgejo/scripts/find-changed-servers.sh)
+          servers=$(bash .forgejo/scripts/find-changed-servers.sh)
           printf 'servers=%s\n' "$servers" >> "$FORGEJO_OUTPUT"
       - name: Get workstations
         id: workstations
