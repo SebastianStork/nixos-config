@@ -35,6 +35,9 @@ jobs:
         id: servers
         run: |
           servers=$(bash .forgejo/scripts/find-changed-servers.sh)
+          if [[ "$servers" == '[]' ]]; then
+            servers='["__no_server__"]'
+          fi
           printf 'servers=%s\n' "$servers" >> "$FORGEJO_OUTPUT"
       - name: Get workstations
         id: workstations
@@ -91,6 +94,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   build-server:
+    if: needs.parse-outputs.outputs.servers != '["__no_server__"]'
     needs: parse-outputs
     runs-on: nixos
     strategy:
@@ -113,6 +117,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   deploy:
+    if: needs.parse-outputs.outputs.servers != '["__no_server__"]'
     needs: [build-check, build-test, parse-outputs, build-server]
     runs-on: nixos
     strategy:
@@ -167,7 +172,7 @@ jobs:
             priority=low
             tags=rotating_light
             body=$(printf 'Commit `%s` failed CI before deployment.\n> %s' "${SHA::7}" "$commit")
-          elif [[ "$SERVERS" == '[]' ]]; then
+          elif [[ "$SERVERS" == '["__no_server__"]' ]]; then
             title="CI: No deployment required"
             priority=low
             tags=white_check_mark
