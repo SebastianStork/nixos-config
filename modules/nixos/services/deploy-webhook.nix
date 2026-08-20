@@ -17,6 +17,14 @@ let
       exit "$rc"
     '';
   };
+
+  currentSystem = pkgs.writeShellApplication {
+    name = "current-system";
+    runtimeInputs = [ pkgs.coreutils ];
+    text = ''
+      readlink /run/current-system
+    '';
+  };
 in
 {
   options.custom.services.deploy-webhook = {
@@ -51,14 +59,21 @@ in
       enable = true;
       ip = "127.0.0.1";
       port = cfg.webhookPort;
-      hooks.deploy = {
-        execute-command = "/run/wrappers/bin/sudo";
-        pass-arguments-to-command = lib.singleton {
-          source = "string";
-          name = lib.getExe deploy;
+      hooks = {
+        current-system = {
+          execute-command = lib.getExe currentSystem;
+          include-command-output-in-response = true;
+          include-command-output-in-response-on-error = true;
         };
-        include-command-output-in-response = true;
-        include-command-output-in-response-on-error = true;
+        deploy = {
+          execute-command = "/run/wrappers/bin/sudo";
+          pass-arguments-to-command = lib.singleton {
+            source = "string";
+            name = lib.getExe deploy;
+          };
+          include-command-output-in-response = true;
+          include-command-output-in-response-on-error = true;
+        };
       };
     };
 
@@ -71,6 +86,10 @@ in
     };
 
     custom.services.caddy.virtualHosts.${config.custom.networking.overlay.fqdn}.extraConfig = ''
+      handle /hooks/current-system {
+        header Cache-Control "no-store"
+        reverse_proxy localhost:${lib.toString cfg.webhookPort}
+      }
       handle /hooks/deploy {
         reverse_proxy localhost:${lib.toString cfg.webhookPort}
       }

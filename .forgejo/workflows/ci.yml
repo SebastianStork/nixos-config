@@ -31,15 +31,11 @@ jobs:
         run: |
           tests=$(nix eval .#tests.x86_64-linux --apply builtins.attrNames --json)
           printf "tests=%s" "$tests" >> "$FORGEJO_OUTPUT"
-      - name: Get servers
+      - name: Get changed servers
         id: servers
         run: |
-          servers=$(nix eval .#nixosConfigurations --apply 'configs:
-            configs
-            |> builtins.attrNames
-            |> builtins.filter (hostName: configs.${hostName}.config.custom.services.deploy-webhook.enable)
-          ' --json)
-          printf "servers=%s" "$servers" >> "$FORGEJO_OUTPUT"
+          servers=$(.forgejo/scripts/find-changed-servers.sh)
+          printf 'servers=%s\n' "$servers" >> "$FORGEJO_OUTPUT"
       - name: Get workstations
         id: workstations
         run: |
@@ -145,35 +141,53 @@ jobs:
 
   notify:
     if: always()
-    needs: deploy
+    needs: [parse-outputs, build-check, build-test, build-server, deploy]
     runs-on: nixos
     steps:
-      - name: Notify success
-        if: needs.deploy.result == 'success'
+      - name: Notify
         env:
+          PARSE_RESULT: ${{ needs.parse-outputs.result }}
+          CHECK_RESULT: ${{ needs.build-check.result }}
+          TEST_RESULT: ${{ needs.build-test.result }}
+          SERVER_BUILD_RESULT: ${{ needs.build-server.result }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+          SERVERS: ${{ needs.parse-outputs.outputs.servers }}
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
         run: |
-          body=$(printf 'Commit `%s` deployed successfully.\n> %s' "${SHA::7}" "${COMMIT_MSG%%$'\n'*}")
+          for result in "$PARSE_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$DEPLOY_RESULT"; do
+            if [[ "$result" == cancelled ]]; then
+              exit 0
+            fi
+          done
+
+          commit="${COMMIT_MSG%%$'\n'*}"
+          if [[ "$PARSE_RESULT" != success || "$CHECK_RESULT" != success || "$TEST_RESULT" != success ]]; then
+            title="CI: Failed"
+            priority=low
+            tags=rotating_light
+            body=$(printf 'Commit `%s` failed CI before deployment.\n> %s' "${SHA::7}" "$commit")
+          elif [[ "$SERVERS" == '[]' ]]; then
+            title="CI: No deployment required"
+            priority=low
+            tags=white_check_mark
+            body=$(printf 'Commit `%s` passed CI; no servers required deployment.\n> %s' "${SHA::7}" "$commit")
+          elif [[ "$SERVER_BUILD_RESULT" != success || "$DEPLOY_RESULT" != success ]]; then
+            title="CI: Deployment failed"
+            priority=low
+            tags=rotating_light
+            body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "$commit")
+          else
+            title="CI: Deployment succeeded"
+            priority=low
+            tags=white_check_mark
+            body=$(printf 'Commit `%s` deployed successfully.\n> %s' "${SHA::7}" "$commit")
+          fi
+
           curl -s \
-            -H "Title: CI: Deployment succeeded" \
-            -H "Priority: low" \
-            -H "Tags: white_check_mark" \
-            -H "Actions: view, Open workflow run, ${{ forgejo.server_url }}/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_number }}" \
-            -H "Markdown: yes" \
-            -d "$body" \
-            https://ntfy.sh/splitleaf
-      - name: Notify failure
-        if: needs.deploy.result == 'failure' || needs.deploy.result == 'skipped'
-        env:
-          SHA: ${{ forgejo.sha }}
-          COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
-        run: |
-          body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "${COMMIT_MSG%%$'\n'*}")
-          curl -s \
-            -H "Title: CI: Deployment failed" \
-            -H "Priority: default" \
-            -H "Tags: rotating_light" \
+            -H "Title: $title" \
+            -H "Priority: $priority" \
+            -H "Tags: $tags" \
             -H "Actions: view, Open workflow run, ${{ forgejo.server_url }}/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_number }}" \
             -H "Markdown: yes" \
             -d "$body" \
