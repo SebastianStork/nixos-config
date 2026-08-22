@@ -38,6 +38,9 @@ in
         PORT = lib.toString cfg.port;
         DISABLE_NEW_RELEASE_CHECK = "true";
         OCR_LANGS = "eng,deu";
+
+        NEXT_CACHE_DIR = "/var/cache/karakeep";
+        NEXTAUTH_URL = "https://${cfg.domain}";
       };
     };
 
