@@ -59,6 +59,7 @@ in
               "instance"
             ];
             receiver = "ntfy";
+            repeat_interval = "24h";
           };
           receivers = lib.singleton {
             name = "ntfy";
