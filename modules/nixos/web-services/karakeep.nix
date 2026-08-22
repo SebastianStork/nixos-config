@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs-unstable,
+  ...
+}:
 let
   cfg = config.custom.web-services.karakeep;
 in
@@ -27,6 +32,7 @@ in
 
     services.karakeep = {
       enable = true;
+      package = pkgs-unstable.karakeep; # See https://github.com/karakeep-app/karakeep/issues/2989
       environmentFile = config.sops.templates."karakeep.env".path;
       extraEnvironment = {
         PORT = lib.toString cfg.port;
