@@ -122,7 +122,7 @@ in
                 }
                 {
                   alert = "SystemdUnitFailed";
-                  expr = ''node_systemd_unit_state{job="node", state="failed"} == 1'';
+                  expr = ''node_systemd_unit_state{job="node", state="failed", name!="nixos-rebuild.service"} == 1'';
                   for = "5m";
                   annotations = {
                     summary = "Systemd unit {{ $labels.name }} on {{ $labels.instance }} has failed";
