@@ -26,7 +26,11 @@ in
       type = lib.types.nonEmptyListOf lib.types.nonEmptyStr;
       default =
         lib.singleton netCfg.overlay.role
-        ++ lib.optional config.custom.services.syncthing.enable "syncthing";
+        ++ lib.optional config.custom.services.syncthing.enable "syncthing"
+        ++ lib.optional (
+          config.custom.services.prometheus.enable || config.custom.web-services.grafana.enable
+        ) "monitoring"
+        ++ lib.optional config.custom.services.forgejo-runner.enable "automation";
     };
 
     listenPort = lib.mkOption {

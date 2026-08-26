@@ -2,27 +2,58 @@
   config,
   self,
   lib,
+  allHosts,
   ...
 }:
 let
   cfg = config.custom.services.caddy;
   netCfg = config.custom.networking;
 
-  allowedGroups = [
-    "client"
-    "server"
-  ];
+  nebulaHosts =
+    allHosts |> lib.attrValues |> lib.filter (host: host.config.custom.services.nebula.enable);
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues;
+  privateVirtualHosts = virtualHosts |> lib.filter (vHost: self.lib.isPrivateDomain vHost.domain);
+
+  hostIsAllowed =
+    vHost: host:
+    lib.any (group: lib.elem group vHost.allowedGroups) host.config.custom.services.nebula.groups
+    || lib.elem host.config.networking.hostName vHost.allowedHosts;
+
+  getAllowedAddresses =
+    vHost:
+    (
+      nebulaHosts
+      |> lib.filter (hostIsAllowed vHost)
+      |> lib.map (host: host.config.custom.networking.overlay.address)
+      |> lib.unique
+    )
+    ++ lib.optional netCfg.underlay.trusted netCfg.underlay.cidr;
+
+  allowedNebulaGroups =
+    privateVirtualHosts |> lib.concatMap (vHost: vHost.allowedGroups) |> lib.unique;
+
+  allowedNebulaHosts = privateVirtualHosts |> lib.concatMap (vHost: vHost.allowedHosts) |> lib.unique;
+
+  mkFirewallRules =
+    target:
+    [
+      "80"
+      "443"
+    ]
+    |> lib.map (
+      port:
+      {
+        inherit port;
+        proto = "tcp";
+      }
+      // target
+    );
 
   publicHostsExist = virtualHosts |> lib.any (vHost: (!self.lib.isPrivateDomain vHost.domain));
-  privateHostsExist = virtualHosts |> lib.any (vHost: self.lib.isPrivateDomain vHost.domain);
+  privateHostsExist = privateVirtualHosts != [ ];
 
-  privateDomains =
-    virtualHosts
-    |> lib.filter (vHost: self.lib.isPrivateDomain vHost.domain)
-    |> lib.map (vHost: vHost.domain)
-    |> lib.unique;
+  privateDomains = privateVirtualHosts |> lib.map (vHost: vHost.domain) |> lib.unique;
 
   mkVirtualHost =
     {
@@ -31,28 +62,41 @@ let
       files,
       extraConfig,
       ...
-    }:
+    }@vHost:
     lib.nameValuePair domain {
       logFormat = "output file ${config.services.caddy.logDir}/${domain}.log { mode 640 }";
       extraConfig =
         let
           certDir = config.security.acme.certs.${domain}.directory;
+          allowedAddresses = vHost |> getAllowedAddresses;
+          accessControl = ''
+            @accessDenied not remote_ip ${allowedAddresses |> self.lib.concatWords}
+            respond @accessDenied 403
+          '';
+          requestHandlers =
+            [
+              (lib.optional (port != null) "reverse_proxy localhost:${lib.toString port}")
+              (lib.optionals (files != null) [
+                "root ${files}"
+                "encode"
+                "file_server"
+              ])
+              (lib.optional (extraConfig != null) extraConfig)
+            ]
+            |> lib.concatLists
+            |> lib.concatLines;
         in
-        [
-          (lib.optionals (self.lib.isPrivateDomain domain) [
-            "tls ${certDir}/fullchain.pem ${certDir}/key.pem"
-            "bind ${config.custom.networking.overlay.address} ${lib.optionalString netCfg.underlay.trusted netCfg.underlay.address}"
-          ])
-          (lib.optional (port != null) "reverse_proxy localhost:${lib.toString port}")
-          (lib.optionals (files != null) [
-            "root ${files}"
-            "encode"
-            "file_server"
-          ])
-          (lib.optional (extraConfig != null) extraConfig)
-        ]
-        |> lib.concatLists
-        |> lib.concatLines;
+        if self.lib.isPrivateDomain domain then
+          ''
+            tls ${certDir}/fullchain.pem ${certDir}/key.pem
+            bind ${config.custom.networking.overlay.address} ${lib.optionalString netCfg.underlay.trusted netCfg.underlay.address}
+            route {
+              ${accessControl}
+              ${requestHandlers}
+            }
+          ''
+        else
+          requestHandlers;
     };
 in
 {
@@ -83,6 +127,14 @@ in
                 type = lib.types.nullOr lib.types.lines;
                 default = null;
               };
+              allowedGroups = lib.mkOption {
+                type = lib.types.listOf lib.types.nonEmptyStr;
+                default = [ "client" ];
+              };
+              allowedHosts = lib.mkOption {
+                type = lib.types.listOf lib.types.nonEmptyStr;
+                default = [ ];
+              };
             };
           }
         )
@@ -104,6 +156,13 @@ in
             {
               assertion = (vHost.port != null) || (vHost.files != null) || (vHost.extraConfig != null);
               message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "one of `port`, `files` or `extraConfig` must be set";
+            }
+            {
+              assertion =
+                (!self.lib.isPrivateDomain vHost.domain)
+                || (vHost |> getAllowedAddresses) != [ ]
+                || netCfg.underlay.trusted;
+              message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "no hosts are allowed to access it";
             }
           ]);
 
@@ -152,19 +211,8 @@ in
         };
 
         services.nebula.networks.mesh.firewall.inbound =
-          allowedGroups
-          |> lib.concatMap (group: [
-            {
-              port = "80";
-              proto = "tcp";
-              inherit group;
-            }
-            {
-              port = "443";
-              proto = "tcp";
-              inherit group;
-            }
-          ]);
+          (allowedNebulaGroups |> lib.concatMap (group: mkFirewallRules { inherit group; }))
+          ++ (allowedNebulaHosts |> lib.concatMap (host: mkFirewallRules { inherit host; }));
 
         networking.firewall.interfaces.${netCfg.underlay.interface}.allowedTCPPorts =
           lib.mkIf netCfg.underlay.trusted

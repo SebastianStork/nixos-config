@@ -9,12 +9,6 @@ let
   cfg = config.custom.services.recursive-nameserver;
   netCfg = config.custom.networking;
 
-  allowedGroups = [
-    "client"
-    "server"
-    "agent"
-  ];
-
   hosts = allHosts |> lib.attrValues;
 
   onSameLan =
@@ -69,7 +63,11 @@ in
           };
 
           nebula.networks.mesh.firewall.inbound =
-            allowedGroups
+            [
+              "client"
+              "server"
+              "agent"
+            ]
             |> lib.map (group: {
               inherit (cfg) port;
               proto = "any";

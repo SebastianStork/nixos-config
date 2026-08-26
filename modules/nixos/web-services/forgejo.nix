@@ -2,11 +2,6 @@
 let
   cfg = config.custom.web-services.forgejo;
   netCfg = config.custom.networking;
-
-  allowedGroups = [
-    "client"
-    "agent"
-  ];
 in
 {
   options.custom.web-services.forgejo = {
@@ -102,7 +97,10 @@ in
       };
 
       nebula.networks.mesh.firewall.inbound = lib.mkIf cfg.ssh.enable (
-        allowedGroups
+        [
+          "client"
+          "agent"
+        ]
         |> lib.map (group: {
           port = cfg.ssh.port;
           proto = "tcp";

@@ -8,6 +8,19 @@
 let
   cfg = config.custom.web-services.glance;
 
+  glanceHosts =
+    allHosts
+    |> lib.attrValues
+    |> lib.filter (host: host.config.custom.web-services.glance.enable)
+    |> lib.map (host: host.config.networking.hostName);
+
+  privateSiteDomains =
+    config.custom.meta.sites
+    |> lib.attrValues
+    |> lib.map (site: site.domain)
+    |> lib.filter self.lib.isPrivateDomain
+    |> lib.unique;
+
   perHostSites =
     allHosts
     |> lib.attrValues
@@ -131,38 +144,48 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    services.glance = {
-      enable = true;
+  config = lib.mkMerge [
+    {
+      custom.services.caddy.virtualHosts =
+        privateSiteDomains
+        |> self.lib.genAttrs (_: {
+          allowedHosts = glanceHosts;
+        });
+    }
 
-      settings = {
-        server.port = cfg.port;
+    (lib.mkIf cfg.enable {
+      services.glance = {
+        enable = true;
 
-        pages = lib.singleton {
-          name = "Home";
-          center-vertically = true;
+        settings = {
+          server.port = cfg.port;
 
-          columns = [
-            {
-              size = "full";
-              widgets =
-                lib.singleton {
-                  type = "search";
-                  search-engine = "https://search.splitleaf.de/search?q={QUERY}";
-                  autofocus = true;
-                }
-                ++ applicationSitesWidgets
-                ++ lib.singleton perHostSitesWidget;
-            }
-            {
-              size = "small";
-              widgets = [ codebergBadgeWidget ] ++ dnsWidgets;
-            }
-          ];
+          pages = lib.singleton {
+            name = "Home";
+            center-vertically = true;
+
+            columns = [
+              {
+                size = "full";
+                widgets =
+                  lib.singleton {
+                    type = "search";
+                    search-engine = "https://search.splitleaf.de/search?q={QUERY}";
+                    autofocus = true;
+                  }
+                  ++ applicationSitesWidgets
+                  ++ lib.singleton perHostSitesWidget;
+              }
+              {
+                size = "small";
+                widgets = [ codebergBadgeWidget ] ++ dnsWidgets;
+              }
+            ];
+          };
         };
       };
-    };
 
-    custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
-  };
+      custom.services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+    })
+  ];
 }

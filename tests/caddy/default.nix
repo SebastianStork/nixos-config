@@ -1,9 +1,16 @@
 { lib, ... }:
 let
   publicDomain = "app.sprouted.cloud";
-  privateDomain = "app.splitleaf.de";
+  serverPrivateDomain = "server-app.splitleaf.de";
+  agentPrivateDomain = "agent-app.splitleaf.de";
+  privateDomains = [
+    serverPrivateDomain
+    agentPrivateDomain
+  ];
+
   publicBody = "public-reverse-proxy-ok";
-  privateBody = "private-file-server-ok";
+  serverPrivateBody = "server-private-file-server-ok";
+  agentPrivateBody = "agent-private-file-server-ok";
 in
 {
   imports = [ (import ../common.nix ./.) ];
@@ -30,7 +37,25 @@ in
               port = 8080;
               extraConfig = "tls internal";
             };
-            ${privateDomain}.files = pkgs.writeTextDir "index.html" privateBody;
+            ${serverPrivateDomain} = {
+              extraConfig = ''
+                route {
+                  respond "${serverPrivateBody}"
+                }
+              '';
+              allowedGroups = [
+                "client"
+                "server"
+              ];
+            };
+            ${agentPrivateDomain} = {
+              extraConfig = ''
+                handle {
+                  respond "${agentPrivateBody}"
+                }
+              '';
+              allowedHosts = [ "overlayAgent" ];
+            };
           };
         };
 
@@ -43,25 +68,48 @@ in
         sops.secrets = lib.mkForce { };
         security.acme.defaults.credentialFiles = lib.mkForce { };
         systemd = {
-          services."acme-${privateDomain}".enable = lib.mkForce false;
-          services."acme-order-renew-${privateDomain}".enable = lib.mkForce false;
-          timers."acme-renew-${privateDomain}".enable = lib.mkForce false;
+          services =
+            privateDomains
+            |> lib.concatMap (domain: [
+              {
+                name = "acme-${domain}";
+                value.enable = lib.mkForce false;
+              }
+              {
+                name = "acme-order-renew-${domain}";
+                value.enable = lib.mkForce false;
+              }
+            ])
+            |> builtins.listToAttrs;
+          timers =
+            privateDomains
+            |> lib.map (domain: {
+              name = "acme-renew-${domain}";
+              value.enable = lib.mkForce false;
+            })
+            |> builtins.listToAttrs;
           tmpfiles.rules =
             let
-              certDir = config.security.acme.certs.${privateDomain}.directory;
-              selfSignedCert = pkgs.runCommand "caddy-test-cert" { nativeBuildInputs = [ pkgs.openssl ]; } ''
-                mkdir -p $out
-                openssl req -x509 -newkey rsa:2048 -nodes -days 3650 \
-                  -keyout $out/key.pem -out $out/fullchain.pem \
-                  -subj "/CN=${privateDomain}" -addext "subjectAltName=DNS:${privateDomain}"
-              '';
+              mkCertRules =
+                domain:
+                let
+                  certDir = config.security.acme.certs.${domain}.directory;
+                  selfSignedCert =
+                    pkgs.runCommand "caddy-test-cert-${domain}" { nativeBuildInputs = [ pkgs.openssl ]; }
+                      ''
+                        mkdir -p $out
+                        openssl req -x509 -newkey rsa:2048 -nodes -days 3650 \
+                          -keyout $out/key.pem -out $out/fullchain.pem \
+                          -subj "/CN=${domain}" -addext "subjectAltName=DNS:${domain}"
+                      '';
+                in
+                [
+                  "d ${certDir} 0750 acme caddy - -"
+                  "C ${certDir}/fullchain.pem 0644 acme caddy - ${selfSignedCert}/fullchain.pem"
+                  "C ${certDir}/key.pem 0640 acme caddy - ${selfSignedCert}/key.pem"
+                ];
             in
-            [
-              "d /var/lib/acme 0755 acme acme - -"
-              "d ${certDir} 0750 acme caddy - -"
-              "C ${certDir}/fullchain.pem 0644 acme caddy - ${selfSignedCert}/fullchain.pem"
-              "C ${certDir}/key.pem 0640 acme caddy - ${selfSignedCert}/key.pem"
-            ];
+            [ "d /var/lib/acme 0755 acme acme - -" ] ++ lib.concatMap mkCertRules privateDomains;
         };
       };
 
@@ -75,6 +123,32 @@ in
             role = "client";
           };
           underlay.cidr = "192.168.0.3/16";
+        };
+      };
+
+    overlayServer =
+      { pkgs, ... }:
+      {
+        environment.systemPackages = [ pkgs.curl ];
+        custom.networking = {
+          overlay = {
+            address = "10.254.250.5";
+            role = "server";
+          };
+          underlay.cidr = "192.168.0.5/16";
+        };
+      };
+
+    overlayAgent =
+      { pkgs, ... }:
+      {
+        environment.systemPackages = [ pkgs.curl ];
+        custom.networking = {
+          overlay = {
+            address = "10.254.250.6";
+            role = "agent";
+          };
+          underlay.cidr = "192.168.0.6/16";
         };
       };
 
@@ -107,16 +181,29 @@ in
         caddy.wait_for_unit("caddy.service")
         overlayClient.start()
         overlayClient.wait_for_unit("${nodes.overlayClient.custom.networking.overlay.systemdUnit}")
+        overlayServer.start()
+        overlayServer.wait_for_unit("${nodes.overlayServer.custom.networking.overlay.systemdUnit}")
+        overlayAgent.start()
+        overlayAgent.wait_for_unit("${nodes.overlayAgent.custom.networking.overlay.systemdUnit}")
         externalClient.start()
         externalClient.wait_for_unit("multi-user.target")
 
       with subtest("Overlay client reaches private and public hosts"):
         overlayClient.succeed("${curl} --resolve ${publicDomain}:443:${netCfg.underlay.address} https://${publicDomain} | grep -q '${publicBody}'")
-        overlayClient.succeed("${curl} --resolve ${privateDomain}:443:${netCfg.overlay.address} https://${privateDomain} | grep -q '${privateBody}'")
+        overlayClient.succeed("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.overlay.address} https://${serverPrivateDomain} | grep -q '${serverPrivateBody}'")
+        overlayClient.succeed("${curl} --resolve ${agentPrivateDomain}:443:${netCfg.overlay.address} https://${agentPrivateDomain} | grep -q '${agentPrivateBody}'")
+
+      with subtest("Agent reaches only agent-accessible private host"):
+        overlayAgent.succeed("${curl} --resolve ${agentPrivateDomain}:443:${netCfg.overlay.address} https://${agentPrivateDomain} | grep -q '${agentPrivateBody}'")
+        overlayAgent.fail("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.overlay.address} https://${serverPrivateDomain}")
+
+      with subtest("Server reaches only server-accessible private host"):
+        overlayServer.fail("${curl} --resolve ${agentPrivateDomain}:443:${netCfg.overlay.address} https://${agentPrivateDomain}")
+        overlayServer.succeed("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.overlay.address} https://${serverPrivateDomain} | grep -q '${serverPrivateBody}'")
 
       with subtest("External client reaches only the public host"):
         externalClient.succeed("${curl} --resolve ${publicDomain}:443:${netCfg.underlay.address} https://${publicDomain} | grep -q '${publicBody}'")
-        externalClient.fail("${curl} --resolve ${privateDomain}:443:${netCfg.overlay.address} https://${privateDomain} | grep -q '${privateBody}'")
-        externalClient.fail("${curl} --resolve ${privateDomain}:443:${netCfg.underlay.address} https://${privateDomain} | grep -q '${privateBody}'")
+        externalClient.fail("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.overlay.address} https://${serverPrivateDomain} | grep -q '${serverPrivateBody}'")
+        externalClient.fail("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.underlay.address} https://${serverPrivateDomain} | grep -q '${serverPrivateBody}'")
     '';
 }

@@ -7,12 +7,6 @@
 }:
 let
   cfg = config.custom.services.prometheus;
-
-  allowedGroups = [
-    "client"
-    "server"
-    "agent"
-  ];
 in
 {
   options.custom.services.prometheus = {
@@ -173,7 +167,11 @@ in
       };
 
       nebula.networks.mesh.firewall.inbound =
-        allowedGroups
+        [
+          "client"
+          "server"
+          "agent"
+        ]
         |> lib.map (group: {
           inherit (cfg) port;
           proto = "tcp";
@@ -182,7 +180,13 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      services.caddy.virtualHosts.${cfg.domain} = {
+        inherit (cfg) port;
+        allowedGroups = [
+          "client"
+          "monitoring"
+        ];
+      };
 
       persistence.directories = [ "/var/lib/${config.services.prometheus.stateDir}" ];
 

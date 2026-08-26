@@ -114,7 +114,13 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      services.caddy.virtualHosts.${cfg.domain} = {
+        inherit (cfg) port;
+        allowedGroups = [
+          "client"
+          "monitoring"
+        ];
+      };
 
       meta.sites.${cfg.domain} = {
         title = "Alertmanager";

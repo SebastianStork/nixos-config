@@ -53,7 +53,14 @@ in
       };
 
       custom = {
-        services.caddy.virtualHosts.${cfg.domain}.port = config.custom.services.garage.web.port;
+        services.caddy.virtualHosts.${cfg.domain} = {
+          port = config.custom.services.garage.web.port;
+          allowedGroups = [
+            "client"
+            "server"
+            "agent"
+          ];
+        };
 
         meta.sites.${cfg.domain} = {
           title = "S3 Binary Cache";

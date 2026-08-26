@@ -85,14 +85,20 @@ in
       };
     };
 
-    custom.services.caddy.virtualHosts.${config.custom.networking.overlay.fqdn}.extraConfig = ''
-      handle /hooks/current-system {
-        header Cache-Control "no-store"
-        reverse_proxy localhost:${lib.toString cfg.webhookPort}
-      }
-      handle /hooks/deploy {
-        reverse_proxy localhost:${lib.toString cfg.webhookPort}
-      }
-    '';
+    custom.services.caddy.virtualHosts.${config.custom.networking.overlay.fqdn} = {
+      extraConfig = ''
+        handle /hooks/current-system {
+          header Cache-Control "no-store"
+          reverse_proxy localhost:${lib.toString cfg.webhookPort}
+        }
+        handle /hooks/deploy {
+          reverse_proxy localhost:${lib.toString cfg.webhookPort}
+        }
+      '';
+      allowedGroups = [
+        "client"
+        "automation"
+      ];
+    };
   };
 }
