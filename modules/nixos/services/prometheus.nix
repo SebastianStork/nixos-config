@@ -121,6 +121,27 @@ in
                   };
                 }
                 {
+                  alert = "HostOutOfMemory";
+                  expr = ''100 * node_memory_MemAvailable_bytes{job="node"} / node_memory_MemTotal_bytes{job="node"} < 10'';
+                  for = "2m";
+                  annotations = {
+                    summary = "Host {{ $labels.instance }} is running out of memory";
+                    summary_resolved = "Host {{ $labels.instance }} memory has recovered";
+                    description = ''Available memory on {{ $labels.instance }} has been below 10% for 2 minutes (currently {{ printf "%.1f" $value }}%).'';
+                    description_resolved = ''Available memory on {{ $labels.instance }} is above 10% again (currently {{ printf "%.1f" $value }}%).'';
+                  };
+                }
+                {
+                  alert = "HostOOMKillDetected";
+                  expr = ''increase(node_vmstat_oom_kill{job="node"}[30m]) > 0'';
+                  annotations = {
+                    summary = "OOM kill detected on {{ $labels.instance }}";
+                    summary_resolved = "No recent OOM kills on {{ $labels.instance }}";
+                    description = "The kernel OOM killer terminated at least one process within the last 30 minutes.";
+                    description_resolved = "No kernel OOM kills have been detected within the last 30 minutes.";
+                  };
+                }
+                {
                   alert = "SystemdUnitFailed";
                   expr = ''node_systemd_unit_state{job="node", state="failed", name!="nixos-rebuild.service"} == 1'';
                   for = "5m";
