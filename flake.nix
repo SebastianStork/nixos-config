@@ -28,6 +28,11 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    topology = {
+      url = "github:oddlama/nix-topology";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # For Workstations
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";

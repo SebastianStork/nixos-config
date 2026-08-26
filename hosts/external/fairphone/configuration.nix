@@ -10,7 +10,11 @@
         address = "10.254.250.74";
         role = "client";
       };
-      underlay.useDhcp = true;
+      underlay = {
+        interface = "mobile";
+        useDhcp = true;
+        isRoaming = true;
+      };
     };
 
     services = {

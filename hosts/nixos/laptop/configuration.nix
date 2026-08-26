@@ -12,6 +12,7 @@
       underlay = {
         interface = "wlan0";
         useDhcp = true;
+        isRoaming = true;
         wireless.enable = true;
       };
     };

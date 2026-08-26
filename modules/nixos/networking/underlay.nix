@@ -16,6 +16,7 @@ in
     };
     useDhcp = lib.mkEnableOption "";
     isPublic = lib.mkEnableOption "";
+    isRoaming = lib.mkEnableOption "";
     cidr = lib.mkOption {
       type = lib.types.nullOr lib.types.nonEmptyStr;
       default = null;
