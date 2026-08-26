@@ -47,7 +47,7 @@ in
     users.users.seb.openssh.authorizedKeys.keyFiles =
       allHosts
       |> lib.attrValues
-      |> lib.filter (host: host.config.networking.hostName != netCfg.hostName)
+      |> lib.filter (host: host.config.networking.hostName != config.networking.hostName)
       |> lib.filter (host: host.config |> lib.hasAttr "home-manager")
       |> lib.map (host: host.config.home-manager.users.seb.custom.programs.ssh)
       |> lib.filter (ssh: ssh.enable)

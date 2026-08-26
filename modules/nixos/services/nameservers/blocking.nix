@@ -68,7 +68,7 @@ in
                 name = "LAN";
                 ids = [ netCfg.underlay.cidr ];
                 upstreams = [
-                  "[/${netCfg.overlay.domain}/]127.0.0.1:${lib.toString config.custom.services.recursive-nameserver.port}"
+                  "[/${config.networking.domain}/]127.0.0.1:${lib.toString config.custom.services.recursive-nameserver.port}"
                 ]
                 ++ recursiveNameservers;
               };

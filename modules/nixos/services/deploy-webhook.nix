@@ -85,7 +85,7 @@ in
       };
     };
 
-    custom.services.caddy.virtualHosts.${config.custom.networking.overlay.fqdn} = {
+    custom.services.caddy.virtualHosts.${config.networking.fqdn} = {
       extraConfig = ''
         handle /hooks/current-system {
           header Cache-Control "no-store"

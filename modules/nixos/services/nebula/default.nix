@@ -12,10 +12,9 @@ let
   lighthouses =
     allHosts
     |> lib.attrValues
-    |> lib.map (host: host.config.custom.networking)
-    |> lib.filter (node: node.hostName != netCfg.hostName)
-    |> lib.filter (peer: peer.overlay.isLighthouse)
-    |> lib.map (lighthouse: lighthouse.overlay.address);
+    |> lib.filter (host: host.config.networking.hostName != config.networking.hostName)
+    |> lib.filter (host: host.config.custom.networking.overlay.isLighthouse)
+    |> lib.map (host: host.config.custom.networking.overlay.address);
 in
 {
   options.custom.services.nebula = {
@@ -54,11 +53,11 @@ in
     };
     publicKeyFile = lib.mkOption {
       type = self.lib.types.existingPath;
-      default = "${self}/hosts/nixos/${netCfg.hostName}/keys/nebula.pub";
+      default = "${self}/hosts/nixos/${config.networking.hostName}/keys/nebula.pub";
     };
     certificateFile = lib.mkOption {
       type = self.lib.types.existingPath;
-      default = "${self}/hosts/nixos/${netCfg.hostName}/keys/nebula.crt";
+      default = "${self}/hosts/nixos/${config.networking.hostName}/keys/nebula.crt";
     };
     privateKeyFile = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
@@ -74,7 +73,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
       assertion = netCfg.overlay.isLighthouse -> cfg.advertise.address != null;
-      message = self.lib.mkInvalidConfigMessage "Nebula lighthouse `${netCfg.hostName}`" "`underlay.isPublic` must be enabled or `services.nebula.advertise.address` must be set so the host is publicly reachable";
+      message = self.lib.mkInvalidConfigMessage "Nebula lighthouse `${config.networking.hostName}`" "`underlay.isPublic` must be enabled or `services.nebula.advertise.address` must be set so the host is publicly reachable";
     };
 
     sops.secrets."nebula/host-key" = lib.mkIf (cfg.privateKeyFile == null) {
@@ -171,7 +170,7 @@ in
         matchConfig.Name = netCfg.overlay.interface;
         address = [ netCfg.overlay.cidr ];
         dns = netCfg.overlay.dnsServers;
-        domains = [ netCfg.overlay.domain ];
+        domains = [ config.networking.domain ];
       };
     };
   };

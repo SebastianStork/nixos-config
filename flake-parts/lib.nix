@@ -5,7 +5,9 @@
 
     headOrNull = list: if list == [ ] then null else list |> lib.head;
 
-    isPrivateDomain = domain: domain |> lib.hasSuffix ".splitleaf.de";
+    privateDomain = "splitleaf.de";
+
+    isPrivateDomain = domain: domain |> lib.hasSuffix ".${self.lib.privateDomain}";
 
     listNixFilesRecursively =
       dir: dir |> lib.filesystem.listFilesRecursive |> lib.filter (lib.hasSuffix ".nix");
@@ -46,7 +48,7 @@
         netCfg = host.config.custom.networking;
       in
       {
-        name = netCfg.hostName;
+        name = host.config.networking.hostName;
         certificate = lib.toString nebula.certificateFile;
         certificateOutput = self.lib.relativePath nebula.certificateFile;
         publicKey = lib.toString nebula.publicKeyFile;

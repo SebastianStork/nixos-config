@@ -10,15 +10,15 @@
       deploy-webhook.enable = true;
       alloy = {
         enable = true;
-        domain = "alloy.${config.custom.networking.overlay.fqdn}";
+        domain = "alloy.${config.networking.fqdn}";
       };
       prometheus = {
         enable = true;
-        domain = "prometheus.${config.custom.networking.overlay.fqdn}";
+        domain = "prometheus.${config.networking.fqdn}";
       };
       alertmanager = {
         enable = true;
-        domain = "alertmanager.${config.custom.networking.overlay.fqdn}";
+        domain = "alertmanager.${config.networking.fqdn}";
       };
     };
     web-services.librespeed.enable = true;

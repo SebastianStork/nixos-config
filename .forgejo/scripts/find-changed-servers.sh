@@ -9,7 +9,7 @@ targets=$(nix eval .#nixosConfigurations --apply 'configs:
   |> builtins.map (hostName: {
     host = hostName;
     system = configs.${hostName}.config.system.build.toplevel.outPath;
-    url = "https://${configs.${hostName}.config.custom.networking.overlay.fqdn}/hooks/current-system";
+    url = "https://${configs.${hostName}.config.networking.fqdn}/hooks/current-system";
   })
 ' --json)
 

@@ -71,7 +71,7 @@ in
     enable = lib.mkEnableOption "";
     publicHostName = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = netCfg.hostName;
+      default = config.networking.hostName;
     };
     port = lib.mkOption {
       type = lib.types.port;

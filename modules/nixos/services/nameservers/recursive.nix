@@ -22,10 +22,7 @@ let
     targetHosts: getAddress:
     let
       nodeRecords =
-        targetHosts
-        |> lib.map (
-          host: ''"${host.config.custom.networking.hostName}.${netCfg.overlay.domain}. A ${getAddress host}"''
-        );
+        targetHosts |> lib.map (host: ''"${host.config.networking.fqdn}. A ${getAddress host}"'');
 
       serviceRecords =
         targetHosts
@@ -85,12 +82,12 @@ in
         services.unbound.settings = {
           server = {
             access-control-view = [ "${netCfg.overlay.networkCidr} overlay" ];
-            local-zone = ''"${netCfg.overlay.domain}." static'';
+            local-zone = ''"${config.networking.domain}." static'';
           };
 
           view = lib.singleton {
             name = "overlay";
-            local-zone = ''"${netCfg.overlay.domain}." static'';
+            local-zone = ''"${config.networking.domain}." static'';
             local-data = mkLocalData hosts (host: host.config.custom.networking.overlay.address);
           };
         };
@@ -105,7 +102,7 @@ in
           };
           view = lib.singleton {
             name = "lan";
-            local-zone = ''"${netCfg.overlay.domain}." static'';
+            local-zone = ''"${config.networking.domain}." static'';
             local-data = mkLocalData (hosts |> lib.filter onSameLan) (
               host: host.config.custom.networking.underlay.address
             );

@@ -25,7 +25,7 @@
       deploy-webhook.enable = true;
       alloy = {
         enable = true;
-        domain = "alloy.${config.custom.networking.overlay.fqdn}";
+        domain = "alloy.${config.networking.fqdn}";
       };
     };
 

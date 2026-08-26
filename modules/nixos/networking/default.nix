@@ -1,13 +1,8 @@
-{ config, lib, ... }:
+{ self, ... }:
 {
-  options.custom.networking.hostName = lib.mkOption {
-    type = lib.types.nonEmptyStr;
-    default = config.networking.hostName;
-    readOnly = true;
-  };
-
   config = {
     networking = {
+      domain = self.lib.privateDomain;
       useNetworkd = true;
       useDHCP = false;
     };

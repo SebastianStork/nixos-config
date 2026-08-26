@@ -24,7 +24,7 @@
     services = {
       blocking-nameserver = {
         enable = true;
-        gui.domain = "adguard.${config.custom.networking.overlay.fqdn}";
+        gui.domain = "adguard.${config.networking.fqdn}";
       };
 
       recursive-nameserver = {

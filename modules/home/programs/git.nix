@@ -60,7 +60,7 @@
             |> lib.map (host: {
               name = host.config.custom.web-services.forgejo.domain;
               value = {
-                hostName = host.config.custom.networking.overlay.fqdn;
+                hostName = host.config.networking.fqdn;
                 user = host.config.services.forgejo.user;
                 port = host.config.custom.web-services.forgejo.ssh.port;
                 identitiesOnly = true;

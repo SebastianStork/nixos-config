@@ -1,8 +1,8 @@
-{ lib, ... }:
+{ self, lib, ... }:
 let
   publicDomain = "app.sprouted.cloud";
-  serverPrivateDomain = "server-app.splitleaf.de";
-  agentPrivateDomain = "agent-app.splitleaf.de";
+  serverPrivateDomain = "server-app.${self.lib.privateDomain}";
+  agentPrivateDomain = "agent-app.${self.lib.privateDomain}";
   privateDomains = [
     serverPrivateDomain
     agentPrivateDomain

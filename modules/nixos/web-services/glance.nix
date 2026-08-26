@@ -28,7 +28,7 @@ let
       host:
       host.config.custom.meta.sites
       |> lib.attrValues
-      |> lib.filter (site: site.domain |> lib.hasSuffix host.config.custom.networking.overlay.fqdn)
+      |> lib.filter (site: site.domain |> lib.hasSuffix host.config.networking.fqdn)
       |> lib.map (site: site // { title = "[${host.config.networking.hostName}] ${site.title}"; })
     )
     |> lib.sort (a: b: a.title < b.title);
@@ -170,7 +170,7 @@ in
                 widgets =
                   lib.singleton {
                     type = "search";
-                    search-engine = "https://search.splitleaf.de/search?q={QUERY}";
+                    search-engine = "https://search.${config.networking.domain}/search?q={QUERY}";
                     autofocus = true;
                   }
                   ++ applicationSitesWidgets

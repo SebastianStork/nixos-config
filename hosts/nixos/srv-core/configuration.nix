@@ -20,7 +20,7 @@
     services = {
       blocking-nameserver = {
         enable = true;
-        gui.domain = "adguard.${config.custom.networking.overlay.fqdn}";
+        gui.domain = "adguard.${config.networking.fqdn}";
       };
       recursive-nameserver = {
         enable = true;
@@ -30,7 +30,7 @@
       syncthing = {
         enable = true;
         isServer = true;
-        gui.domain = "syncthing.${config.custom.networking.overlay.domain}";
+        gui.domain = "syncthing.${config.networking.domain}";
         doBackups = true;
       };
 
@@ -40,72 +40,72 @@
 
       atuin-server = {
         enable = true;
-        domain = "atuin.${config.custom.networking.overlay.domain}";
+        domain = "atuin.${config.networking.domain}";
       };
 
       garage = {
         enable = true;
-        rootDomain = "s3.${config.custom.networking.overlay.domain}";
+        rootDomain = "s3.${config.networking.domain}";
       };
 
       s3-binary-cache = {
         enable = true;
-        domain = "cache.${config.custom.networking.overlay.domain}";
+        domain = "cache.${config.networking.domain}";
       };
     };
 
     web-services = {
       radicale = {
         enable = true;
-        domain = "dav.${config.custom.networking.overlay.domain}";
+        domain = "dav.${config.networking.domain}";
         doBackups = true;
       };
 
       actualbudget = {
         enable = true;
-        domain = "budget.${config.custom.networking.overlay.domain}";
+        domain = "budget.${config.networking.domain}";
         doBackups = true;
       };
 
       homebox = {
         enable = true;
-        domain = "inventory.${config.custom.networking.overlay.domain}";
+        domain = "inventory.${config.networking.domain}";
         doBackups = true;
       };
 
       calibre-server = {
         enable = true;
-        domain = "library.${config.custom.networking.overlay.domain}";
+        domain = "library.${config.networking.domain}";
       };
 
       karakeep = {
         enable = true;
-        domain = "bookmarks.${config.custom.networking.overlay.domain}";
+        domain = "bookmarks.${config.networking.domain}";
       };
 
       grafana = {
         enable = true;
-        domain = "grafana.${config.custom.networking.overlay.domain}";
+        domain = "grafana.${config.networking.domain}";
       };
 
       glance = {
         enable = true;
-        domain = "home.${config.custom.networking.overlay.domain}";
+        domain = "home.${config.networking.domain}";
       };
 
       searxng = {
         enable = true;
-        domain = "search.${config.custom.networking.overlay.domain}";
+        domain = "search.${config.networking.domain}";
       };
 
       scrutiny = {
         enable = true;
-        domain = "scrutiny.${config.custom.networking.overlay.domain}";
+        domain = "scrutiny.${config.networking.domain}";
       };
 
       librespeed.frontend = {
         enable = true;
-        domain = "speedtest.${config.custom.networking.overlay.domain}";
+        domain = "speedtest.${config.networking.domain}";
       };
     };
   };

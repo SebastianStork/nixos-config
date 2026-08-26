@@ -27,7 +27,7 @@ in
     services = {
       librespeed = {
         enable = true;
-        useACMEHost = config.custom.networking.overlay.fqdn;
+        useACMEHost = config.networking.fqdn;
         settings = {
           bind_address = config.custom.networking.overlay.address;
           listen_port = cfg.port;
@@ -41,7 +41,7 @@ in
             |> lib.filter (host: host.config.custom.web-services.librespeed.enable)
             |> lib.map (host: {
               name = host.config.networking.hostName;
-              server = "https://${host.config.custom.networking.overlay.fqdn}:${lib.toString host.config.custom.web-services.librespeed.port}";
+              server = "https://${host.config.networking.fqdn}:${lib.toString host.config.custom.web-services.librespeed.port}";
             })
             |> lib.mkForce;
         };
@@ -54,7 +54,7 @@ in
       };
     };
 
-    security.acme.certs.${config.custom.networking.overlay.fqdn} = { };
+    security.acme.certs.${config.networking.fqdn} = { };
 
     custom = lib.mkIf cfg.frontend.enable {
       services.caddy.virtualHosts.${cfg.frontend.domain}.extraConfig = ''

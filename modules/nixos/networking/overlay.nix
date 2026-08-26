@@ -45,15 +45,6 @@ in
         |> lib.toInt;
       readOnly = true;
     };
-    domain = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "splitleaf.de";
-    };
-    fqdn = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default = "${config.custom.networking.hostName}.${cfg.domain}";
-    };
-
     address = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";

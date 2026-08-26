@@ -100,9 +100,9 @@
         server.wait_for_open_port(${lib.toString nodes.server.custom.services.recursive-nameserver.port}, "${serverNetCfg.overlay.address}")
 
       with subtest("DNS resolution of FQDNs"):
-        client1.wait_until_succeeds("getent ahostsv4 ${serverNetCfg.overlay.fqdn} | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
-        client1.wait_until_succeeds("getent ahostsv4 ${client2NetCfg.overlay.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
-        server.wait_until_succeeds("getent ahostsv4 ${client2NetCfg.overlay.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
+        client1.wait_until_succeeds("getent ahostsv4 ${nodes.server.networking.fqdn} | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
+        client1.wait_until_succeeds("getent ahostsv4 ${nodes.client2.networking.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
+        server.wait_until_succeeds("getent ahostsv4 ${nodes.client2.networking.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
 
       with subtest("DNS resolution of unqualified hostnames"):
         client1.wait_until_succeeds("getent ahostsv4 server | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
