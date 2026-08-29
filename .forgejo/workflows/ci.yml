@@ -22,17 +22,10 @@ jobs:
         uses: https://code.forgejo.org/actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Get uncached checks
+      - name: Get checks
         id: checks
         run: |
-          checks=$(nix eval .#checks.x86_64-linux --apply 'outputs:
-            outputs
-            |> builtins.attrNames
-            |> builtins.map (name: { inherit name; path = outputs.${name}.outPath; })
-          ' --json | bash .forgejo/scripts/select-uncached-outputs.sh)
-          if [[ "$checks" == '[]' ]]; then
-            checks='["__no_check__"]'
-          fi
+          checks=$(nix eval .#checks.x86_64-linux --apply builtins.attrNames --json)
           printf 'checks=%s\n' "$checks" >> "$FORGEJO_OUTPUT"
       - name: Get uncached tests
         id: tests
@@ -91,7 +84,6 @@ jobs:
           printf 'workstations=%s\n' "$workstations" >> "$FORGEJO_OUTPUT"
 
   build-check:
-    if: needs.parse-outputs.outputs.checks != '["__no_check__"]'
     needs: parse-outputs
     runs-on: nixos
     strategy:
@@ -107,11 +99,6 @@ jobs:
         uses: ./.forgejo/actions/build
         with:
           flake-output: .#checks.x86_64-linux.${{ matrix.check }}
-      - name: Upload
-        uses: ./.forgejo/actions/upload
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   build-test:
     if: needs.parse-outputs.outputs.tests != '["__no_test__"]'
@@ -164,7 +151,7 @@ jobs:
       always() &&
       needs.parse-outputs.result == 'success' &&
       needs.parse-outputs.outputs.servers_to_deploy != '["__no_server__"]' &&
-      (needs.build-check.result == 'success' || needs.build-check.result == 'skipped') &&
+      needs.build-check.result == 'success' &&
       (needs.build-test.result == 'success' || needs.build-test.result == 'skipped') &&
       (needs.build-server.result == 'success' || needs.build-server.result == 'skipped')
     needs: [build-check, build-test, parse-outputs, build-server]
@@ -220,8 +207,7 @@ jobs:
           }
 
           commit="${COMMIT_MSG%%$'\n'*}"
-          if [[ "$PARSE_RESULT" != success ]] ||
-            ! succeeded_or_skipped "$CHECK_RESULT" ||
+          if [[ "$PARSE_RESULT" != success || "$CHECK_RESULT" != success ]] ||
             ! succeeded_or_skipped "$TEST_RESULT" ||
             ! succeeded_or_skipped "$SERVER_BUILD_RESULT"; then
             title="CI: Failed"
