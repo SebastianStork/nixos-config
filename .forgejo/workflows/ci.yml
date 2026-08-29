@@ -14,42 +14,84 @@ jobs:
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
       tests: ${{ steps.tests.outputs.tests }}
-      servers: ${{ steps.servers.outputs.servers }}
+      servers_to_build: ${{ steps.servers-to-build.outputs.servers }}
+      servers_to_deploy: ${{ steps.servers-to-deploy.outputs.servers }}
       workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Get checks
+      - name: Get uncached checks
         id: checks
         run: |
-          checks=$(nix eval .#checks.x86_64-linux --apply builtins.attrNames --json)
-          printf "checks=%s" "$checks" >> "$FORGEJO_OUTPUT"
-      - name: Get tests
+          checks=$(nix eval .#checks.x86_64-linux --apply 'outputs:
+            outputs
+            |> builtins.attrNames
+            |> builtins.map (name: { inherit name; path = outputs.${name}.outPath; })
+          ' --json | bash .forgejo/scripts/select-uncached-outputs.sh)
+          if [[ "$checks" == '[]' ]]; then
+            checks='["__no_check__"]'
+          fi
+          printf 'checks=%s\n' "$checks" >> "$FORGEJO_OUTPUT"
+      - name: Get uncached tests
         id: tests
         run: |
-          tests=$(nix eval .#tests.x86_64-linux --apply builtins.attrNames --json)
-          printf "tests=%s" "$tests" >> "$FORGEJO_OUTPUT"
-      - name: Get changed servers
-        id: servers
+          tests=$(nix eval .#tests.x86_64-linux --apply 'outputs:
+            outputs
+            |> builtins.attrNames
+            |> builtins.map (name: { inherit name; path = outputs.${name}.outPath; })
+          ' --json | bash .forgejo/scripts/select-uncached-outputs.sh)
+          if [[ "$tests" == '[]' ]]; then
+            tests='["__no_test__"]'
+          fi
+          printf 'tests=%s\n' "$tests" >> "$FORGEJO_OUTPUT"
+      - name: Get uncached servers
+        id: servers-to-build
         run: |
-          servers=$(bash .forgejo/scripts/find-changed-servers.sh)
+          servers=$(nix eval .#nixosConfigurations --apply 'configs:
+            configs
+            |> builtins.attrNames
+            |> builtins.filter (hostName: configs.${hostName}.config.custom.services.deploy-webhook.enable)
+            |> builtins.map (name: { inherit name; path = configs.${name}.config.system.build.toplevel.outPath; })
+          ' --json | bash .forgejo/scripts/select-uncached-outputs.sh)
           if [[ "$servers" == '[]' ]]; then
             servers='["__no_server__"]'
           fi
           printf 'servers=%s\n' "$servers" >> "$FORGEJO_OUTPUT"
-      - name: Get workstations
+      - name: Get servers requiring deployment
+        id: servers-to-deploy
+        run: |
+          servers=$(nix eval .#nixosConfigurations --apply 'configs:
+            configs
+            |> builtins.attrNames
+            |> builtins.filter (hostName: configs.${hostName}.config.custom.services.deploy-webhook.enable)
+            |> builtins.map (name: {
+              inherit name;
+              path = configs.${name}.config.system.build.toplevel.outPath;
+              url = "https://${configs.${name}.config.networking.fqdn}/hooks/current-system";
+            })
+          ' --json | bash .forgejo/scripts/select-hosts-to-deploy.sh)
+          if [[ "$servers" == '[]' ]]; then
+            servers='["__no_server__"]'
+          fi
+          printf 'servers=%s\n' "$servers" >> "$FORGEJO_OUTPUT"
+      - name: Get uncached workstations
         id: workstations
         run: |
           workstations=$(nix eval .#nixosConfigurations --apply 'configs:
             configs
             |> builtins.attrNames
             |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.deploy-webhook.enable)
-          ' --json)
-          printf "workstations=%s" "$workstations" >> "$FORGEJO_OUTPUT"
+            |> builtins.map (name: { inherit name; path = configs.${name}.config.system.build.toplevel.outPath; })
+          ' --json | bash .forgejo/scripts/select-uncached-outputs.sh)
+          if [[ "$workstations" == '[]' ]]; then
+            workstations='["__no_workstation__"]'
+          fi
+          printf 'workstations=%s\n' "$workstations" >> "$FORGEJO_OUTPUT"
 
   build-check:
+    if: needs.parse-outputs.outputs.checks != '["__no_check__"]'
     needs: parse-outputs
     runs-on: nixos
     strategy:
@@ -72,6 +114,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   build-test:
+    if: needs.parse-outputs.outputs.tests != '["__no_test__"]'
     needs: parse-outputs
     runs-on: nixos
     strategy:
@@ -94,13 +137,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   build-server:
-    if: needs.parse-outputs.outputs.servers != '["__no_server__"]'
+    if: needs.parse-outputs.outputs.servers_to_build != '["__no_server__"]'
     needs: parse-outputs
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-outputs.outputs.servers) }}
+        server: ${{ fromJSON(needs.parse-outputs.outputs.servers_to_build) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -117,13 +160,19 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   deploy:
-    if: needs.parse-outputs.outputs.servers != '["__no_server__"]'
+    if: >-
+      always() &&
+      needs.parse-outputs.result == 'success' &&
+      needs.parse-outputs.outputs.servers_to_deploy != '["__no_server__"]' &&
+      (needs.build-check.result == 'success' || needs.build-check.result == 'skipped') &&
+      (needs.build-test.result == 'success' || needs.build-test.result == 'skipped') &&
+      (needs.build-server.result == 'success' || needs.build-server.result == 'skipped')
     needs: [build-check, build-test, parse-outputs, build-server]
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-outputs.outputs.servers) }}
+        server: ${{ fromJSON(needs.parse-outputs.outputs.servers_to_deploy) }}
     steps:
       - name: Deploy
         timeout-minutes: 30
@@ -156,7 +205,7 @@ jobs:
           TEST_RESULT: ${{ needs.build-test.result }}
           SERVER_BUILD_RESULT: ${{ needs.build-server.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
-          SERVERS: ${{ needs.parse-outputs.outputs.servers }}
+          SERVERS: ${{ needs.parse-outputs.outputs.servers_to_deploy }}
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
         run: |
@@ -166,8 +215,15 @@ jobs:
             fi
           done
 
+          succeeded_or_skipped() {
+            [[ $1 == success || $1 == skipped ]]
+          }
+
           commit="${COMMIT_MSG%%$'\n'*}"
-          if [[ "$PARSE_RESULT" != success || "$CHECK_RESULT" != success || "$TEST_RESULT" != success ]]; then
+          if [[ "$PARSE_RESULT" != success ]] ||
+            ! succeeded_or_skipped "$CHECK_RESULT" ||
+            ! succeeded_or_skipped "$TEST_RESULT" ||
+            ! succeeded_or_skipped "$SERVER_BUILD_RESULT"; then
             title="CI: Failed"
             priority=low
             tags=rotating_light
@@ -177,7 +233,7 @@ jobs:
             priority=low
             tags=white_check_mark
             body=$(printf 'Commit `%s` passed CI; no servers required deployment.\n> %s' "${SHA::7}" "$commit")
-          elif [[ "$SERVER_BUILD_RESULT" != success || "$DEPLOY_RESULT" != success ]]; then
+          elif [[ "$DEPLOY_RESULT" != success ]]; then
             title="CI: Deployment failed"
             priority=low
             tags=rotating_light
@@ -199,6 +255,7 @@ jobs:
             https://ntfy.sh/splitleaf
 
   build-workstation:
+    if: needs.parse-outputs.outputs.workstations != '["__no_workstation__"]'
     needs: [parse-outputs, notify]
     runs-on: nixos
     strategy:
