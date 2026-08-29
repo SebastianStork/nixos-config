@@ -56,6 +56,7 @@ in
             upstream_dns =
               if (recursiveNameservers != [ ]) then recursiveNameservers else [ "9.9.9.9#dns.quad9.net" ];
             upstream_mode = "parallel";
+            hostsfile_enabled = false;
             bootstrap_dns = [
               "1.1.1.1"
               "8.8.8.8"
