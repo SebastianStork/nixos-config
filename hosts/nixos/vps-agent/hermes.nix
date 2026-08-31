@@ -1,4 +1,9 @@
-{ config, inputs, ... }:
+{
+  config,
+  inputs,
+  lib,
+  ...
+}:
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
 
@@ -24,6 +29,7 @@
     environment = {
       MATRIX_HOMESERVER = "https://matrix.org";
       MATRIX_E2EE_MODE = "required";
+      MATRIX_REACTIONS = "false";
     };
     environmentFiles = [ config.sops.templates."hermes-matrix.env".path ];
     settings = {
@@ -34,6 +40,10 @@
       agent.reasoning_effort = "medium";
     };
   };
+
+  systemd.services.hermes-agent.restartTriggers = [
+    (lib.toJSON config.services.hermes-agent.environment)
+  ];
 
   custom.persistence.directories = [ "/var/lib/hermes" ];
 }
