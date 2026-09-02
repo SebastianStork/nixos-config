@@ -34,11 +34,17 @@
     environmentFiles = [ config.sops.templates."hermes-matrix.env".path ];
     settings = {
       model = {
-        default = "gpt-5.6-sol";
+        default = "gpt-5.6-terra";
         provider = "openai-codex";
       };
       agent.reasoning_effort = "medium";
+      delegation = {
+        model = "gpt-5.6-sol";
+        provider = "openai-codex";
+        reasoning_effort = "high";
+      };
     };
+
   };
 
   systemd.services.hermes-agent.restartTriggers = [
