@@ -30,7 +30,13 @@ in
   ];
 
   custom = {
-    services.caddy.virtualHosts.${domain}.port = config.services.home-assistant.config.http.server_port;
+    services.caddy.virtualHosts.${domain} = {
+      port = config.services.home-assistant.config.http.server_port;
+      allowedGroups = [
+        "client"
+        "agent"
+      ];
+    };
 
     persistence.directories = [ dataDir ];
 
