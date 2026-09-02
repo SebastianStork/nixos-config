@@ -44,12 +44,31 @@
         reasoning_effort = "high";
       };
     };
-
+    backend.mode = "dashboard";
   };
 
   systemd.services.hermes-agent.restartTriggers = [
     (lib.toJSON config.services.hermes-agent.environment)
   ];
 
-  custom.persistence.directories = [ "/var/lib/hermes" ];
+  custom =
+    let
+      dashboardDomain = "hermes.${config.networking.domain}";
+      dashboardPort = config.services.hermes-agent.backend.port;
+    in
+    {
+      services.caddy.virtualHosts.${dashboardDomain}.extraConfig = ''
+        reverse_proxy localhost:${lib.toString dashboardPort} {
+          header_up Host 127.0.0.1:${lib.toString dashboardPort}
+          header_up Origin http://127.0.0.1:${lib.toString dashboardPort}
+        }
+      '';
+
+      persistence.directories = [ "/var/lib/hermes" ];
+
+      meta.sites.${dashboardDomain} = {
+        title = "Hermes Agent";
+        icon = "sh:hermes-agent";
+      };
+    };
 }
