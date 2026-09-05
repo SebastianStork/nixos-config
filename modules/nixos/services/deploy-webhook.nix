@@ -50,7 +50,6 @@ in
           --bypass-root-check \
           --refresh \
           --no-nom \
-          --diff never \
           --show-activation-logs \
           git+https://codeberg.org/SebastianStork/nixos-config
       '';

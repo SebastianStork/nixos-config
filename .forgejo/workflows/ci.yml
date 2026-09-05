@@ -177,10 +177,10 @@ jobs:
             old_system=$(jq --raw-output .currentSystem <<< "$deployment")
             new_system=$(jq --raw-output .expectedSystem <<< "$deployment")
 
-            if ! nix build --no-link "$old_system" "$new_system"; then
+            if ! nix build --no-link "$old_system" "$new_system" >/dev/null 2>&1; then
               printf 'SYSTEM_DIFF_BEGIN host=%s\n' "$name"
               printf 'SYSTEM_DIFF_ERROR host=%s reason=closure-realization-failed\n' "$name"
-              printf 'SYSTEM_DIFF_END host=%s status=error\n' "$name"
+              printf 'SYSTEM_DIFF_END host=%s status=error\n\n\n' "$name"
               failed=1
               continue
             fi
@@ -191,9 +191,9 @@ jobs:
             if ((status)); then
               failed=1
               printf 'SYSTEM_DIFF_ERROR host=%s reason=dix-failed exit_code=%s\n' "$name" "$status"
-              printf 'SYSTEM_DIFF_END host=%s status=error\n' "$name"
+              printf 'SYSTEM_DIFF_END host=%s status=error\n\n\n' "$name"
             else
-              printf 'SYSTEM_DIFF_END host=%s status=success\n' "$name"
+              printf 'SYSTEM_DIFF_END host=%s status=success\n\n\n' "$name"
             fi
           done < <(jq --compact-output '.[]' <<< "$DEPLOYMENTS")
           exit "$failed"
@@ -249,7 +249,6 @@ jobs:
         build-check,
         build-test,
         build-server,
-        system-diff,
         deploy,
       ]
     runs-on: nixos
@@ -261,13 +260,12 @@ jobs:
           CHECK_RESULT: ${{ needs.build-check.result }}
           TEST_RESULT: ${{ needs.build-test.result }}
           SERVER_BUILD_RESULT: ${{ needs.build-server.result }}
-          SYSTEM_DIFF_RESULT: ${{ needs.system-diff.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
           SERVERS: ${{ needs.discover-hosts.outputs.servers_to_deploy }}
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
         run: |
-          for result in "$CHECK_TEST_DISCOVERY_RESULT" "$HOST_DISCOVERY_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$SYSTEM_DIFF_RESULT" "$DEPLOY_RESULT"; do
+          for result in "$CHECK_TEST_DISCOVERY_RESULT" "$HOST_DISCOVERY_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$DEPLOY_RESULT"; do
             if [[ "$result" == cancelled ]]; then
               exit 0
             fi
@@ -295,11 +293,6 @@ jobs:
             priority=low
             tags=rotating_light
             body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "$commit")
-          elif [[ "$SYSTEM_DIFF_RESULT" != success ]]; then
-            title="CI: System diff failed"
-            priority=low
-            tags=rotating_light
-            body=$(printf 'Commit `%s` deployed, but its system diff failed.\n> %s' "${SHA::7}" "$commit")
           else
             title="CI: Deployment succeeded"
             priority=low
