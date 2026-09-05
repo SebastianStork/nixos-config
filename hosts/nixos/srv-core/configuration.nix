@@ -55,6 +55,11 @@
     };
 
     web-services = {
+      home-assistant = {
+        enable = true;
+        domain = "home-assistant.${config.networking.domain}";
+      };
+
       radicale = {
         enable = true;
         domain = "dav.${config.networking.domain}";
