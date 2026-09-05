@@ -13,38 +13,34 @@
     inputs.disko.nixosModules.default
   ];
 
-  nix =
-    let
-      flakeInputs = inputs |> lib.filterAttrs (_: lib.isType "flake");
-    in
-    {
-      channel.enable = false;
-      registry =
-        flakeInputs
-        |> lib.filterAttrs (name: _: name != "self")
-        |> lib.mapAttrs (_: flake: { inherit flake; });
-      settings = {
-        flake-registry = "";
-        nix-path = [ ];
-        experimental-features = [
-          "nix-command"
-          "flakes"
-          "pipe-operators"
-        ];
-        auto-optimise-store = true;
-        warn-dirty = false;
-        allowed-users = [ ];
-        trusted-users = [
-          "root"
-          "@wheel"
-        ];
-        commit-lock-file-summary = "flake.lock: Update";
-        allow-import-from-derivation = false;
-        min-free = 4 * 1024 * 1024 * 1024;
-        max-free = 6 * 1024 * 1024 * 1024;
-        fallback = true;
-      };
+  nix = {
+    channel.enable = false;
+    registry = {
+      nixpkgs.flake = inputs.nixpkgs;
+      nixpkgs-unstable.flake = inputs.nixpkgs-unstable;
     };
+    settings = {
+      flake-registry = "";
+      nix-path = [ ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+        "pipe-operators"
+      ];
+      auto-optimise-store = true;
+      warn-dirty = false;
+      allowed-users = [ ];
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
+      commit-lock-file-summary = "flake.lock: Update";
+      allow-import-from-derivation = false;
+      min-free = 4 * 1024 * 1024 * 1024;
+      max-free = 6 * 1024 * 1024 * 1024;
+      fallback = true;
+    };
+  };
 
   nixpkgs.flake.setNixPath = false;
 
