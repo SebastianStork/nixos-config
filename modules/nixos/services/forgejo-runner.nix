@@ -37,7 +37,7 @@ in
         hostPackages = lib.mkOptionDefault [
           pkgs.jq
           pkgs.nix
-          pkgs.nix-fast-build
+          pkgs.dix
         ];
       };
     };

@@ -20,11 +20,15 @@ check_host() {
       return
     fi
     echo "$name requires deployment: currently running $current_system, expected $expected_system" >&2
+    jq --null-input \
+      --arg name "$name" \
+      --arg currentSystem "$current_system" \
+      --arg expectedSystem "$expected_system" \
+      '{ $name, $currentSystem, $expectedSystem }'
   else
-    echo "$name requires deployment: failed to query $url" >&2
+    echo "Failed to query current system for $name at $url" >&2
+    return 1
   fi
-
-  jq --null-input --arg name "$name" '$name'
 }
 
 pids=()
@@ -46,4 +50,4 @@ if ((failed)); then
 fi
 
 find "$selected_dir" -type f -name '*.json' -exec cat {} + |
-  jq --compact-output --slurp 'sort'
+  jq --compact-output --slurp 'sort_by(.name)'

@@ -42,6 +42,7 @@ jobs:
     outputs:
       servers_to_build: ${{ steps.servers-to-build.outputs.servers }}
       servers_to_deploy: ${{ steps.servers-to-deploy.outputs.servers }}
+      deployments: ${{ steps.servers-to-deploy.outputs.deployments }}
       workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
       - name: Checkout
@@ -64,7 +65,7 @@ jobs:
       - name: Get servers requiring deployment
         id: servers-to-deploy
         run: |
-          servers=$(nix eval .#nixosConfigurations --apply 'configs:
+          deployments=$(nix eval .#nixosConfigurations --apply 'configs:
             configs
             |> builtins.attrNames
             |> builtins.filter (hostName: configs.${hostName}.config.custom.services.deploy-webhook.enable)
@@ -74,9 +75,11 @@ jobs:
               url = "https://${configs.${name}.config.networking.fqdn}/hooks/current-system";
             })
           ' --json | bash .forgejo/scripts/select-hosts-to-deploy.sh)
+          servers=$(jq --compact-output '[.[].name]' <<< "$deployments")
           if [[ "$servers" == '[]' ]]; then
             servers='["__no_server__"]'
           fi
+          printf 'deployments=%s\n' "$deployments" >> "$FORGEJO_OUTPUT"
           printf 'servers=%s\n' "$servers" >> "$FORGEJO_OUTPUT"
       - name: Get uncached workstations
         id: workstations
@@ -155,6 +158,46 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
+  system-diff:
+    if: >-
+      always() &&
+      needs.discover-hosts.result == 'success' &&
+      needs.discover-hosts.outputs.deployments != '[]' &&
+      (needs.build-server.result == 'success' || needs.build-server.result == 'skipped')
+    needs: [discover-hosts, build-server]
+    runs-on: nixos
+    steps:
+      - name: Show system closure diffs
+        env:
+          DEPLOYMENTS: ${{ needs.discover-hosts.outputs.deployments }}
+        run: |
+          failed=0
+          while IFS= read -r deployment; do
+            name=$(jq --raw-output .name <<< "$deployment")
+            old_system=$(jq --raw-output .currentSystem <<< "$deployment")
+            new_system=$(jq --raw-output .expectedSystem <<< "$deployment")
+
+            if ! nix build --no-link "$old_system" "$new_system"; then
+              printf 'SYSTEM_DIFF_BEGIN host=%s\n' "$name"
+              printf 'SYSTEM_DIFF_ERROR host=%s reason=closure-realization-failed\n' "$name"
+              printf 'SYSTEM_DIFF_END host=%s status=error\n' "$name"
+              failed=1
+              continue
+            fi
+
+            printf 'SYSTEM_DIFF_BEGIN host=%s\n' "$name"
+            status=0
+            dix --color never "$old_system" "$new_system" || status=$?
+            if ((status)); then
+              failed=1
+              printf 'SYSTEM_DIFF_ERROR host=%s reason=dix-failed exit_code=%s\n' "$name" "$status"
+              printf 'SYSTEM_DIFF_END host=%s status=error\n' "$name"
+            else
+              printf 'SYSTEM_DIFF_END host=%s status=success\n' "$name"
+            fi
+          done < <(jq --compact-output '.[]' <<< "$DEPLOYMENTS")
+          exit "$failed"
+
   deploy:
     if: >-
       always() &&
@@ -206,6 +249,7 @@ jobs:
         build-check,
         build-test,
         build-server,
+        system-diff,
         deploy,
       ]
     runs-on: nixos
@@ -217,12 +261,13 @@ jobs:
           CHECK_RESULT: ${{ needs.build-check.result }}
           TEST_RESULT: ${{ needs.build-test.result }}
           SERVER_BUILD_RESULT: ${{ needs.build-server.result }}
+          SYSTEM_DIFF_RESULT: ${{ needs.system-diff.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
           SERVERS: ${{ needs.discover-hosts.outputs.servers_to_deploy }}
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
         run: |
-          for result in "$CHECK_TEST_DISCOVERY_RESULT" "$HOST_DISCOVERY_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$DEPLOY_RESULT"; do
+          for result in "$CHECK_TEST_DISCOVERY_RESULT" "$HOST_DISCOVERY_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$SYSTEM_DIFF_RESULT" "$DEPLOY_RESULT"; do
             if [[ "$result" == cancelled ]]; then
               exit 0
             fi
@@ -250,6 +295,11 @@ jobs:
             priority=low
             tags=rotating_light
             body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "$commit")
+          elif [[ "$SYSTEM_DIFF_RESULT" != success ]]; then
+            title="CI: System diff failed"
+            priority=low
+            tags=rotating_light
+            body=$(printf 'Commit `%s` deployed, but its system diff failed.\n> %s' "${SHA::7}" "$commit")
           else
             title="CI: Deployment succeeded"
             priority=low
