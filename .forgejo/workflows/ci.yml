@@ -9,14 +9,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  parse-outputs:
+  discover-checks-and-tests:
     runs-on: nixos
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
       tests: ${{ steps.tests.outputs.tests }}
-      servers_to_build: ${{ steps.servers-to-build.outputs.servers }}
-      servers_to_deploy: ${{ steps.servers-to-deploy.outputs.servers }}
-      workstations: ${{ steps.workstations.outputs.workstations }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -39,6 +36,18 @@ jobs:
             tests='["__no_test__"]'
           fi
           printf 'tests=%s\n' "$tests" >> "$FORGEJO_OUTPUT"
+
+  discover-hosts:
+    runs-on: nixos
+    outputs:
+      servers_to_build: ${{ steps.servers-to-build.outputs.servers }}
+      servers_to_deploy: ${{ steps.servers-to-deploy.outputs.servers }}
+      workstations: ${{ steps.workstations.outputs.workstations }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Get uncached servers
         id: servers-to-build
         run: |
@@ -84,12 +93,12 @@ jobs:
           printf 'workstations=%s\n' "$workstations" >> "$FORGEJO_OUTPUT"
 
   build-check:
-    needs: parse-outputs
+    needs: discover-checks-and-tests
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        check: ${{ fromJSON(needs.parse-outputs.outputs.checks) }}
+        check: ${{ fromJSON(needs.discover-checks-and-tests.outputs.checks) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -101,13 +110,13 @@ jobs:
           flake-output: .#checks.x86_64-linux.${{ matrix.check }}
 
   build-test:
-    if: needs.parse-outputs.outputs.tests != '["__no_test__"]'
-    needs: parse-outputs
+    if: needs.discover-checks-and-tests.outputs.tests != '["__no_test__"]'
+    needs: discover-checks-and-tests
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        test: ${{ fromJSON(needs.parse-outputs.outputs.tests) }}
+        test: ${{ fromJSON(needs.discover-checks-and-tests.outputs.tests) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -124,13 +133,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   build-server:
-    if: needs.parse-outputs.outputs.servers_to_build != '["__no_server__"]'
-    needs: parse-outputs
+    if: needs.discover-hosts.outputs.servers_to_build != '["__no_server__"]'
+    needs: discover-hosts
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-outputs.outputs.servers_to_build) }}
+        server: ${{ fromJSON(needs.discover-hosts.outputs.servers_to_build) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -149,17 +158,25 @@ jobs:
   deploy:
     if: >-
       always() &&
-      needs.parse-outputs.result == 'success' &&
-      needs.parse-outputs.outputs.servers_to_deploy != '["__no_server__"]' &&
+      needs.discover-checks-and-tests.result == 'success' &&
+      needs.discover-hosts.result == 'success' &&
+      needs.discover-hosts.outputs.servers_to_deploy != '["__no_server__"]' &&
       needs.build-check.result == 'success' &&
       (needs.build-test.result == 'success' || needs.build-test.result == 'skipped') &&
       (needs.build-server.result == 'success' || needs.build-server.result == 'skipped')
-    needs: [build-check, build-test, parse-outputs, build-server]
+    needs:
+      [
+        discover-checks-and-tests,
+        discover-hosts,
+        build-check,
+        build-test,
+        build-server,
+      ]
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-outputs.outputs.servers_to_deploy) }}
+        server: ${{ fromJSON(needs.discover-hosts.outputs.servers_to_deploy) }}
     steps:
       - name: Deploy
         timeout-minutes: 30
@@ -182,21 +199,30 @@ jobs:
 
   notify:
     if: always()
-    needs: [parse-outputs, build-check, build-test, build-server, deploy]
+    needs:
+      [
+        discover-checks-and-tests,
+        discover-hosts,
+        build-check,
+        build-test,
+        build-server,
+        deploy,
+      ]
     runs-on: nixos
     steps:
       - name: Notify
         env:
-          PARSE_RESULT: ${{ needs.parse-outputs.result }}
+          CHECK_TEST_DISCOVERY_RESULT: ${{ needs.discover-checks-and-tests.result }}
+          HOST_DISCOVERY_RESULT: ${{ needs.discover-hosts.result }}
           CHECK_RESULT: ${{ needs.build-check.result }}
           TEST_RESULT: ${{ needs.build-test.result }}
           SERVER_BUILD_RESULT: ${{ needs.build-server.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
-          SERVERS: ${{ needs.parse-outputs.outputs.servers_to_deploy }}
+          SERVERS: ${{ needs.discover-hosts.outputs.servers_to_deploy }}
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
         run: |
-          for result in "$PARSE_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$DEPLOY_RESULT"; do
+          for result in "$CHECK_TEST_DISCOVERY_RESULT" "$HOST_DISCOVERY_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$DEPLOY_RESULT"; do
             if [[ "$result" == cancelled ]]; then
               exit 0
             fi
@@ -207,7 +233,7 @@ jobs:
           }
 
           commit="${COMMIT_MSG%%$'\n'*}"
-          if [[ "$PARSE_RESULT" != success || "$CHECK_RESULT" != success ]] ||
+          if [[ "$CHECK_TEST_DISCOVERY_RESULT" != success || "$HOST_DISCOVERY_RESULT" != success || "$CHECK_RESULT" != success ]] ||
             ! succeeded_or_skipped "$TEST_RESULT" ||
             ! succeeded_or_skipped "$SERVER_BUILD_RESULT"; then
             title="CI: Failed"
@@ -241,13 +267,13 @@ jobs:
             https://ntfy.sh/splitleaf
 
   build-workstation:
-    if: needs.parse-outputs.outputs.workstations != '["__no_workstation__"]'
-    needs: [parse-outputs, notify]
+    if: needs.discover-hosts.outputs.workstations != '["__no_workstation__"]'
+    needs: [discover-hosts, notify]
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        workstation: ${{ fromJSON(needs.parse-outputs.outputs.workstations) }}
+        workstation: ${{ fromJSON(needs.discover-hosts.outputs.workstations) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
