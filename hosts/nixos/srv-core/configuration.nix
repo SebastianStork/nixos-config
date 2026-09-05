@@ -58,6 +58,7 @@
       home-assistant = {
         enable = true;
         domain = "home-assistant.${config.networking.domain}";
+        doBackups = true;
       };
 
       radicale = {

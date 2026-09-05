@@ -14,6 +14,7 @@ in
       type = lib.types.port;
       default = 8123;
     };
+    doBackups = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -44,12 +45,19 @@ in
     ];
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain} = {
-        port = cfg.port;
-        allowedGroups = [
-          "client"
-          "agent"
-        ];
+      services = {
+        caddy.virtualHosts.${cfg.domain} = {
+          inherit (cfg) port;
+          allowedGroups = [
+            "client"
+            "agent"
+          ];
+        };
+
+        restic.backups.home-assistant = lib.mkIf cfg.doBackups {
+          conflictingService = "home-assistant.service";
+          paths = [ dataDir ];
+        };
       };
 
       persistence.directories = [ dataDir ];
