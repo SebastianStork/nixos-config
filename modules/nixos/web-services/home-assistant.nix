@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs-unstable,
+  lib,
+  ...
+}:
 let
   cfg = config.custom.web-services.home-assistant;
   dataDir = config.services.home-assistant.configDir;
@@ -20,6 +25,7 @@ in
   config = lib.mkIf cfg.enable {
     services.home-assistant = {
       enable = true;
+      package = pkgs-unstable.home-assistant;
       extraComponents = [
         "zha"
         "google_translate"
