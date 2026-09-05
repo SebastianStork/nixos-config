@@ -31,6 +31,7 @@
         "Music"
         "Pictures"
         "Projects"
+        "Vault"
         "Videos"
       ];
     };

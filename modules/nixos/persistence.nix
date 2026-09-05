@@ -15,6 +15,7 @@ in
     directories = lib.mkOption {
       type = lib.types.listOf (lib.types.coercedTo lib.types.str (d: { directory = d; }) lib.types.attrs);
       default = [ ];
+      apply = lib.unique;
     };
   };
 

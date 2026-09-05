@@ -54,6 +54,7 @@ in
         MATRIX_REACTIONS = "false";
         HASS_URL = "https://home-assistant.${config.networking.domain}";
         HASS_TOKEN = config.sops.secrets."hermes/home-assistant/access-token".path;
+        OBSIDIAN_VAULT_PATH = "${config.services.hermes-agent.stateDir}/Vault";
       };
       environmentFiles = [
         config.sops.templates."hermes-matrix.env".path

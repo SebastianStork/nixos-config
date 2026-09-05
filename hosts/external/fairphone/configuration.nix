@@ -26,7 +26,7 @@
       syncthing = {
         enable = true;
         deviceId = "6ROH65D-E65I5F6-URI4OUZ-RCHFC3B-PMBSIHH-5DNLJPS-SYSUWQY-HKYGHQG";
-        folders = [ "Documents" ];
+        folders = [ "Vault" ];
       };
     };
   };

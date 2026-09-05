@@ -26,6 +26,13 @@
         domain = "hermes.${config.networking.domain}";
       };
 
+      syncthing = {
+        enable = true;
+        inherit (config.services.hermes-agent) user group;
+        dataDir = config.services.hermes-agent.stateDir;
+        folders = [ "Vault" ];
+      };
+
       auto-gc.onlyCleanRoots = true;
       deploy-webhook.enable = true;
       alloy = {

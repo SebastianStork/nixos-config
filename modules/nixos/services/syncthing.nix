@@ -25,6 +25,18 @@ in
     enable = lib.mkEnableOption "";
     isServer = lib.mkEnableOption "";
     doBackups = lib.mkEnableOption "";
+    user = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = if cfg.isServer then "syncthing" else "seb";
+    };
+    group = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default = if cfg.isServer then "syncthing" else "users";
+    };
+    dataDir = lib.mkOption {
+      type = lib.types.path;
+      default = if cfg.isServer then "/var/lib/syncthing" else "/home/seb";
+    };
     deviceId = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default =
@@ -93,9 +105,7 @@ in
       syncthing = {
         enable = true;
 
-        user = lib.mkIf (!cfg.isServer) "seb";
-        group = lib.mkIf (!cfg.isServer) "users";
-        dataDir = lib.mkIf (!cfg.isServer) "/home/seb";
+        inherit (cfg) user group dataDir;
 
         guiAddress = "localhost:${lib.toString cfg.gui.port}";
 
