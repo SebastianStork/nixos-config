@@ -71,6 +71,7 @@ in
           provider = "openai-codex";
           reasoning_effort = "medium";
         };
+        skills.create_dir = "~/.hermes/authored-skills";
       };
       backend = {
         mode = "dashboard";
