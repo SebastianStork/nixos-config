@@ -21,6 +21,11 @@
     };
 
     services = {
+      hermes-agent = {
+        enable = true;
+        domain = "hermes.${config.networking.domain}";
+      };
+
       auto-gc.onlyCleanRoots = true;
       deploy-webhook.enable = true;
       alloy = {
