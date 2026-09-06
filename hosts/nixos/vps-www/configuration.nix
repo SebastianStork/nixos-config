@@ -77,6 +77,11 @@
         domain = "pastebin.sprouted.cloud";
         branding.name = "SproutedBin";
       };
+
+      trek = {
+        enable = true;
+        domain = "trek.sprouted.cloud";
+      };
     };
   };
 }
