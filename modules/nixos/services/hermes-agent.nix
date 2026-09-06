@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -79,9 +80,28 @@ in
       };
     };
 
-    systemd.services.hermes-agent.restartTriggers = [
-      (lib.toJSON config.services.hermes-agent.environment)
-    ];
+    # See https://github.com/NousResearch/hermes-agent/issues/103705
+    users.users.hermes = {
+      uid = 993;
+      linger = true;
+    };
+    systemd.services.hermes-agent =
+      let
+        uid = lib.toString config.users.users.hermes.uid;
+      in
+      {
+        after = [ "user@${uid}.service" ];
+        requires = [ "user@${uid}.service" ];
+        environment = {
+          XDG_RUNTIME_DIR = "/run/user/${uid}";
+          DBUS_SESSION_BUS_ADDRESS = "unix:path=/run/user/${uid}/bus";
+        };
+        serviceConfig.BindReadOnlyPaths = [ "${pkgs.coreutils}/bin/true:/bin/true" ];
+
+        restartTriggers = [
+          (lib.toJSON config.services.hermes-agent.environment)
+        ];
+      };
 
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.extraConfig = ''
