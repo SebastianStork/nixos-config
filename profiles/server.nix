@@ -8,6 +8,7 @@
     services = {
       auto-gc.onlyCleanRoots = true;
       deploy-webhook.enable = true;
+      host-binary-cache.enable = true;
       alloy = {
         enable = true;
         domain = "alloy.${config.networking.fqdn}";
