@@ -31,17 +31,17 @@ in
         "hermes/home-assistant/access-token" = { };
       };
       templates = {
-        "hermes-matrix.env" = {
+        "hermes.env" = {
           content = ''
             MATRIX_ACCESS_TOKEN=${config.sops.placeholder."hermes/matrix/access-token"}
             MATRIX_ALLOWED_USERS=${config.sops.placeholder."hermes/matrix/allowed-users"}
             MATRIX_RECOVERY_KEY=${config.sops.placeholder."hermes/matrix/recovery-key"}
+            HASS_TOKEN=${config.sops.placeholder."hermes/home-assistant/access-token"}
           '';
-          restartUnits = [ "hermes-agent.service" ];
-        };
-        "hermes-home-assistant.env" = {
-          content = "HASS_TOKEN=${config.sops.placeholder."hermes/home-assistant/access-token"}";
-          restartUnits = [ "hermes-agent.service" ];
+          restartUnits = [
+            "hermes-agent.service"
+            "hermes-backend.service"
+          ];
         };
       };
     };
@@ -49,30 +49,32 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
+      extraPackages = [ pkgs.tirith ];
       environment = {
         MATRIX_HOMESERVER = "https://matrix.org";
         MATRIX_E2EE_MODE = "required";
         MATRIX_REACTIONS = "false";
+        MATRIX_AUTO_THREAD = "false";
+        MATRIX_SESSION_SCOPE = "room";
         HASS_URL = "https://home-assistant.${config.networking.domain}";
-        HASS_TOKEN = config.sops.secrets."hermes/home-assistant/access-token".path;
         OBSIDIAN_VAULT_PATH = "${config.services.hermes-agent.stateDir}/Vault";
       };
-      environmentFiles = [
-        config.sops.templates."hermes-matrix.env".path
-        config.sops.templates."hermes-home-assistant.env".path
-      ];
+      environmentFiles = [ config.sops.templates."hermes.env".path ];
       settings = {
-        model = {
-          default = "gpt-5.6-terra";
-          provider = "openai-codex";
+        approvals.destructive_slash_confirm = false;
+        curator.prune_builtins = false;
+        display.platforms.matrix.tool_preview_length = 1000; # Work around Hermes treating 0 as a 40-character limit in Matrix
+        matrix.require_mention = false;
+        security = {
+          redact_secrets = true;
+          allow_lazy_installs = false;
+          tirith_enabled = true;
+          tirith_fail_open = false;
         };
-        agent.reasoning_effort = "high";
-        delegation = {
-          model = "gpt-5.6-sol";
-          provider = "openai-codex";
-          reasoning_effort = "medium";
+        skills = {
+          create_dir = "~/.hermes/authored-skills";
+          external_dirs = [ "~/.hermes/authored-skills" ];
         };
-        skills.create_dir = "~/.hermes/authored-skills";
       };
       backend = {
         mode = "dashboard";
@@ -85,22 +87,32 @@ in
       uid = 993;
       linger = true;
     };
-    systemd.services.hermes-agent =
+    systemd.services =
       let
-        uid = lib.toString config.users.users.hermes.uid;
+        hermesRestartTriggers = [
+          (lib.toJSON config.services.hermes-agent.environment)
+          (lib.toJSON config.services.hermes-agent.environmentFiles)
+          (lib.toJSON config.services.hermes-agent.settings)
+        ];
       in
       {
-        after = [ "user@${uid}.service" ];
-        requires = [ "user@${uid}.service" ];
-        environment = {
-          XDG_RUNTIME_DIR = "/run/user/${uid}";
-          DBUS_SESSION_BUS_ADDRESS = "unix:path=/run/user/${uid}/bus";
-        };
-        serviceConfig.BindReadOnlyPaths = [ "${pkgs.coreutils}/bin/true:/bin/true" ];
+        hermes-agent =
+          let
+            uid = lib.toString config.users.users.hermes.uid;
+          in
+          {
+            after = [ "user@${uid}.service" ];
+            requires = [ "user@${uid}.service" ];
+            environment = {
+              XDG_RUNTIME_DIR = "/run/user/${uid}";
+              DBUS_SESSION_BUS_ADDRESS = "unix:path=/run/user/${uid}/bus";
+            };
+            serviceConfig.BindReadOnlyPaths = [ "${pkgs.coreutils}/bin/true:/bin/true" ];
 
-        restartTriggers = [
-          (lib.toJSON config.services.hermes-agent.environment)
-        ];
+            restartTriggers = hermesRestartTriggers;
+          };
+
+        hermes-backend.restartTriggers = hermesRestartTriggers;
       };
 
     custom = {
