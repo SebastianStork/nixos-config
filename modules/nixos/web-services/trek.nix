@@ -14,6 +14,7 @@ in
       type = lib.types.port;
       default = 1356;
     };
+    doBackups = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -51,7 +52,14 @@ in
     ];
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      services = {
+        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+        restic.backups.trek = lib.mkIf cfg.doBackups {
+          conflictingService = "${config.virtualisation.oci-containers.backend}-trek.service";
+          paths = [ dataDir ];
+        };
+      };
 
       persistence.directories = [ dataDir ];
 
