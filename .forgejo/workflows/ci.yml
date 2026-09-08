@@ -177,7 +177,14 @@ jobs:
       needs.build-test.result == 'success' &&
       needs.build-server.result == 'success' &&
       needs.collect-closure-paths.result == 'success'
-    needs: [parse-outputs, build-check, build-test, build-server, collect-closure-paths]
+    needs:
+      [
+        parse-outputs,
+        build-check,
+        build-test,
+        build-server,
+        collect-closure-paths,
+      ]
     runs-on: nixos
     strategy:
       fail-fast: false

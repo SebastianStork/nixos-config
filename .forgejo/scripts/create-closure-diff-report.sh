@@ -22,7 +22,7 @@ while IFS= read -r closure; do
 
   if [[ $old_closure != "$new_closure" ]]; then
     deployment_required=true
-    if ! nix build --no-link "$old_closure" "$new_closure" >/dev/null; then
+    if ! nix build --no-link "$old_closure" "$new_closure" > /dev/null; then
       status=error
       error='{"stage":"realize-closures","exit_code":1}'
     else
