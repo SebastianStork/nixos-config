@@ -49,7 +49,11 @@ in
     services.hermes-agent = {
       enable = true;
       addToSystemPackages = true;
-      extraPackages = [ pkgs.tirith ];
+      extraPackages = [
+        pkgs.tirith
+        pkgs.jq
+        pkgs.unzip
+      ];
       environment = {
         MATRIX_HOMESERVER = "https://matrix.org";
         MATRIX_E2EE_MODE = "required";
