@@ -59,6 +59,10 @@
         enable = true;
         domain = "home-assistant.${config.networking.domain}";
         doBackups = true;
+        zigbee2mqtt = {
+          domain = "zigbee2mqtt.${config.networking.domain}";
+          serialPort = "/dev/serial/by-id/usb-SONOFF_SONOFF_Dongle_Plus_MG24_a4a438312275f011a1f0a12f1045c30f-if00-port0";
+        };
       };
 
       radicale = {
