@@ -80,6 +80,10 @@ in
           external_dirs = [ "~/.hermes/authored-skills" ];
         };
       };
+      mcpServers.trek = {
+        url = "https://trek.sprouted.cloud/mcp";
+        auth = "oauth";
+      };
       backend = {
         mode = "dashboard";
         inherit (cfg) port;
