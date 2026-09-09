@@ -66,6 +66,7 @@ in
       environmentFiles = [ config.sops.templates."hermes.env".path ];
       settings = {
         approvals.destructive_slash_confirm = false;
+        auxiliary.background_review.enabled = false;
         curator.prune_builtins = false;
         display.platforms.matrix.tool_preview_length = 1000; # Work around Hermes treating 0 as a 40-character limit in Matrix
         matrix.require_mention = false;
