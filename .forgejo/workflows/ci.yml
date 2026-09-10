@@ -9,13 +9,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  parse-outputs:
+  discover-checks:
     runs-on: nixos
     outputs:
-      checks: ${{ steps.checks.outputs.checks }}
-      tests: ${{ steps.tests.outputs.tests }}
-      servers: ${{ steps.servers.outputs.servers }}
-      workstations: ${{ steps.workstations.outputs.workstations }}
+      checks_to_build: ${{ steps.checks.outputs.checks_to_build }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -25,38 +22,122 @@ jobs:
         id: checks
         run: |
           checks=$(nix eval .#checks.x86_64-linux --apply builtins.attrNames --json)
-          printf 'checks=%s\n' "$checks" >> "$FORGEJO_OUTPUT"
-      - name: Get tests
+          if [[ "$checks" == '[]' ]]; then
+            checks='["__no_check__"]'
+          fi
+          printf 'checks_to_build=%s\n' "$checks" >> "$FORGEJO_OUTPUT"
+
+  discover-tests:
+    runs-on: nixos
+    outputs:
+      tests_to_build: ${{ steps.tests.outputs.tests_to_build }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Get uncached tests
         id: tests
         run: |
-          tests=$(nix eval .#tests.x86_64-linux --apply builtins.attrNames --json)
-          printf 'tests=%s\n' "$tests" >> "$FORGEJO_OUTPUT"
-      - name: Get servers
+          tests=$(nix eval .#tests.x86_64-linux --apply 'outputs:
+            outputs
+            |> builtins.attrNames
+            |> builtins.map (name: { inherit name; path = outputs.${name}.outPath; })
+          ' --json | bash .forgejo/scripts/select-uncached-outputs.sh)
+          if [[ "$tests" == '[]' ]]; then
+            tests='["__no_test__"]'
+          fi
+          printf 'tests_to_build=%s\n' "$tests" >> "$FORGEJO_OUTPUT"
+
+  discover-servers:
+    runs-on: nixos
+    outputs:
+      server_inventory: ${{ steps.servers.outputs.server_inventory }}
+      servers_to_build: ${{ steps.servers.outputs.servers_to_build }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Get servers and uncached outputs
         id: servers
         run: |
-          servers=$(nix eval .#nixosConfigurations --apply 'configs:
+          server_inventory=$(nix eval .#nixosConfigurations --apply 'configs:
             configs
             |> builtins.attrNames
-            |> builtins.filter (hostName: configs.${hostName}.config.custom.services.deploy-webhook.enable)
+            |> builtins.filter (name: configs.${name}.config.custom.services.deploy-webhook.enable)
+            |> builtins.map (name: {
+              inherit name;
+              expected_closure = configs.${name}.config.system.build.toplevel.outPath;
+              current_closure_url = "https://${configs.${name}.config.networking.fqdn}/hooks/current-system";
+            })
           ' --json)
-          printf 'servers=%s\n' "$servers" >> "$FORGEJO_OUTPUT"
-      - name: Get workstations
+          servers_to_build=$(bash .forgejo/scripts/select-uncached-outputs.sh <<< "$server_inventory")
+          if [[ "$servers_to_build" == '[]' ]]; then
+            servers_to_build='["__no_server__"]'
+          fi
+          printf 'server_inventory=%s\n' "$server_inventory" >> "$FORGEJO_OUTPUT"
+          printf 'servers_to_build=%s\n' "$servers_to_build" >> "$FORGEJO_OUTPUT"
+
+  discover-workstations:
+    runs-on: nixos
+    outputs:
+      workstations_to_build: ${{ steps.workstations.outputs.workstations_to_build }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Get uncached workstations
         id: workstations
         run: |
           workstations=$(nix eval .#nixosConfigurations --apply 'configs:
             configs
             |> builtins.attrNames
-            |> builtins.filter (hostName: !configs.${hostName}.config.custom.services.deploy-webhook.enable)
-          ' --json)
-          printf 'workstations=%s\n' "$workstations" >> "$FORGEJO_OUTPUT"
+            |> builtins.filter (name: !configs.${name}.config.custom.services.deploy-webhook.enable)
+            |> builtins.map (name: { inherit name; path = configs.${name}.config.system.build.toplevel.outPath; })
+          ' --json | bash .forgejo/scripts/select-uncached-outputs.sh)
+          if [[ "$workstations" == '[]' ]]; then
+            workstations='["__no_workstation__"]'
+          fi
+          printf 'workstations_to_build=%s\n' "$workstations" >> "$FORGEJO_OUTPUT"
+
+  discover-deployments:
+    needs: discover-servers
+    runs-on: nixos
+    outputs:
+      closure_paths: ${{ steps.deployments.outputs.closure_paths }}
+      servers_to_deploy: ${{ steps.deployments.outputs.servers_to_deploy }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Get servers requiring deployment
+        id: deployments
+        env:
+          SERVER_INVENTORY: ${{ needs.discover-servers.outputs.server_inventory }}
+        run: |
+          closure_paths=$(bash .forgejo/scripts/collect-closure-paths.sh <<< "$SERVER_INVENTORY")
+          servers_to_deploy=$(jq --compact-output '[
+            .[]
+            | select(.current_closure != .expected_closure)
+            | .host
+          ]' <<< "$closure_paths")
+          if [[ "$servers_to_deploy" == '[]' ]]; then
+            servers_to_deploy='["__no_server__"]'
+          fi
+          printf 'closure_paths=%s\n' "$closure_paths" >> "$FORGEJO_OUTPUT"
+          printf 'servers_to_deploy=%s\n' "$servers_to_deploy" >> "$FORGEJO_OUTPUT"
 
   build-check:
-    needs: parse-outputs
+    if: needs.discover-checks.outputs.checks_to_build != '["__no_check__"]'
+    needs: discover-checks
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        check: ${{ fromJSON(needs.parse-outputs.outputs.checks) }}
+        check: ${{ fromJSON(needs.discover-checks.outputs.checks_to_build) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -68,12 +149,13 @@ jobs:
           flake-output: .#checks.x86_64-linux.${{ matrix.check }}
 
   build-test:
-    needs: parse-outputs
+    if: needs.discover-tests.outputs.tests_to_build != '["__no_test__"]'
+    needs: discover-tests
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        test: ${{ fromJSON(needs.parse-outputs.outputs.tests) }}
+        test: ${{ fromJSON(needs.discover-tests.outputs.tests_to_build) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -90,12 +172,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   build-server:
-    needs: parse-outputs
+    if: needs.discover-servers.outputs.servers_to_build != '["__no_server__"]'
+    needs: discover-servers
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-outputs.outputs.servers) }}
+        server: ${{ fromJSON(needs.discover-servers.outputs.servers_to_build) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -111,34 +194,11 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
-  collect-closure-paths:
-    needs: parse-outputs
-    runs-on: nixos
-    outputs:
-      paths: ${{ steps.paths.outputs.paths }}
-    steps:
-      - name: Checkout
-        uses: https://code.forgejo.org/actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Collect current and expected closure paths
-        id: paths
-        env:
-          SERVERS: ${{ needs.parse-outputs.outputs.servers }}
-        run: |
-          paths=$(nix eval --impure .#nixosConfigurations --apply 'configs:
-            builtins.getEnv "SERVERS"
-            |> builtins.fromJSON
-            |> builtins.map (name: {
-              inherit name;
-              path = configs.${name}.config.system.build.toplevel.outPath;
-              url = "https://${configs.${name}.config.networking.fqdn}/hooks/current-system";
-            })
-          ' --json | bash .forgejo/scripts/collect-closure-paths.sh)
-          printf 'paths=%s\n' "$paths" >> "$FORGEJO_OUTPUT"
-
   closure-diff-report:
-    needs: [collect-closure-paths, build-server]
+    if: >-
+      always() &&
+      needs.discover-deployments.result == 'success'
+    needs: [discover-deployments, build-server]
     runs-on: nixos
     steps:
       - name: Checkout
@@ -148,7 +208,7 @@ jobs:
       - name: Generate closure diff report
         continue-on-error: true
         env:
-          CLOSURE_PATHS: ${{ needs.collect-closure-paths.outputs.paths }}
+          CLOSURE_PATHS: ${{ needs.discover-deployments.outputs.closure_paths }}
           REPOSITORY: ${{ forgejo.repository }}
           COMMIT_SHA: ${{ forgejo.sha }}
           COMMIT_TITLE: ${{ forgejo.event.head_commit.message }}
@@ -172,24 +232,31 @@ jobs:
   deploy:
     if: >-
       always() &&
-      needs.parse-outputs.result == 'success' &&
-      needs.build-check.result == 'success' &&
-      needs.build-test.result == 'success' &&
-      needs.build-server.result == 'success' &&
-      needs.collect-closure-paths.result == 'success'
+      needs.discover-checks.result == 'success' &&
+      needs.discover-tests.result == 'success' &&
+      needs.discover-servers.result == 'success' &&
+      needs.discover-workstations.result == 'success' &&
+      needs.discover-deployments.result == 'success' &&
+      needs.discover-deployments.outputs.servers_to_deploy != '["__no_server__"]' &&
+      (needs.build-check.result == 'success' || needs.build-check.result == 'skipped') &&
+      (needs.build-test.result == 'success' || needs.build-test.result == 'skipped') &&
+      (needs.build-server.result == 'success' || needs.build-server.result == 'skipped')
     needs:
       [
-        parse-outputs,
+        discover-checks,
+        discover-tests,
+        discover-servers,
+        discover-workstations,
+        discover-deployments,
         build-check,
         build-test,
         build-server,
-        collect-closure-paths,
       ]
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        server: ${{ fromJSON(needs.parse-outputs.outputs.servers) }}
+        server: ${{ fromJSON(needs.discover-deployments.outputs.servers_to_deploy) }}
     steps:
       - name: Deploy
         timeout-minutes: 30
@@ -214,11 +281,14 @@ jobs:
     if: always()
     needs:
       [
-        parse-outputs,
+        discover-checks,
+        discover-tests,
+        discover-servers,
+        discover-workstations,
+        discover-deployments,
         build-check,
         build-test,
         build-server,
-        collect-closure-paths,
         closure-diff-report,
         deploy,
       ]
@@ -226,28 +296,44 @@ jobs:
     steps:
       - name: Notify
         env:
-          PARSE_RESULT: ${{ needs.parse-outputs.result }}
+          CHECK_DISCOVERY_RESULT: ${{ needs.discover-checks.result }}
+          TEST_DISCOVERY_RESULT: ${{ needs.discover-tests.result }}
+          SERVER_DISCOVERY_RESULT: ${{ needs.discover-servers.result }}
+          WORKSTATION_DISCOVERY_RESULT: ${{ needs.discover-workstations.result }}
+          DEPLOYMENT_DISCOVERY_RESULT: ${{ needs.discover-deployments.result }}
           CHECK_RESULT: ${{ needs.build-check.result }}
           TEST_RESULT: ${{ needs.build-test.result }}
           SERVER_BUILD_RESULT: ${{ needs.build-server.result }}
-          CLOSURE_PATHS_RESULT: ${{ needs.collect-closure-paths.result }}
           CLOSURE_DIFF_REPORT_RESULT: ${{ needs.closure-diff-report.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
+          SERVERS_TO_DEPLOY: ${{ needs.discover-deployments.outputs.servers_to_deploy }}
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
         run: |
-          for result in "$PARSE_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$CLOSURE_PATHS_RESULT" "$CLOSURE_DIFF_REPORT_RESULT" "$DEPLOY_RESULT"; do
+          for result in "$CHECK_DISCOVERY_RESULT" "$TEST_DISCOVERY_RESULT" "$SERVER_DISCOVERY_RESULT" "$WORKSTATION_DISCOVERY_RESULT" "$DEPLOYMENT_DISCOVERY_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$CLOSURE_DIFF_REPORT_RESULT" "$DEPLOY_RESULT"; do
             if [[ "$result" == cancelled ]]; then
               exit 0
             fi
           done
 
+          succeeded_or_skipped() {
+            [[ $1 == success || $1 == skipped ]]
+          }
+
           commit="${COMMIT_MSG%%$'\n'*}"
-          if [[ "$PARSE_RESULT" != success || "$CHECK_RESULT" != success || "$TEST_RESULT" != success || "$SERVER_BUILD_RESULT" != success || "$CLOSURE_PATHS_RESULT" != success ]]; then
+          if [[ "$CHECK_DISCOVERY_RESULT" != success || "$TEST_DISCOVERY_RESULT" != success || "$SERVER_DISCOVERY_RESULT" != success || "$WORKSTATION_DISCOVERY_RESULT" != success || "$DEPLOYMENT_DISCOVERY_RESULT" != success ]] ||
+            ! succeeded_or_skipped "$CHECK_RESULT" ||
+            ! succeeded_or_skipped "$TEST_RESULT" ||
+            ! succeeded_or_skipped "$SERVER_BUILD_RESULT"; then
             title="CI: Failed"
             priority=low
             tags=rotating_light
             body=$(printf 'Commit `%s` failed CI before deployment.\n> %s' "${SHA::7}" "$commit")
+          elif [[ "$SERVERS_TO_DEPLOY" == '["__no_server__"]' ]]; then
+            title="CI: No deployment required"
+            priority=low
+            tags=white_check_mark
+            body=$(printf 'Commit `%s` passed CI; no servers required deployment.\n> %s' "${SHA::7}" "$commit")
           elif [[ "$DEPLOY_RESULT" != success ]]; then
             title="CI: Deployment failed"
             priority=low
@@ -270,12 +356,13 @@ jobs:
             https://ntfy.sh/splitleaf
 
   build-workstation:
-    needs: [parse-outputs, notify]
+    if: needs.discover-workstations.outputs.workstations_to_build != '["__no_workstation__"]'
+    needs: [discover-workstations, notify]
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        workstation: ${{ fromJSON(needs.parse-outputs.outputs.workstations) }}
+        workstation: ${{ fromJSON(needs.discover-workstations.outputs.workstations_to_build) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4

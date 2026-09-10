@@ -7,11 +7,11 @@ jq --compact-output '.[]' > "$work_dir/hosts.jsonl"
 
 collect_host() {
   local host=$1
-  local name url current_closure expected_closure
+  local name current_closure_url current_closure expected_closure
   name=$(jq --raw-output .name <<< "$host")
-  url=$(jq --raw-output .url <<< "$host")
-  expected_closure=$(jq --raw-output .path <<< "$host")
-  current_closure=$(curl --fail --silent --show-error --connect-timeout 5 --max-time 10 "$url")
+  current_closure_url=$(jq --raw-output .current_closure_url <<< "$host")
+  expected_closure=$(jq --raw-output .expected_closure <<< "$host")
+  current_closure=$(curl --fail --silent --show-error --connect-timeout 5 --max-time 10 "$current_closure_url")
 
   jq --null-input --compact-output \
     --arg host "$name" \
