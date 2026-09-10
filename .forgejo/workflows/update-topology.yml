@@ -1,0 +1,28 @@
+name: Update homelab topology
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+jobs:
+  update-topology:
+    runs-on: nixos
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build topology
+        run: nix build .#homelab-topology
+      - name: Update topology
+        run: cp result/main.svg homelab-topology.svg
+      - name: Commit changed topology
+        run: |
+          if git diff --quiet -- homelab-topology.svg; then
+            echo "Topology is unchanged"
+            exit 0
+          fi
+          git config user.name "SebastianStork"
+          git config user.email "git@sstork.dev"
+          git add homelab-topology.svg
+          git commit -m "topology: Update"
+          git push
