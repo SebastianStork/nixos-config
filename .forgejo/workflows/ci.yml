@@ -357,7 +357,7 @@ jobs:
 
   build-workstation:
     if: needs.discover-workstations.outputs.workstations_to_build != '["__no_workstation__"]'
-    needs: [discover-workstations, notify]
+    needs: discover-workstations
     runs-on: nixos
     strategy:
       fail-fast: false
