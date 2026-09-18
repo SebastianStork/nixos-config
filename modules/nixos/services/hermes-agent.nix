@@ -1,12 +1,22 @@
 {
   config,
   inputs,
+  self,
   lib,
   pkgs,
+  allHosts,
   ...
 }:
 let
   cfg = config.custom.services.hermes-agent;
+  
+  trekDomain =
+    allHosts
+    |> lib.attrValues
+    |> lib.map (host: host.config.custom.web-services.trek)
+    |> lib.filter (trek: trek.enable)
+    |> lib.map (trek: trek.domain)
+    |> self.lib.headOrNull;
 in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
@@ -81,8 +91,8 @@ in
           external_dirs = [ "~/.hermes/authored-skills" ];
         };
       };
-      mcpServers.trek = {
-        url = "https://trek.sprouted.cloud/mcp";
+      mcpServers.trek = lib.mkIf (trekDomain != null) {
+        url = "https://${trekDomain}/mcp";
         auth = "oauth";
       };
       backend = {
