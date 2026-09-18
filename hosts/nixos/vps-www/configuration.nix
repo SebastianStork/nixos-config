@@ -51,12 +51,6 @@
         ssh.enable = true;
       };
 
-      trek = {
-        enable = true;
-        domain = "trek.sprouted.cloud";
-        doBackups = true;
-      };
-
       outline = {
         enable = true;
         domain = "wiki.sprouted.cloud";
