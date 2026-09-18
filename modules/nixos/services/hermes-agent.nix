@@ -9,7 +9,7 @@
 }:
 let
   cfg = config.custom.services.hermes-agent;
-  
+
   trekDomain =
     allHosts
     |> lib.attrValues
