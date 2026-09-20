@@ -36,6 +36,12 @@
 
       file-share.enable = true;
 
+      rss2email = {
+        enable = true;
+        from = "rss2email@sstork.dev";
+        to = "feeds@sstork.dev";
+      };
+
       prometheus.storageRetentionSize = "20GB";
 
       atuin-server = {
