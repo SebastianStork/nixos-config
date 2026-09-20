@@ -1,0 +1,59 @@
+diff --git a/rss2email/feeds.py b/rss2email/feeds.py
+index eedab10..522b88b 100644
+--- a/rss2email/feeds.py
++++ b/rss2email/feeds.py
+@@ -335,8 +335,17 @@ class Feeds (list):
+         if dirname and not _os.path.isdir(dirname):
+             _os.makedirs(dirname, mode=0o700, exist_ok=True)
+         tmpfile = dst_config_file + '.tmp'
++        config = self.config
++        if len(self.configfiles) > 1:
++            # Keep defaults supplied by earlier, read-only configuration files
++            # out of the final, writable subscription file.
++            config = _config.Config()
++            config.read_dict({
++                section: self.config._sections[section]
++                for section in self.config.sections()
++                })
+         with open(tmpfile, 'w') as f:
+-            self.config.write(f)
++            config.write(f)
+             f.flush()
+             _os.fsync(f.fileno())
+         _os.replace(tmpfile, dst_config_file)
+diff --git a/rss2email/post_process/link_only.py b/rss2email/post_process/link_only.py
+new file mode 100644
+index 0000000..5ce812b
+--- /dev/null
++++ b/rss2email/post_process/link_only.py
+@@ -0,0 +1,30 @@
++# Copyright (C) 2026 Sebastian Stork
++#
++# This file is part of rss2email.
++#
++# rss2email is free software: you can redistribute it and/or modify it under
++# the terms of the GNU General Public License as published by the Free Software
++# Foundation, either version 2 of the License, or (at your option) version 3 of
++# the License.
++
++"""Replace an entry's content with a link to the original article."""
++
++import html
++
++import rss2email.email
++
++
++def process(feed, parsed, entry, guid, message):
++    title = html.escape(feed._get_entry_title(entry))
++    url = html.escape(feed._get_entry_link(entry) or '', quote=True)
++    content = (
++        '<!DOCTYPE html>\n'
++        '<html><body>\n'
++        f'<p><a href="{url}">{title}</a></p>\n'
++        '</body></html>\n'
++        )
++    encoding = rss2email.email.guess_encoding(
++        content, encodings=feed.encodings)
++    del message['Content-Transfer-Encoding']
++    message.set_payload(content, charset=encoding)
++    return message
