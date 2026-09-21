@@ -85,8 +85,8 @@ in
           address = "127.0.0.1";
           port = cfg.zigbee2mqtt.mqttPort;
           omitPasswordAuth = true;
-          settings.allow_anonymous = true;
-          acl = [ "pattern readwrite #" ];
+          settings.listener_allow_anonymous = true;
+          acl = [ "topic readwrite #" ];
         };
       };
 
