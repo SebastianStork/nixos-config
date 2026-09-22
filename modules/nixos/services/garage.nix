@@ -102,10 +102,7 @@ in
       services.caddy.virtualHosts = {
         ${cfg.api.domain} = {
           port = cfg.api.port;
-          allowedGroups = [
-            "client"
-            "automation"
-          ];
+          extraAllowedGroups = [ "automation" ];
         };
         ${cfg.admin.domain}.port = cfg.admin.port;
       };

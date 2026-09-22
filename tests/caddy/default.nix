@@ -43,10 +43,7 @@ in
                   respond "${serverPrivateBody}"
                 }
               '';
-              allowedGroups = [
-                "client"
-                "server"
-              ];
+              extraAllowedGroups = [ "server" ];
             };
             ${agentPrivateDomain} = {
               extraConfig = ''
@@ -54,7 +51,7 @@ in
                   respond "${agentPrivateBody}"
                 }
               '';
-              allowedHosts = [ "overlayAgent" ];
+              extraAllowedHosts = [ "overlayAgent" ];
             };
           };
         };

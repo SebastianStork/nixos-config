@@ -131,17 +131,11 @@ in
         caddy.virtualHosts = {
           ${cfg.domain} = {
             inherit (cfg) port;
-            allowedGroups = [
-              "client"
-              "agent"
-            ];
+            extraAllowedGroups = [ "agent" ];
           };
           ${cfg.zigbee2mqtt.domain} = {
             inherit (cfg.zigbee2mqtt) port;
-            allowedGroups = [
-              "client"
-              "agent"
-            ];
+            extraAllowedGroups = [ "agent" ];
           };
         };
 

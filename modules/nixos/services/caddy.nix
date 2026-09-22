@@ -15,10 +15,12 @@ let
   virtualHosts = cfg.virtualHosts |> lib.attrValues;
   privateVirtualHosts = virtualHosts |> lib.filter (vHost: self.lib.isPrivateDomain vHost.domain);
 
+  getAllowedGroups = vHost: [ "client" ] ++ vHost.extraAllowedGroups;
+
   hostIsAllowed =
     vHost: host:
-    lib.any (group: lib.elem group vHost.allowedGroups) host.config.custom.services.nebula.groups
-    || lib.elem host.config.networking.hostName vHost.allowedHosts;
+    lib.any (group: lib.elem group (getAllowedGroups vHost)) host.config.custom.services.nebula.groups
+    || lib.elem host.config.networking.hostName vHost.extraAllowedHosts;
 
   getAllowedAddresses =
     vHost:
@@ -30,10 +32,10 @@ let
     )
     ++ lib.optional netCfg.underlay.trusted netCfg.underlay.cidr;
 
-  allowedNebulaGroups =
-    privateVirtualHosts |> lib.concatMap (vHost: vHost.allowedGroups) |> lib.unique;
+  allowedNebulaGroups = privateVirtualHosts |> lib.concatMap getAllowedGroups |> lib.unique;
 
-  allowedNebulaHosts = privateVirtualHosts |> lib.concatMap (vHost: vHost.allowedHosts) |> lib.unique;
+  allowedNebulaHosts =
+    privateVirtualHosts |> lib.concatMap (vHost: vHost.extraAllowedHosts) |> lib.unique;
 
   mkFirewallRules =
     target:
@@ -127,11 +129,11 @@ in
                 type = lib.types.nullOr lib.types.lines;
                 default = null;
               };
-              allowedGroups = lib.mkOption {
+              extraAllowedGroups = lib.mkOption {
                 type = lib.types.listOf lib.types.nonEmptyStr;
-                default = [ "client" ];
+                default = [ ];
               };
-              allowedHosts = lib.mkOption {
+              extraAllowedHosts = lib.mkOption {
                 type = lib.types.listOf lib.types.nonEmptyStr;
                 default = [ ];
               };

@@ -29,7 +29,7 @@ in
 
       custom.services.caddy.virtualHosts.${cfg.domain} = {
         inherit (cfg) port;
-        allowedGroups = [ "automation" ];
+        extraAllowedGroups = [ "automation" ];
       };
     })
 

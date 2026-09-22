@@ -8,12 +8,6 @@
 let
   cfg = config.custom.web-services.glance;
 
-  glanceHosts =
-    allHosts
-    |> lib.attrValues
-    |> lib.filter (host: host.config.custom.web-services.glance.enable)
-    |> lib.map (host: host.config.networking.hostName);
-
   privateSiteDomains =
     config.custom.meta.sites
     |> lib.attrValues
@@ -149,7 +143,11 @@ in
       custom.services.caddy.virtualHosts =
         privateSiteDomains
         |> self.lib.genAttrs (_: {
-          allowedHosts = glanceHosts;
+          extraAllowedHosts =
+            allHosts
+            |> lib.attrValues
+            |> lib.filter (host: host.config.custom.web-services.glance.enable)
+            |> lib.map (host: host.config.networking.hostName);
         });
     }
 
