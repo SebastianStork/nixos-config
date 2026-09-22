@@ -9,8 +9,6 @@ jobs:
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
-        with:
-          persist-credentials: false
       - name: Build topology
         run: nix build .#homelab-topology
       - name: Update topology
