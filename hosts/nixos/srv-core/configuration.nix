@@ -20,17 +20,33 @@
     services = {
       blocking-nameserver = {
         enable = true;
-        gui.domain = "adguard.${config.networking.fqdn}";
+        gui = {
+          domain = "adguard.${config.networking.fqdn}";
+          forwardAuth = true;
+        };
       };
       recursive-nameserver = {
         enable = true;
         serveAuthoritatively = true;
       };
 
+      authelia = {
+        enable = true;
+        domain = "auth.${config.networking.domain}";
+        user = {
+          name = "seb";
+          displayName = "Sebastian";
+          email = "seb@${config.networking.domain}";
+        };
+      };
+
       syncthing = {
         enable = true;
         isServer = true;
-        gui.domain = "syncthing.${config.networking.domain}";
+        gui = {
+          domain = "syncthing.${config.networking.domain}";
+          forwardAuth = true;
+        };
         doBackups = true;
       };
 
@@ -67,6 +83,7 @@
         doBackups = true;
         zigbee2mqtt = {
           domain = "zigbee2mqtt.${config.networking.domain}";
+          forwardAuth = true;
           serialPort = "/dev/serial/by-id/usb-SONOFF_SONOFF_Dongle_Plus_MG24_a4a438312275f011a1f0a12f1045c30f-if00-port0";
         };
       };
@@ -92,6 +109,7 @@
       calibre-server = {
         enable = true;
         domain = "library.${config.networking.domain}";
+        forwardAuth = true;
       };
 
       karakeep = {
@@ -112,6 +130,7 @@
       searxng = {
         enable = true;
         domain = "search.${config.networking.domain}";
+        forwardAuth = true;
       };
 
       scrutiny = {

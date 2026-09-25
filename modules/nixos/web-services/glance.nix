@@ -15,6 +15,11 @@ let
     |> lib.filter self.lib.isPrivateDomain
     |> lib.unique;
 
+  toGlanceSite = site: {
+    inherit (site) title url icon;
+    check-url = if site.checkPath == null then site.url else "https://${site.domain}${site.checkPath}";
+  };
+
   perHostSites =
     allHosts
     |> lib.attrValues
@@ -32,7 +37,7 @@ let
     cache = "1m";
     title = "Per-Host Services";
     style = "compact";
-    sites = perHostSites;
+    sites = perHostSites |> lib.map toGlanceSite;
   };
 
   perHostDomains = perHostSites |> lib.map (site: site.domain);
@@ -51,7 +56,7 @@ let
         type = "monitor";
         cache = "1m";
         title = "${name} Services";
-        sites = value |> lib.sort (a: b: a.title < b.title);
+        sites = value |> lib.sort (a: b: a.title < b.title) |> lib.map toGlanceSite;
       }
     );
 

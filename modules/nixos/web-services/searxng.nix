@@ -18,11 +18,12 @@ in
       type = lib.types.port;
       default = 27916;
     };
+    forwardAuth = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
-      assertion = self.lib.isPrivateDomain cfg.domain;
+      assertion = self.lib.isPrivateDomain cfg.domain || cfg.forwardAuth;
       message = self.lib.mkUnprotectedMessage "SearXNG";
     };
 
@@ -57,11 +58,18 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      services.caddy.virtualHosts.${cfg.domain} = {
+        inherit (cfg) port;
+        forwardAuth = {
+          enable = cfg.forwardAuth;
+          bypassPaths = [ "/healthz" ];
+        };
+      };
 
       meta.sites.${cfg.domain} = {
         title = "SearXNG";
         icon = "sh:searxng";
+        checkPath = "/healthz";
       };
     };
   };

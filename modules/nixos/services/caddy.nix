@@ -15,6 +15,14 @@ let
   virtualHosts = cfg.virtualHosts |> lib.attrValues;
   privateVirtualHosts = virtualHosts |> lib.filter (vHost: self.lib.isPrivateDomain vHost.domain);
 
+  autheliaDomain =
+    allHosts
+    |> lib.attrValues
+    |> lib.map (host: host.config.custom.services.authelia)
+    |> lib.filter (authelia: authelia.enable)
+    |> lib.map (authelia: authelia.domain)
+    |> self.lib.headOrNull;
+
   getAllowedGroups = vHost: [ "client" ] ++ vHost.extraAllowedGroups;
 
   hostIsAllowed =
@@ -63,6 +71,7 @@ let
       port,
       files,
       extraConfig,
+      forwardAuth,
       ...
     }@vHost:
     lib.nameValuePair domain {
@@ -75,8 +84,20 @@ let
             @accessDenied not remote_ip ${allowedAddresses |> self.lib.concatWords}
             respond @accessDenied 403
           '';
+          forwardAuthConfig = lib.optionalString forwardAuth.enable ''
+            ${lib.optionalString (forwardAuth.bypassPaths != [ ])
+              "@forwardAuthProtected not path ${forwardAuth.bypassPaths |> self.lib.concatWords}"
+            }
+            forward_auth ${
+              lib.optionalString (forwardAuth.bypassPaths != [ ]) "@forwardAuthProtected "
+            }${cfg.forwardAuthUrl} {
+              uri /api/authz/forward-auth
+              copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+            }
+          '';
           requestHandlers =
             [
+              (lib.optional forwardAuth.enable forwardAuthConfig)
               (lib.optional (port != null) "reverse_proxy localhost:${lib.toString port}")
               (lib.optionals (files != null) [
                 "root ${files}"
@@ -106,6 +127,10 @@ in
     metricsPort = lib.mkOption {
       type = lib.types.port;
       default = 49514;
+    };
+    forwardAuthUrl = lib.mkOption {
+      type = lib.types.nullOr lib.types.nonEmptyStr;
+      default = if autheliaDomain != null then "https://${autheliaDomain}" else null;
     };
     virtualHosts = lib.mkOption {
       type = lib.types.attrsOf (
@@ -137,6 +162,13 @@ in
                 type = lib.types.listOf lib.types.nonEmptyStr;
                 default = [ ];
               };
+              forwardAuth = {
+                enable = lib.mkEnableOption "";
+                bypassPaths = lib.mkOption {
+                  type = lib.types.listOf lib.types.nonEmptyStr;
+                  default = [ ];
+                };
+              };
             };
           }
         )
@@ -165,6 +197,14 @@ in
                 || (vHost |> getAllowedAddresses) != [ ]
                 || netCfg.underlay.trusted;
               message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "no hosts are allowed to access it";
+            }
+            {
+              assertion = (!vHost.forwardAuth.enable) || self.lib.isPrivateDomain vHost.domain;
+              message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "forward authentication is restricted to private domains";
+            }
+            {
+              assertion = (!vHost.forwardAuth.enable) || cfg.forwardAuthUrl != null;
+              message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "no forward authentication service was found";
             }
           ]);
 

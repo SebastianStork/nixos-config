@@ -22,6 +22,10 @@
               type = lib.types.nonEmptyStr;
               default = "https://${config.domain}${config.path}";
             };
+            checkPath = lib.mkOption {
+              type = lib.types.nullOr lib.types.str;
+              default = null;
+            };
             icon = lib.mkOption {
               type = lib.types.nonEmptyStr;
               default = "";

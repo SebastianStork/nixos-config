@@ -42,6 +42,7 @@ in
         type = lib.types.port;
         default = 1883;
       };
+      forwardAuth = lib.mkEnableOption "";
       serialPort = lib.mkOption {
         type = lib.types.nonEmptyStr;
       };
@@ -50,7 +51,7 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
-      assertion = self.lib.isPrivateDomain cfg.zigbee2mqtt.domain;
+      assertion = self.lib.isPrivateDomain cfg.zigbee2mqtt.domain || cfg.zigbee2mqtt.forwardAuth;
       message = self.lib.mkUnprotectedMessage "Zigbee2MQTT";
     };
 
@@ -136,6 +137,10 @@ in
           ${cfg.zigbee2mqtt.domain} = {
             inherit (cfg.zigbee2mqtt) port;
             extraAllowedGroups = [ "agent" ];
+            forwardAuth = {
+              enable = cfg.zigbee2mqtt.forwardAuth;
+              bypassPaths = [ "/index.html" ];
+            };
           };
         };
 
@@ -165,6 +170,7 @@ in
         ${cfg.zigbee2mqtt.domain} = {
           title = "Zigbee2MQTT";
           icon = "sh:zigbee2mqtt";
+          checkPath = "/index.html";
         };
       };
     };

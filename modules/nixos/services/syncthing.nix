@@ -55,6 +55,7 @@ in
         type = lib.types.port;
         default = 8384;
       };
+      forwardAuth = lib.mkEnableOption "";
     };
     folders = lib.mkOption {
       type = lib.types.listOf lib.types.nonEmptyStr;
@@ -73,7 +74,8 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = lib.singleton {
-      assertion = (cfg.gui.domain != null) -> (self.lib.isPrivateDomain cfg.gui.domain);
+      assertion =
+        (cfg.gui.domain != null) -> (self.lib.isPrivateDomain cfg.gui.domain || cfg.gui.forwardAuth);
       message = self.lib.mkUnprotectedMessage "Syncthing-GUI";
     };
 
@@ -186,7 +188,13 @@ in
           |> lib.unique
         );
 
-        caddy.virtualHosts.${cfg.gui.domain}.port = lib.mkIf (cfg.gui.domain != null) cfg.gui.port;
+        caddy.virtualHosts.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
+          port = cfg.gui.port;
+          forwardAuth = {
+            enable = cfg.gui.forwardAuth;
+            bypassPaths = [ "/rest/noauth/health" ];
+          };
+        };
 
         restic.backups.syncthing = lib.mkIf cfg.doBackups {
           conflictingService = "syncthing.service";
@@ -203,6 +211,7 @@ in
       meta.sites.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
         title = "Syncthing";
         icon = "sh:syncthing";
+        checkPath = "/rest/noauth/health";
       };
     };
   };

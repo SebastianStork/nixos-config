@@ -1,5 +1,6 @@
 {
   config,
+  self,
   lib,
   allHosts,
   ...
@@ -33,10 +34,16 @@ in
         type = lib.types.port;
         default = 58479;
       };
+      forwardAuth = lib.mkEnableOption "";
     };
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = lib.singleton {
+      assertion = self.lib.isPrivateDomain cfg.gui.domain;
+      message = self.lib.mkUnprotectedMessage "AdGuard Home";
+    };
+
     services = {
       adguardhome = {
         enable = true;
@@ -110,13 +117,23 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.gui.domain}.port = lib.mkIf (cfg.gui.domain != null) cfg.gui.port;
+      services.caddy.virtualHosts.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
+        port = cfg.gui.port;
+        forwardAuth = {
+          enable = cfg.gui.forwardAuth;
+          bypassPaths = [
+            "/control/stats"
+            "/control/status"
+          ];
+        };
+      };
 
       persistence.directories = [ "/var/lib/private/AdGuardHome" ];
 
       meta.sites.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
         title = "Adguard Home";
         icon = "sh:adguard-home";
+        checkPath = "/control/status";
       };
     };
   };

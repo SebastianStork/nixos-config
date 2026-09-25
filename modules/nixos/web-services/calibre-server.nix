@@ -18,12 +18,13 @@ in
       type = lib.types.port;
       default = 8080;
     };
+    forwardAuth = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = self.lib.isPrivateDomain cfg.domain;
+        assertion = self.lib.isPrivateDomain cfg.domain || cfg.forwardAuth;
         message = self.lib.mkUnprotectedMessage "Calibre-Server";
       }
       {
@@ -43,11 +44,21 @@ in
     systemd.services.calibre-server.after = [ "syncthing.service" ];
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      services.caddy.virtualHosts.${cfg.domain} = {
+        inherit (cfg) port;
+        forwardAuth = {
+          enable = cfg.forwardAuth;
+          bypassPaths = [
+            "/opds*"
+            "/get/*"
+          ];
+        };
+      };
 
       meta.sites.${cfg.domain} = {
         title = "Calibre";
         icon = "sh:calibre";
+        checkPath = "/opds";
       };
     };
   };

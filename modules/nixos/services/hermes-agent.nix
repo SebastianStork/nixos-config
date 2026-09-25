@@ -30,9 +30,15 @@ in
       type = lib.types.port;
       default = 9119;
     };
+    forwardAuth = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = lib.singleton {
+      assertion = self.lib.isPrivateDomain cfg.domain || cfg.forwardAuth;
+      message = self.lib.mkUnprotectedMessage "Hermes Agent";
+    };
+
     sops = {
       secrets = {
         "hermes/matrix/access-token" = { };
@@ -135,18 +141,25 @@ in
       };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.extraConfig = ''
-        reverse_proxy localhost:${lib.toString cfg.port} {
-          header_up Host 127.0.0.1:${lib.toString cfg.port}
-          header_up Origin http://127.0.0.1:${lib.toString cfg.port}
-        }
-      '';
+      services.caddy.virtualHosts.${cfg.domain} = {
+        forwardAuth = {
+          enable = cfg.forwardAuth;
+          bypassPaths = [ "/api/health" ];
+        };
+        extraConfig = ''
+          reverse_proxy localhost:${lib.toString cfg.port} {
+            header_up Host 127.0.0.1:${lib.toString cfg.port}
+            header_up Origin http://127.0.0.1:${lib.toString cfg.port}
+          }
+        '';
+      };
 
       persistence.directories = [ config.services.hermes-agent.stateDir ];
 
       meta.sites.${cfg.domain} = {
         title = "Hermes Agent";
         icon = "sh:hermes-agent";
+        checkPath = "/api/health";
       };
     };
   };
