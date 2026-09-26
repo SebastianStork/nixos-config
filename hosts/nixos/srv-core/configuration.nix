@@ -30,7 +30,7 @@
         serveAuthoritatively = true;
       };
 
-      authelia = {
+      private-auth = {
         enable = true;
         domain = "auth.${config.networking.domain}";
         user = {

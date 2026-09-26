@@ -6,12 +6,12 @@
   ...
 }:
 let
-  cfg = config.custom.services.authelia;
+  cfg = config.custom.services.private-auth;
   instance = config.services.authelia.instances.main;
   dataDir = "/var/lib/authelia-main";
 in
 {
-  options.custom.services.authelia = {
+  options.custom.services.private-auth = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
@@ -36,11 +36,11 @@ in
   config = lib.mkIf cfg.enable {
     sops = {
       secrets = {
-        "authelia/storage-encryption-key" = {
+        "private-auth/storage-encryption-key" = {
           owner = instance.user;
           restartUnits = [ "authelia-main.service" ];
         };
-        "authelia/password-hash".restartUnits = [ "authelia-main.service" ];
+        "private-auth/password-hash".restartUnits = [ "authelia-main.service" ];
       };
 
       templates."authelia-users.yml" = {
@@ -51,7 +51,7 @@ in
             users.${cfg.user.name} = {
               disabled = false;
               displayname = cfg.user.displayName;
-              password = config.sops.placeholder."authelia/password-hash";
+              password = config.sops.placeholder."private-auth/password-hash";
               inherit (cfg.user) email;
             };
           }
@@ -63,7 +63,7 @@ in
       enable = true;
       secrets = {
         manual = true;
-        storageEncryptionKeyFile = config.sops.secrets."authelia/storage-encryption-key".path;
+        storageEncryptionKeyFile = config.sops.secrets."private-auth/storage-encryption-key".path;
       };
       settings = {
         server.address = "tcp://127.0.0.1:${lib.toString cfg.port}/";

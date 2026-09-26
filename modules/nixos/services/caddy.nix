@@ -15,12 +15,12 @@ let
   virtualHosts = cfg.virtualHosts |> lib.attrValues;
   privateVirtualHosts = virtualHosts |> lib.filter (vHost: self.lib.isPrivateDomain vHost.domain);
 
-  autheliaDomain =
+  privateAuthDomain =
     allHosts
     |> lib.attrValues
-    |> lib.map (host: host.config.custom.services.authelia)
-    |> lib.filter (authelia: authelia.enable)
-    |> lib.map (authelia: authelia.domain)
+    |> lib.map (host: host.config.custom.services.private-auth)
+    |> lib.filter (privateAuth: privateAuth.enable)
+    |> lib.map (privateAuth: privateAuth.domain)
     |> self.lib.headOrNull;
 
   getAllowedGroups = vHost: [ "client" ] ++ vHost.extraAllowedGroups;
@@ -130,7 +130,7 @@ in
     };
     forwardAuthUrl = lib.mkOption {
       type = lib.types.nullOr lib.types.nonEmptyStr;
-      default = if autheliaDomain != null then "https://${autheliaDomain}" else null;
+      default = if privateAuthDomain != null then "https://${privateAuthDomain}" else null;
     };
     virtualHosts = lib.mkOption {
       type = lib.types.attrsOf (
