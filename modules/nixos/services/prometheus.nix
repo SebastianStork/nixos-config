@@ -115,17 +115,6 @@ in
                   };
                 }
                 {
-                  alert = "HostOutOfMemory";
-                  expr = ''100 * node_memory_MemAvailable_bytes{job="node"} / node_memory_MemTotal_bytes{job="node"} < 10'';
-                  for = "2m";
-                  annotations = {
-                    summary = "Host {{ $labels.instance }} is running out of memory";
-                    summary_resolved = "Host {{ $labels.instance }} memory has recovered";
-                    description = ''Available memory on {{ $labels.instance }} has been below 10% for 2 minutes (currently {{ printf "%.1f" $value }}%).'';
-                    description_resolved = ''Available memory on {{ $labels.instance }} is above 10% again (currently {{ printf "%.1f" $value }}%).'';
-                  };
-                }
-                {
                   alert = "HostOOMKillDetected";
                   expr = ''increase(node_vmstat_oom_kill{job="node"}[30m]) > 0'';
                   annotations = {
