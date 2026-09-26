@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  self,
   allHosts,
   ...
 }:
@@ -34,6 +35,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = lib.singleton {
+      assertion = self.lib.isPrivateDomain cfg.domain;
+      message = self.lib.mkInvalidConfigMessage "Private authentication service" "domain must be private";
+    };
+
     sops = {
       secrets = {
         "private-auth/storage-encryption-key" = {
@@ -107,7 +113,7 @@ in
             host:
             host.config.custom.services.caddy.virtualHosts
             |> lib.attrValues
-            |> lib.any (vHost: vHost.forwardAuth.enable)
+            |> lib.any (vHost: vHost.forwardAuth.enable && vHost.forwardAuth.backend == "private")
           )
           |> lib.map (host: host.config.networking.hostName);
       };

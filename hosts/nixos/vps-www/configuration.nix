@@ -41,6 +41,11 @@
       caddy.virtualHosts."git.sstork.dev".extraConfig = ''
         redir https://git.web.sstork.dev{uri} permanent
       '';
+
+      university-auth = {
+        enable = true;
+        domain = "auth.sprouted.cloud";
+      };
     };
 
     web-services = {
@@ -60,6 +65,7 @@
       outline-to-anki = {
         enable = true;
         domain = "anki-decks.sprouted.cloud";
+        forwardAuth = true;
       };
 
       it-tools = {

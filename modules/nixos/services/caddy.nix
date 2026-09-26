@@ -15,13 +15,25 @@ let
   virtualHosts = cfg.virtualHosts |> lib.attrValues;
   privateVirtualHosts = virtualHosts |> lib.filter (vHost: self.lib.isPrivateDomain vHost.domain);
 
-  privateAuthDomain =
+  getAuthDomain =
+    service:
     allHosts
     |> lib.attrValues
-    |> lib.map (host: host.config.custom.services.private-auth)
-    |> lib.filter (privateAuth: privateAuth.enable)
-    |> lib.map (privateAuth: privateAuth.domain)
+    |> lib.map (host: host.config.custom.services.${service})
+    |> lib.filter (auth: auth.enable)
+    |> lib.map (auth: auth.domain)
     |> self.lib.headOrNull;
+
+  forwardAuthBackends = {
+    private = {
+      domain = getAuthDomain "private-auth";
+      uri = "/api/authz/forward-auth";
+    };
+    university = {
+      domain = getAuthDomain "university-auth";
+      uri = "/api/auth/caddy";
+    };
+  };
 
   getAllowedGroups = vHost: [ "client" ] ++ vHost.extraAllowedGroups;
 
@@ -84,17 +96,19 @@ let
             @accessDenied not remote_ip ${allowedAddresses |> self.lib.concatWords}
             respond @accessDenied 403
           '';
-          forwardAuthConfig = lib.optionalString forwardAuth.enable ''
-            ${lib.optionalString (forwardAuth.bypassPaths != [ ])
-              "@forwardAuthProtected not path ${forwardAuth.bypassPaths |> self.lib.concatWords}"
-            }
-            forward_auth ${
-              lib.optionalString (forwardAuth.bypassPaths != [ ]) "@forwardAuthProtected "
-            }${cfg.forwardAuthUrl} {
-              uri /api/authz/forward-auth
-              copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
-            }
-          '';
+          forwardAuthConfig =
+            let
+              backend = forwardAuthBackends.${forwardAuth.backend};
+              url = lib.optionalString (backend.domain != null) "https://${backend.domain}";
+            in
+            lib.optionalString forwardAuth.enable ''
+              ${lib.optionalString (forwardAuth.bypassPaths != [ ])
+                "@forwardAuthProtected not path ${forwardAuth.bypassPaths |> self.lib.concatWords}"
+              }
+              forward_auth ${lib.optionalString (forwardAuth.bypassPaths != [ ]) "@forwardAuthProtected "}${url} {
+                uri ${backend.uri}
+              }
+            '';
           requestHandlers =
             [
               (lib.optional forwardAuth.enable forwardAuthConfig)
@@ -128,14 +142,10 @@ in
       type = lib.types.port;
       default = 49514;
     };
-    forwardAuthUrl = lib.mkOption {
-      type = lib.types.nullOr lib.types.nonEmptyStr;
-      default = if privateAuthDomain != null then "https://${privateAuthDomain}" else null;
-    };
     virtualHosts = lib.mkOption {
       type = lib.types.attrsOf (
         lib.types.submodule (
-          { name, ... }:
+          { name, config, ... }:
           {
             options = {
               domain = lib.mkOption {
@@ -164,6 +174,13 @@ in
               };
               forwardAuth = {
                 enable = lib.mkEnableOption "";
+                backend = lib.mkOption {
+                  type = lib.types.enum [
+                    "private"
+                    "university"
+                  ];
+                  default = if self.lib.isPrivateDomain config.domain then "private" else "university";
+                };
                 bypassPaths = lib.mkOption {
                   type = lib.types.listOf lib.types.nonEmptyStr;
                   default = [ ];
@@ -199,12 +216,9 @@ in
               message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "no hosts are allowed to access it";
             }
             {
-              assertion = (!vHost.forwardAuth.enable) || self.lib.isPrivateDomain vHost.domain;
-              message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "forward authentication is restricted to private domains";
-            }
-            {
-              assertion = (!vHost.forwardAuth.enable) || cfg.forwardAuthUrl != null;
-              message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "no forward authentication service was found";
+              assertion =
+                (!vHost.forwardAuth.enable) || forwardAuthBackends.${vHost.forwardAuth.backend}.domain != null;
+              message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "no `${vHost.forwardAuth.backend}` forward authentication service was found";
             }
           ]);
 

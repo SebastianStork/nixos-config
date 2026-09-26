@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  self,
   ...
 }:
 let
@@ -20,6 +21,7 @@ in
       type = lib.types.port;
       default = 44519;
     };
+    forwardAuth = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -116,19 +118,30 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.extraConfig = ''
-        handle /update {
-          rewrite /hooks/outline-to-anki
-          reverse_proxy localhost:${lib.toString cfg.webhookPort}
-        }
+      services.caddy.virtualHosts.${cfg.domain} = {
+        extraConfig = ''
+          handle /health {
+            respond "OK"
+          }
 
-        root ${dataDir}
-        file_server browse
-      '';
+          handle /update {
+            rewrite /hooks/outline-to-anki
+            reverse_proxy localhost:${lib.toString cfg.webhookPort}
+          }
+
+          root ${dataDir}
+          file_server browse
+        '';
+        forwardAuth = {
+          enable = cfg.forwardAuth;
+          bypassPaths = [ "/health" ];
+        };
+      };
 
       meta.sites.${cfg.domain} = {
         title = "Anki Decks";
         icon = "sh:anki";
+        checkPath = "/health";
       };
     };
   };
