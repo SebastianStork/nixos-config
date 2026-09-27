@@ -5,6 +5,20 @@
 
     headOrNull = list: if list == [ ] then null else list |> lib.head;
 
+    exactlyOne =
+      description: values:
+      if lib.length values == 1 then
+        lib.head values
+      else
+        throw "Expected exactly one ${description}, found ${values |> lib.length |> lib.toString}";
+
+    atMostOne =
+      description: values:
+      if lib.length values <= 1 then
+        self.lib.headOrNull values
+      else
+        throw "Expected at most one ${description}, found ${values |> lib.length |> lib.toString}";
+
     privateDomain = "splitleaf.de";
 
     isPrivateDomain = domain: domain |> lib.hasSuffix ".${self.lib.privateDomain}";

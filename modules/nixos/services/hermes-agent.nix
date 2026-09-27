@@ -9,14 +9,6 @@
 }:
 let
   cfg = config.custom.services.hermes-agent;
-
-  trekDomain =
-    allHosts
-    |> lib.attrValues
-    |> lib.map (host: host.config.custom.web-services.trek)
-    |> lib.filter (trek: trek.enable)
-    |> lib.map (trek: trek.domain)
-    |> self.lib.headOrNull;
 in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
@@ -29,6 +21,26 @@ in
     port = lib.mkOption {
       type = lib.types.port;
       default = 9119;
+    };
+    homeAssistantDomain = lib.mkOption {
+      type = lib.types.nullOr lib.types.nonEmptyStr;
+      default =
+        allHosts
+        |> lib.attrValues
+        |> lib.map (host: host.config.custom.web-services.home-assistant)
+        |> lib.filter (homeAssistant: homeAssistant.enable)
+        |> lib.map (homeAssistant: homeAssistant.domain)
+        |> self.lib.atMostOne "enabled Home Assistant instance";
+    };
+    trekDomain = lib.mkOption {
+      type = lib.types.nullOr lib.types.nonEmptyStr;
+      default =
+        allHosts
+        |> lib.attrValues
+        |> lib.map (host: host.config.custom.web-services.trek)
+        |> lib.filter (trek: trek.enable)
+        |> lib.map (trek: trek.domain)
+        |> self.lib.atMostOne "enabled Trek instance";
     };
     forwardAuth = lib.mkEnableOption "";
   };
@@ -44,7 +56,7 @@ in
         "hermes/matrix/access-token" = { };
         "hermes/matrix/allowed-users" = { };
         "hermes/matrix/recovery-key" = { };
-        "hermes/home-assistant/access-token" = { };
+        "hermes/home-assistant/access-token" = lib.mkIf (cfg.homeAssistantDomain != null) { };
       };
       templates = {
         "hermes.env" = {
@@ -52,7 +64,9 @@ in
             MATRIX_ACCESS_TOKEN=${config.sops.placeholder."hermes/matrix/access-token"}
             MATRIX_ALLOWED_USERS=${config.sops.placeholder."hermes/matrix/allowed-users"}
             MATRIX_RECOVERY_KEY=${config.sops.placeholder."hermes/matrix/recovery-key"}
-            HASS_TOKEN=${config.sops.placeholder."hermes/home-assistant/access-token"}
+            ${lib.optionalString (cfg.homeAssistantDomain != null)
+              "HASS_TOKEN=${config.sops.placeholder."hermes/home-assistant/access-token"}"
+            }
           '';
           restartUnits = [
             "hermes-agent.service"
@@ -76,7 +90,7 @@ in
         MATRIX_REACTIONS = "false";
         MATRIX_AUTO_THREAD = "false";
         MATRIX_SESSION_SCOPE = "room";
-        HASS_URL = "https://home-assistant.${config.networking.domain}";
+        HASS_URL = lib.mkIf (cfg.homeAssistantDomain != null) "https://${cfg.homeAssistantDomain}";
         OBSIDIAN_VAULT_PATH = "${config.services.hermes-agent.stateDir}/Vault";
       };
       environmentFiles = [ config.sops.templates."hermes.env".path ];
@@ -97,8 +111,8 @@ in
           external_dirs = [ "~/.hermes/authored-skills" ];
         };
       };
-      mcpServers.trek = lib.mkIf (trekDomain != null) {
-        url = "https://${trekDomain}/mcp";
+      mcpServers.trek = lib.mkIf (cfg.trekDomain != null) {
+        url = "https://${cfg.trekDomain}/mcp";
         auth = "oauth";
       };
       backend = {

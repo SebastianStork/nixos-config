@@ -141,6 +141,16 @@ in
       type = lib.types.port;
       default = 63958;
     };
+    searchEngine = lib.mkOption {
+      type = lib.types.nonEmptyStr;
+      default =
+        allHosts
+        |> lib.attrValues
+        |> lib.map (host: host.config.custom.web-services.searxng)
+        |> lib.filter (searxng: searxng.enable)
+        |> lib.map (searxng: searxng.domain)
+        |> self.lib.exactlyOne "enabled SearXNG instance";
+    };
   };
 
   config = lib.mkMerge [
@@ -173,7 +183,7 @@ in
                 widgets =
                   lib.singleton {
                     type = "search";
-                    search-engine = "https://search.${config.networking.domain}/search?q={QUERY}";
+                    search-engine = "https://${cfg.searchEngine}/search?q={QUERY}";
                     autofocus = true;
                   }
                   ++ applicationSitesWidgets

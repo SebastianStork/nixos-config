@@ -22,15 +22,15 @@ let
     |> lib.map (host: host.config.custom.services.${service})
     |> lib.filter (auth: auth.enable)
     |> lib.map (auth: auth.domain)
-    |> self.lib.headOrNull;
+    |> self.lib.atMostOne "enabled `${service}` instance";
 
   forwardAuthBackends = {
     private = {
-      domain = getAuthDomain "private-auth";
+      domain = cfg.forwardAuth.privateDomain;
       uri = "/api/authz/forward-auth";
     };
     university = {
-      domain = getAuthDomain "university-auth";
+      domain = cfg.forwardAuth.universityDomain;
       uri = "/api/auth/caddy";
     };
   };
@@ -141,6 +141,16 @@ in
     metricsPort = lib.mkOption {
       type = lib.types.port;
       default = 49514;
+    };
+    forwardAuth = {
+      privateDomain = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default = getAuthDomain "private-auth";
+      };
+      universityDomain = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default = getAuthDomain "university-auth";
+      };
     };
     virtualHosts = lib.mkOption {
       type = lib.types.attrsOf (

@@ -40,7 +40,7 @@ in
         |> lib.map (host: host.config.custom.web-services.glance)
         |> lib.filter (glance: glance.enable)
         |> lib.map (glance: glance.domain)
-        |> self.lib.headOrNull;
+        |> self.lib.atMostOne "enabled Glance instance";
     };
     searchEngine = lib.mkOption {
       type = lib.types.nullOr lib.types.nonEmptyStr;
@@ -50,7 +50,7 @@ in
         |> lib.map (host: host.config.custom.web-services.searxng)
         |> lib.filter (searxng: searxng.enable)
         |> lib.map (searxng: searxng.domain)
-        |> self.lib.headOrNull;
+        |> self.lib.atMostOne "enabled SearXNG instance";
     };
     extensions = lib.mkOption {
       type = lib.types.attrsOf (
