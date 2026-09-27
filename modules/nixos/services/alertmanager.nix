@@ -48,7 +48,7 @@ in
           |> lib.filter (host: host.config.custom.services.alertmanager.enable)
           |> lib.map (
             host:
-            "--cluster.peer ${host.config.custom.networking.overlay.address}:${lib.toString cfg.clusterPort}"
+            "--cluster.peer ${host.config.custom.networking.overlay.address}:${lib.toString host.config.custom.services.alertmanager.clusterPort}"
           )
         );
 
