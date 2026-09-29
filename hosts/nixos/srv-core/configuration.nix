@@ -100,12 +100,6 @@
         doBackups = true;
       };
 
-      homebox = {
-        enable = true;
-        domain = "inventory.${config.networking.domain}";
-        doBackups = true;
-      };
-
       calibre-server = {
         enable = true;
         domain = "library.${config.networking.domain}";
