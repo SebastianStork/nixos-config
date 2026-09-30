@@ -116,7 +116,7 @@
         domain = "grafana.${config.networking.domain}";
       };
 
-      glance = {
+      homelab-dashboard = {
         enable = true;
         domain = "home.${config.networking.domain}";
       };

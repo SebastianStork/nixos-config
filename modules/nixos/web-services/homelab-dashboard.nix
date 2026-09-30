@@ -6,7 +6,7 @@
   ...
 }:
 let
-  cfg = config.custom.web-services.glance;
+  cfg = config.custom.web-services.homelab-dashboard;
 
   privateSiteDomains =
     config.custom.meta.sites
@@ -131,7 +131,7 @@ let
     });
 in
 {
-  options.custom.web-services.glance = {
+  options.custom.web-services.homelab-dashboard = {
     enable = lib.mkEnableOption "";
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
@@ -161,7 +161,7 @@ in
           extraAllowedHosts =
             allHosts
             |> lib.attrValues
-            |> lib.filter (host: host.config.custom.web-services.glance.enable)
+            |> lib.filter (host: host.config.custom.web-services.homelab-dashboard.enable)
             |> lib.map (host: host.config.networking.hostName);
         });
     }

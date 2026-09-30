@@ -37,10 +37,10 @@ in
       default =
         allHosts
         |> lib.attrValues
-        |> lib.map (host: host.config.custom.web-services.glance)
-        |> lib.filter (glance: glance.enable)
-        |> lib.map (glance: glance.domain)
-        |> self.lib.atMostOne "enabled Glance instance";
+        |> lib.map (host: host.config.custom.web-services.homelab-dashboard)
+        |> lib.filter (dashboard: dashboard.enable)
+        |> lib.map (dashboard: dashboard.domain)
+        |> self.lib.atMostOne "enabled homelab dashboard";
     };
     searchEngine = lib.mkOption {
       type = lib.types.nullOr lib.types.nonEmptyStr;
