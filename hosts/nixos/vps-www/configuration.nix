@@ -56,6 +56,11 @@
         ssh.enable = true;
       };
 
+      sprouted-portal = {
+        enable = true;
+        domain = "sprouted.cloud";
+      };
+
       outline = {
         enable = true;
         domain = "wiki.sprouted.cloud";
