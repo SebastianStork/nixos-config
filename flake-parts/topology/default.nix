@@ -22,28 +22,17 @@ in
     { pkgs, ... }:
     let
       topologyPkgs = pkgs.extend inputs.topology.overlays.default;
-      selfhstRevision = "948e3aa28d3110ee23957473a85431650e10e778";
+      selfhstRevision = "589d718a638b7770abae0edd1b60ff36c0dd1d5a";
       fetchSelfhstIcon =
         path: sha256:
         builtins.fetchurl {
           url = "https://raw.githubusercontent.com/selfhst/icons/${selfhstRevision}/${path}";
           inherit sha256;
         };
-      hermesAgentResponse = builtins.fetchurl {
-        url = "https://api.github.com/repos/selfhst/icons/contents/png/hermes-agent.png?ref=${selfhstRevision}";
-        sha256 = "sha256-QEtYmJf/mLRoBkvvn9TNnVJdtPPFM0wj5fb/uaslVYA=";
-      };
-      hermesAgentBase64 =
-        (builtins.fromJSON (builtins.readFile hermesAgentResponse)).content
-        |> lib.replaceStrings [ "\n" ] [ "" ];
       icons = {
         android = fetchSelfhstIcon "svg/android.svg" "sha256-R8LFjMZ8czriBMEBNY9kT5MyivmGKQwny5cTLCZ5y+8=";
         garage = fetchSelfhstIcon "svg/garage.svg" "sha256-jmTj+yHgbAQ4ybMyMNEYJhwf6Efn/2S5ZFCP8MRyXGY=";
-        hermesAgent = builtins.toFile "hermes-agent.svg" ''
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <image width="512" height="512" href="data:image/png;base64,${hermesAgentBase64}"/>
-          </svg>
-        '';
+        hermesAgent = fetchSelfhstIcon "svg/hermes-agent.svg" "sha256-b7K60HOzgsXoAjVkYIkI3s5jB5MUg1d31NJ4t/u5Nu8=";
         syncthing = fetchSelfhstIcon "svg/syncthing.svg" "sha256-5dp4OhrkASKpuurKU0/doeY6IJS1sB8o+e+F8rEfjOY=";
       };
       topologyModule =
