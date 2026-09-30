@@ -172,7 +172,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Hermes Agent";
-        icon = "sh:hermes-agent";
+        icon = "hermes-agent";
         checkPath = "/api/health";
       };
     };

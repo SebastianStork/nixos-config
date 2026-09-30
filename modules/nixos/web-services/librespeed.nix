@@ -70,7 +70,7 @@ in
 
       meta.sites.${cfg.frontend.domain} = {
         title = "LibreSpeed";
-        icon = "sh:librespeed";
+        icon = "librespeed";
       };
     };
   };

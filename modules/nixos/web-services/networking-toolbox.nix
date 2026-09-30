@@ -27,7 +27,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Networking Toolbox";
-        icon = "sh:networking-toolbox";
+        icon = "networking-toolbox";
       };
     };
   };

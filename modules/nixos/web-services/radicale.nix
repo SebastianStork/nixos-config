@@ -50,7 +50,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Radicale";
-        icon = "sh:radicale";
+        icon = "radicale";
       };
     };
   };

@@ -65,7 +65,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Trek";
-        icon = "sh:trek";
+        icon = "trek";
       };
     };
   };

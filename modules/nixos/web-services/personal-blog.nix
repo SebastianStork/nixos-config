@@ -32,7 +32,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Blog";
-        icon = "sh:hugo";
+        icon = "hugo";
       };
     };
   };

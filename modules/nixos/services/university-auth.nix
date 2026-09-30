@@ -68,8 +68,8 @@ in
       persistence.directories = [ config.services.tinyauth.dataDir ];
 
       meta.sites.${cfg.domain} = {
-        title = "Tinyauth";
-        icon = "sh:tinyauth";
+        title = "University Auth";
+        icon = "tinyauth";
       };
     };
   };

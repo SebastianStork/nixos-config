@@ -42,7 +42,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "HomeBox";
-        icon = "sh:homebox";
+        icon = "homebox";
       };
     };
   };

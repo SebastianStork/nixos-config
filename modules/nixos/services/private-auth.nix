@@ -121,8 +121,8 @@ in
       persistence.directories = [ dataDir ];
 
       meta.sites.${cfg.domain} = {
-        title = "Authelia";
-        icon = "sh:authelia";
+        title = "Private Auth";
+        icon = "authelia";
       };
     };
   };

@@ -69,7 +69,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Karakeep";
-        icon = "sh:karakeep";
+        icon = "karakeep";
       };
     };
   };

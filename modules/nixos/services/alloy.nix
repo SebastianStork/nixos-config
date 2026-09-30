@@ -126,7 +126,7 @@ in
 
       meta.sites.${cfg.domain} = lib.mkIf (cfg.domain != null) {
         title = "Alloy";
-        icon = "sh:grafana-alloy";
+        icon = "grafana-alloy";
       };
     };
   };

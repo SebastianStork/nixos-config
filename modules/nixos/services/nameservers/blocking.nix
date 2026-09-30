@@ -132,7 +132,7 @@ in
 
       meta.sites.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
         title = "Adguard Home";
-        icon = "sh:adguard-home";
+        icon = "adguard-home";
         checkPath = "/control/status";
       };
     };

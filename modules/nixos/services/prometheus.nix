@@ -178,7 +178,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Prometheus";
-        icon = "sh:prometheus";
+        icon = "prometheus";
       };
     };
   };

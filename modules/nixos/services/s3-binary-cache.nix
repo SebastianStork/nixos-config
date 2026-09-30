@@ -63,7 +63,7 @@ in
 
         meta.sites.${cfg.domain} = {
           title = "S3 Binary Cache";
-          icon = "sh:nixos";
+          icon = "nixos";
           path = "/nix-cache-info";
         };
       };

@@ -60,7 +60,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Scrutiny";
-        icon = "sh:scrutiny";
+        icon = "scrutiny";
       };
     };
   };

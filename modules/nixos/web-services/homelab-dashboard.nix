@@ -16,7 +16,8 @@ let
     |> lib.unique;
 
   toGlanceSite = site: {
-    inherit (site) title url icon;
+    inherit (site) title url;
+    icon = "sh:${site.icon}";
     check-url = if site.checkPath == null then site.url else "https://${site.domain}${site.checkPath}";
   };
 

@@ -126,7 +126,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Forgejo";
-        icon = "sh:forgejo";
+        icon = "forgejo";
       };
     };
   };

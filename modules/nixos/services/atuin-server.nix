@@ -50,7 +50,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Atuin";
-        icon = "sh:atuin";
+        icon = "atuin";
       };
     };
   };

@@ -98,7 +98,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Grafana";
-        icon = "sh:grafana";
+        icon = "grafana";
       };
     };
   };

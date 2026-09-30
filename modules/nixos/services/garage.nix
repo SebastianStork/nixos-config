@@ -111,7 +111,7 @@ in
 
       meta.sites."${cfg.admin.domain}" = {
         title = "Garage";
-        icon = "sh:garage";
+        icon = "garage";
         path = "/health";
       };
     };

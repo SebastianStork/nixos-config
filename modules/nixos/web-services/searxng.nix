@@ -68,7 +68,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "SearXNG";
-        icon = "sh:searxng";
+        icon = "searxng";
         checkPath = "/healthz";
       };
     };

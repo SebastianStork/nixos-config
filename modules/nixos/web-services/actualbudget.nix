@@ -55,7 +55,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Actual Budget";
-        icon = "sh:actual-budget";
+        icon = "actual-budget";
       };
     };
   };

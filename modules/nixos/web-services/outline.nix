@@ -86,7 +86,7 @@ in
 
         meta.sites.${cfg.domain} = {
           title = "Outline";
-          icon = "sh:outline";
+          icon = "outline";
         };
       };
   };

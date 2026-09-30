@@ -210,7 +210,7 @@ in
 
       meta.sites.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
         title = "Syncthing";
-        icon = "sh:syncthing";
+        icon = "syncthing";
         checkPath = "/rest/noauth/health";
       };
     };

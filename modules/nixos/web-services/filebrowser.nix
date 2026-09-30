@@ -59,7 +59,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "File Browser";
-        icon = "sh:file-browser";
+        icon = "file-browser";
       };
     };
   };

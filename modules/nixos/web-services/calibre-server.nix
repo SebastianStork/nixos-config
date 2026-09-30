@@ -57,7 +57,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Calibre";
-        icon = "sh:calibre";
+        icon = "calibre";
         checkPath = "/opds";
       };
     };

@@ -22,7 +22,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "IT-Tools";
-        icon = "sh:it-tools";
+        icon = "it-tools";
       };
     };
   };

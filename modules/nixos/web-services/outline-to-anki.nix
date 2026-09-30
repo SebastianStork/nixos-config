@@ -139,7 +139,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Anki Decks";
-        icon = "sh:anki";
+        icon = "anki";
         checkPath = "/health";
       };
     };

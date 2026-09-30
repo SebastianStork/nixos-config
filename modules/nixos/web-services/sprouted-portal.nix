@@ -27,7 +27,7 @@ let
         |> lib.sort (a: b: a.title < b.title)
         |> lib.map (site: {
           name = site.title;
-          logo = "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/${site.icon |> lib.removePrefix "sh:"}.svg";
+          logo = "https://cdn.jsdelivr.net/gh/selfhst/icons/svg/${site.icon}.svg";
           inherit (site) url;
         });
     };
@@ -73,7 +73,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Sprouted Portal";
-        icon = "sh:homer";
+        icon = "homer";
       };
     };
   };

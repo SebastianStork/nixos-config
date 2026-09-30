@@ -165,11 +165,11 @@ in
       meta.sites = {
         ${cfg.domain} = {
           title = "Home Assistant";
-          icon = "sh:home-assistant";
+          icon = "home-assistant";
         };
         ${cfg.zigbee2mqtt.domain} = {
           title = "Zigbee2MQTT";
-          icon = "sh:zigbee2mqtt";
+          icon = "zigbee2mqtt";
           checkPath = "/index.html";
         };
       };

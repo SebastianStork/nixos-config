@@ -42,7 +42,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "PrivateBin";
-        icon = "sh:privatebin";
+        icon = "privatebin";
       };
     };
   };

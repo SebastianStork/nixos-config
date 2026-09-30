@@ -121,7 +121,7 @@ in
 
       meta.sites.${cfg.domain} = {
         title = "Alertmanager";
-        icon = "sh:prometheus";
+        icon = "prometheus";
       };
     };
   };
