@@ -36,7 +36,10 @@
 
       auto-gc.onlyCleanRoots = true;
       deploy-webhook.enable = true;
-      peer-substituter.enable = true;
+      peer-substituter = {
+        enable = true;
+        domain = "cache.${config.networking.fqdn}";
+      };
       alloy = {
         enable = true;
         domain = "alloy.${config.networking.fqdn}";
