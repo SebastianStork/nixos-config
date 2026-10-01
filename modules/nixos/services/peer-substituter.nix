@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.custom.services.host-binary-cache;
+  cfg = config.custom.services.peer-substituter;
 in
 {
-  options.custom.services.host-binary-cache = {
+  options.custom.services.peer-substituter = {
     enable = lib.mkEnableOption "";
     port = lib.mkOption {
       type = lib.types.port;
@@ -16,7 +16,7 @@ in
     };
     domain = lib.mkOption {
       type = lib.types.nonEmptyStr;
-      default = "cache.${config.networking.fqdn}";
+      default = "";
     };
   };
 
@@ -37,7 +37,7 @@ in
       nix.settings.substituters =
         allHosts
         |> lib.attrValues
-        |> lib.map (host: host.config.custom.services.host-binary-cache)
+        |> lib.map (host: host.config.custom.services.peer-substituter)
         |> lib.filter (cache: cache.enable)
         |> lib.map (cache: "https://${cache.domain}?priority=40&trusted=true");
     })

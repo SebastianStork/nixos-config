@@ -8,7 +8,10 @@
     services = {
       auto-gc.onlyCleanRoots = true;
       deploy-webhook.enable = true;
-      host-binary-cache.enable = true;
+      peer-substituter = {
+        enable = true;
+        domain = "cache.${config.networking.fqdn}";
+      };
       alloy = {
         enable = true;
         domain = "alloy.${config.networking.fqdn}";
