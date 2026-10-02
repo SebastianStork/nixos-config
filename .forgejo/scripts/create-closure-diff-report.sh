@@ -1,72 +1,66 @@
 #!/usr/bin/env bash
-set -uo pipefail
+set -euo pipefail
 
 report_file=${REPORT_FILE:-closure-diff-report/report.json}
-commit_title=${COMMIT_TITLE-}
-commit_title=${commit_title%%$'\n'*}
 work_dir=$(mktemp --directory)
 trap 'rm -rf "$work_dir"' EXIT
 mkdir -p "$(dirname "$report_file")"
+rm -f "$report_file"
 : > "$work_dir/hosts.jsonl"
-failed=0
+
+: "${BASE_SHA:?BASE_SHA is required}"
+: "${HEAD_SHA:?HEAD_SHA is required}"
+: "${FLAKE_URL:?FLAKE_URL is required}"
+
+get_closures() {
+  local revision=$1
+  nix eval "$FLAKE_URL?rev=$revision#nixosConfigurations" --apply 'configs:
+    configs
+    |> builtins.attrNames
+    |> builtins.map (name: {
+      inherit name;
+      path = configs.${name}.config.system.build.toplevel.outPath;
+    })
+  ' --json
+}
+
+base_closures=$(get_closures "$BASE_SHA")
+head_closures=$(get_closures "$HEAD_SHA")
+
+if ! jq --exit-status --null-input \
+  --argjson base "$base_closures" --argjson head "$head_closures" \
+  '($base | map(.name) | sort) == ($head | map(.name) | sort)' > /dev/null; then
+  echo "The set of NixOS configurations differs between the base and head revisions" >&2
+  exit 1
+fi
+
+closures=$(jq --compact-output --null-input \
+  --argjson base "$base_closures" --argjson head "$head_closures" '
+    $head | map(. as $new | ($base[] | select(.name == $new.name)) as $old | {
+      name: $new.name,
+      old_closure: $old.path,
+      new_closure: $new.path
+    })
+  ')
 
 while IFS= read -r closure; do
-  host=$(jq -r .host <<< "$closure")
-  old_closure=$(jq -r .current_closure <<< "$closure")
-  new_closure=$(jq -r .expected_closure <<< "$closure")
-  deployment_required=false
-  status=success
-  error=null
-  diff_file="$work_dir/$host.diff"
-  : > "$diff_file"
+  name=$(jq --raw-output .name <<< "$closure")
+  old_closure=$(jq --raw-output .old_closure <<< "$closure")
+  new_closure=$(jq --raw-output .new_closure <<< "$closure")
 
-  if [[ $old_closure != "$new_closure" ]]; then
-    deployment_required=true
-    if ! nix build --no-link "$old_closure" "$new_closure" > /dev/null; then
-      status=error
-      error='{"stage":"realize-closures","exit_code":1}'
-    else
-      dix --color never "$old_closure" "$new_closure" > "$diff_file" 2>&1
-      exit_code=$?
-      cat "$diff_file"
-      if ((exit_code)); then
-        status=error
-        error=$(jq -cn --argjson exit_code "$exit_code" '{stage:"diff-closures",$exit_code}')
-      fi
-    fi
-  fi
+  nix build --no-link "$old_closure" "$new_closure"
 
-  jq -cn \
-    --argjson closure "$closure" --arg status "$status" \
-    --argjson deployment_required "$deployment_required" --rawfile diff "$diff_file" \
-    --argjson error "$error" \
-    '{
-      host: $closure.host,
-      old_closure: $closure.current_closure,
-      new_closure: $closure.expected_closure,
-      $status, $deployment_required, $diff
-    } + if $error == null then {} else {$error} end' >> "$work_dir/hosts.jsonl"
-  [[ $status == success ]] || failed=1
-done < <(jq -c '.[]' <<< "$CLOSURE_PATHS")
+  diff_file="$work_dir/$name.json"
+  dix --force-correctness --output json "$old_closure" "$new_closure" > "$diff_file"
+  jq . "$diff_file"
+  jq --compact-output --null-input \
+    --arg name "$name" --slurpfile diff "$diff_file" \
+    '{name: $name} + $diff[0]' >> "$work_dir/hosts.jsonl"
+done < <(jq --compact-output '.[]' <<< "$closures")
 
-hosts=$(jq -s 'sort_by(.host)' "$work_dir/hosts.jsonl")
-jq -n \
-  --arg repository "$REPOSITORY" --arg sha "$COMMIT_SHA" --arg title "$commit_title" \
-  --argjson id "$RUN_ID" --argjson index "$RUN_NUMBER" --arg event "$EVENT_NAME" \
-  --argjson hosts "$hosts" --argjson failed "$failed" \
-  '{
-    result: (if $failed == 0 then "complete" else "incomplete" end),
-    $repository,
-    commit: {$sha,$title},
-    run: {$id,index_in_repo:$index,workflow:"ci.yml",$event},
-    summary: {
-      expected: ($hosts|length),
-      deployment_required: ($hosts|map(select(.status=="success" and .deployment_required))|length),
-      unchanged: ($hosts|map(select(.status=="success" and (.deployment_required|not)))|length),
-      failed: ($hosts|map(select(.status=="error"))|length)
-    },
-    $hosts
-  }' > "$report_file"
+hosts=$(jq --slurp 'sort_by(.name)' "$work_dir/hosts.jsonl")
+jq --null-input \
+  --arg base_sha "$BASE_SHA" --arg head_sha "$HEAD_SHA" --argjson hosts "$hosts" \
+  '{$base_sha, $head_sha, $hosts}' > "$report_file"
 
 jq . "$report_file"
-exit "$failed"

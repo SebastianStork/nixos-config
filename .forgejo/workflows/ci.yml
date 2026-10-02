@@ -194,41 +194,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
-  closure-diff-report:
-    if: >-
-      always() &&
-      needs.discover-deployments.result == 'success'
-    needs: [discover-deployments, build-server]
-    runs-on: nixos
-    steps:
-      - name: Checkout
-        uses: https://code.forgejo.org/actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Generate closure diff report
-        continue-on-error: true
-        env:
-          CLOSURE_PATHS: ${{ needs.discover-deployments.outputs.closure_paths }}
-          REPOSITORY: ${{ forgejo.repository }}
-          COMMIT_SHA: ${{ forgejo.sha }}
-          COMMIT_TITLE: ${{ forgejo.event.head_commit.message }}
-          RUN_ID: ${{ forgejo.run_id }}
-          RUN_NUMBER: ${{ forgejo.run_number }}
-          EVENT_NAME: ${{ forgejo.event_name }}
-        run: bash .forgejo/scripts/create-closure-diff-report.sh
-      - name: Upload closure diff report
-        if: always()
-        uses: https://code.forgejo.org/forgejo/upload-artifact@v4
-        with:
-          name: closure-diff-report
-          path: closure-diff-report/report.json
-          if-no-files-found: error
-          retention-days: 14
-          overwrite: true
-      - name: Verify closure diff report
-        if: always()
-        run: jq --exit-status '.result == "complete"' closure-diff-report/report.json >/dev/null
-
   deploy:
     if: >-
       always() &&
@@ -289,7 +254,6 @@ jobs:
         build-check,
         build-test,
         build-server,
-        closure-diff-report,
         deploy,
       ]
     runs-on: nixos
@@ -304,13 +268,12 @@ jobs:
           CHECK_RESULT: ${{ needs.build-check.result }}
           TEST_RESULT: ${{ needs.build-test.result }}
           SERVER_BUILD_RESULT: ${{ needs.build-server.result }}
-          CLOSURE_DIFF_REPORT_RESULT: ${{ needs.closure-diff-report.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
           SERVERS_TO_DEPLOY: ${{ needs.discover-deployments.outputs.servers_to_deploy }}
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
         run: |
-          for result in "$CHECK_DISCOVERY_RESULT" "$TEST_DISCOVERY_RESULT" "$SERVER_DISCOVERY_RESULT" "$WORKSTATION_DISCOVERY_RESULT" "$DEPLOYMENT_DISCOVERY_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$CLOSURE_DIFF_REPORT_RESULT" "$DEPLOY_RESULT"; do
+          for result in "$CHECK_DISCOVERY_RESULT" "$TEST_DISCOVERY_RESULT" "$SERVER_DISCOVERY_RESULT" "$WORKSTATION_DISCOVERY_RESULT" "$DEPLOYMENT_DISCOVERY_RESULT" "$CHECK_RESULT" "$TEST_RESULT" "$SERVER_BUILD_RESULT" "$DEPLOY_RESULT"; do
             if [[ "$result" == cancelled ]]; then
               exit 0
             fi

@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  pkgs-unstable,
   lib,
   ...
 }:
@@ -37,7 +38,7 @@ in
         hostPackages = lib.mkOptionDefault [
           pkgs.jq
           pkgs.nix
-          pkgs.dix
+          pkgs-unstable.dix
         ];
       };
     };
