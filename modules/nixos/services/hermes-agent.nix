@@ -121,11 +121,6 @@ in
       };
     };
 
-    # See https://github.com/NousResearch/hermes-agent/issues/103705
-    users.users.hermes = {
-      uid = 993;
-      linger = true;
-    };
     systemd.services =
       let
         hermesRestartTriggers = [
@@ -135,22 +130,7 @@ in
         ];
       in
       {
-        hermes-agent =
-          let
-            uid = lib.toString config.users.users.hermes.uid;
-          in
-          {
-            after = [ "user@${uid}.service" ];
-            requires = [ "user@${uid}.service" ];
-            environment = {
-              XDG_RUNTIME_DIR = "/run/user/${uid}";
-              DBUS_SESSION_BUS_ADDRESS = "unix:path=/run/user/${uid}/bus";
-            };
-            serviceConfig.BindReadOnlyPaths = [ "${pkgs.coreutils}/bin/true:/bin/true" ];
-
-            restartTriggers = hermesRestartTriggers;
-          };
-
+        hermes-agent.restartTriggers = hermesRestartTriggers;
         hermes-backend.restartTriggers = hermesRestartTriggers;
       };
 
