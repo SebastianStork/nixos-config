@@ -11,9 +11,12 @@ let
     name = "deploy";
     runtimeInputs = [ pkgs.systemd ];
     text = ''
+      revision=$1
+      unit="nixos-rebuild@$revision.service"
+
       rc=0
-      systemctl start --wait nixos-rebuild.service || rc=$?
-      journalctl --invocation=0 --unit=nixos-rebuild.service --output=cat --no-pager
+      systemctl start --wait "$unit" || rc=$?
+      journalctl --invocation=0 --unit="$unit" --output=cat --no-pager
       exit "$rc"
     '';
   };
@@ -44,8 +47,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.services.nixos-rebuild = {
-      description = "NixOS rebuild from latest commit";
+    systemd.services."nixos-rebuild@" = {
+      description = "NixOS rebuild at revision %i";
       restartIfChanged = false;
       path = [
         pkgs.nh
@@ -53,14 +56,16 @@ in
         pkgs.git
       ];
       serviceConfig.Type = "oneshot";
+      scriptArgs = "%i";
       script = ''
+        revision=$1
         nh os switch \
           --bypass-root-check \
           --refresh \
           --diff never \
           --no-nom \
           --show-activation-logs \
-          git+https://codeberg.org/SebastianStork/nixos-config
+          "git+https://codeberg.org/SebastianStork/nixos-config?rev=$revision"
       '';
     };
 
@@ -76,10 +81,17 @@ in
         };
         deploy = {
           execute-command = "/run/wrappers/bin/sudo";
-          pass-arguments-to-command = lib.singleton {
-            source = "string";
-            name = lib.getExe deploy;
-          };
+          pass-arguments-to-command = [
+            {
+              source = "string";
+              name = lib.getExe deploy;
+            }
+            {
+              source = "payload";
+              name = "revision";
+            }
+          ];
+          http-methods = [ "POST" ];
           include-command-output-in-response = true;
           include-command-output-in-response-on-error = true;
         };

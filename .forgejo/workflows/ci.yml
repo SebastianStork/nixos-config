@@ -226,10 +226,15 @@ jobs:
       - name: Deploy
         timeout-minutes: 30
         env:
+          REVISION: ${{ forgejo.sha }}
           URL: https://${{ matrix.server }}.splitleaf.de/hooks/deploy
         run: |
+          payload=$(jq --compact-output --null-input \
+            --arg revision "$REVISION" '{ $revision }')
+
           for attempt in $(seq 1 10); do
-            http_code=$(curl --silent --show-error --output response.txt --write-out '%{http_code}' --max-time 1800 "$URL" || echo 000)
+            http_code=$(curl --silent --show-error --output response.txt --write-out '%{http_code}' \
+              --max-time 1800 --json "$payload" "$URL" || echo 000)
             case "$http_code" in
               200) cat response.txt; exit 0 ;;
               500) cat response.txt; exit 1 ;;
