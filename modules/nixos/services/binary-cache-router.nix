@@ -49,11 +49,18 @@ in
         upstreams =
           s3BinaryCaches
           ++ peerSubstituters
-          ++ lib.singleton {
-            url = "https://cache.nixos.org";
-            inherit priority;
-            public_key = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
-          };
+          ++ [
+            {
+              url = "https://nix-community.cachix.org";
+              inherit priority;
+              public_key = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
+            }
+            {
+              url = "https://cache.nixos.org";
+              inherit priority;
+              public_key = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
+            }
+          ];
       };
     };
 
