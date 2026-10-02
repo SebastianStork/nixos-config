@@ -260,6 +260,26 @@
         "type": "github"
       }
     },
+    "ncro": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790759465,
+        "narHash": "sha256-Mxg043HH0/X15CulDQN+QhuwDTHjmPhJUgHdqB+XYqs=",
+        "owner": "manic-systems",
+        "repo": "ncro",
+        "rev": "14ebb0a4ba22358abe77ee4b3a3f793811e63573",
+        "type": "github"
+      },
+      "original": {
+        "owner": "manic-systems",
+        "repo": "ncro",
+        "type": "github"
+      }
+    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -532,6 +552,7 @@
         "home-manager": "home-manager_2",
         "home-manager-unstable": "home-manager-unstable",
         "impermanence": "impermanence",
+        "ncro": "ncro",
         "nix-index-database": "nix-index-database",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_4",

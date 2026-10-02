@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  allHosts,
   ...
 }:
 let
@@ -27,19 +26,21 @@ in
         settings.bind = "127.0.0.1:${lib.toString cfg.port}";
       };
 
-      custom.services.caddy.virtualHosts.${cfg.domain} = {
-        inherit (cfg) port;
-        extraAllowedGroups = [ "automation" ];
-      };
-    })
+      custom = {
+        services.caddy.virtualHosts.${cfg.domain} = {
+          inherit (cfg) port;
+          extraAllowedGroups = [
+            "server"
+            "agent"
+          ];
+        };
 
-    (lib.mkIf (lib.elem "automation" config.custom.services.nebula.groups) {
-      nix.settings.substituters =
-        allHosts
-        |> lib.attrValues
-        |> lib.map (host: host.config.custom.services.peer-substituter)
-        |> lib.filter (cache: cache.enable)
-        |> lib.map (cache: "https://${cache.domain}?priority=40&trusted=true");
+        meta.sites.${cfg.domain} = {
+          title = "Peer Substituter";
+          icon = "nixos";
+          path = "/health";
+        };
+      };
     })
   ];
 }

@@ -104,6 +104,7 @@
     programs.comma.enable = true;
     services = {
       auto-gc.enable = true;
+      binary-cache-router.enable = true;
       sshd.enable = true;
     };
   };

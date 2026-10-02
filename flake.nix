@@ -33,6 +33,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    ncro = {
+      url = "github:manic-systems/ncro";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # For Workstations
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
