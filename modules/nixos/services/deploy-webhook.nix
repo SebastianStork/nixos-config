@@ -25,6 +25,14 @@ let
       readlink /run/current-system
     '';
   };
+
+  diff = pkgs.writeShellApplication {
+    name = "diff-closures";
+    runtimeInputs = [ pkgs.dix ];
+    text = ''
+      dix "$1" /run/current-system
+    '';
+  };
 in
 {
   options.custom.services.deploy-webhook = {
@@ -49,6 +57,7 @@ in
         nh os switch \
           --bypass-root-check \
           --refresh \
+          --diff never \
           --no-nom \
           --show-activation-logs \
           git+https://codeberg.org/SebastianStork/nixos-config
@@ -74,6 +83,16 @@ in
           include-command-output-in-response = true;
           include-command-output-in-response-on-error = true;
         };
+        diff = {
+          execute-command = lib.getExe diff;
+          pass-arguments-to-command = lib.singleton {
+            source = "payload";
+            name = "old_closure";
+          };
+          http-methods = [ "POST" ];
+          include-command-output-in-response = true;
+          include-command-output-in-response-on-error = true;
+        };
       };
     };
 
@@ -92,6 +111,9 @@ in
           reverse_proxy localhost:${lib.toString cfg.webhookPort}
         }
         handle /hooks/deploy {
+          reverse_proxy localhost:${lib.toString cfg.webhookPort}
+        }
+        handle /hooks/diff {
           reverse_proxy localhost:${lib.toString cfg.webhookPort}
         }
       '';
