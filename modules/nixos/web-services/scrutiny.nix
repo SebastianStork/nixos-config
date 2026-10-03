@@ -28,9 +28,15 @@ in
 
     services.scrutiny = {
       enable = true;
-      settings.web.listen = {
-        host = "127.0.0.1";
-        inherit (cfg) port;
+      settings = {
+        web = {
+          listen = {
+            host = "127.0.0.1";
+            inherit (cfg) port;
+          };
+          influxdb.host = "127.0.0.1";
+        };
+        notify.urls = [ "ntfy://ntfy.sh/splitleaf" ];
       };
     };
 
@@ -56,7 +62,10 @@ in
     custom = {
       services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
-      persistence.directories = [ "/var/lib/scrutiny" ];
+      persistence.directories = [
+        "/var/lib/influxdb2"
+        "/var/lib/scrutiny"
+      ];
 
       meta.sites.${cfg.domain} = {
         title = "Scrutiny";
