@@ -7,104 +7,129 @@
   ...
 }:
 {
-  imports = [ inputs.noctalia.homeModules.default ];
+  imports = [ "${inputs.home-manager-unstable}/modules/programs/noctalia/default.nix" ];
 
-  options.custom.programs.noctalia-shell.enable = lib.mkEnableOption "";
+  options.custom.programs.noctalia.enable = lib.mkEnableOption "";
 
-  config = lib.mkIf config.custom.programs.noctalia-shell.enable {
-    programs.noctalia-shell = {
+  config = lib.mkIf config.custom.programs.noctalia.enable {
+    programs.noctalia = {
       enable = true;
-      package = pkgs-unstable.noctalia-shell;
+      package = pkgs-unstable.noctalia;
       systemd.enable = true;
       settings = {
-        general = {
-          animationSpeed = 1.8;
-          enableShadows = false;
-          dimmerOpacity = 0.1;
-          compactLockScreen = true;
-          clockStyle = "digital";
-          autoStartAuth = true;
-          allowPasswordWithFprintd = true;
-          showSessionButtonsOnLockScreen = false;
-          avatarImage = "/home/seb/Pictures/face";
-          telemetryEnabled = false;
+        shell = {
+          avatar_path = "/home/seb/Pictures/face";
+          clipboard_auto_paste = "off";
+          telemetry_enabled = false;
+          animation.speed = 1.8;
+          panel = {
+            borders = true;
+            shadow = false;
+          };
+          launcher = {
+            categories = false;
+            providers = {
+              session.global = false;
+              windows.global = false;
+            };
+          };
+          mpris.blacklist = [ "firefox" ];
+          session = {
+            grid = false;
+            actions =
+              [
+                "lock"
+                "logout"
+                "lock_and_suspend"
+                "reboot"
+                "shutdown"
+              ]
+              |> lib.map (action: {
+                inherit action;
+                countdown_seconds = 3;
+              });
+          };
         };
-        ui.boxBorderEnabled = true;
-        colorSchemes = {
-          darkMode =
-            {
-              dark = true;
-              light = false;
-            }
-            .${config.custom.theme};
-          predefinedScheme = "GitHub Dark";
+        lockscreen = {
+          blur_intensity = 0.0;
+          fingerprint = true;
+          tint_intensity = 0.0;
+          transition = [ ];
         };
         wallpaper = {
           enabled = true;
           directory = "/home/seb/Pictures/Wallpapers";
-          transitionType = "fade";
-          transitionDuration = 1000;
-          automationEnabled = true;
-          randomIntervalSec = 1800;
-        };
-        bar = {
-          barType = "simple";
-          position = "bottom";
-          density = "default";
-          fontScale = 1.2;
-          widgetSpacing = 10;
-          widgets = {
-            left = lib.singleton {
-              id = "Clock";
-              formatHorizontal = "HH:mm ddd, d MMM";
-              tooltipFormat = "HH:mm yyyy-MM-dd";
-            };
-            center = lib.singleton {
-              id = "Workspace";
-            };
-            right = [
-              { id = "Tray"; }
-              {
-                id = "NotificationHistory";
-                hideWhenZeroUnread = true;
-              }
-              { id = "Volume"; }
-              (lib.optionalAttrs osConfig.custom.services.bluetooth.enable { id = "Bluetooth"; })
-              (lib.optionalAttrs config.custom.programs.brightnessctl.enable { id = "Brightness"; })
-              {
-                id = "Battery";
-                displayMode = "icon-always";
-              }
-            ];
+          transition = [ "fade" ];
+          transition_duration = 1000;
+          automation = {
+            enabled = true;
+            interval_seconds = 1800;
+            order = "random";
           };
         };
+        theme = {
+          mode =
+            {
+              dark = "dark";
+              light = "light";
+            }
+            .${config.custom.theme};
+          source = "community";
+          community_palette = "GitHub Dark";
+        };
+        bar.main = {
+          position = "bottom";
+          capsule = true;
+          capsule_padding = 8.0;
+          concave_edge_corners = false;
+          font_family = "Roboto";
+          font_scale = 1.2;
+          font_weight = 400;
+          margin_ends = 0;
+          radius = 0;
+          widget_spacing = 10;
+          shadow = false;
+          start = [ "clock" ];
+          center = [ "workspaces" ];
+          end = [
+            "tray"
+            "notifications"
+            "volume"
+          ]
+          ++ lib.optional osConfig.custom.services.bluetooth.enable "bluetooth"
+          ++ lib.optional config.custom.programs.brightnessctl.enable "brightness"
+          ++ [ "battery" ];
+        };
+        widget = {
+          clock = {
+            format = "{:%H:%M %a, %-d %b}";
+            tooltip_format = "{:%H:%M %Y-%m-%d}";
+          };
+          notifications.hide_when_no_unread = true;
+        };
+        audio.enable_sounds = false;
         dock.enabled = false;
-        appLauncher = {
-          overviewLayer = true;
-          showCategories = false;
-          enableSessionSearch = false;
-          enableSettingsSearch = false;
-          enableWindowsSearch = false;
-          enableClipboardHistory = true;
+        osd.kinds = {
+          volume = true;
+          volume_output = true;
+          volume_input = true;
+          brightness = true;
+          wifi = false;
+          bluetooth = false;
+          power_profile = false;
+          caffeine = false;
+          nightlight = false;
+          dnd = false;
+          lock_keys = true;
+          keyboard_layout = false;
+          privacy = false;
         };
-        osd.enabledTypes = [
-          0
-          1
-          2
-          3
-        ];
-        sessionMenu = {
-          largeButtonsStyle = false;
-          countdownDuration = 3000;
+        idle.behavior = {
+          lock.enabled = false;
+          screen-off.enabled = false;
         };
-        idle.enabled = false;
-        audio.mprisBlacklist = [ "firefox" ];
-        network.bluetoothAutoConnect = false;
-        location = {
-          name = "Darmstadt";
-          firstDayOfWeek = 1;
-          showWeekNumberInCalendar = true;
-        };
+        location.address = "Darmstadt";
+        control_center.calendar.show_week_numbers = true;
       };
     };
   };

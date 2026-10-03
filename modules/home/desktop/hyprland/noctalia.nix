@@ -11,14 +11,14 @@
     custom = {
       programs = {
         hyprland.enable = true;
-        noctalia-shell.enable = true;
+        noctalia.enable = true;
       };
 
       services = {
         cliphist.enable = true;
         hypridle = {
           enable = true;
-          lockCommand = "noctalia-shell ipc call lockScreen lock";
+          lockCommand = "noctalia msg session lock";
         };
       };
     };
@@ -27,18 +27,18 @@
 
     wayland.windowManager.hyprland.extraConfig = lib.mkBefore ''
       # Variables
-      $ipc = noctalia-shell ipc call
-      $play-pause = $ipc media playPause
+      $ipc = noctalia msg
+      $play-pause = $ipc media toggle
       $play-next = $ipc media next
       $play-previous = $ipc media previous
-      $mute = $ipc volume muteOutput
-      $volume-up = $ipc volume increase
-      $volume-down = $ipc volume decrease
-      $mute-mic = $ipc volume muteInput
+      $mute = $ipc volume-mute
+      $volume-up = $ipc volume-up
+      $volume-down = $ipc volume-down
+      $mute-mic = $ipc mic-mute
 
       # Launch programs
-      bind = SUPER, R, exec, $ipc launcher toggle
-      bind = SUPER, V, exec, $ipc launcher clipboard
+      bind = SUPER, R, exec, $ipc panel-toggle launcher
+      bind = SUPER, V, exec, $ipc panel-toggle clipboard
 
       # Manage session
       bindrl = SUPER CONTROL, L, exec, loginctl lock-session

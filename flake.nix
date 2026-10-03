@@ -49,11 +49,6 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell/v4.7.6";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
