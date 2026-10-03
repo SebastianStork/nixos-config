@@ -6,7 +6,10 @@
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     disko = {
       url = "github:nix-community/disko/latest";
@@ -30,7 +33,10 @@
 
     topology = {
       url = "github:oddlama/nix-topology";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
 
     ncro = {
@@ -67,7 +73,10 @@
     # For Servers
     impermanence = {
       url = "github:nix-community/impermanence";
-      inputs.home-manager.follows = "home-manager";
+      inputs = {
+        nixpkgs.follows = "";
+        home-manager.follows = "";
+      };
     };
 
     dns = {
@@ -75,7 +84,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hermes-agent.url = "github:NousResearch/hermes-agent";
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        home-manager.follows = "";
+      };
+    };
   };
 
   outputs =
