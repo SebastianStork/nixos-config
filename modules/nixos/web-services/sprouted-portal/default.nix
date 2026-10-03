@@ -13,7 +13,6 @@ let
     subtitle = "Public services";
     documentTitle = "Sprouted Cloud";
     logo = "assets/branding.png";
-    stylesheet = [ "assets/branding.css" ];
     footer = false;
     defaults.layout = "list";
     services = lib.singleton {
@@ -34,20 +33,6 @@ let
   };
 
   configFile = (pkgs.formats.yaml { }).generate "sprouted-portal-config.yml" settings;
-
-  logo = pkgs.fetchurl {
-    url = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Seed_germination.png/330px-Seed_germination.png";
-    hash = "sha256-TDqvIl4esKgvstAubbOfDE4YlpG0FHTPjVg4s0KnErk=";
-  };
-
-  stylesheet = pkgs.writeText "sprouted-portal.css" ''
-    #bighead .first-line .logo img {
-      width: 140px;
-      max-width: none;
-      max-height: 80px;
-      padding: 5px 15px 5px 0;
-    }
-  '';
 in
 {
   options.custom.web-services.sprouted-portal = {
@@ -64,11 +49,11 @@ in
         pkgs.runCommand "sprouted-portal-${cfg.domain}" { }
           ''
             cp -r ${pkgs.homer} "$out"
-            chmod u+w "$out/assets"
+            chmod u+w "$out/assets" "$out/assets/icons"
 
             ln -s ${configFile} "$out/assets/config.yml"
-            ln -s ${logo} "$out/assets/branding.png"
-            ln -s ${stylesheet} "$out/assets/branding.css"
+            ln -s ${./logo.png} "$out/assets/branding.png"
+            ln -sf ${./favicon.ico} "$out/assets/icons/favicon.ico"
           '';
 
       meta.sites.${cfg.domain} = {
