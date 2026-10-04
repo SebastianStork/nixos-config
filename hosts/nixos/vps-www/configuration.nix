@@ -83,6 +83,11 @@
         domain = "net-tools.sprouted.cloud";
       };
 
+      bentopdf = {
+        enable = true;
+        domain = "pdf.sprouted.cloud";
+      };
+
       privatebin = {
         enable = true;
         domain = "pastebin.sprouted.cloud";
