@@ -96,6 +96,8 @@
       pkgs.nh
       pkgs.dust
       pkgs.btop
+      pkgs.jq
+      pkgs.nix-output-monitor
     ];
   };
 
