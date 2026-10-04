@@ -42,6 +42,8 @@
           lib.toJSON {
             "extensions.autoCheckUpdates" = false;
             "editor.fontFamily" = "JetBrainsMono Nerd Font";
+            "editor.fontSize" = 13;
+            "window.zoomLevel" = 0.5;
             "workbench.iconTheme" = "material-icon-theme";
             "workbench.sideBar.location" = "right";
             "workbench.editor.decorations.colors" = false;
