@@ -109,21 +109,7 @@
         };
         audio.enable_sounds = false;
         dock.enabled = false;
-        osd.kinds = {
-          volume = true;
-          volume_output = true;
-          volume_input = true;
-          brightness = true;
-          wifi = false;
-          bluetooth = false;
-          power_profile = false;
-          caffeine = false;
-          nightlight = false;
-          dnd = false;
-          lock_keys = true;
-          keyboard_layout = false;
-          privacy = false;
-        };
+        osd.kinds.media = false;
         idle.behavior = {
           lock.enabled = false;
           screen-off.enabled = false;
