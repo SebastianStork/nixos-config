@@ -36,8 +36,8 @@
       ];
       commit-lock-file-summary = "flake.lock: Update";
       allow-import-from-derivation = false;
-      min-free = 4 * 1024 * 1024 * 1024;
-      max-free = 6 * 1024 * 1024 * 1024;
+      min-free = 1 * 1024 * 1024 * 1024;
+      max-free = 2 * 1024 * 1024 * 1024;
       fallback = true;
     };
   };
