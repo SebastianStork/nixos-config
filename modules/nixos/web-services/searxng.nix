@@ -1,6 +1,7 @@
 {
   config,
   self,
+  pkgs-unstable,
   lib,
   ...
 }:
@@ -29,6 +30,7 @@ in
 
     services.searx = {
       enable = true;
+      package = pkgs-unstable.searxng;
       settings = {
         server = {
           inherit (cfg) port;
