@@ -26,6 +26,9 @@ in
       caddy = lib.mkEnableOption "" // {
         default = config.services.caddy.enable;
       };
+      ncro = lib.mkEnableOption "" // {
+        default = config.services.ncro.enable;
+      };
     };
   };
 
@@ -112,6 +115,20 @@ in
               targets = [{
                 __address__ = "localhost:${lib.toString config.custom.services.caddy.metricsPort}",
                 job = "caddy",
+                instance = constants.hostname,
+              }]
+              forward_to = [prometheus.remote_write.default.receiver]
+              scrape_interval = "30s"
+            }
+          '';
+        };
+        "alloy/ncro-metrics.alloy" = {
+          enable = cfg.collect.metrics.ncro;
+          text = ''
+            prometheus.scrape "ncro" {
+              targets = [{
+                __address__ = "localhost:${lib.toString config.custom.services.binary-cache-router.port}",
+                job = "ncro",
                 instance = constants.hostname,
               }]
               forward_to = [prometheus.remote_write.default.receiver]

@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   pkgs,
   lib,
   allHosts,
@@ -19,8 +20,13 @@ in
       type = lib.types.port;
       default = 3000;
     };
-    dashboards.nodeExporter.enable = lib.mkEnableOption "" // {
-      default = true;
+    dashboards = {
+      nodeExporter.enable = lib.mkEnableOption "" // {
+        default = true;
+      };
+      ncro.enable = lib.mkEnableOption "" // {
+        default = true;
+      };
     };
   };
 
@@ -83,13 +89,19 @@ in
       };
     };
 
-    # https://grafana.com/grafana/dashboards/1860-node-exporter-full/
-    environment.etc."grafana-dashboards/node-exporter-full.json" = {
-      enable = cfg.dashboards.nodeExporter.enable;
-      source = pkgs.fetchurl {
-        name = "node-exporter-full.json";
-        url = "https://grafana.com/api/dashboards/1860/revisions/41/download";
-        hash = "sha256-EywgxEayjwNIGDvSmA/S56Ld49qrTSbIYFpeEXBJlTs=";
+    environment.etc = {
+      # https://grafana.com/grafana/dashboards/1860-node-exporter-full/
+      "grafana-dashboards/node-exporter-full.json" = {
+        enable = cfg.dashboards.nodeExporter.enable;
+        source = pkgs.fetchurl {
+          name = "node-exporter-full.json";
+          url = "https://grafana.com/api/dashboards/1860/revisions/41/download";
+          hash = "sha256-EywgxEayjwNIGDvSmA/S56Ld49qrTSbIYFpeEXBJlTs=";
+        };
+      };
+      "grafana-dashboards/ncro.json" = {
+        enable = cfg.dashboards.ncro.enable;
+        source = "${inputs.ncro}/contrib/grafana-dashboard.json";
       };
     };
 
