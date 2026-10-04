@@ -12,7 +12,7 @@ configuration {
 
 /*****----- Global Properties -----*****/
 * {
-    font: "Open Sans 12, Symbols Nerd Font Mono 12";
+    font: "Atkinson Hyperlegible Next 12, Symbols Nerd Font Mono 12";
 }
 
 * {

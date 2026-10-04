@@ -24,8 +24,8 @@ in
         gtk4.theme = config.gtk.theme;
         iconTheme.package = pkgs.papirus-icon-theme;
         font = {
-          name = "Open Sans";
-          package = pkgs.open-sans;
+          name = "Atkinson Hyperlegible Next";
+          package = pkgs.atkinson-hyperlegible-next;
         };
       };
       qt = {

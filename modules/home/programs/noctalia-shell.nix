@@ -21,6 +21,7 @@
           avatar_path = "/home/seb/Pictures/face";
           clipboard_auto_paste = "off";
           telemetry_enabled = false;
+          font_family = "Atkinson Hyperlegible Next";
           animation.speed = 1.8;
           panel = {
             borders = true;
@@ -82,7 +83,7 @@
           capsule = true;
           capsule_padding = 8.0;
           concave_edge_corners = false;
-          font_family = "Roboto";
+          font_family = "Atkinson Hyperlegible Next";
           font_scale = 1.2;
           font_weight = 400;
           margin_ends = 0;
@@ -106,6 +107,7 @@
             tooltip_format = "{:%H:%M %Y-%m-%d}";
           };
           notifications.hide_when_no_unread = true;
+          workspaces.font_weight = 600;
         };
         audio.enable_sounds = false;
         dock.enabled = false;
