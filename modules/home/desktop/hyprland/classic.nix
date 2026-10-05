@@ -28,10 +28,7 @@
 
     services.dunst.enable = true;
 
-    home.packages = [
-      pkgs.playerctl
-      pkgs.grimblast
-    ];
+    home.packages = [ pkgs.playerctl ];
 
     wayland.windowManager.hyprland.extraConfig = lib.mkBefore ''
       # Variables

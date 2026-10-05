@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -22,8 +21,6 @@
         };
       };
     };
-
-    home.packages = [ pkgs.grimblast ];
 
     wayland.windowManager.hyprland.extraConfig = lib.mkBefore ''
       # Variables

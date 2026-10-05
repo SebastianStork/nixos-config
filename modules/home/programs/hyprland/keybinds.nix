@@ -75,9 +75,9 @@
       ''}
 
       # Screenshot
-      bind = , Print, exec, grimblast --notify --freeze copysave output
-      bind = SHIFT, Print, exec, grimblast --notify --freeze copysave area
-      bind = CONTROL, Print, exec, grimblast --notify --freeze copysave active
+      bind = , Print, exec, grim -o "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
+      bind = SHIFT, Print, exec, grim -g "$(slurp)" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
+      bind = CONTROL, Print, exec, grim -g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
 
       # Special workspaces
       bind = SUPER, Q, togglespecialworkspace, flake

@@ -79,6 +79,8 @@
 
         "match:class .*, idle_inhibit fullscreen"
 
+        "match:class (?i).*satty.*, float on"
+
         # Fix flickering in JetBrains-IDEs
         "match:class (jetbrains-)(.*), match:float 1, no_initial_focus on"
       ];
