@@ -17,16 +17,30 @@ in
 
   config = lib.mkMerge [
     {
+      home.packages = [
+        pkgs.atkinson-hyperlegible-next
+        pkgs.literata
+        pkgs.nerd-fonts.jetbrains-mono
+        pkgs.nerd-fonts.symbols-only
+        pkgs.noto-fonts-color-emoji
+      ];
+      fonts.fontconfig = {
+        enable = true;
+        defaultFonts = {
+          sansSerif = [ "Atkinson Hyperlegible Next" ];
+          serif = [ "Literata" ];
+          monospace = [ "JetBrainsMono Nerd Font" ];
+          emoji = [ "Noto Color Emoji" ];
+        };
+      };
+
       gtk = {
         enable = true;
         gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
         theme.package = pkgs.gnome-themes-extra;
         gtk4.theme = config.gtk.theme;
         iconTheme.package = pkgs.papirus-icon-theme;
-        font = {
-          name = "Atkinson Hyperlegible Next";
-          package = pkgs.atkinson-hyperlegible-next;
-        };
+        font.name = "sans-serif";
       };
       qt = {
         enable = true;

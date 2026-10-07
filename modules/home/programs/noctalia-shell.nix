@@ -21,7 +21,7 @@
           avatar_path = "/home/seb/Pictures/face";
           clipboard_auto_paste = "off";
           telemetry_enabled = false;
-          font_family = "Atkinson Hyperlegible Next";
+          font_family = "sans-serif";
           animation.speed = 1.8;
           panel = {
             borders = true;
@@ -83,7 +83,7 @@
           capsule = true;
           capsule_padding = 8.0;
           concave_edge_corners = false;
-          font_family = "Atkinson Hyperlegible Next";
+          font_family = "sans-serif";
           font_scale = 1.2;
           font_weight = 400;
           margin_ends = 0;

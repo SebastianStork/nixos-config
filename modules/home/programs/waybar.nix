@@ -99,7 +99,7 @@
         * {
           border: none;
           border-radius: 0px;
-          font-family: "Atkinson Hyperlegible Next", "Symbols Nerd Font Mono";
+          font-family: sans-serif, "Symbols Nerd Font Mono";
           font-size: 15px;
         }
 

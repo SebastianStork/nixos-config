@@ -41,7 +41,7 @@
         settings = lib.replaceStrings [ "," ] [ ",\\n" ] (
           lib.toJSON {
             "extensions.autoCheckUpdates" = false;
-            "editor.fontFamily" = "JetBrainsMono Nerd Font";
+            "editor.fontFamily" = "monospace";
             "editor.fontSize" = 13;
             "window.zoomLevel" = 0.5;
             "workbench.iconTheme" = "material-icon-theme";

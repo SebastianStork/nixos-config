@@ -22,7 +22,7 @@
         in
         {
           include = "${pkgs.kitty-themes}/share/kitty-themes/themes/${themeName}.conf";
-          font_family = "JetBrainsMono Nerd Font";
+          font_family = "monospace";
           background_opacity = "0.85";
           cursor_shape = "beam";
           confirm_os_window_close = 0;

@@ -68,13 +68,5 @@
     pkgs.calibre
 
     pkgs.corefonts
-    pkgs.atkinson-hyperlegible-next
-    pkgs.nerd-fonts.jetbrains-mono
-    pkgs.nerd-fonts.symbols-only
   ];
-
-  fonts.fontconfig = {
-    enable = true;
-    defaultFonts.sansSerif = [ "Atkinson Hyperlegible Next" ];
-  };
 }
