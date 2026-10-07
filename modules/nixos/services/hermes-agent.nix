@@ -188,6 +188,7 @@ in
           services.hermes-agent = {
             extraPlugins = [ plugin ];
             environment.HASS_URL = "https://${cfg.homeAssistantDomain}";
+            settings.plugins.enabled = [ "homeassistant" ];
           };
 
           systemd.services = {
