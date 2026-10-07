@@ -58,9 +58,9 @@ while IFS= read -r closure; do
     '{name: $name} + $diff[0]' >> "$work_dir/hosts.jsonl"
 done < <(jq --compact-output '.[]' <<< "$closures")
 
-hosts=$(jq --slurp 'sort_by(.name)' "$work_dir/hosts.jsonl")
 jq --null-input \
-  --arg base_sha "$BASE_SHA" --arg head_sha "$HEAD_SHA" --argjson hosts "$hosts" \
-  '{$base_sha, $head_sha, $hosts}' > "$report_file"
+  --arg base_sha "$BASE_SHA" --arg head_sha "$HEAD_SHA" \
+  --slurpfile hosts "$work_dir/hosts.jsonl" \
+  '{$base_sha, $head_sha, hosts: ($hosts | sort_by(.name))}' > "$report_file"
 
 jq . "$report_file"
