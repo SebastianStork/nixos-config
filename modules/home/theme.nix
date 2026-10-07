@@ -17,13 +17,21 @@ in
 
   config = lib.mkMerge [
     {
-      home.packages = [
-        pkgs.atkinson-hyperlegible-next
-        pkgs.literata
-        pkgs.nerd-fonts.jetbrains-mono
-        pkgs.nerd-fonts.symbols-only
-        pkgs.noto-fonts-color-emoji
-      ];
+      home.packages =
+        let
+          atkinsonHyperlegibleNextTtf = pkgs.atkinson-hyperlegible-next.overrideAttrs (oldAttrs: {
+            postInstall = (oldAttrs.postInstall or "") + ''
+              rm -rf "$out/share/fonts/opentype"
+            '';
+          });
+        in
+        [
+          atkinsonHyperlegibleNextTtf
+          pkgs.literata
+          pkgs.nerd-fonts.jetbrains-mono
+          pkgs.nerd-fonts.symbols-only
+          pkgs.noto-fonts-color-emoji
+        ];
       fonts.fontconfig = {
         enable = true;
         defaultFonts = {
