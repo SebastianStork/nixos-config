@@ -106,15 +106,35 @@ let
     </a>
   '';
 
-  codebergBadgeWidget = {
+  alertmanagerUrl = "https://${config.custom.services.alertmanager.domain}";
+
+  statusBadgeWidget = {
     type = "custom-api";
     title = "nixos-config";
     title-url = nixosRepoUrl;
+    cache = "1m";
+    subrequests.alerts = {
+      url = "${alertmanagerUrl}/api/v2/alerts";
+      parameters = {
+        active = "true";
+        silenced = "false";
+        inhibited = "false";
+      };
+    };
     template = ''
+      {{ $alerts := .Subrequest "alerts" }}
+      {{ $count := len ($alerts.JSON.Array "") }}
       <div class="flex flex-col items-start gap-10">
         <div class="flex flex-wrap gap-10">
           ${repositoryBadges}
           ${workflowBadges}
+          <a class="block" href="${alertmanagerUrl}/#/alerts" target="_blank" rel="noopener noreferrer">
+            {{ if eq $count 0 }}
+              <img class="block" src="https://img.shields.io/badge/alerts-0-brightgreen" alt="No open alerts" />
+            {{ else }}
+              <img class="block" src="https://img.shields.io/badge/alerts-{{ $count }}-red" alt="{{ $count }} open alerts" />
+            {{ end }}
+          </a>
         </div>
       </div>
     '';
@@ -192,7 +212,7 @@ in
               }
               {
                 size = "small";
-                widgets = [ codebergBadgeWidget ] ++ dnsWidgets;
+                widgets = [ statusBadgeWidget ] ++ dnsWidgets;
               }
             ];
           };
