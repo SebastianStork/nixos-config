@@ -32,6 +32,26 @@ in
           monospace = [ "JetBrainsMono Nerd Font" ];
           emoji = [ "Noto Color Emoji" ];
         };
+        configFile.jetbrains-mono-hinting = {
+          enable = true;
+          text = ''
+            <?xml version="1.0"?>
+            <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+            <fontconfig>
+              <match target="font">
+                <test name="family" compare="eq" qual="any">
+                  <string>JetBrainsMono Nerd Font</string>
+                </test>
+                <edit name="hinting" mode="assign">
+                  <bool>true</bool>
+                </edit>
+                <edit name="hintstyle" mode="assign">
+                  <const>hintfull</const>
+                </edit>
+              </match>
+            </fontconfig>
+          '';
+        };
       };
 
       gtk = {

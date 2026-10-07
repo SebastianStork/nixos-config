@@ -3,7 +3,5 @@ _: {
 
   custom.theme = "dark";
 
-  fonts.fontconfig.hinting = "full";
-
   wayland.windowManager.hyprland.settings.monitor = [ "DP-1,2560x1440@180,0x0,1" ];
 }
