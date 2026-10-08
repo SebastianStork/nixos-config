@@ -48,7 +48,9 @@ while IFS= read -r closure; do
   old_closure=$(jq --raw-output .old_closure <<< "$closure")
   new_closure=$(jq --raw-output .new_closure <<< "$closure")
 
-  nix build --no-link "$old_closure" "$new_closure"
+  old_target="$FLAKE_URL?rev=$BASE_SHA#nixosConfigurations.${name}.config.system.build.toplevel"
+  new_target="$FLAKE_URL?rev=$HEAD_SHA#nixosConfigurations.${name}.config.system.build.toplevel"
+  nix build --no-link "$old_target" "$new_target"
 
   diff_file="$work_dir/$name.json"
   dix --force-correctness --output json "$old_closure" "$new_closure" > "$diff_file"
