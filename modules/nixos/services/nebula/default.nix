@@ -15,6 +15,11 @@ let
     |> lib.filter (host: host.config.networking.hostName != config.networking.hostName)
     |> lib.filter (host: host.config.custom.networking.overlay.isLighthouse)
     |> lib.map (host: host.config.custom.networking.overlay.address);
+
+  usesPrivateAuth =
+    config.custom.services.caddy.virtualHosts
+    |> lib.attrValues
+    |> lib.any (vHost: vHost.forwardAuth.enable && vHost.forwardAuth.backend == "private");
 in
 {
   options.custom.services.nebula = {
@@ -29,7 +34,8 @@ in
         ++ lib.optional (
           config.custom.services.prometheus.enable || config.custom.web-services.grafana.enable
         ) "monitoring"
-        ++ lib.optional config.custom.services.forgejo-runner.enable "automation";
+        ++ lib.optional config.custom.services.forgejo-runner.enable "automation"
+        ++ lib.optional usesPrivateAuth "private-auth-client";
     };
 
     listenPort = lib.mkOption {

@@ -3,7 +3,6 @@
   pkgs,
   lib,
   self,
-  allHosts,
   ...
 }:
 let
@@ -106,16 +105,7 @@ in
 
           reverse_proxy localhost:${lib.toString cfg.port}
         '';
-        extraAllowedHosts =
-          allHosts
-          |> lib.attrValues
-          |> lib.filter (
-            host:
-            host.config.custom.services.caddy.virtualHosts
-            |> lib.attrValues
-            |> lib.any (vHost: vHost.forwardAuth.enable && vHost.forwardAuth.backend == "private")
-          )
-          |> lib.map (host: host.config.networking.hostName);
+        extraAllowedGroups = [ "private-auth-client" ];
       };
 
       persistence.directories = [ dataDir ];
