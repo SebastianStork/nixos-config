@@ -25,7 +25,10 @@ in
         default = true;
       };
       ncro.enable = lib.mkEnableOption "" // {
-        default = true;
+        default =
+          allHosts
+          |> lib.attrValues
+          |> lib.any (host: host.config.custom.services.binary-cache-router.enable);
       };
     };
   };
