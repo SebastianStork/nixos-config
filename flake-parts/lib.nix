@@ -19,6 +19,12 @@
       else
         throw "Expected at most one ${description}, found ${values |> lib.length |> lib.toString}";
 
+    uncheckedHostConfig =
+      host:
+      (host.extendModules {
+        modules = [ { _module.check = false; } ];
+      }).config;
+
     privateDomain = "splitleaf.de";
 
     isPrivateDomain = domain: domain |> lib.hasSuffix ".${self.lib.privateDomain}";

@@ -17,9 +17,12 @@ let
     |> lib.map (host: host.config.custom.networking.overlay.address);
 
   usesPrivateAuth =
-    config.custom.services.caddy.virtualHosts
-    |> lib.attrValues
-    |> lib.any (vHost: vHost.forwardAuth.enable && vHost.forwardAuth.backend == "private");
+    config.custom.services.private-auth.oidcClients != { }
+    || (
+      config.custom.services.caddy.virtualHosts
+      |> lib.attrValues
+      |> lib.any (vHost: vHost.forwardAuth.enable && vHost.forwardAuth.backend == "private")
+    );
 in
 {
   options.custom.services.nebula = {
