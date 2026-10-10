@@ -12,7 +12,7 @@ jobs:
     if: >-
       forgejo.event.pull_request.head.repo.full_name == forgejo.repository &&
       startsWith(forgejo.event.pull_request.head.ref, 'renovate/') &&
-      forgejo.event.pull_request.user.login == 'SebastianStork-RenovateBot'
+      forgejo.event.pull_request.user.login == 'SebastianStork-Bot'
     runs-on: nixos
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
