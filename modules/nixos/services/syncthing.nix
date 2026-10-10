@@ -178,6 +178,8 @@ in
 
     custom = {
       services = {
+        nebula.groups = [ "syncthing" ];
+
         syncthing.folders = lib.mkIf cfg.isServer (
           allHosts
           |> lib.attrValues

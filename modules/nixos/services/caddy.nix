@@ -244,7 +244,16 @@ in
           virtualHosts = virtualHosts |> self.lib.genAttrs' mkVirtualHost;
         };
 
-        custom.persistence.directories = [ "/var/lib/caddy" ];
+        custom = {
+          services.nebula.groups =
+            let
+              usesPrivateAuth =
+                virtualHosts |> lib.any (vHost: vHost.forwardAuth.enable && vHost.forwardAuth.backend == "private");
+            in
+            lib.mkIf usesPrivateAuth [ "private-auth-client" ];
+
+          persistence.directories = [ "/var/lib/caddy" ];
+        };
       }
 
       (lib.mkIf privateHostsExist {

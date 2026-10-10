@@ -169,9 +169,13 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain} = {
-        inherit (cfg) port;
-        extraAllowedGroups = [ "monitoring" ];
+      services = {
+        nebula.groups = [ "monitoring" ];
+
+        caddy.virtualHosts.${cfg.domain} = {
+          inherit (cfg) port;
+          extraAllowedGroups = [ "monitoring" ];
+        };
       };
 
       persistence.directories = [ "/var/lib/${config.services.prometheus.stateDir}" ];
