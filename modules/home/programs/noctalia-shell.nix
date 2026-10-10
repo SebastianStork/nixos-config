@@ -98,6 +98,7 @@
             "volume"
           ]
           ++ lib.optional osConfig.custom.services.bluetooth.enable "bluetooth"
+          ++ [ "network" ]
           ++ lib.optional config.custom.programs.brightnessctl.enable "brightness"
           ++ [ "battery" ];
         };
@@ -107,6 +108,9 @@
             tooltip_format = "{:%H:%M %Y-%m-%d}";
           };
           notifications.hide_when_no_unread = true;
+          bluetooth.hide_when_adapter_off = true;
+          network.show_label = false;
+          volume.show_label = false;
           workspaces.font_weight = 600;
         };
         audio.enable_sounds = false;
