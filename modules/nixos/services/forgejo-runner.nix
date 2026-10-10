@@ -52,7 +52,7 @@ in
     nix.settings.allowed-users = [ config.systemd.services.gitea-runner-default.serviceConfig.User ];
 
     custom = {
-      services.nebula.groups = [ "automation" ];
+      networking.overlay.accessGroups = [ "automation" ];
 
       persistence.directories = [ "/var/lib/private/gitea-runner" ];
     };

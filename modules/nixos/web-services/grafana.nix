@@ -109,11 +109,9 @@ in
     };
 
     custom = {
-      services = {
-        nebula.groups = [ "monitoring" ];
+      networking.overlay.accessGroups = [ "monitoring" ];
 
-        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
-      };
+      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
 
       meta.sites.${cfg.domain} = {
         title = "Grafana";

@@ -6,27 +6,19 @@
   ...
 }:
 let
-  cfg = config.custom.services.nebula;
   netCfg = config.custom.networking;
+  cfg = netCfg.overlay.nebula;
 
   lighthouses =
     allHosts
     |> lib.attrValues
     |> lib.filter (host: host.config.networking.hostName != config.networking.hostName)
+    |> lib.filter (host: host.config.custom.networking.overlay.enable)
     |> lib.filter (host: host.config.custom.networking.overlay.isLighthouse)
     |> lib.map (host: host.config.custom.networking.overlay.address);
 in
 {
-  options.custom.services.nebula = {
-    enable = lib.mkEnableOption "" // {
-      default = netCfg.overlay.implementation == "nebula";
-    };
-    groups = lib.mkOption {
-      type = lib.types.listOf lib.types.nonEmptyStr;
-      default = [ ];
-      apply = groups: lib.unique ([ netCfg.overlay.role ] ++ groups);
-    };
-
+  options.custom.networking.overlay.nebula = {
     listenPort = lib.mkOption {
       type = lib.types.port;
       default = if (cfg.advertise.address != null) then 47141 else 0;
@@ -44,7 +36,7 @@ in
 
     caCertificateFile = lib.mkOption {
       type = self.lib.types.existingPath;
-      default = ./ca.crt;
+      default = ./nebula-ca.crt;
     };
     publicKeyFile = lib.mkOption {
       type = self.lib.types.existingPath;
@@ -65,10 +57,10 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf netCfg.overlay.enable {
     assertions = lib.singleton {
       assertion = netCfg.overlay.isLighthouse -> cfg.advertise.address != null;
-      message = self.lib.mkInvalidConfigMessage "Nebula lighthouse `${config.networking.hostName}`" "`underlay.isPublic` must be enabled or `services.nebula.advertise.address` must be set so the host is publicly reachable";
+      message = self.lib.mkInvalidConfigMessage "Nebula lighthouse `${config.networking.hostName}`" "`underlay.isPublic` must be enabled or `overlay.nebula.advertise.address` must be set so the host is publicly reachable";
     };
 
     sops.secrets."nebula/host-key" = lib.mkIf (cfg.privateKeyFile == null) {
@@ -91,7 +83,6 @@ in
 
     services.nebula.networks.mesh = {
       enable = true;
-
       ca = "/etc/nebula/ca.crt";
       cert = "/etc/nebula/host.crt";
       key =
@@ -115,10 +106,11 @@ in
       staticHostMap =
         allHosts
         |> lib.attrValues
-        |> lib.filter (host: host.config.custom.services.nebula.advertise.address != null)
+        |> lib.filter (host: host.config.custom.networking.overlay.enable)
+        |> lib.filter (host: host.config.custom.networking.overlay.nebula.advertise.address != null)
         |> self.lib.genAttrs' (host: {
           name = host.config.custom.networking.overlay.address;
-          value = lib.singleton "${host.config.custom.services.nebula.advertise.address}:${lib.toString host.config.custom.services.nebula.advertise.port}";
+          value = lib.singleton "${host.config.custom.networking.overlay.nebula.advertise.address}:${lib.toString host.config.custom.networking.overlay.nebula.advertise.port}";
         });
 
       firewall = {

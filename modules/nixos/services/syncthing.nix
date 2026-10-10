@@ -177,9 +177,9 @@ in
     };
 
     custom = {
-      services = {
-        nebula.groups = [ "syncthing" ];
+      networking.overlay.accessGroups = [ "syncthing" ];
 
+      services = {
         syncthing.folders = lib.mkIf cfg.isServer (
           allHosts
           |> lib.attrValues

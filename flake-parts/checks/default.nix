@@ -26,7 +26,7 @@
             nebulaHostsJson =
               self.allHosts
               |> lib.attrValues
-              |> lib.filter (host: host.config.custom.services.nebula.enable)
+              |> lib.filter (host: host.config.custom.networking.overlay.enable)
               |> lib.map self.lib.nebulaHostInventory
               |> lib.toJSON
               |> pkgs.writeText "nebula-hosts.json";

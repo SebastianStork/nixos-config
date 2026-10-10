@@ -65,7 +65,9 @@ in
 
   config = lib.mkMerge [
     {
-      custom.services.nebula.groups = lib.mkIf (cfg.oidcClients != { }) [ "private-auth-client" ];
+      custom.networking.overlay.accessGroups = lib.mkIf (cfg.oidcClients != { }) [
+        "private-auth-client"
+      ];
     }
 
     (lib.mkIf cfg.enable (

@@ -3,7 +3,7 @@ let
   host = builtins.getAttr hostName self.allHosts;
   inherit (host.pkgs) lib;
 in
-if host.config.custom.services.nebula.enable then
+if host.config.custom.networking.overlay.enable then
   host |> self.lib.nebulaHostInventory |> lib.singleton
 else
   throw "host ${hostName} does not have Nebula enabled"

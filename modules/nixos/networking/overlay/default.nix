@@ -27,6 +27,9 @@ let
 in
 {
   options.custom.networking.overlay = {
+    enable = lib.mkEnableOption "" // {
+      default = true;
+    };
     networkCidr = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "10.254.250.0/24";
@@ -72,6 +75,11 @@ in
         "agent"
       ];
     };
+    accessGroups = lib.mkOption {
+      type = lib.types.listOf lib.types.nonEmptyStr;
+      default = [ ];
+      apply = groups: lib.unique ([ cfg.role ] ++ groups);
+    };
 
     dnsServers = lib.mkOption {
       type = lib.types.listOf lib.types.nonEmptyStr;
@@ -82,11 +90,6 @@ in
           "agent" = recursive-nameservers;
         }
         .${cfg.role};
-    };
-
-    implementation = lib.mkOption {
-      type = lib.types.enum [ "nebula" ];
-      default = "nebula";
     };
   };
 }

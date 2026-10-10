@@ -10,7 +10,7 @@ let
   netCfg = config.custom.networking;
 
   nebulaHosts =
-    allHosts |> lib.attrValues |> lib.filter (host: host.config.custom.services.nebula.enable);
+    allHosts |> lib.attrValues |> lib.filter (host: host.config.custom.networking.overlay.enable);
 
   virtualHosts = cfg.virtualHosts |> lib.attrValues;
   privateVirtualHosts = virtualHosts |> lib.filter (vHost: self.lib.isPrivateDomain vHost.domain);
@@ -39,7 +39,9 @@ let
 
   hostIsAllowed =
     vHost: host:
-    lib.any (group: lib.elem group (getAllowedGroups vHost)) host.config.custom.services.nebula.groups
+    lib.any (
+      group: lib.elem group (getAllowedGroups vHost)
+    ) host.config.custom.networking.overlay.accessGroups
     || lib.elem host.config.networking.hostName vHost.extraAllowedHosts;
 
   getAllowedAddresses =
@@ -245,7 +247,7 @@ in
         };
 
         custom = {
-          services.nebula.groups =
+          networking.overlay.accessGroups =
             let
               usesPrivateAuth =
                 virtualHosts |> lib.any (vHost: vHost.forwardAuth.enable && vHost.forwardAuth.backend == "private");

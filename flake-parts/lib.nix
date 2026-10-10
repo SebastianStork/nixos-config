@@ -64,8 +64,8 @@
     nebulaHostInventory =
       host:
       let
-        inherit (host.config.custom.services) nebula;
-        netCfg = host.config.custom.networking;
+        overlay = host.config.custom.networking.overlay;
+        inherit (overlay) nebula;
       in
       {
         name = host.config.networking.hostName;
@@ -73,8 +73,9 @@
         certificateOutput = self.lib.relativePath nebula.certificateFile;
         publicKey = lib.toString nebula.publicKeyFile;
         ca = lib.toString nebula.caCertificateFile;
-        networks = [ netCfg.overlay.cidr ];
-        inherit (nebula) unsafeNetworks groups;
+        networks = [ overlay.cidr ];
+        inherit (nebula) unsafeNetworks;
+        groups = overlay.accessGroups;
       };
 
     types.existingPath = (lib.types.addCheck lib.types.path lib.pathExists) // {

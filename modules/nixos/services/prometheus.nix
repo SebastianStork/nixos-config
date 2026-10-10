@@ -169,9 +169,9 @@ in
     };
 
     custom = {
-      services = {
-        nebula.groups = [ "monitoring" ];
+      networking.overlay.accessGroups = [ "monitoring" ];
 
+      services = {
         caddy.virtualHosts.${cfg.domain} = {
           inherit (cfg) port;
           extraAllowedGroups = [ "monitoring" ];

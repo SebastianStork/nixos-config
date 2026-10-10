@@ -153,12 +153,9 @@ in
       { pkgs, ... }:
       {
         environment.systemPackages = [ pkgs.curl ];
-        custom = {
-          services.nebula.enable = lib.mkForce false;
-          networking = {
-            overlay.role = "client";
-            underlay.cidr = "192.168.0.4/16";
-          };
+        custom.networking = {
+          overlay.enable = false;
+          underlay.cidr = "192.168.0.4/16";
         };
       };
   };

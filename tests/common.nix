@@ -23,9 +23,9 @@ testDir:
       };
 
       networking.extraHosts = lib.mkForce "";
-      custom = {
-        networking.underlay.interface = "eth1";
-        services.nebula = {
+      custom.networking = {
+        underlay.interface = "eth1";
+        overlay.nebula = {
           caCertificateFile = "${testDir}/keys/nebula-ca.crt";
           certificateFile = "${testDir}/keys/${config.networking.hostName}/nebula.crt";
           privateKeyFile = "${testDir}/keys/${config.networking.hostName}/nebula.key";
