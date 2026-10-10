@@ -22,25 +22,35 @@ in
       type = lib.types.port;
       default = 9119;
     };
-    homeAssistantDomain = lib.mkOption {
+    homeAssistantUrl = lib.mkOption {
       type = lib.types.nullOr lib.types.nonEmptyStr;
       default =
         allHosts
         |> lib.attrValues
         |> lib.map (host: host.config.custom.web-services.home-assistant)
         |> lib.filter (homeAssistant: homeAssistant.enable)
-        |> lib.map (homeAssistant: homeAssistant.domain)
+        |> lib.map (homeAssistant: "https://${homeAssistant.domain}")
         |> self.lib.atMostOne "enabled Home Assistant instance";
     };
-    trekDomain = lib.mkOption {
+    trekUrl = lib.mkOption {
       type = lib.types.nullOr lib.types.nonEmptyStr;
       default =
         allHosts
         |> lib.attrValues
         |> lib.map (host: host.config.custom.web-services.trek)
         |> lib.filter (trek: trek.enable)
-        |> lib.map (trek: trek.domain)
+        |> lib.map (trek: "https://${trek.domain}/mcp")
         |> self.lib.atMostOne "enabled Trek instance";
+    };
+    searxngUrl = lib.mkOption {
+      type = lib.types.nullOr lib.types.nonEmptyStr;
+      default =
+        allHosts
+        |> lib.attrValues
+        |> lib.map (host: host.config.custom.web-services.searxng)
+        |> lib.filter (searxng: searxng.enable && searxng.api.allowHermes)
+        |> lib.map (searxng: "http://${searxng.domain}:${lib.toString searxng.port}")
+        |> self.lib.atMostOne "enabled SearXNG instance";
     };
     forwardAuth = lib.mkEnableOption "";
   };
@@ -108,10 +118,6 @@ in
               external_dirs = [ "~/.hermes/authored-skills" ];
             };
           };
-          mcpServers.trek = lib.mkIf (cfg.trekDomain != null) {
-            url = "https://${cfg.trekDomain}/mcp";
-            auth = "oauth";
-          };
           backend = {
             mode = "dashboard";
             inherit (cfg) port;
@@ -155,7 +161,7 @@ in
         };
       }
 
-      (lib.mkIf (cfg.homeAssistantDomain != null) (
+      (lib.mkIf (cfg.homeAssistantUrl != null) (
         let
           catalog = "${inputs.hermes-agent}/plugin-catalog/homeassistant.yaml" |> lib.readFile;
           catalogValue =
@@ -187,7 +193,7 @@ in
 
           services.hermes-agent = {
             extraPlugins = [ plugin ];
-            environment.HASS_URL = "https://${cfg.homeAssistantDomain}";
+            environment.HASS_URL = cfg.homeAssistantUrl;
             settings.plugins.enabled = [ "homeassistant" ];
           };
 
@@ -197,6 +203,20 @@ in
           };
         }
       ))
+
+      (lib.mkIf (cfg.trekUrl != null) {
+        services.hermes-agent.mcpServers.trek = {
+          url = cfg.trekUrl;
+          auth = "oauth";
+        };
+      })
+
+      (lib.mkIf (cfg.searxngUrl != null) {
+        services.hermes-agent = {
+          environment.SEARXNG_URL = cfg.searxngUrl;
+          settings.web.search_backend = "searxng";
+        };
+      })
     ]
   );
 }

@@ -124,6 +124,7 @@
       searxng = {
         enable = true;
         domain = "search.${config.networking.domain}";
+        api.allowHermes = true;
         forwardAuth = true;
       };
 
