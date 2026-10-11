@@ -22,20 +22,28 @@ in
       default = 5006;
     };
     doBackups = lib.mkEnableOption "";
-    privateAuthDomain = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-      default =
-        allHosts
-        |> lib.attrValues
-        |> lib.map (host: (self.lib.uncheckedHostConfig host).custom.services.private-auth)
-        |> lib.filter (privateAuth: privateAuth.enable)
-        |> lib.map (privateAuth: privateAuth.domain)
-        |> self.lib.exactlyOne "enabled private auth instance";
+    oidc = {
+      enable = lib.mkEnableOption "";
+      domain = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default =
+          allHosts
+          |> lib.attrValues
+          |> lib.map (host: (self.lib.uncheckedHostConfig host).custom.services.private-auth)
+          |> lib.filter (privateAuth: privateAuth.enable)
+          |> lib.map (privateAuth: privateAuth.domain)
+          |> self.lib.exactlyOne "enabled private auth instance";
+      };
     };
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets."actualbudget/oidc-client-secret" = {
+    assertions = lib.singleton {
+      assertion = self.lib.isPrivateDomain cfg.domain;
+      message = self.lib.mkUnprotectedMessage "Actual Budget";
+    };
+
+    sops.secrets."actualbudget/oidc-client-secret" = lib.mkIf cfg.oidc.enable {
       owner = config.users.users.actual.name;
       restartUnits = [ "actual.service" ];
     };
@@ -59,9 +67,9 @@ in
       settings = {
         hostname = "localhost";
         inherit (cfg) port;
-        enforceOpenId = true;
-        openId = {
-          discoveryURL = "https://${cfg.privateAuthDomain}";
+        enforceOpenId = cfg.oidc.enable;
+        openId = lib.mkIf cfg.oidc.enable {
+          discoveryURL = "https://${cfg.oidc.domain}";
           client_id = "actualbudget";
           client_secret._secret = config.sops.secrets."actualbudget/oidc-client-secret".path;
           server_hostname = "https://${cfg.domain}";
@@ -71,7 +79,7 @@ in
 
     custom = {
       services = {
-        private-auth.oidcClients.actualbudget = {
+        private-auth.oidcClients.actualbudget = lib.mkIf cfg.oidc.enable {
           clientName = "Actual Budget";
           redirectUris = [ "https://${cfg.domain}/openid/callback" ];
         };

@@ -98,6 +98,7 @@
         enable = true;
         domain = "budget.${config.networking.domain}";
         doBackups = true;
+        oidc.enable = true;
       };
 
       calibre-server = {
