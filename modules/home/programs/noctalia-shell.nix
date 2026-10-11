@@ -98,7 +98,7 @@
             "volume"
           ]
           ++ lib.optional osConfig.custom.services.bluetooth.enable "bluetooth"
-          ++ [ "network" ]
+          ++ lib.optional osConfig.custom.networking.underlay.wireless.enable [ "network" ]
           ++ lib.optional config.custom.programs.brightnessctl.enable "brightness"
           ++ [ "battery" ];
         };
