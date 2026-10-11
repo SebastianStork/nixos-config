@@ -68,7 +68,10 @@ in
         theme.package = pkgs.gnome-themes-extra;
         gtk4.theme = config.gtk.theme;
         iconTheme.package = pkgs.papirus-icon-theme;
-        font.name = "sans-serif";
+        font = {
+          name = "sans-serif";
+          size = 12;
+        };
       };
       qt = {
         enable = true;
