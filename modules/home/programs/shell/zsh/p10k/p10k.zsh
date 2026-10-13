@@ -8,58 +8,12 @@
   unset -m '(POWERLEVEL9K_*|DEFAULT_USER)~POWERLEVEL9K_GITSTATUS_DIR'
   [[ $ZSH_VERSION == (5.<1->*|<6->.*) ]] || return
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
-    dir                     
-    vcs                     
-    newline                 
-    prompt_char             
-  )
-  typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
-    status                  
-    command_execution_time  
-    background_jobs         
-    direnv                  
-    asdf                    
-    virtualenv              
-    anaconda                
-    pyenv                   
-    goenv                   
-    nodenv                  
-    nvm                     
-    nodeenv                 
-    rbenv                   
-    rvm                     
-    fvm                     
-    luaenv                  
-    jenv                    
-    plenv                   
-    perlbrew                
-    phpenv                  
-    scalaenv                
-    haskell_stack           
-    kubecontext             
-    terraform               
-    aws                     
-    aws_eb_env              
-    azure                   
-    gcloud                  
-    google_app_cred         
-    toolbox                 
-    context                 
-    nordvpn                 
-    ranger                  
-    nnn                     
-    lf                      
-    xplr                    
-    vim_shell               
-    midnight_commander      
-    nix_shell               
-    chezmoi_shell           
-    todo                    
-    timewarrior             
-    taskwarrior             
-    per_directory_history   
+    dir
+    vcs
     newline
+    prompt_char
   )
+  typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
   typeset -g POWERLEVEL9K_MODE=nerdfont-v3
   typeset -g POWERLEVEL9K_ICON_PADDING=none
   typeset -g POWERLEVEL9K_BACKGROUND=                            
