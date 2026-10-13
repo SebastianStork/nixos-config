@@ -119,7 +119,7 @@ in
 
       timers.rss2email = {
         wantedBy = [ "timers.target" ];
-        timerConfig.OnUnitActiveSec = "1h";
+        timerConfig.OnCalendar = "hourly";
       };
     };
 
