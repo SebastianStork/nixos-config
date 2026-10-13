@@ -15,6 +15,7 @@
         bell.system = "no";
         scrollback.lines = 10000;
         cursor.style = "beam";
+        tweak.surface-bit-depth = "8-bit";
 
         colors-dark = {
           alpha = 0.85;
