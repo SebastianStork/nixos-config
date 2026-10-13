@@ -173,14 +173,14 @@ in
             )
             |> lib.removePrefix "${key}: ";
           plugin =
-            builtins.fetchGit {
-              url = catalogValue "repo";
-              rev = catalogValue "sha";
-              name = "homeassistant";
-            }
-            // {
-              name = "homeassistant";
-            };
+            let
+              source = builtins.fetchGit {
+                url = catalogValue "repo";
+                rev = catalogValue "sha";
+                name = "homeassistant";
+              };
+            in
+            pkgs.runCommand "homeassistant" { } "cp -r ${source}/${catalogValue "subdir"} $out";
           restartTriggers = config.services.hermes-agent.extraPlugins |> lib.toJSON |> lib.singleton;
         in
         {
