@@ -68,6 +68,7 @@ in
       home-assistant = {
         enable = true;
         package = pkgs-unstable.home-assistant;
+        customComponents = [ pkgs-unstable.home-assistant-custom-components.adaptive_lighting ];
         extraComponents = [
           "google_translate"
           "mqtt"
