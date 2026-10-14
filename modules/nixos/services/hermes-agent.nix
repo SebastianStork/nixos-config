@@ -68,6 +68,7 @@ in
             "hermes/matrix/access-token" = { };
             "hermes/matrix/allowed-users" = { };
             "hermes/matrix/recovery-key" = { };
+            "hermes/codeberg/access-token" = { };
           };
           templates = {
             "hermes.env" = {
@@ -75,6 +76,7 @@ in
                 MATRIX_ACCESS_TOKEN=${config.sops.placeholder."hermes/matrix/access-token"}
                 MATRIX_ALLOWED_USERS=${config.sops.placeholder."hermes/matrix/allowed-users"}
                 MATRIX_RECOVERY_KEY=${config.sops.placeholder."hermes/matrix/recovery-key"}
+                CODEBERG_TOKEN=${config.sops.placeholder."hermes/codeberg/access-token"}
               '';
               restartUnits = [
                 "hermes-agent.service"
