@@ -91,6 +91,8 @@ in
             pkgs.tirith
             pkgs.jq
             pkgs.unzip
+            pkgs.python3
+            pkgs.ripgrep
           ];
           environment = {
             MATRIX_HOMESERVER = "https://matrix.org";
