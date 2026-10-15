@@ -13,8 +13,6 @@
     inputs.home-manager.nixosModules.home-manager
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
   custom = {
     networking.overlay.role = "client";
     boot.silent = true;
