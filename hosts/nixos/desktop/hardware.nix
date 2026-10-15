@@ -4,6 +4,7 @@ _: {
   hardware = {
     enableRedistributableFirmware = true;
     cpu.amd.updateMicrocode = true;
+    i2c.enable = true;
   };
 
   boot = {

@@ -32,6 +32,8 @@
       $volume-up = $ipc volume-up
       $volume-down = $ipc volume-down
       $mute-mic = $ipc mic-mute
+      $brightness-up = $ipc brightness-up
+      $brightness-down = $ipc brightness-down
 
       # Launch programs
       bind = SUPER, R, exec, $ipc panel-toggle launcher

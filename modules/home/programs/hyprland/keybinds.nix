@@ -70,8 +70,8 @@
 
       ${lib.optionalString config.custom.programs.brightnessctl.enable ''
         # Adjust brightness
-        bindel = , XF86MonBrightnessUp, exec, brightnessctl --exponent set +2%
-        bindel = , XF86MonBrightnessDown, exec, brightnessctl --exponent set 2%-
+        bindel = , XF86MonBrightnessUp, exec, $brightness-up
+        bindel = , XF86MonBrightnessDown, exec, $brightness-down
       ''}
 
       # Screenshot

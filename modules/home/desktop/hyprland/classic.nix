@@ -39,6 +39,8 @@
       $volume-up = wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
       $volume-down = wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
       $mute-mic = wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+      $brightness-up = brightnessctl --exponent set +2%
+      $brightness-down = brightnessctl --exponent set 2%-
 
       # Launch programs
       bind = SUPER, R, exec, rofi -show drun
