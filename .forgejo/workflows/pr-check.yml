@@ -10,15 +10,38 @@ concurrency:
 jobs:
   parse-outputs:
     if: >-
-      forgejo.event.pull_request.head.repo.full_name == forgejo.repository &&
-      startsWith(forgejo.event.pull_request.head.ref, 'renovate/') &&
-      forgejo.event.pull_request.user.login == 'SebastianStork-Bot'
+      (forgejo.event.pull_request.head.repo.full_name == forgejo.repository &&
+       startsWith(forgejo.event.pull_request.head.ref, 'renovate/') &&
+       forgejo.event.pull_request.user.login == 'SebastianStork-Bot') ||
+      (forgejo.event.pull_request.head.repo.full_name == 'SebastianStork-Hermes/nixos-config' &&
+       forgejo.event.pull_request.user.login == 'SebastianStork-Hermes')
     runs-on: nixos
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
       tests: ${{ steps.tests.outputs.tests }}
       hosts: ${{ steps.hosts.outputs.hosts }}
+      pr_kind: ${{ steps.classify.outputs.kind }}
     steps:
+      - name: Classify PR
+        id: classify
+        env:
+          HEAD_REF: ${{ forgejo.event.pull_request.head.ref }}
+          HEAD_REPO: ${{ forgejo.event.pull_request.head.repo.full_name }}
+          PR_AUTHOR: ${{ forgejo.event.pull_request.user.login }}
+          REPOSITORY: ${{ forgejo.repository }}
+        run: |
+          if [[ "$HEAD_REPO" == "$REPOSITORY" &&
+                "$PR_AUTHOR" == "SebastianStork-Bot" &&
+                "$HEAD_REF" == renovate/* ]]; then
+            kind=renovate
+          elif [[ "$HEAD_REPO" == "SebastianStork-Hermes/nixos-config" &&
+                  "$PR_AUTHOR" == "SebastianStork-Hermes" ]]; then
+            kind=hermes
+          else
+            echo "Untrusted PR source" >&2
+            exit 1
+          fi
+          printf 'kind=%s\n' "$kind" >> "$FORGEJO_OUTPUT"
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
         with:
@@ -91,7 +114,8 @@ jobs:
           flake-output: .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel
 
   closure-diff-report:
-    needs: build-host
+    if: needs.parse-outputs.outputs.pr_kind == 'renovate'
+    needs: [parse-outputs, build-host]
     runs-on: nixos
     steps:
       - name: Checkout
@@ -116,7 +140,8 @@ jobs:
   merge-gate:
     if: >-
       always() &&
-      needs.parse-outputs.result != 'skipped'
+      needs.parse-outputs.result != 'skipped' &&
+      needs.parse-outputs.outputs.pr_kind == 'renovate'
     needs:
       [parse-outputs, build-check, build-test, build-host, closure-diff-report]
     runs-on: nixos
