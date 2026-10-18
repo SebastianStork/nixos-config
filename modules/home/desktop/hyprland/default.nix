@@ -17,14 +17,7 @@
 
     custom = {
       programs.noctalia.enable = true;
-
-      services = {
-        cliphist.enable = true;
-        hypridle = {
-          enable = true;
-          lockCommand = "noctalia msg session lock";
-        };
-      };
+      services.cliphist.enable = true;
     };
 
     home.packages = [

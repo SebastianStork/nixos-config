@@ -117,9 +117,33 @@
         audio.enable_sounds = false;
         dock.enabled = false;
         osd.kinds.media = false;
-        idle.behavior = {
-          lock.enabled = false;
-          screen-off.enabled = false;
+        idle = {
+          behavior_order = [
+            "dim"
+            "screen-off"
+            "lock"
+            "suspend"
+          ];
+          behavior = {
+            dim = lib.mkIf config.custom.programs.brightnessctl.enable {
+              timeout = 5 * 60;
+              action = "command";
+              command = "brightnessctl --save --exponent set 10%";
+              resume_command = "brightnessctl --restore";
+            };
+            screen-off = {
+              timeout = 10 * 60;
+              action = "screen_off";
+            };
+            lock = {
+              timeout = 10 * 60 + 10;
+              action = "lock";
+            };
+            suspend = {
+              timeout = 30 * 60;
+              action = "lock_and_suspend";
+            };
+          };
         };
         location.address = "Darmstadt";
         control_center.calendar.show_week_numbers = true;
