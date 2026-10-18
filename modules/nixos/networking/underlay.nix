@@ -1,7 +1,6 @@
 {
   config,
   self,
-  pkgs,
   lib,
   ...
 }:
@@ -59,8 +58,6 @@ in
     }
 
     (lib.mkIf cfg.wireless.enable {
-      environment.systemPackages = [ pkgs.iwgtk ];
-
       networking.wireless.iwd = {
         enable = true;
         settings.Settings.AutoConnect = true;
