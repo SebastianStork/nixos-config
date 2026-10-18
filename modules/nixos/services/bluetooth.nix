@@ -8,7 +8,6 @@
         enable = true;
         powerOnBoot = false;
       };
-      logitech.wireless.enable = true;
     };
 
     services.blueman.enable = true;
