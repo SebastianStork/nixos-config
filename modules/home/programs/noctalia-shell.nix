@@ -109,6 +109,7 @@
           };
           notifications.hide_when_no_unread = true;
           bluetooth.hide_when_adapter_off = true;
+          brightness.show_label = false;
           network.show_label = false;
           volume.show_label = false;
           workspaces.font_weight = 600;
