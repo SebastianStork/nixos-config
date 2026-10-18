@@ -21,7 +21,7 @@
   custom = {
     sops.enable = true;
 
-    desktop.hyprland.noctalia.enable = true;
+    desktop.hyprland.enable = true;
 
     services = {
       ntfy-client.enable = true;

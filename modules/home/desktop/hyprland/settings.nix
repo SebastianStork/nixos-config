@@ -1,6 +1,6 @@
 { config, lib, ... }:
 {
-  config = lib.mkIf config.custom.programs.hyprland.enable {
+  config = lib.mkIf config.custom.desktop.hyprland.enable {
     wayland.windowManager.hyprland.settings = {
       input = {
         kb_layout = "de";

@@ -1,7 +1,19 @@
 { config, lib, ... }:
 {
-  config = lib.mkIf config.custom.programs.hyprland.enable {
+  config = lib.mkIf config.custom.desktop.hyprland.enable {
     wayland.windowManager.hyprland.extraConfig = ''
+      # Variables
+      $ipc = noctalia msg
+      $play-pause = $ipc media toggle
+      $play-next = $ipc media next
+      $play-previous = $ipc media previous
+      $mute = $ipc volume-mute
+      $volume-up = $ipc volume-up
+      $volume-down = $ipc volume-down
+      $mute-mic = $ipc mic-mute
+      $brightness-up = $ipc brightness-up
+      $brightness-down = $ipc brightness-down
+
       # Bindflags:
       # r = release
       # e = repeat
@@ -16,6 +28,8 @@
       bind = SUPER, RETURN, exec, foot
       bind = SUPER, B, exec, firefox
       bind = SUPER, C, exec, code
+      bind = SUPER, R, exec, $ipc panel-toggle launcher
+      bind = SUPER, V, exec, $ipc panel-toggle clipboard
 
       # Move focus
       bind = SUPER, left, movefocus, l
@@ -46,6 +60,8 @@
 
       # Manage session
       bindrl = SUPER CONTROL, Q, exit,
+      bindrl = SUPER CONTROL, L, exec, loginctl lock-session
+      bindrl = SUPER CONTROL, S, exec, systemctl sleep
       bindrl = SUPER CONTROL, P, exec, poweroff
       bindrl = SUPER CONTROL, R, exec, reboot
       bindrl = SUPER CONTROL, H, exec, systemctl hibernate
