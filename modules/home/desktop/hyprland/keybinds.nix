@@ -26,8 +26,8 @@
 
       # Launch programs
       bind = SUPER, RETURN, exec, foot
-      bind = SUPER, B, exec, firefox
-      bind = SUPER, C, exec, code
+      ${lib.optionalString config.custom.programs.firefox.enable "bind = SUPER, B, exec, firefox"}
+      ${lib.optionalString config.custom.programs.vscode.enable "bind = SUPER, C, exec, code"}
       bind = SUPER, R, exec, $ipc panel-toggle launcher
       bind = SUPER, V, exec, $ipc panel-toggle clipboard
 
@@ -96,12 +96,12 @@
       bind = CONTROL, Print, exec, grim -g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
 
       # Special workspaces
-      bind = SUPER, Q, togglespecialworkspace, flake
-      bind = SUPER, S, togglespecialworkspace, music
-      bind = SUPER, D, togglespecialworkspace, chat
-      bind = SUPER, M, togglespecialworkspace, monitor
-      bind = SUPER, F, togglespecialworkspace, files
-      bind = SUPER, N, togglespecialworkspace, notes
+      ${lib.optionalString config.custom.programs.herdr.enable "bind = SUPER, Q, togglespecialworkspace, flake"}
+      ${lib.optionalString config.custom.programs.spotify.enable "bind = SUPER, S, togglespecialworkspace, music"}
+      ${lib.optionalString config.custom.programs.discord.enable "bind = SUPER, D, togglespecialworkspace, chat"}
+      ${lib.optionalString config.custom.programs.btop.enable "bind = SUPER, M, togglespecialworkspace, monitor"}
+      ${lib.optionalString config.custom.programs.nemo.enable "bind = SUPER, F, togglespecialworkspace, files"}
+      ${lib.optionalString config.custom.programs.obsidian.enable "bind = SUPER, N, togglespecialworkspace, notes"}
     '';
   };
 }

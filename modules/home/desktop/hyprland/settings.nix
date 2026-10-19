@@ -90,16 +90,15 @@
         "w[t1]s[false], gapsout:0"
         # Large outer gaps on special workspaces
         "s[true], gapsout:60"
+      ]
+      ++ lib.optional config.custom.programs.herdr.enable "special:flake, on-created-empty:foot herdr"
+      ++ lib.optional config.custom.programs.spotify.enable "special:music, on-created-empty:spotify"
+      ++ lib.optional config.custom.programs.discord.enable "special:chat, on-created-empty:discord"
+      ++ lib.optional config.custom.programs.btop.enable "special:monitor, on-created-empty:foot btop"
+      ++ lib.optional config.custom.programs.nemo.enable "special:files, on-created-empty:nemo"
+      ++ lib.optional config.custom.programs.obsidian.enable "special:notes, on-created-empty:obsidian";
 
-        "special:flake, on-created-empty:foot herdr"
-        "special:music, on-created-empty:spotify"
-        "special:chat, on-created-empty:discord"
-        "special:monitor, on-created-empty:foot btop"
-        "special:files, on-created-empty:nemo"
-        "special:notes, on-created-empty:obsidian"
-      ];
-
-      exec-once = [ "[workspace special:monitor silent] foot btop" ];
+      exec-once = lib.optional config.custom.programs.btop.enable "[workspace special:monitor silent] foot btop";
     };
   };
 }

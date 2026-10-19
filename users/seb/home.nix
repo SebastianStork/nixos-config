@@ -2,7 +2,6 @@
   config,
   self,
   pkgs,
-  pkgs-unstable,
   ...
 }:
 {
@@ -20,8 +19,6 @@
 
   custom = {
     sops.enable = true;
-
-    desktop.hyprland.enable = true;
 
     services = {
       ntfy-client.enable = true;
@@ -45,10 +42,14 @@
       };
       ssh.enable = true;
       git.enable = true;
-      foot.enable = true;
-      vscode.enable = true;
       firefox.enable = true;
+      vscode.enable = true;
+      discord.enable = true;
+      spotify.enable = true;
       libreoffice.enable = true;
+      nemo.enable = true;
+      obsidian.enable = true;
+      herdr.enable = true;
       btop.enable = true;
       pi-coding-agent.enable = true;
     };
@@ -56,14 +57,9 @@
 
   home.packages = [
     pkgs.fastfetch
-    pkgs-unstable.herdr
 
-    pkgs.nemo-with-extensions
     pkgs.vlc
-    pkgs.spotify
-    pkgs.obsidian
     pkgs.anki
-    pkgs.discord
     pkgs.zed-editor
     pkgs.calibre
 

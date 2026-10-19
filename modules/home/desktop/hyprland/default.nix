@@ -1,11 +1,14 @@
 {
   config,
+  osConfig,
   pkgs,
   lib,
   ...
 }:
 {
-  options.custom.desktop.hyprland.enable = lib.mkEnableOption "";
+  options.custom.desktop.hyprland.enable = lib.mkEnableOption "" // {
+    default = osConfig.custom.desktop.hyprland.enable;
+  };
 
   config = lib.mkIf config.custom.desktop.hyprland.enable {
     wayland.windowManager.hyprland = {
@@ -16,7 +19,10 @@
     };
 
     custom = {
-      programs.noctalia.enable = true;
+      programs = {
+        foot.enable = true;
+        noctalia.enable = true;
+      };
       services.cliphist.enable = true;
     };
 
@@ -25,6 +31,7 @@
       pkgs.jq
       pkgs.satty
       pkgs.slurp
+      pkgs.wl-clipboard
     ];
   };
 }
