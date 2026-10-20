@@ -9,39 +9,12 @@ concurrency:
 
 jobs:
   parse-outputs:
-    if: >-
-      (forgejo.event.pull_request.head.repo.full_name == forgejo.repository &&
-       startsWith(forgejo.event.pull_request.head.ref, 'renovate/') &&
-       forgejo.event.pull_request.user.login == 'SebastianStork-Bot') ||
-      (forgejo.event.pull_request.head.repo.full_name == 'SebastianStork-Hermes/nixos-config' &&
-       forgejo.event.pull_request.user.login == 'SebastianStork-Hermes')
     runs-on: nixos
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
       tests: ${{ steps.tests.outputs.tests }}
       hosts: ${{ steps.hosts.outputs.hosts }}
-      pr_kind: ${{ steps.classify.outputs.kind }}
     steps:
-      - name: Classify PR
-        id: classify
-        env:
-          HEAD_REF: ${{ forgejo.event.pull_request.head.ref }}
-          HEAD_REPO: ${{ forgejo.event.pull_request.head.repo.full_name }}
-          PR_AUTHOR: ${{ forgejo.event.pull_request.user.login }}
-          REPOSITORY: ${{ forgejo.repository }}
-        run: |
-          if [[ "$HEAD_REPO" == "$REPOSITORY" &&
-                "$PR_AUTHOR" == "SebastianStork-Bot" &&
-                "$HEAD_REF" == renovate/* ]]; then
-            kind=renovate
-          elif [[ "$HEAD_REPO" == "SebastianStork-Hermes/nixos-config" &&
-                  "$PR_AUTHOR" == "SebastianStork-Hermes" ]]; then
-            kind=hermes
-          else
-            echo "Untrusted PR source" >&2
-            exit 1
-          fi
-          printf 'kind=%s\n' "$kind" >> "$FORGEJO_OUTPUT"
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
         with:
@@ -114,7 +87,9 @@ jobs:
           flake-output: .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel
 
   closure-diff-report:
-    if: needs.parse-outputs.outputs.pr_kind == 'renovate'
+    if: >-
+      forgejo.event.pull_request.head.repo.full_name == forgejo.repository &&
+      startsWith(forgejo.event.pull_request.head.ref, 'renovate/')
     needs: [parse-outputs, build-host]
     runs-on: nixos
     steps:
@@ -138,10 +113,7 @@ jobs:
           overwrite: true
 
   merge-gate:
-    if: >-
-      always() &&
-      needs.parse-outputs.result != 'skipped' &&
-      needs.parse-outputs.outputs.pr_kind == 'renovate'
+    if: always()
     needs:
       [parse-outputs, build-check, build-test, build-host, closure-diff-report]
     runs-on: nixos
@@ -153,7 +125,7 @@ jobs:
           BUILD_HOST_RESULT: ${{ needs.build-host.result }}
           CLOSURE_DIFF_REPORT_RESULT: ${{ needs.closure-diff-report.result }}
         run: |
-          if [[ "$BUILD_CHECK_RESULT" != "success" || "$BUILD_TEST_RESULT" != "success" || "$BUILD_HOST_RESULT" != "success" || "$CLOSURE_DIFF_REPORT_RESULT" != "success" ]]; then
+          if [[ "$BUILD_CHECK_RESULT" != "success" || "$BUILD_TEST_RESULT" != "success" || "$BUILD_HOST_RESULT" != "success" || ( "$CLOSURE_DIFF_REPORT_RESULT" != "success" && "$CLOSURE_DIFF_REPORT_RESULT" != "skipped" ) ]]; then
             echo "Build results: checks=$BUILD_CHECK_RESULT tests=$BUILD_TEST_RESULT hosts=$BUILD_HOST_RESULT closure-diff-report=$CLOSURE_DIFF_REPORT_RESULT" >&2
             exit 1
           fi
