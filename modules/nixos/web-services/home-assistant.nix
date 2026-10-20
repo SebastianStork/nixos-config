@@ -70,6 +70,7 @@ in
         package = pkgs-unstable.home-assistant;
         customComponents = [ pkgs-unstable.home-assistant-custom-components.adaptive_lighting ];
         extraComponents = [
+          "aranet"
           "google_translate"
           "mqtt"
         ];
