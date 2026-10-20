@@ -57,19 +57,23 @@
 
   fileSystems."/persist".depends = [ "/nix" ];
 
-  hardware.fancontrol = {
-    enable = true;
-    config = ''
-      INTERVAL=5
-      DEVPATH=hwmon1=devices/platform/coretemp.0 hwmon2=devices/platform/it87.2608
-      DEVNAME=hwmon1=coretemp hwmon2=it8613
-      FCTEMPS=hwmon2/pwm2=hwmon1/temp1_input
-      FCFANS=hwmon2/pwm2=hwmon2/fan2_input
-      MINTEMP=hwmon2/pwm2=70
-      MAXTEMP=hwmon2/pwm2=100
-      MINSTART=hwmon2/pwm2=35
-      MINSTOP=hwmon2/pwm2=25
-    '';
+  hardware = {
+    enableRedistributableFirmware = true;
+
+    fancontrol = {
+      enable = true;
+      config = ''
+        INTERVAL=5
+        DEVPATH=hwmon1=devices/platform/coretemp.0 hwmon2=devices/platform/it87.2608
+        DEVNAME=hwmon1=coretemp hwmon2=it8613
+        FCTEMPS=hwmon2/pwm2=hwmon1/temp1_input
+        FCFANS=hwmon2/pwm2=hwmon2/fan2_input
+        MINTEMP=hwmon2/pwm2=70
+        MAXTEMP=hwmon2/pwm2=100
+        MINSTART=hwmon2/pwm2=35
+        MINSTOP=hwmon2/pwm2=25
+      '';
+    };
   };
   systemd.services.fancontrol.preStart = "echo 2 > /sys/devices/platform/it87.2608/hwmon/hwmon*/pwm2_enable";
 }
