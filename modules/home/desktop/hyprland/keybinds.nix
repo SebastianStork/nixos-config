@@ -87,14 +87,12 @@
       bindel = SUPER ALT, down, exec, $volume-down
       bindl = SUPER ALT, M, exec, $mute-mic
 
-      ${lib.optionalString config.custom.programs.brightnessctl.enable ''
-        # Adjust brightness
-        bindel = , XF86MonBrightnessUp, exec, $brightness-up
-        bindel = , XF86MonBrightnessDown, exec, $brightness-down
+      # Adjust brightness
+      bindel = , XF86MonBrightnessUp, exec, $brightness-up
+      bindel = , XF86MonBrightnessDown, exec, $brightness-down
 
-        bindel = SUPER ALT, plus, exec, $brightness-up
-        bindel = SUPER ALT, minus, exec, $brightness-down
-      ''}
+      bindel = SUPER ALT, plus, exec, $brightness-up
+      bindel = SUPER ALT, minus, exec, $brightness-down
 
       # Screenshot
       bind = , Print, exec, $screenshot-monitor

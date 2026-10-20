@@ -98,9 +98,11 @@
           ]
           ++ lib.optional osConfig.custom.services.bluetooth.enable "bluetooth"
           ++ lib.optional osConfig.custom.networking.underlay.wireless.enable "network"
-          ++ [ "volume" ]
-          ++ lib.optional config.custom.programs.brightnessctl.enable "brightness"
-          ++ [ "battery" ];
+          ++ [
+            "volume"
+            "brightness"
+            "battery"
+          ];
         };
         widget = {
           clock = {

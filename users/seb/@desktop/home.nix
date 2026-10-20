@@ -2,10 +2,7 @@
 {
   home.stateVersion = "23.11";
 
-  custom = {
-    theme = "dark";
-    programs.brightnessctl.enable = true;
-  };
+  custom.theme = "dark";
 
   home.packages = [ pkgs.ddcutil ];
 
