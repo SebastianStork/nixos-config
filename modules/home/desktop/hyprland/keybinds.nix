@@ -13,6 +13,9 @@
       $mute-mic = $ipc mic-mute
       $brightness-up = $ipc brightness-up
       $brightness-down = $ipc brightness-down
+      $screenshot-monitor = grim -o "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
+      $screenshot-region = grim -g "$(slurp)" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
+      $screenshot-window = grim -g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
 
       # Bindflags:
       # r = release
@@ -88,12 +91,19 @@
         # Adjust brightness
         bindel = , XF86MonBrightnessUp, exec, $brightness-up
         bindel = , XF86MonBrightnessDown, exec, $brightness-down
+
+        bindel = SUPER ALT, plus, exec, $brightness-up
+        bindel = SUPER ALT, minus, exec, $brightness-down
       ''}
 
       # Screenshot
-      bind = , Print, exec, grim -o "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
-      bind = SHIFT, Print, exec, grim -g "$(slurp)" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
-      bind = CONTROL, Print, exec, grim -g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
+      bind = , Print, exec, $screenshot-monitor
+      bind = SHIFT, Print, exec, $screenshot-region
+      bind = CONTROL, Print, exec, $screenshot-window
+
+      bind = SUPER, P, exec, $screenshot-monitor
+      bind = SUPER SHIFT, P, exec, $screenshot-region
+      bind = SUPER CONTROL, P, exec, $screenshot-window
 
       # Special workspaces
       ${lib.optionalString config.custom.programs.herdr.enable "bind = SUPER, Q, togglespecialworkspace, flake"}
