@@ -18,6 +18,11 @@
     };
 
     services = {
+      bluetooth = {
+        enable = true;
+        powerOnBoot = true;
+      };
+
       blocking-nameserver = {
         enable = true;
         gui = {
