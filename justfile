@@ -17,7 +17,7 @@ repair:
 
 [group('utility')]
 repl host='$(hostname)':
-    nixos-rebuild repl --flake .#{{ host }}
+    nh os repl --hostname={{ host }} .
 
 [group('rebuild')]
 rebuild mode:
