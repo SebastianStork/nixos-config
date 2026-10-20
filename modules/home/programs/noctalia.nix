@@ -95,10 +95,10 @@
           end = [
             "tray"
             "notifications"
-            "volume"
           ]
           ++ lib.optional osConfig.custom.services.bluetooth.enable "bluetooth"
           ++ lib.optional osConfig.custom.networking.underlay.wireless.enable "network"
+          ++ [ "volume" ]
           ++ lib.optional config.custom.programs.brightnessctl.enable "brightness"
           ++ [ "battery" ];
         };
@@ -111,7 +111,10 @@
           bluetooth.hide_when_adapter_off = true;
           brightness.show_label = false;
           network.show_label = false;
-          volume.show_label = false;
+          volume = {
+            mute_color = "on_surface";
+            show_label = false;
+          };
           workspaces.font_weight = 600;
         };
         audio.enable_sounds = false;
