@@ -26,7 +26,7 @@ new file mode 100644
 index 0000000..5ce812b
 --- /dev/null
 +++ b/rss2email/post_process/link_only.py
-@@ -0,0 +1,30 @@
+@@ -0,0 +1,34 @@
 +# Copyright (C) 2026 Sebastian Stork
 +#
 +# This file is part of rss2email.
@@ -44,12 +44,16 @@ index 0000000..5ce812b
 +
 +
 +def process(feed, parsed, entry, guid, message):
-+    title = html.escape(feed._get_entry_title(entry))
++    origin = feed.name
++    title = html.unescape(feed._get_entry_title(entry)).strip() or origin
++    message.replace_header('Subject', title)
++
 +    url = html.escape(feed._get_entry_link(entry) or '', quote=True)
++    origin = html.escape(origin)
 +    content = (
 +        '<!DOCTYPE html>\n'
 +        '<html><body>\n'
-+        f'<p><a href="{url}">{title}</a></p>\n'
++        f'<p><a href="{url}">{origin}</a></p>\n'
 +        '</body></html>\n'
 +        )
 +    encoding = rss2email.email.guess_encoding(
