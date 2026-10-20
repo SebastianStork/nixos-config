@@ -4,6 +4,8 @@
 
   system.stateVersion = "25.11";
 
+  hardware.enableRedistributableFirmware = true;
+
   custom = {
     boot.loader.grub.enable = true;
 
