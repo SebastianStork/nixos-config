@@ -115,6 +115,7 @@
       karakeep = {
         enable = true;
         domain = "bookmarks.${config.networking.domain}";
+        doBackups = true;
       };
 
       grafana = {

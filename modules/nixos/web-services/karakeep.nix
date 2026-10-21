@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.custom.web-services.karakeep;
+  dataDir = "/var/lib/karakeep";
 in
 {
   options.custom.web-services.karakeep = {
@@ -18,6 +19,7 @@ in
       type = lib.types.port;
       default = 18195;
     };
+    doBackups = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -60,10 +62,20 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      services = {
+        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+
+        restic.backups.karakeep = lib.mkIf cfg.doBackups {
+          conflictingServices = [
+            "karakeep-web.service"
+            "karakeep-workers.service"
+          ];
+          paths = [ dataDir ];
+        };
+      };
 
       persistence.directories = [
-        "/var/lib/karakeep"
+        dataDir
         "/var/lib/meilisearch"
       ];
 
