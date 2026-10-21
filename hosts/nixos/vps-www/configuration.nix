@@ -89,7 +89,7 @@
       };
 
       privatebin = {
-        enable = true;
+        enable = false;
         domain = "pastebin.sprouted.cloud";
         branding.name = "SproutedBin";
       };
