@@ -15,6 +15,8 @@ in
       lib.types.submodule (
         { name, ... }:
         {
+          imports = [ (lib.mkAliasOptionModule [ "conflictingService" ] [ "conflictingServices" ]) ];
+
           options = {
             enable = lib.mkEnableOption "" // {
               default = true;
@@ -23,9 +25,11 @@ in
               type = lib.types.nonEmptyStr;
               default = name;
             };
-            conflictingService = lib.mkOption {
-              type = lib.types.nullOr lib.types.nonEmptyStr;
-              default = null;
+            conflictingServices = lib.mkOption {
+              type = lib.types.coercedTo lib.types.nonEmptyStr lib.singleton (
+                lib.types.listOf lib.types.nonEmptyStr
+              );
+              default = [ ];
             };
             paths = lib.mkOption {
               type = lib.types.listOf lib.types.path;
@@ -86,14 +90,14 @@ in
 
     systemd.services =
       backups
-      |> lib.filter (backup: backup.conflictingService != null)
+      |> lib.filter (backup: backup.conflictingServices != [ ])
       |> self.lib.genAttrs' (backup: {
         name = "restic-backups-${backup.name}";
         value = {
-          unitConfig.Conflicts = [ backup.conflictingService ];
-          after = [ backup.conflictingService ];
-          onSuccess = [ backup.conflictingService ];
-          onFailure = [ backup.conflictingService ];
+          unitConfig.Conflicts = backup.conflictingServices;
+          after = backup.conflictingServices;
+          onSuccess = backup.conflictingServices;
+          onFailure = backup.conflictingServices;
         };
       });
 

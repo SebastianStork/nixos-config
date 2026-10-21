@@ -39,18 +39,19 @@ in
           |> lib.map (
             backup:
             let
-              inherit (backup) name conflictingService;
+              inherit (backup) name conflictingServices;
               inherit (backup.restoreCommand) preRestore postRestore;
-              hasConflictingService = conflictingService != null;
+              hasConflictingServices = conflictingServices != [ ];
+              conflictingServicesString = lib.escapeShellArgs conflictingServices;
             in
             pkgs.writeShellApplication {
               name = "restic-restore-${name}";
               text = ''
-                ${lib.optionalString hasConflictingService "systemctl stop ${conflictingService}"}
+                ${lib.optionalString hasConflictingServices "systemctl stop ${conflictingServicesString}"}
                 ${preRestore}
                 restic-${name} restore latest --target /
                 ${postRestore}
-                ${lib.optionalString hasConflictingService "systemctl start ${conflictingService}"}
+                ${lib.optionalString hasConflictingServices "systemctl start ${conflictingServicesString}"}
               '';
             }
           );
