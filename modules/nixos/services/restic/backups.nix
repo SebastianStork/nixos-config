@@ -81,7 +81,7 @@ in
             ];
             timerConfig = {
               OnCalendar = "03:00";
-              RandomizedDelaySec = "1h";
+              RandomizedOffsetSec = "1h";
             };
           }
           backup.extraConfig
