@@ -63,7 +63,7 @@
 
       # Manage session
       bindrl = SUPER CONTROL, Q, exit,
-      bindrl = SUPER CONTROL, L, exec, loginctl lock-session
+      bindrl = SUPER CONTROL, L, exec, $ipc session lock
       bindrl = SUPER CONTROL, S, exec, systemctl sleep
       bindrl = SUPER CONTROL, P, exec, poweroff
       bindrl = SUPER CONTROL, R, exec, reboot
