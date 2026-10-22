@@ -24,6 +24,8 @@
     ];
   };
 
+  security.pam.services.login.fprintAuth = false;
+
   services = {
     fwupd.enable = true;
     fprintd.enable = true; # fwupdmgr refresh && fwupdmgr update
