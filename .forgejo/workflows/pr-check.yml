@@ -8,12 +8,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  parse-outputs:
+  discover-checks:
     runs-on: nixos
     outputs:
       checks: ${{ steps.checks.outputs.checks }}
-      tests: ${{ steps.tests.outputs.tests }}
-      hosts: ${{ steps.hosts.outputs.hosts }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -22,26 +20,20 @@ jobs:
       - name: Get checks
         id: checks
         run: |
-          checks=$(nix eval .#checks.x86_64-linux --apply builtins.attrNames --json)
+          checks=$(nix eval .#checks.x86_64-linux --apply 'outputs:
+            outputs
+            |> builtins.attrNames
+            |> builtins.filter (name: builtins.elem "ci" outputs.${name}.runsOn)
+          ' --json)
           printf "checks=%s" "$checks" >> "$FORGEJO_OUTPUT"
-      - name: Get tests
-        id: tests
-        run: |
-          tests=$(nix eval .#tests.x86_64-linux --apply builtins.attrNames --json)
-          printf "tests=%s" "$tests" >> "$FORGEJO_OUTPUT"
-      - name: Get hosts
-        id: hosts
-        run: |
-          hosts=$(nix eval .#nixosConfigurations --apply builtins.attrNames --json)
-          printf "hosts=%s" "$hosts" >> "$FORGEJO_OUTPUT"
 
   build-check:
-    needs: parse-outputs
+    needs: discover-checks
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        check: ${{ fromJSON(needs.parse-outputs.outputs.checks) }}
+        check: ${{ fromJSON(needs.discover-checks.outputs.checks) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -52,45 +44,11 @@ jobs:
         with:
           flake-output: .#checks.x86_64-linux.${{ matrix.check }}
 
-  build-test:
-    needs: parse-outputs
-    runs-on: nixos
-    strategy:
-      fail-fast: false
-      matrix:
-        test: ${{ fromJSON(needs.parse-outputs.outputs.tests) }}
-    steps:
-      - name: Checkout
-        uses: https://code.forgejo.org/actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Build
-        uses: ./.forgejo/actions/build
-        with:
-          flake-output: .#tests.x86_64-linux.${{ matrix.test }}
-
-  build-host:
-    needs: parse-outputs
-    runs-on: nixos
-    strategy:
-      fail-fast: false
-      matrix:
-        host: ${{ fromJSON(needs.parse-outputs.outputs.hosts) }}
-    steps:
-      - name: Checkout
-        uses: https://code.forgejo.org/actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Build
-        uses: ./.forgejo/actions/build
-        with:
-          flake-output: .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel
-
   closure-diff-report:
     if: >-
       forgejo.event.pull_request.head.repo.full_name == forgejo.repository &&
       startsWith(forgejo.event.pull_request.head.ref, 'renovate/')
-    needs: [parse-outputs, build-host]
+    needs: [discover-checks, build-check]
     runs-on: nixos
     steps:
       - name: Checkout
@@ -114,18 +72,15 @@ jobs:
 
   merge-gate:
     if: always()
-    needs:
-      [parse-outputs, build-check, build-test, build-host, closure-diff-report]
+    needs: [discover-checks, build-check, closure-diff-report]
     runs-on: nixos
     steps:
       - name: Verify PR checks passed
         env:
           BUILD_CHECK_RESULT: ${{ needs.build-check.result }}
-          BUILD_TEST_RESULT: ${{ needs.build-test.result }}
-          BUILD_HOST_RESULT: ${{ needs.build-host.result }}
           CLOSURE_DIFF_REPORT_RESULT: ${{ needs.closure-diff-report.result }}
         run: |
-          if [[ "$BUILD_CHECK_RESULT" != "success" || "$BUILD_TEST_RESULT" != "success" || "$BUILD_HOST_RESULT" != "success" || ( "$CLOSURE_DIFF_REPORT_RESULT" != "success" && "$CLOSURE_DIFF_REPORT_RESULT" != "skipped" ) ]]; then
-            echo "Build results: checks=$BUILD_CHECK_RESULT tests=$BUILD_TEST_RESULT hosts=$BUILD_HOST_RESULT closure-diff-report=$CLOSURE_DIFF_REPORT_RESULT" >&2
+          if [[ "$BUILD_CHECK_RESULT" != "success" || ( "$CLOSURE_DIFF_REPORT_RESULT" != "success" && "$CLOSURE_DIFF_REPORT_RESULT" != "skipped" ) ]]; then
+            echo "Build results: checks=$BUILD_CHECK_RESULT closure-diff-report=$CLOSURE_DIFF_REPORT_RESULT" >&2
             exit 1
           fi

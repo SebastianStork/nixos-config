@@ -1,0 +1,43 @@
+name: "Scheduled Checks"
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+jobs:
+  discover-checks:
+    runs-on: nixos
+    outputs:
+      checks: ${{ steps.checks.outputs.checks }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Get checks
+        id: checks
+        run: |
+          checks=$(nix eval .#checks.x86_64-linux --apply '
+            outputs:
+              outputs
+              |> builtins.attrNames
+              |> builtins.filter (name: builtins.elem "schedule" outputs.${name}.runsOn)
+          ' --json)
+          printf 'checks=%s\n' "$checks" >> "$FORGEJO_OUTPUT"
+
+  build-check:
+    needs: discover-checks
+    runs-on: nixos
+    strategy:
+      fail-fast: false
+      matrix:
+        check: ${{ fromJSON(needs.discover-checks.outputs.checks) }}
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build
+        env:
+          OUTPUT: .#checks.x86_64-linux.${{ matrix.check }}
+        run: nix build "$OUTPUT" --rebuild --repair --print-build-logs

@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net/netip"
 	"os"
@@ -13,8 +14,6 @@ import (
 
 	"github.com/slackhq/nebula/cert"
 )
-
-const minValidFor = 30 * 24 * time.Hour
 
 type host struct {
 	Name           string   `json:"name"`
@@ -27,12 +26,14 @@ type host struct {
 }
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Fprintf(os.Stderr, "usage: %s <hosts.json>\n", os.Args[0])
+	validFor := flag.Duration("valid-for", 0, "required remaining certificate validity")
+	flag.Parse()
+	if flag.NArg() != 1 || *validFor < 0 {
+		fmt.Fprintf(os.Stderr, "usage: %s [--valid-for duration] <hosts.json>\n", os.Args[0])
 		os.Exit(2)
 	}
 
-	b, err := os.ReadFile(os.Args[1])
+	b, err := os.ReadFile(flag.Arg(0))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to read hosts: %v\n", err)
 		os.Exit(1)
@@ -59,7 +60,7 @@ func main() {
 	failIfProblems(caPathProblems)
 
 	now := time.Now()
-	validUntil := now.Add(minValidFor)
+	validUntil := now.Add(*validFor)
 
 	pool, caProblems := checkCA(caPath, now, validUntil)
 	failIfProblems(caProblems)
@@ -74,7 +75,11 @@ func main() {
 	}
 	failIfProblems(hostProblems)
 
-	fmt.Printf("checked %d nebula host certificates; all are valid until at least %s\n", len(hosts), validUntil.Format(time.RFC3339))
+	if *validFor > 0 {
+		fmt.Printf("checked %d nebula host certificates; all are valid until at least %s\n", len(hosts), validUntil.Format(time.RFC3339))
+	} else {
+		fmt.Printf("checked %d nebula host certificates; all are valid now\n", len(hosts))
+	}
 }
 
 func failIfProblems(problems []string) {
@@ -114,7 +119,7 @@ func checkCA(path string, now, validUntil time.Time) (*cert.CAPool, []string) {
 	if c.Expired(now) {
 		problems = append(problems, fmt.Sprintf("%s (%s): certificate is not valid now; valid from %s to %s", label, c.Name(), c.NotBefore().Format(time.RFC3339), c.NotAfter().Format(time.RFC3339)))
 	}
-	if c.Expired(validUntil) {
+	if validUntil.After(now) && c.Expired(validUntil) {
 		problems = append(problems, fmt.Sprintf("%s (%s): certificate will not be valid at %s; valid until %s", label, c.Name(), validUntil.Format(time.RFC3339), c.NotAfter().Format(time.RFC3339)))
 	}
 	if len(problems) > 0 {
@@ -178,8 +183,10 @@ func checkHost(h host, pool *cert.CAPool, now, validUntil time.Time) []string {
 	if _, err := pool.VerifyCertificate(now, c); err != nil {
 		problems = append(problems, fmt.Sprintf("%s: certificate is not valid now: %v", label, err))
 	}
-	if _, err := pool.VerifyCertificate(validUntil, c); err != nil {
-		problems = append(problems, fmt.Sprintf("%s: certificate will not be valid at %s: %v", label, validUntil.Format(time.RFC3339), err))
+	if validUntil.After(now) {
+		if _, err := pool.VerifyCertificate(validUntil, c); err != nil {
+			problems = append(problems, fmt.Sprintf("%s: certificate will not be valid at %s: %v", label, validUntil.Format(time.RFC3339), err))
+		}
 	}
 
 	return problems

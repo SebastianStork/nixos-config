@@ -1,59 +1,21 @@
+{ self, lib, ... }:
 {
-  inputs,
-  self,
-  lib,
-  ...
-}:
-{
-  perSystem =
-    { self', pkgs, ... }:
-    {
-      checks = {
-        formatting = (inputs.treefmt.lib.evalModule pkgs "${self}/treefmt.nix").config.build.check self;
+  imports = [
+    ./invariants.nix
+    ./lints.nix
+    ./tests.nix
+  ];
 
-        statix = pkgs.runCommand "statix" { buildInputs = [ pkgs.statix ]; } ''
-          statix check ${self}
-          touch $out
-        '';
-
-        deadnix = pkgs.runCommand "deadnix" { buildInputs = [ pkgs.deadnix ]; } ''
-          deadnix --fail ${self}
-          touch $out
-        '';
-
-        nebula-certs =
-          let
-            nebulaHostsJson =
-              self.allHosts
-              |> lib.attrValues
-              |> lib.filter (host: host.config.custom.networking.overlay.enable)
-              |> lib.map self.lib.nebulaHostInventory
-              |> lib.toJSON
-              |> pkgs.writeText "nebula-hosts.json";
-          in
-          pkgs.runCommand "nebula-certs" { buildInputs = [ self'.packages.nebula-check-certs ]; } ''
-            nebula-check-certs ${nebulaHostsJson}
-            touch $out
-          '';
-
-        hash-stability =
-          let
-            unstableHosts = import ./unstable-hosts.nix { inherit inputs self lib; };
-            drv =
-              if unstableHosts == [ ] then
-                pkgs.runCommand "hash-stability" { } "touch $out"
-              else
-                throw ''
-                  hash stability regression: host derivations changed when only the flake source store path changed
-
-                  unstable hosts:
-                  ${unstableHosts |> lib.map (host: "- ${host}") |> lib.concatLines}
-                '';
-          in
-          lib.lazyDerivation {
-            derivation = drv;
-            passthru.name = "hash-stability";
-          };
-      };
-    };
+  perSystem = {
+    checks =
+      self.nixosConfigurations
+      |> lib.mapAttrs (
+        _: host:
+        host.config.system.build.toplevel
+        // {
+          runsOn = [ "ci" ];
+          cache = true;
+        }
+      );
+  };
 }

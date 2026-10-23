@@ -8,9 +8,15 @@ jq --compact-output '.[]' > "$selected_dir/targets.jsonl"
 
 check_output() {
   local target=$1
-  local name store_path store_name store_hash narinfo_url http_code
+  local name cache store_path store_name store_hash narinfo_url http_code
 
   name=$(jq --raw-output .name <<< "$target")
+  cache=$(jq --raw-output 'if has("cache") then .cache else true end' <<< "$target")
+  if [[ $cache != true ]]; then
+    jq --compact-output . <<< "$target"
+    return
+  fi
+
   store_path=$(jq --raw-output '.path // .expected_closure' <<< "$target")
   store_name=${store_path#/nix/store/}
   store_hash=${store_name%%-*}
@@ -26,7 +32,7 @@ check_output() {
     echo "$name is not cached: failed to query $narinfo_url" >&2
   fi
 
-  jq --null-input --arg name "$name" '$name'
+  jq --compact-output . <<< "$target"
 }
 
 pids=()
