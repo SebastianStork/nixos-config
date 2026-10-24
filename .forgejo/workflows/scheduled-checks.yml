@@ -40,4 +40,9 @@ jobs:
       - name: Build
         env:
           OUTPUT: .#checks.x86_64-linux.${{ matrix.check }}
-        run: nix build "$OUTPUT" --rebuild --repair --print-build-logs
+        run: |
+          if nix-store --check-validity "$(nix eval --raw "${OUTPUT}.outPath")" 2>/dev/null; then
+            nix build "$OUTPUT" --rebuild --print-build-logs
+          else
+            nix build "$OUTPUT" --print-build-logs
+          fi
