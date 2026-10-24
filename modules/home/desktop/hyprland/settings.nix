@@ -90,8 +90,9 @@
         "w[t1]s[false], gapsout:0"
         # Large outer gaps on special workspaces
         "s[true], gapsout:60"
+
+        "special:flake, on-created-empty:foot ${lib.optionalString config.custom.programs.herdr.enable "herdr"}"
       ]
-      ++ "special:flake, on-created-empty:foot ${lib.optional config.custom.programs.herdr.enable "herdr"}"
       ++ lib.optional config.custom.programs.spotify.enable "special:music, on-created-empty:spotify"
       ++ lib.optional config.custom.programs.discord.enable "special:chat, on-created-empty:discord"
       ++ lib.optional config.custom.programs.btop.enable "special:monitor, on-created-empty:foot btop"
