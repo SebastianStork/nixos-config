@@ -69,6 +69,7 @@ jobs:
           printf 'servers_to_deploy=%s\n' "$servers_to_deploy" >> "$FORGEJO_OUTPUT"
 
   build-check:
+    name: build-check (${{ matrix.check.name }})
     needs: discover-checks
     runs-on: nixos
     strategy:
