@@ -21,7 +21,7 @@ jobs:
             echo "Topology is unchanged"
             exit 0
           fi
-          git config user.name "SebastianStork-Bot"
+          git config user.name "Bot"
           git config user.email "gitbot@sstork.dev"
           git add homelab-topology.svg
           git commit -m "topology: Update [skip ci]"
