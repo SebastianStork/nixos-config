@@ -111,6 +111,8 @@ in
             curator.prune_builtins = false;
             display.platforms.matrix.tool_preview_length = 1000; # Work around Hermes treating 0 as a 40-character limit in Matrix
             matrix.require_mention = false;
+            # Let multilingual Whisper detect English and German for each recording.
+            stt.language = "";
             security = {
               redact_secrets = true;
               allow_lazy_installs = false;
