@@ -134,6 +134,7 @@ in
               provider = "openai-codex";
             };
             stt.language = "";
+            stt.local.model = "small";
             security = {
               redact_secrets = true;
               allow_lazy_installs = false;
