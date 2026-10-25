@@ -69,6 +69,7 @@ in
             "hermes/matrix/allowed-users" = { };
             "hermes/matrix/recovery-key" = { };
             "hermes/codeberg/access-token" = { };
+            "hermes/openrouter/api-key" = { };
           };
           templates = {
             "hermes.env" = {
@@ -77,6 +78,7 @@ in
                 MATRIX_ALLOWED_USERS=${config.sops.placeholder."hermes/matrix/allowed-users"}
                 MATRIX_RECOVERY_KEY=${config.sops.placeholder."hermes/matrix/recovery-key"}
                 CODEBERG_TOKEN=${config.sops.placeholder."hermes/codeberg/access-token"}
+                OPENROUTER_API_KEY=${config.sops.placeholder."hermes/openrouter/api-key"}
               '';
               restartUnits = [
                 "hermes-agent.service"
@@ -107,16 +109,25 @@ in
           environmentFiles = [ config.sops.templates."hermes.env".path ];
           settings = {
             agent.reasoning_effort = "medium";
+            agent.reasoning_overrides."openrouter/deepseek/deepseek-v4.1-flash-1017" = "high";
             approvals.destructive_slash_confirm = false;
             auxiliary.background_review.enabled = false;
             curator.prune_builtins = false;
             delegation = {
+              fallback_providers = lib.singleton {
+                model = "deepseek/deepseek-v4.1-flash-1017";
+                provider = "openrouter";
+              };
               max_concurrent_children = 3;
               model = "gpt-5.6-terra";
               provider = "openai-codex";
               reasoning_effort = "medium";
             };
             display.platforms.matrix.tool_preview_length = 1000; # Work around Hermes treating 0 as a 40-character limit in Matrix
+            fallback_providers = lib.singleton {
+              model = "anthropic/claude-sonnet-5.5";
+              provider = "openrouter";
+            };
             matrix.require_mention = false;
             model = {
               default = "gpt-5.6-sol";
