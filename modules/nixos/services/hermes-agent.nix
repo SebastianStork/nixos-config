@@ -133,8 +133,10 @@ in
               default = "gpt-5.6-sol";
               provider = "openai-codex";
             };
-            stt.language = "";
-            stt.local.model = "small";
+            stt = {
+              language = "";
+              local.model = "small";
+            };
             security = {
               redact_secrets = true;
               allow_lazy_installs = false;
