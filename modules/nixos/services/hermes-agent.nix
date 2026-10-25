@@ -106,12 +106,22 @@ in
           };
           environmentFiles = [ config.sops.templates."hermes.env".path ];
           settings = {
+            agent.reasoning_effort = "medium";
             approvals.destructive_slash_confirm = false;
             auxiliary.background_review.enabled = false;
             curator.prune_builtins = false;
+            delegation = {
+              max_concurrent_children = 3;
+              model = "gpt-5.6-terra";
+              provider = "openai-codex";
+              reasoning_effort = "medium";
+            };
             display.platforms.matrix.tool_preview_length = 1000; # Work around Hermes treating 0 as a 40-character limit in Matrix
             matrix.require_mention = false;
-            # Let multilingual Whisper detect English and German for each recording.
+            model = {
+              default = "gpt-5.6-sol";
+              provider = "openai-codex";
+            };
             stt.language = "";
             security = {
               redact_secrets = true;
