@@ -13,6 +13,7 @@ jobs:
     runs-on: nixos
     outputs:
       checks_to_build: ${{ steps.checks.outputs.checks_to_build }}
+      checks_to_cache: ${{ steps.checks.outputs.checks_to_cache }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -31,7 +32,10 @@ jobs:
               inherit (outputs.${name}) cache;
             })
           ' --json | bash .forgejo/scripts/select-uncached-outputs.sh)
-          printf 'checks_to_build=%s\n' "$checks" >> "$FORGEJO_OUTPUT"
+          checks_to_build=$(jq --compact-output 'map(.name)' <<< "$checks")
+          checks_to_cache=$(jq --compact-output 'map(select(.cache) | .name)' <<< "$checks")
+          printf 'checks_to_build=%s\n' "$checks_to_build" >> "$FORGEJO_OUTPUT"
+          printf 'checks_to_cache=%s\n' "$checks_to_cache" >> "$FORGEJO_OUTPUT"
 
   discover-deployments:
     runs-on: nixos
@@ -69,7 +73,6 @@ jobs:
           printf 'servers_to_deploy=%s\n' "$servers_to_deploy" >> "$FORGEJO_OUTPUT"
 
   build-check:
-    name: build-check (${{ matrix.check.name }})
     needs: discover-checks
     runs-on: nixos
     strategy:
@@ -84,9 +87,9 @@ jobs:
       - name: Build
         uses: ./.forgejo/actions/build
         with:
-          flake-output: .#checks.x86_64-linux.${{ matrix.check.name }}
+          flake-output: .#checks.x86_64-linux.${{ matrix.check }}
       - name: Upload
-        if: matrix.check.cache
+        if: contains(fromJSON(needs.discover-checks.outputs.checks_to_cache), matrix.check)
         uses: ./.forgejo/actions/upload
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
