@@ -12,7 +12,6 @@ jobs:
   discover-checks:
     runs-on: nixos
     outputs:
-      checks: ${{ steps.checks.outputs.checks }}
       checks_to_build: ${{ steps.checks.outputs.checks_to_build }}
       checks_to_cache: ${{ steps.checks.outputs.checks_to_cache }}
     steps:
@@ -23,7 +22,7 @@ jobs:
       - name: Get checks
         id: checks
         run: |
-          check_inventory=$(nix eval .#checks.x86_64-linux --apply 'outputs:
+          checks=$(nix eval .#checks.x86_64-linux --apply 'outputs:
             outputs
             |> builtins.attrNames
             |> builtins.filter (name: builtins.elem "ci" outputs.${name}.runsOn)
@@ -32,12 +31,9 @@ jobs:
               path = outputs.${name}.outPath;
               inherit (outputs.${name}) cache;
             })
-          ' --json)
-          selected_checks=$(bash .forgejo/scripts/select-uncached-outputs.sh <<< "$check_inventory")
-          checks=$(jq --compact-output 'map(.name)' <<< "$check_inventory")
-          checks_to_build=$(jq --compact-output 'map(.name)' <<< "$selected_checks")
-          checks_to_cache=$(jq --compact-output 'map(select(.cache) | .name)' <<< "$selected_checks")
-          printf 'checks=%s\n' "$checks" >> "$FORGEJO_OUTPUT"
+          ' --json | bash .forgejo/scripts/select-uncached-outputs.sh)
+          checks_to_build=$(jq --compact-output 'map(.name)' <<< "$checks")
+          checks_to_cache=$(jq --compact-output 'map(select(.cache) | .name)' <<< "$checks")
           printf 'checks_to_build=%s\n' "$checks_to_build" >> "$FORGEJO_OUTPUT"
           printf 'checks_to_cache=%s\n' "$checks_to_cache" >> "$FORGEJO_OUTPUT"
 
@@ -77,13 +73,12 @@ jobs:
           printf 'servers_to_deploy=%s\n' "$servers_to_deploy" >> "$FORGEJO_OUTPUT"
 
   build-check:
-    if: contains(fromJSON(needs.discover-checks.outputs.checks_to_build), matrix.check)
     needs: discover-checks
     runs-on: nixos
     strategy:
       fail-fast: false
       matrix:
-        check: ${{ fromJSON(needs.discover-checks.outputs.checks) }}
+        check: ${{ fromJSON(needs.discover-checks.outputs.checks_to_build) }}
     steps:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
@@ -106,7 +101,7 @@ jobs:
       needs.discover-checks.result == 'success' &&
       needs.discover-deployments.result == 'success' &&
       needs.discover-deployments.outputs.servers_to_deploy != '["__no_server__"]' &&
-      (needs.build-check.result == 'success' || needs.build-check.result == 'skipped')
+      needs.build-check.result == 'success'
     needs: [discover-checks, discover-deployments, build-check]
     runs-on: nixos
     strategy:
