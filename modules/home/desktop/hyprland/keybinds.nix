@@ -102,7 +102,7 @@
       bind = SUPER CONTROL, P, exec, $screenshot-window
 
       # Special workspaces
-      "bind = SUPER, Q, togglespecialworkspace, flake"
+      bind = SUPER, Q, togglespecialworkspace, flake
       ${lib.optionalString config.custom.programs.spotify.enable "bind = SUPER, S, togglespecialworkspace, music"}
       ${lib.optionalString config.custom.programs.discord.enable "bind = SUPER, D, togglespecialworkspace, chat"}
       ${lib.optionalString config.custom.programs.btop.enable "bind = SUPER, M, togglespecialworkspace, monitor"}
