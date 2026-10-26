@@ -26,6 +26,7 @@
           "alt+delete"
           "ctrl+delete"
         ];
+        "app.clear" = [ ];
       };
 
       context = ''
