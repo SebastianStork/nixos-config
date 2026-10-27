@@ -60,7 +60,6 @@
 
     pkgs.vlc
     pkgs.anki
-    pkgs.zed-editor
     pkgs.calibre
 
     pkgs.corefonts
