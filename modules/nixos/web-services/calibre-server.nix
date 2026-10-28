@@ -20,6 +20,7 @@ in
       default = 8080;
     };
     forwardAuth = lib.mkEnableOption "";
+    allowLocalWrite = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -33,11 +34,11 @@ in
       libraries = [ dataDir ];
       host = "localhost";
       inherit (cfg) port;
+      extraFlags = lib.optional cfg.allowLocalWrite "--enable-local-write";
     };
 
     custom = {
       services.caddy.virtualHosts.${cfg.domain} = {
-        inherit (cfg) port;
         forwardAuth = {
           enable = cfg.forwardAuth;
           bypassPaths = [
@@ -45,6 +46,19 @@ in
             "/get/*"
           ];
         };
+        extraConfig = ''
+          ${lib.optionalString cfg.allowLocalWrite ''
+            @writeMethod {
+              method POST PUT PATCH DELETE
+              not path /interface-data/*
+            }
+            respond @writeMethod 405
+
+            @writePath path /cdb/* /conversion/* /fts/disable
+            respond @writePath 405
+          ''}
+          reverse_proxy localhost:${lib.toString cfg.port}
+        '';
       };
 
       persistence.directories = lib.singleton {

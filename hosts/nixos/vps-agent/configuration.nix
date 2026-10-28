@@ -1,4 +1,9 @@
-{ config, self, ... }:
+{
+  config,
+  self,
+  pkgs,
+  ...
+}:
 {
   imports = [ self.nixosModules.core-profile ];
 
@@ -52,7 +57,10 @@
         enable = true;
         domain = "library.${config.networking.domain}";
         forwardAuth = true;
+        allowLocalWrite = true;
       };
     };
   };
+
+  services.hermes-agent.extraPackages = [ pkgs.calibre ];
 }
