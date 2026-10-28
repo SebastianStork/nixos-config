@@ -46,6 +46,13 @@
       };
     };
 
-    web-services.librespeed.enable = true;
+    web-services = {
+      librespeed.enable = true;
+      calibre-server = {
+        enable = true;
+        domain = "library.${config.networking.domain}";
+        forwardAuth = true;
+      };
+    };
   };
 }

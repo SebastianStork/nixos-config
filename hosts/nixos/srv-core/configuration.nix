@@ -106,12 +106,6 @@
         oidc.enable = true;
       };
 
-      calibre-server = {
-        enable = true;
-        domain = "library.${config.networking.domain}";
-        forwardAuth = true;
-      };
-
       karakeep = {
         enable = true;
         domain = "bookmarks.${config.networking.domain}";

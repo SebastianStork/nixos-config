@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.custom.web-services.calibre-server;
+  dataDir = "/var/lib/calibre-server";
 in
 {
   options.custom.web-services.calibre-server = {
@@ -22,26 +23,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = self.lib.isPrivateDomain cfg.domain || cfg.forwardAuth;
-        message = self.lib.mkUnprotectedMessage "Calibre-Server";
-      }
-      {
-        assertion = config.custom.services.syncthing.enable;
-        message = self.lib.mkInvalidConfigMessage "Calibre-Server on ${config.networking.hostName}" "Syncthing must be enabled";
-      }
-    ];
+    assertions = lib.singleton {
+      assertion = self.lib.isPrivateDomain cfg.domain || cfg.forwardAuth;
+      message = self.lib.mkUnprotectedMessage "Calibre-Server";
+    };
 
     services.calibre-server = {
       enable = true;
-      libraries = [ "${config.services.syncthing.dataDir}/Documents/Library" ];
+      libraries = [ dataDir ];
       host = "localhost";
       inherit (cfg) port;
-      inherit (config.services.syncthing) user group;
     };
-
-    systemd.services.calibre-server.after = [ "syncthing.service" ];
 
     custom = {
       services.caddy.virtualHosts.${cfg.domain} = {
@@ -53,6 +45,13 @@ in
             "/get/*"
           ];
         };
+      };
+
+      persistence.directories = lib.singleton {
+        directory = dataDir;
+        user = config.services.calibre-server.user;
+        group = config.services.calibre-server.group;
+        mode = "0750";
       };
 
       meta.sites.${cfg.domain} = {
