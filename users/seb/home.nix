@@ -22,15 +22,18 @@
 
     services = {
       ntfy-client.enable = true;
-      syncthing.folders = [
-        "Documents"
-        "Downloads"
-        "Music"
-        "Pictures"
-        "Projects"
-        "Vault"
-        "Videos"
-      ];
+      syncthing = {
+        tray.enable = true;
+        folders = [
+          "Documents"
+          "Downloads"
+          "Music"
+          "Pictures"
+          "Projects"
+          "Vault"
+          "Videos"
+        ];
+      };
     };
 
     programs = {
