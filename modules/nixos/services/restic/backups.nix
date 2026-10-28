@@ -105,9 +105,11 @@ in
       let
         backupAllScript = pkgs.writeShellApplication {
           name = "restic-backup-all";
-          text = "systemctl start restic-backups-{${
-            backups |> lib.map (backup: backup.name) |> lib.concatStringsSep ","
-          }}";
+          text = ''
+            systemctl start ${
+              backups |> lib.map (backup: "restic-backups-${backup.name}") |> lib.escapeShellArgs
+            }
+          '';
         };
       in
       [ backupAllScript ];
