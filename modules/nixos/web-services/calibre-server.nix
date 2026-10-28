@@ -21,6 +21,7 @@ in
     };
     forwardAuth = lib.mkEnableOption "";
     allowLocalWrite = lib.mkEnableOption "";
+    doBackups = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable {
@@ -38,27 +39,34 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain} = {
-        forwardAuth = {
-          enable = cfg.forwardAuth;
-          bypassPaths = [
-            "/opds*"
-            "/get/*"
-          ];
-        };
-        extraConfig = ''
-          ${lib.optionalString cfg.allowLocalWrite ''
-            @writeMethod {
-              method POST PUT PATCH DELETE
-              not path /interface-data/*
-            }
-            respond @writeMethod 405
+      services = {
+        caddy.virtualHosts.${cfg.domain} = {
+          forwardAuth = {
+            enable = cfg.forwardAuth;
+            bypassPaths = [
+              "/opds*"
+              "/get/*"
+            ];
+          };
+          extraConfig = ''
+            ${lib.optionalString cfg.allowLocalWrite ''
+              @writeMethod {
+                method POST PUT PATCH DELETE
+                not path /interface-data/*
+              }
+              respond @writeMethod 405
 
-            @writePath path /cdb/* /conversion/* /fts/disable
-            respond @writePath 405
-          ''}
-          reverse_proxy localhost:${lib.toString cfg.port}
-        '';
+              @writePath path /cdb/* /conversion/* /fts/disable
+              respond @writePath 405
+            ''}
+            reverse_proxy localhost:${lib.toString cfg.port}
+          '';
+        };
+
+        restic.backups.calibre-server = lib.mkIf cfg.doBackups {
+          conflictingService = "calibre-server.service";
+          paths = [ dataDir ];
+        };
       };
 
       persistence.directories = lib.singleton {

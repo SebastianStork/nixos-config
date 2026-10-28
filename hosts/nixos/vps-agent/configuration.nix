@@ -58,6 +58,7 @@
         domain = "library.${config.networking.domain}";
         forwardAuth = true;
         allowLocalWrite = true;
+        doBackups = true;
       };
     };
   };
