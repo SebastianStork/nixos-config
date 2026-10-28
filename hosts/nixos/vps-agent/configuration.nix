@@ -1,9 +1,4 @@
-{
-  config,
-  self,
-  pkgs,
-  ...
-}:
+{ config, self, ... }:
 {
   imports = [ self.nixosModules.core-profile ];
 
@@ -62,6 +57,4 @@
       };
     };
   };
-
-  services.hermes-agent.extraPackages = [ pkgs.calibre ];
 }

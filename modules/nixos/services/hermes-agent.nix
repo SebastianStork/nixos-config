@@ -97,6 +97,10 @@ in
             pkgs.unzip
             pkgs.python3
             pkgs.ripgrep
+          ]
+          ++ lib.optionals config.custom.web-services.calibre-server.enable [
+            pkgs.calibre
+            pkgs.fanficfare
           ];
           environment = {
             MATRIX_HOMESERVER = "https://matrix.org";
