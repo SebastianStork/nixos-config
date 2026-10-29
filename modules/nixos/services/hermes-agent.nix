@@ -112,8 +112,11 @@ in
           };
           environmentFiles = [ config.sops.templates."hermes.env".path ];
           settings = {
-            agent.reasoning_effort = "medium";
-            agent.reasoning_overrides."openrouter/deepseek/deepseek-v4.1-flash-1017" = "high";
+            agent = {
+              reasoning_effort = "medium";
+              reasoning_overrides."openrouter/deepseek/deepseek-v4.1-flash-1017" = "high";
+              disabled_toolsets = [ "browser" ];
+            };
             approvals.destructive_slash_confirm = false;
             auxiliary.background_review.enabled = false;
             curator.prune_builtins = false;
