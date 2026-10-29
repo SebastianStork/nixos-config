@@ -66,7 +66,7 @@
       bindrl = SUPER CONTROL, L, exec, $ipc session lock
       bindrl = SUPER CONTROL, S, exec, systemctl sleep
       bindrl = SUPER CONTROL, H, exec, systemctl hibernate
-      bindrl = SUPER CONTROL, B, exec, sleep 1 && hyprctl dispatch dpms off
+      bindrl = SUPER CONTROL, B, exec, $ipc session lock && sleep 0.5 && hyprctl dispatch dpms off
 
       # Control media
       bindl = , XF86AudioPlay, exec, $play-pause
