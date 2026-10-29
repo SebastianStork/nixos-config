@@ -1,9 +1,4 @@
-{
-  inputs,
-  self,
-  lib,
-  ...
-}:
+{ self, lib, ... }:
 {
   perSystem =
     { self', pkgs, ... }:
@@ -37,65 +32,6 @@
           // {
             runsOn = [ "schedule" ];
             cache = false;
-          };
-
-        hash-stability =
-          let
-            unstableHosts =
-              let
-                mkSource =
-                  suffix:
-                  builtins.path {
-                    path = self;
-                    name = "hash-stability-${suffix}";
-                  };
-
-                inputsWithoutSelf = inputs |> lib.filterAttrs (name: _: name != "self");
-
-                mkSyntheticFlake =
-                  source:
-                  let
-                    flake = ((import "${source}/flake.nix").outputs (inputsWithoutSelf // { self = flake; })) // {
-                      _type = "flake";
-                      inputs = inputsWithoutSelf;
-                      outPath = source;
-                    };
-                  in
-                  flake;
-
-                mkHostDrvs =
-                  flake:
-                  flake.nixosConfigurations |> lib.mapAttrs (_: host: host.config.system.build.toplevel.drvPath);
-              in
-              [
-                "a"
-                "b"
-              ]
-              |> lib.map mkSource
-              |> lib.map mkSyntheticFlake
-              |> lib.map mkHostDrvs
-              |> lib.zipAttrsWith (_: drvs: (lib.elemAt drvs 0) != (lib.elemAt drvs 1))
-              |> lib.filterAttrs (_: changed: changed)
-              |> lib.attrNames;
-
-            drv =
-              if unstableHosts == [ ] then
-                pkgs.runCommand "hash-stability" { } "touch $out"
-              else
-                throw ''
-                  hash stability regression: host derivations changed when only the flake source store path changed
-
-                  unstable hosts:
-                  ${unstableHosts |> lib.map (host: "- ${host}") |> lib.concatLines}
-                '';
-          in
-          lib.lazyDerivation {
-            derivation = drv;
-            passthru = {
-              name = "hash-stability";
-              runsOn = [ "schedule" ];
-              cache = false;
-            };
           };
       };
     };

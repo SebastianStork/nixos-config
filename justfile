@@ -12,6 +12,14 @@ check:
     nix flake check
 
 [group('utility')]
+check-lite:
+    nix flake check --no-build
+
+[group('utility')]
+check-hash-stability:
+    nix run .\#check-hash-stability
+
+[group('utility')]
 repair:
     nix-store --verify --check-contents --repair
 
