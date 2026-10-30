@@ -63,7 +63,6 @@
 
     pkgs.vlc
     pkgs.anki
-    pkgs.calibre
 
     pkgs.corefonts
   ];
