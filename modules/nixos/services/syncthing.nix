@@ -159,8 +159,6 @@ in
               urAccepted = -1;
               autoUpgradeIntervalH = 0;
             };
-
-            gui.insecureSkipHostcheck = true;
           };
       };
 
