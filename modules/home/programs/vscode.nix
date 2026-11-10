@@ -2,6 +2,7 @@
   config,
   inputs,
   pkgs,
+  pkgs-unstable,
   lib,
   ...
 }:
@@ -11,6 +12,7 @@
   config = lib.mkIf config.custom.programs.vscode.enable {
     programs.vscode = {
       enable = true;
+      package = pkgs-unstable.vscode;
       profiles.default = {
         extensions =
           let
