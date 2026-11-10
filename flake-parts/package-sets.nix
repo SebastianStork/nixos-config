@@ -1,4 +1,9 @@
-{ inputs, lib, ... }:
+{
+  inputs,
+  self,
+  lib,
+  ...
+}:
 let
   nixpkgsConfig = {
     allowUnfree = true;
@@ -6,10 +11,10 @@ let
   };
 
   mkPkgs =
-    nixpkgs: system:
+    nixpkgs: system: overlays:
     import nixpkgs {
       config = nixpkgsConfig;
-      inherit system;
+      inherit system overlays;
     };
 
   mkRegistryFlake =
@@ -53,8 +58,19 @@ in
   perSystem =
     { system, ... }:
     let
-      pkgs = mkPkgs inputs.nixpkgs system;
-      pkgs-unstable = mkPkgs inputs.nixpkgs-unstable system;
+      pkgs-unstable = mkPkgs inputs.nixpkgs-unstable system [ ];
+      multiverse = inputs.multiverse.lib.mkMultiverse {
+        inherit system;
+        config = nixpkgsConfig;
+      };
+      pkgs = mkPkgs inputs.nixpkgs system [
+        (final: _: {
+          packageAtLeast = self.lib.mkPackageAtLeast {
+            stable = final;
+            pinned = multiverse.version;
+          };
+        })
+      ];
     in
     {
       _module.args = { inherit pkgs pkgs-unstable; };

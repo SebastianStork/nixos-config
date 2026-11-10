@@ -45,6 +45,19 @@
 
     mkInvalidConfigMessage = subject: reason: "Invalid configuration for ${subject}: ${reason}.";
 
+    mkPackageAtLeast =
+      { stable, pinned }:
+      packageName: minimumVersion:
+      let
+        stablePackage = stable.${packageName} or null;
+      in
+      if stablePackage != null && lib.versionAtLeast stablePackage.version minimumVersion then
+        lib.warn ''
+          packageAtLeast: stable `${packageName}` ${stablePackage.version} now satisfies minimum version ${minimumVersion}; remove this override
+        '' stablePackage
+      else
+        pinned packageName minimumVersion;
+
     mkUnprotectedMessage =
       name:
       self.lib.mkInvalidConfigMessage name "the service must use a private domain until access control is configured";

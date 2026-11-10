@@ -200,6 +200,21 @@
         "type": "github"
       }
     },
+    "multiverse": {
+      "locked": {
+        "lastModified": 1794338321,
+        "narHash": "sha256-ECn+pD6FzQhSRsQ3OiPjDsQs2rZfCIoO+lNxeBZXB+U=",
+        "owner": "fzakaria",
+        "repo": "nixpkgs-multiverse",
+        "rev": "390f52c4d0f49772ef625e0f8352030e31b40a7b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fzakaria",
+        "repo": "nixpkgs-multiverse",
+        "type": "github"
+      }
+    },
     "ncro": {
       "inputs": {
         "nixpkgs": [
@@ -405,6 +420,7 @@
         "home-manager": "home-manager",
         "home-manager-unstable": "home-manager-unstable",
         "impermanence": "impermanence",
+        "multiverse": "multiverse",
         "ncro": "ncro",
         "nix-index-database": "nix-index-database",
         "nixos-hardware": "nixos-hardware",
