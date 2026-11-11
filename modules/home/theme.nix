@@ -75,7 +75,6 @@ in
       };
       qt = {
         enable = true;
-        style.package = pkgs.adwaita-qt;
         platformTheme.name = "adwaita";
       };
       home.pointerCursor = {
