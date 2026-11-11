@@ -80,6 +80,7 @@
         "match:class .*, idle_inhibit fullscreen"
 
         "match:class (?i).*satty.*, float on"
+        "match:title ^Syncthing Tray$, float on, size 575 475, move monitor_w-575 monitor_h-509, border_size 0"
 
         # Fix flickering in JetBrains-IDEs
         "match:class (jetbrains-)(.*), match:float 1, no_initial_focus on"
