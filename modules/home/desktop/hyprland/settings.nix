@@ -62,7 +62,10 @@
 
       binds.hide_special_on_workspace_change = true;
 
-      cursor.inactive_timeout = 10;
+      cursor = {
+        enable_hyprcursor = false;
+        inactive_timeout = 10;
+      };
 
       ecosystem = {
         no_update_news = true;
