@@ -80,8 +80,31 @@ in
       };
       home.pointerCursor = {
         gtk.enable = true;
-        package = pkgs.bibata-cursors;
-        size = 24;
+        name = "Future-cursors";
+        size = 32;
+        package = pkgs.stdenvNoCC.mkDerivation {
+          name = "future-cursors-cyan";
+          src = pkgs.fetchFromGitHub {
+            owner = "yeyushengfan258";
+            repo = "Future-cursors";
+            rev = "587c14d2f5bd2dc34095a4efbb1a729eb72a1d36";
+            hash = "sha256-ziEgMasNVhfzqeURjYJK1l5BeIHk8GK6C4ONHQR7FyY=";
+          };
+          nativeBuildInputs = [
+            pkgs.librsvg
+            pkgs.xcursorgen
+          ];
+          postPatch = ''
+            substituteInPlace build.sh \
+              --replace-fail "create svg" "create svg-cyan" \
+              --replace-fail inkscape rsvg-convert
+          '';
+          buildPhase = "bash build.sh";
+          installPhase = ''
+            mkdir -p "$out/share/icons/Future-cursors"
+            cp -r dist/. "$out/share/icons/Future-cursors"
+          '';
+        };
       };
     }
 
@@ -92,7 +115,6 @@ in
         iconTheme.name = "Papirus-Dark";
       };
       qt.style.name = "adwaita-dark";
-      home.pointerCursor.name = "Bibata-Original-Classic";
     })
 
     (lib.mkIf (theme == "light") {
@@ -102,7 +124,6 @@ in
         iconTheme.name = "Papirus";
       };
       qt.style.name = "adwaita";
-      home.pointerCursor.name = "Bibata-Original-Ice";
     })
   ];
 }
