@@ -70,6 +70,7 @@ in
             "hermes/matrix/recovery-key" = { };
             "hermes/codeberg/access-token" = { };
             "hermes/openrouter/api-key" = { };
+            "hermes/agentmail/api-key" = { };
           };
           templates = {
             "hermes.env" = {
@@ -79,6 +80,7 @@ in
                 MATRIX_RECOVERY_KEY=${config.sops.placeholder."hermes/matrix/recovery-key"}
                 CODEBERG_TOKEN=${config.sops.placeholder."hermes/codeberg/access-token"}
                 OPENROUTER_API_KEY=${config.sops.placeholder."hermes/openrouter/api-key"}
+                AGENTMAIL_API_KEY=${config.sops.placeholder."hermes/agentmail/api-key"}
               '';
               restartUnits = [
                 "hermes-agent.service"
@@ -111,6 +113,23 @@ in
             OBSIDIAN_VAULT_PATH = "${config.services.hermes-agent.stateDir}/Vault";
           };
           environmentFiles = [ config.sops.templates."hermes.env".path ];
+          mcpServers.agentmail = {
+            url = "https://mcp.agentmail.to/mcp";
+            headers."x-api-key" = "\${AGENTMAIL_API_KEY}";
+            tools.include = [
+              "list_inboxes"
+              "search_inboxes"
+              "get_inbox"
+              "list_threads"
+              "search_threads"
+              "get_thread"
+              "list_messages"
+              "search_messages"
+              "get_message"
+              "get_attachment"
+            ];
+            sampling.enabled = false;
+          };
           settings = {
             agent = {
               reasoning_effort = "medium";
@@ -166,6 +185,7 @@ in
             hermesRestartTriggers = [
               (lib.toJSON config.services.hermes-agent.environment)
               (lib.toJSON config.services.hermes-agent.environmentFiles)
+              (lib.toJSON config.services.hermes-agent.mcpServers)
               (lib.toJSON config.services.hermes-agent.settings)
             ];
           in
