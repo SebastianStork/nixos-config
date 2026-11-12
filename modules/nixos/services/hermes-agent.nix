@@ -52,6 +52,25 @@ in
         |> lib.map (searxng: "http://${searxng.domain}:${lib.toString searxng.port}")
         |> self.lib.atMostOne "enabled SearXNG instance";
     };
+    radicale =
+      let
+        discoveredRadicale =
+          allHosts
+          |> lib.attrValues
+          |> lib.map (host: host.config.custom.web-services.radicale)
+          |> lib.filter (radicale: radicale.enable && radicale.allowHermes)
+          |> self.lib.atMostOne "enabled Radicale instance allowing Hermes access";
+      in
+      {
+        url = lib.mkOption {
+          type = lib.types.nullOr lib.types.nonEmptyStr;
+          default = if discoveredRadicale == null then null else "https://${discoveredRadicale.domain}";
+        };
+        ownerUsername = lib.mkOption {
+          type = lib.types.strMatching "[A-Za-z0-9_-]+";
+          default = discoveredRadicale.ownerUsername;
+        };
+      };
     forwardAuth = lib.mkEnableOption "";
   };
 
@@ -274,6 +293,79 @@ in
           settings.web.search_backend = "searxng";
         };
       })
+
+      (lib.mkIf (cfg.radicale.url != null) (
+        let
+          stateDir = "${config.services.hermes-agent.stateDir}/calendar";
+          vdirsyncerConfig = pkgs.writeText "vdirsyncer-calendar.conf" ''
+            [general]
+            status_path = "${stateDir}/status/"
+
+            [pair calendars]
+            a = "remote"
+            b = "local"
+            collections = ["from a"]
+
+            [storage remote]
+            type = "caldav"
+            url = "${cfg.radicale.url}/${cfg.radicale.ownerUsername}/"
+            username = "hermes"
+            password.fetch = ["command", "${lib.getExe' pkgs.coreutils "cat"}", "${
+              config.sops.secrets."hermes/radicale/password".path
+            }"]
+
+            [storage local]
+            type = "filesystem"
+            path = "${stateDir}/calendars/"
+            fileext = ".ics"
+          '';
+          khalConfig = pkgs.writeText "khal-calendar.conf" ''
+            [calendars]
+              [[calendars]]
+                path = ${stateDir}/calendars/*
+                type = discover
+
+            [sqlite]
+              path = ${stateDir}/khal.db
+
+            [locale]
+              default_timezone = ${config.time.timeZone}
+              local_timezone = ${config.time.timeZone}
+
+            [default]
+              default_calendar = hermes
+          '';
+          calendarSync = pkgs.writeShellApplication {
+            name = "hermes-calendar-sync";
+            runtimeInputs = [ pkgs.vdirsyncer ];
+            text = ''
+              export VDIRSYNCER_CONFIG=${vdirsyncerConfig}
+              exec vdirsyncer "$@"
+            '';
+          };
+          calendarCli = pkgs.writeShellApplication {
+            name = "hermes-calendar";
+            runtimeInputs = [ pkgs.khal ];
+            text = ''
+              exec khal -c ${khalConfig} "$@"
+            '';
+          };
+        in
+        {
+          sops.secrets."hermes/radicale/password".owner = config.services.hermes-agent.user;
+
+          services.hermes-agent.extraPackages = [
+            calendarCli
+            calendarSync
+          ];
+
+          systemd.tmpfiles.rules = [
+            "d ${stateDir} 0700 ${config.services.hermes-agent.user} ${config.services.hermes-agent.group} - -"
+            "d ${stateDir}/calendars 0700 ${config.services.hermes-agent.user} ${config.services.hermes-agent.group} - -"
+            "d ${stateDir}/status 0700 ${config.services.hermes-agent.user} ${config.services.hermes-agent.group} - -"
+          ];
+        }
+      ))
     ]
   );
 }

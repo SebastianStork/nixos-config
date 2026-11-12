@@ -97,6 +97,7 @@
         enable = true;
         domain = "dav.${config.networking.domain}";
         doBackups = true;
+        allowHermes = true;
       };
 
       actualbudget = {
