@@ -2,9 +2,31 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "semanticCommits": "disabled",
-  "enabledManagers": ["nix"],
+  "enabledManagers": ["nix", "custom.regex"],
   "nix": {
     "enabled": true
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Camoufox from the Linux x86_64 GitHub release asset",
+      "managerFilePatterns": ["/^modules/nixos/services/hermes-agent\\.nix$/"],
+      "matchStrings": [
+        "camoufoxRelease = \\{\\s*version = \"(?<currentValue>[^\"]+)\";\\s*hash = \"(?<currentDigest>[a-f0-9]{64})\";\\s*\\};"
+      ],
+      "datasourceTemplate": "custom.camoufox",
+      "depNameTemplate": "daijro/camoufox",
+      "versioningTemplate": "loose"
+    }
+  ],
+  "customDatasources": {
+    "camoufox": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/daijro/camoufox/releases?per_page=100",
+      "format": "json",
+      "transformTemplates": [
+        "{ \"releases\": $filter($map($, function($release) { ($version := $substringAfter($release.tag_name, \"v\"); $asset := $release.assets[name = $join([\"camoufox-\", $version, \"-lin.x86_64.zip\"])][0]; ($release.tag_name ~> /^v[0-9]+(\\.[0-9]+){1,2}(-(alpha|beta)\\.[0-9]+)?$/) and ($asset.digest ~> /^sha256:[a-f0-9]{64}$/) ? { \"version\": $release.tag_name, \"digest\": $substringAfter($asset.digest, \"sha256:\"), \"releaseTimestamp\": $release.published_at, \"sourceUrl\": $release.html_url } ) }), function($release) { $exists($release.version) }), \"sourceUrl\": \"https://github.com/daijro/camoufox\" }"
+      ]
+    }
   },
   "lockFileMaintenance": {
     "enabled": true,
@@ -14,6 +36,14 @@
     "automerge": true
   },
   "packageRules": [
+    {
+      "description": "Automerge verified Camoufox release updates",
+      "matchManagers": ["custom.regex"],
+      "matchDepNames": ["daijro/camoufox"],
+      "commitMessageAction": "hermes-agent: Update",
+      "commitMessageTopic": "Camoufox",
+      "automerge": true
+    },
     {
       "description": "Disable per-input PRs; use full lock-file maintenance only",
       "matchManagers": ["nix"],

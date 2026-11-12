@@ -4,11 +4,13 @@
   self,
   lib,
   pkgs,
+  pkgs-unstable,
   allHosts,
   ...
 }:
 let
   cfg = config.custom.services.hermes-agent;
+
 in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
@@ -118,10 +120,6 @@ in
             pkgs.unzip
             pkgs.python3
             pkgs.ripgrep
-          ]
-          ++ lib.optionals config.custom.web-services.calibre-server.enable [
-            pkgs.calibre
-            pkgs.fanficfare
           ];
           environment = {
             MATRIX_HOMESERVER = "https://matrix.org";
@@ -252,6 +250,153 @@ in
           };
         };
       }
+
+      (lib.mkIf config.custom.web-services.calibre-server.enable (
+        let
+          camoufoxRelease = {
+            version = "v158.0.1-beta.41";
+            hash = "3f2eb1d0451fa58e45e43e55f5e6181565069791ae60c0574f0ceb1f01341c33";
+          };
+          camoufoxLibraries = [
+            pkgs.alsa-lib
+            pkgs.at-spi2-core
+            pkgs.cairo
+            pkgs.dbus
+            pkgs.fontconfig
+            pkgs.freetype
+            pkgs.gdk-pixbuf
+            pkgs.glib
+            pkgs.gtk3
+            pkgs.libxkbcommon
+            pkgs.pango
+            pkgs.stdenv.cc.cc.lib
+            pkgs.xorg.libX11
+            pkgs.xorg.libXcomposite
+            pkgs.xorg.libXcursor
+            pkgs.xorg.libXdamage
+            pkgs.xorg.libXext
+            pkgs.xorg.libXfixes
+            pkgs.xorg.libXi
+            pkgs.xorg.libXrandr
+            pkgs.xorg.libXrender
+            pkgs.xorg.libxcb
+          ];
+
+          camoufox = pkgs.stdenv.mkDerivation (finalAttrs: {
+            pname = "camoufox";
+            version = camoufoxRelease.version |> lib.removePrefix "v";
+
+            src = pkgs.fetchurl {
+              url = "https://github.com/daijro/camoufox/releases/download/${camoufoxRelease.version}/camoufox-${finalAttrs.version}-lin.x86_64.zip";
+              hash = builtins.convertHash {
+                inherit (camoufoxRelease) hash;
+                hashAlgo = "sha256";
+                toHashFormat = "sri";
+              };
+            };
+
+            nativeBuildInputs = [
+              pkgs.makeWrapper
+              pkgs.patchelf
+              pkgs.unzip
+            ];
+
+            dontPatchELF = true;
+            dontStrip = true;
+            sourceRoot = ".";
+
+            installPhase = ''
+              runHook preInstall
+              mkdir -p "$out/lib/camoufox"
+              cp -r . "$out/lib/camoufox"
+              mv "$out/lib/camoufox/camoufox-bin" "$out/lib/camoufox/camoufox-bin-unwrapped"
+              patchelf \
+                --set-interpreter ${pkgs.stdenv.cc.bintools.dynamicLinker} \
+                "$out/lib/camoufox/camoufox-bin-unwrapped"
+              makeWrapper \
+                "$out/lib/camoufox/camoufox-bin-unwrapped" \
+                "$out/lib/camoufox/camoufox-bin" \
+                --prefix LD_LIBRARY_PATH : "$out/lib/camoufox:${lib.makeLibraryPath camoufoxLibraries}"
+              runHook postInstall
+            '';
+
+            meta = {
+              description = "Anti-detect browser based on Firefox";
+              homepage = "https://github.com/daijro/camoufox";
+              license = lib.licenses.mpl20;
+              platforms = [ "x86_64-linux" ];
+              sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
+            };
+          });
+
+          browserforgePythonPath =
+            [ pkgs-unstable.python314Packages.browserforge ] |> pkgs-unstable.python314Packages.makePythonPath;
+
+          calibre = pkgs-unstable.calibre.overrideAttrs (oldAttrs: {
+            postPatch = (oldAttrs.postPatch or "") + ''
+              cat > resources/system-camoufox.json <<'EOF'
+              {"binary":"${camoufox}/lib/camoufox/camoufox-bin","resource_dir":"${camoufox}/lib/camoufox"}
+              EOF
+            '';
+
+            preInstallCheck = ''
+              export PYTHONPATH="${browserforgePythonPath}''${PYTHONPATH:+:$PYTHONPATH}"
+            ''
+            + (oldAttrs.preInstallCheck or "");
+
+            preFixup = ''
+              qtWrapperArgs+=(--prefix PYTHONPATH : "${browserforgePythonPath}")
+            ''
+            + (oldAttrs.preFixup or "");
+          });
+
+          fanFicFarePlugin = pkgs.fetchurl {
+            url = "https://github.com/JimmXinu/FanFicFare/releases/download/v4.63.0/FanFicFarePlugin-v4.63.0.zip";
+            hash = "sha256-drqxwoE6RqHig4U1ylyyCYf9vcxAnRPA3MnY0yVMy+Y=";
+          };
+
+          fanFicFare = pkgs.writeShellApplication {
+            name = "fanficfare";
+            runtimeInputs = [
+              calibre
+              pkgs.coreutils
+              pkgs.util-linux
+            ];
+            text = ''
+              state_dir="''${XDG_STATE_HOME:-$HOME/.local/state}/fanficfare-calibre"
+              export CALIBRE_CONFIG_DIRECTORY="$state_dir/config"
+              library_dir="$state_dir/library"
+              installed_plugin="$CALIBRE_CONFIG_DIRECTORY/plugins/FanFicFare.zip"
+
+              mkdir -p "$CALIBRE_CONFIG_DIRECTORY/plugins" "$library_dir"
+              exec 9>"$state_dir/init.lock"
+              flock 9
+
+              if [[ ! -f "$library_dir/metadata.db" ]]; then
+                calibredb --with-library "$library_dir" list >/dev/null
+              fi
+
+              if [[ ! -f "$installed_plugin" ]] || ! cmp --silent ${fanFicFarePlugin} "$installed_plugin"; then
+                calibre-customize --add-plugin ${fanFicFarePlugin}
+              fi
+
+              flock --unlock 9
+              exec calibre-debug --run-plugin FanFicFare -- \
+                --library-path "$library_dir" \
+                --option use_browser_cache=false \
+                --option use_camoufox=directimages \
+                --option connect_timeout=180 \
+                "$@"
+            '';
+          };
+        in
+        {
+          services.hermes-agent.extraPackages = [
+            pkgs.calibre
+            fanFicFare
+          ];
+        }
+      ))
 
       (lib.mkIf (cfg.homeAssistantUrl != null) (
         let
