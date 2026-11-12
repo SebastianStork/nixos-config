@@ -9,6 +9,86 @@
 }:
 let
   cfg = config.custom.services.hermes-agent;
+  calendarStateDir = "${config.services.hermes-agent.stateDir}/calendar";
+  personalCalendarPairs =
+    cfg.calendar.personalCalendars
+    |> lib.imap0 (
+      index: calendarName: ''
+        [pair personal_${lib.toString index}]
+        a = "personal_${lib.toString index}_remote"
+        b = "personal_${lib.toString index}_local"
+        collections = null
+        partial_sync = "revert"
+
+        [storage personal_${lib.toString index}_remote]
+        type = "caldav"
+        url = "${cfg.calendar.serverUrl}/${cfg.calendar.ownerUsername}/${calendarName}/"
+        username = "${cfg.calendar.username}"
+        password.fetch = ["command", "cat", "${config.sops.secrets."hermes/radicale/password".path}"]
+        read_only = true
+
+        [storage personal_${lib.toString index}_local]
+        type = "filesystem"
+        path = "${calendarStateDir}/personal/${calendarName}/"
+        fileext = ".ics"
+      ''
+    )
+    |> lib.concatStringsSep "\n";
+  vdirsyncerConfig = pkgs.writeText "vdirsyncer-calendar.conf" ''
+    [general]
+    status_path = "${calendarStateDir}/status/"
+
+    ${personalCalendarPairs}
+
+    [pair hermes]
+    a = "hermes_local"
+    b = "hermes_remote"
+    collections = null
+
+    [storage hermes_local]
+    type = "filesystem"
+    path = "${calendarStateDir}/hermes/"
+    fileext = ".ics"
+
+    [storage hermes_remote]
+    type = "caldav"
+    url = "${cfg.calendar.serverUrl}/${cfg.calendar.username}/${cfg.calendar.calendarName}/"
+    username = "${cfg.calendar.username}"
+    password.fetch = ["command", "cat", "${config.sops.secrets."hermes/radicale/password".path}"]
+  '';
+  khalConfig = pkgs.writeText "khal-calendar.conf" ''
+    [calendars]
+      [[personal]]
+        path = ${calendarStateDir}/personal/*
+        type = discover
+        readonly = True
+
+      [[hermes]]
+        path = ${calendarStateDir}/hermes/
+        readonly = False
+
+    [locale]
+      default_timezone = ${config.time.timeZone}
+      local_timezone = ${config.time.timeZone}
+
+    [default]
+      default_calendar = hermes
+  '';
+  calendarSync = pkgs.writeShellApplication {
+    name = "hermes-calendar-sync";
+    runtimeInputs = [ pkgs.vdirsyncer ];
+    text = ''
+      export VDIRSYNCER_CONFIG=${vdirsyncerConfig}
+      exec vdirsyncer "$@"
+    '';
+  };
+  calendarCli = pkgs.writeShellApplication {
+    name = "hermes-calendar";
+    runtimeInputs = [ pkgs.khal ];
+    text = ''
+      exec khal -c ${khalConfig} "$@"
+    '';
+  };
 in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
@@ -51,6 +131,35 @@ in
         |> lib.filter (searxng: searxng.enable && searxng.api.allowHermes)
         |> lib.map (searxng: "http://${searxng.domain}:${lib.toString searxng.port}")
         |> self.lib.atMostOne "enabled SearXNG instance";
+    };
+    calendar = {
+      enable = lib.mkEnableOption "CalDAV calendar access";
+      serverUrl = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default =
+          allHosts
+          |> lib.attrValues
+          |> lib.map (host: host.config.custom.web-services.radicale)
+          |> lib.filter (radicale: radicale.enable)
+          |> lib.map (radicale: "https://${radicale.domain}")
+          |> self.lib.atMostOne "enabled Radicale instance";
+      };
+      ownerUsername = lib.mkOption {
+        type = lib.types.strMatching "[A-Za-z0-9_-]+";
+        default = "seb";
+      };
+      username = lib.mkOption {
+        type = lib.types.strMatching "[A-Za-z0-9_-]+";
+        default = "hermes";
+      };
+      calendarName = lib.mkOption {
+        type = lib.types.strMatching "[A-Za-z0-9_-]+";
+        default = "calendar";
+      };
+      personalCalendars = lib.mkOption {
+        type = lib.types.listOf (lib.types.strMatching "[A-Za-z0-9_-]+");
+        default = [ ];
+      };
     };
     forwardAuth = lib.mkEnableOption "";
   };
@@ -273,6 +382,35 @@ in
           environment.SEARXNG_URL = cfg.searxngUrl;
           settings.web.search_backend = "searxng";
         };
+      })
+
+      (lib.mkIf cfg.calendar.enable {
+        assertions = [
+          {
+            assertion = cfg.calendar.serverUrl != null;
+            message = "Hermes calendar access requires an enabled Radicale instance or an explicit serverUrl.";
+          }
+          {
+            assertion = cfg.calendar.personalCalendars != [ ];
+            message = "Hermes calendar access requires at least one personal calendar.";
+          }
+        ];
+
+        sops.secrets."hermes/radicale/password" = {
+          owner = config.services.hermes-agent.user;
+        };
+
+        services.hermes-agent.extraPackages = [
+          calendarCli
+          calendarSync
+        ];
+
+        systemd.tmpfiles.rules = [
+          "d ${calendarStateDir} 0700 ${config.services.hermes-agent.user} ${config.services.hermes-agent.group} - -"
+          "d ${calendarStateDir}/hermes 0700 ${config.services.hermes-agent.user} ${config.services.hermes-agent.group} - -"
+          "d ${calendarStateDir}/personal 0700 ${config.services.hermes-agent.user} ${config.services.hermes-agent.group} - -"
+          "d ${calendarStateDir}/status 0700 ${config.services.hermes-agent.user} ${config.services.hermes-agent.group} - -"
+        ];
       })
     ]
   );
