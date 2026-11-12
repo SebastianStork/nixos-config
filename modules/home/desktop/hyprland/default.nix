@@ -17,12 +17,9 @@
       portalPackage = null;
     };
 
-    custom = {
-      programs = {
-        foot.enable = true;
-        noctalia.enable = true;
-      };
-      services.cliphist.enable = true;
+    custom.programs = {
+      foot.enable = true;
+      noctalia.enable = true;
     };
   };
 }
