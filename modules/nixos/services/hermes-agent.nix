@@ -270,16 +270,16 @@ in
             pkgs.libxkbcommon
             pkgs.pango
             pkgs.stdenv.cc.cc.lib
-            pkgs.xorg.libX11
-            pkgs.xorg.libXcomposite
-            pkgs.xorg.libXcursor
-            pkgs.xorg.libXdamage
-            pkgs.xorg.libXext
-            pkgs.xorg.libXfixes
-            pkgs.xorg.libXi
-            pkgs.xorg.libXrandr
-            pkgs.xorg.libXrender
-            pkgs.xorg.libxcb
+            pkgs.libx11
+            pkgs.libxcomposite
+            pkgs.libxcursor
+            pkgs.libxdamage
+            pkgs.libxext
+            pkgs.libxfixes
+            pkgs.libxi
+            pkgs.libxrandr
+            pkgs.libxrender
+            pkgs.libxcb
           ];
 
           camoufox = pkgs.stdenv.mkDerivation (finalAttrs: {
