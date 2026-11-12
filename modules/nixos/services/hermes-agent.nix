@@ -156,7 +156,23 @@ in
               disabled_toolsets = [ "browser" ];
             };
             approvals.destructive_slash_confirm = false;
-            auxiliary.background_review.enabled = false;
+            auxiliary =
+              let
+                deepseek = {
+                  model = "deepseek/deepseek-v4.1-flash-1017";
+                  provider = "openrouter";
+                };
+              in
+              {
+                approval = deepseek;
+                background_review.enabled = false;
+                compression = deepseek;
+                curator = deepseek;
+                mcp = deepseek;
+                memory_query_rewrite = deepseek;
+                monitor = deepseek;
+                title_generation = deepseek;
+              };
             curator.prune_builtins = false;
             delegation = {
               fallback_providers = lib.singleton {
