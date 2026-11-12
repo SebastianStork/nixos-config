@@ -75,7 +75,10 @@ in
 
     custom = {
       services = {
-        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+        caddy.virtualHosts.${cfg.domain} = {
+          inherit (cfg) port;
+          extraAllowedGroups = lib.optional cfg.allowHermes "agent";
+        };
 
         restic.backups.radicale = lib.mkIf cfg.doBackups {
           conflictingService = "radicale.service";
