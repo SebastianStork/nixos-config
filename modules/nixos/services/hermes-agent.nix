@@ -160,12 +160,12 @@ in
             curator.prune_builtins = false;
             delegation = {
               fallback_providers = lib.singleton {
-                model = "deepseek/deepseek-v4.1-flash-1017";
-                provider = "openrouter";
+                model = "gpt-5.6-terra";
+                provider = "openai-codex";
               };
               max_concurrent_children = 3;
-              model = "gpt-5.6-terra";
-              provider = "openai-codex";
+              model = "deepseek/deepseek-v4.1-flash-1017";
+              provider = "openrouter";
               reasoning_effort = "medium";
             };
             display.platforms.matrix.tool_preview_length = 1000; # Work around Hermes treating 0 as a 40-character limit in Matrix
