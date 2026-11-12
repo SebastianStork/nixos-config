@@ -13,9 +13,9 @@
       $mute-mic = $ipc mic-mute
       $brightness-up = $ipc brightness-up
       $brightness-down = $ipc brightness-down
-      $screenshot-monitor = grim -o "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
-      $screenshot-region = grim -g "$(slurp)" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
-      $screenshot-window = grim -g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')" - | satty --filename - --copy-command wl-copy --output-filename "$XDG_SCREENSHOTS_DIR/%Y%m%d_%H%M%S.png"
+      $screenshot-monitor = $ipc screenshot-fullscreen
+      $screenshot-region = $ipc screenshot-region
+      $screenshot-window = $ipc screenshot-window
 
       # Bindflags:
       # r = release

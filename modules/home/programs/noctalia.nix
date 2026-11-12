@@ -35,6 +35,13 @@
             };
           };
           mpris.blacklist = [ "firefox" ];
+          screenshot = {
+            annotate = true;
+            close_on_copy = false;
+            close_on_save = false;
+            directory = config.xdg.userDirs.extraConfig.SCREENSHOTS;
+            save_to_file = false;
+          };
           session = {
             grid = false;
             actions =

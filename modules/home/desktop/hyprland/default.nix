@@ -1,7 +1,6 @@
 {
   config,
   osConfig,
-  pkgs,
   lib,
   ...
 }:
@@ -25,13 +24,5 @@
       };
       services.cliphist.enable = true;
     };
-
-    home.packages = [
-      pkgs.grim
-      pkgs.jq
-      pkgs.satty
-      pkgs.slurp
-      pkgs.wl-clipboard
-    ];
   };
 }
