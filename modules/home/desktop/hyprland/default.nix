@@ -1,6 +1,7 @@
 {
   config,
   osConfig,
+  pkgs,
   lib,
   ...
 }:
@@ -21,5 +22,7 @@
       foot.enable = true;
       noctalia.enable = true;
     };
+
+    home.packages = [ pkgs.wl-clipboard ];
   };
 }
