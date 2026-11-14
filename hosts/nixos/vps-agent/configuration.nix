@@ -36,6 +36,7 @@
 
       auto-gc.onlyCleanRoots = true;
       deploy-webhook.enable = true;
+      nightly-maintenance.enable = true;
       peer-substituter = {
         enable = true;
         domain = "cache.${config.networking.fqdn}";

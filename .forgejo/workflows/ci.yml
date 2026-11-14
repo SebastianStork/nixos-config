@@ -109,18 +109,24 @@ jobs:
       matrix:
         server: ${{ fromJSON(needs.discover-deployments.outputs.servers_to_deploy) }}
     steps:
-      - name: Deploy
+      - name: Deploy or defer deployment
         timeout-minutes: 30
         env:
           REVISION: ${{ forgejo.sha }}
-          URL: https://${{ matrix.server }}.splitleaf.de/hooks/deploy
+          SERVER: ${{ matrix.server }}
+          ACTOR: ${{ forgejo.actor }}
         run: |
+          hook=deploy
+          if [[ "$ACTOR" == SebastianStork-Bot ]]; then
+            hook=defer-deploy
+          fi
+          url="https://$SERVER.splitleaf.de/hooks/$hook"
           payload=$(jq --compact-output --null-input \
             --arg revision "$REVISION" '{ $revision }')
 
           for attempt in $(seq 1 10); do
             http_code=$(curl --silent --show-error --output response.txt --write-out '%{http_code}' \
-              --max-time 1800 --json "$payload" "$URL" || echo 000)
+              --max-time 1800 --json "$payload" "$url" || echo 000)
             case "$http_code" in
               200) cat response.txt; exit 0 ;;
               500) cat response.txt; exit 1 ;;
@@ -134,6 +140,7 @@ jobs:
           exit 1
 
       - name: Diff closures
+        if: forgejo.actor != 'SebastianStork-Bot'
         timeout-minutes: 30
         env:
           SERVER: ${{ matrix.server }}
@@ -174,6 +181,7 @@ jobs:
           SERVERS_TO_DEPLOY: ${{ needs.discover-deployments.outputs.servers_to_deploy }}
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
+          ACTOR: ${{ forgejo.actor }}
         run: |
           for result in "$CHECK_DISCOVERY_RESULT" "$DEPLOYMENT_DISCOVERY_RESULT" "$CHECK_RESULT" "$DEPLOY_RESULT"; do
             if [[ "$result" == cancelled ]]; then
@@ -198,10 +206,20 @@ jobs:
             tags=white_check_mark
             body=$(printf 'Commit `%s` passed CI; no servers required deployment.\n> %s' "${SHA::7}" "$commit")
           elif [[ "$DEPLOY_RESULT" != success ]]; then
-            title="CI: Deployment failed"
             priority=low
             tags=rotating_light
-            body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "$commit")
+            if [[ "$ACTOR" == SebastianStork-Bot ]]; then
+              title="CI: Deployment deferral failed"
+              body=$(printf 'Commit `%s` passed CI but failed to defer deployment.\n> %s' "${SHA::7}" "$commit")
+            else
+              title="CI: Deployment failed"
+              body=$(printf 'Commit `%s` failed to deploy.\n> %s' "${SHA::7}" "$commit")
+            fi
+          elif [[ "$ACTOR" == SebastianStork-Bot ]]; then
+            title="CI: Deployment deferred"
+            priority=low
+            tags=hourglass_flowing_sand
+            body=$(printf 'Commit `%s` passed CI; deployment is deferred to the next nightly maintenance run.\n> %s' "${SHA::7}" "$commit")
           else
             title="CI: Deployment succeeded"
             priority=low

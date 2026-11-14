@@ -7,6 +7,14 @@
 let
   cfg = config.custom.services.deploy-webhook;
 
+  currentSystem = pkgs.writeShellApplication {
+    name = "current-system";
+    runtimeInputs = [ pkgs.coreutils ];
+    text = ''
+      readlink /run/current-system
+    '';
+  };
+
   deploy = pkgs.writeShellApplication {
     name = "deploy";
     runtimeInputs = [ pkgs.systemd ];
@@ -17,15 +25,17 @@ let
       rc=0
       systemctl start --wait "$unit" || rc=$?
       journalctl --invocation=0 --unit="$unit" --output=cat --no-pager
+      if [[ "$rc" -eq 0 ]]; then
+        printf '%s\n' "$revision" > ${cfg.deploymentTargetFile}
+      fi
       exit "$rc"
     '';
   };
 
-  currentSystem = pkgs.writeShellApplication {
-    name = "current-system";
-    runtimeInputs = [ pkgs.coreutils ];
+  deferDeploy = pkgs.writeShellApplication {
+    name = "defer-deploy";
     text = ''
-      readlink /run/current-system
+      printf '%s\n' "$1" > ${cfg.deploymentTargetFile}
     '';
   };
 
@@ -43,6 +53,10 @@ in
     webhookPort = lib.mkOption {
       type = lib.types.port;
       default = 44519;
+    };
+    deploymentTargetFile = lib.mkOption {
+      type = lib.types.path;
+      default = "/var/lib/nixos/deployment-target";
     };
   };
 
@@ -95,6 +109,22 @@ in
           include-command-output-in-response = true;
           include-command-output-in-response-on-error = true;
         };
+        defer-deploy = {
+          execute-command = "/run/wrappers/bin/sudo";
+          pass-arguments-to-command = [
+            {
+              source = "string";
+              name = lib.getExe deferDeploy;
+            }
+            {
+              source = "payload";
+              name = "revision";
+            }
+          ];
+          http-methods = [ "POST" ];
+          include-command-output-in-response = true;
+          include-command-output-in-response-on-error = true;
+        };
         diff = {
           execute-command = lib.getExe diff;
           pass-arguments-to-command = lib.singleton {
@@ -110,10 +140,16 @@ in
 
     security.sudo.extraRules = lib.singleton {
       users = [ "webhook" ];
-      commands = lib.singleton {
-        command = lib.getExe deploy;
-        options = [ "NOPASSWD" ];
-      };
+      commands = [
+        {
+          command = lib.getExe deploy;
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = lib.getExe deferDeploy;
+          options = [ "NOPASSWD" ];
+        }
+      ];
     };
 
     custom.services.caddy.virtualHosts.${config.networking.fqdn} = {
@@ -123,6 +159,9 @@ in
           reverse_proxy localhost:${lib.toString cfg.webhookPort}
         }
         handle /hooks/deploy {
+          reverse_proxy localhost:${lib.toString cfg.webhookPort}
+        }
+        handle /hooks/defer-deploy {
           reverse_proxy localhost:${lib.toString cfg.webhookPort}
         }
         handle /hooks/diff {

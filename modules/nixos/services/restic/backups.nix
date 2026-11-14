@@ -47,6 +47,11 @@ in
   };
 
   config = lib.mkIf (backups != [ ]) {
+    assertions = lib.singleton {
+      assertion = config.custom.services.nightly-maintenance.enable;
+      message = "Restic backups require custom.services.nightly-maintenance to provide their schedule.";
+    };
+
     sops = {
       secrets = {
         "backblaze/key-id" = { };
@@ -79,10 +84,7 @@ in
               "--keep-weekly 4"
               "--keep-monthly 6"
             ];
-            timerConfig = {
-              OnCalendar = "03:00";
-              RandomizedOffsetSec = "1h";
-            };
+            timerConfig = null;
           }
           backup.extraConfig
         ];
