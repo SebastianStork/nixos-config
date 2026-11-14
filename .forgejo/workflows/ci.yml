@@ -98,6 +98,7 @@ jobs:
   deploy:
     if: >-
       always() &&
+      forgejo.actor != 'SebastianStork-Bot' &&
       needs.discover-checks.result == 'success' &&
       needs.discover-deployments.result == 'success' &&
       needs.discover-deployments.outputs.servers_to_deploy != '["__no_server__"]' &&
@@ -174,6 +175,7 @@ jobs:
           SERVERS_TO_DEPLOY: ${{ needs.discover-deployments.outputs.servers_to_deploy }}
           SHA: ${{ forgejo.sha }}
           COMMIT_MSG: ${{ forgejo.event.head_commit.message }}
+          ACTOR: ${{ forgejo.actor }}
         run: |
           for result in "$CHECK_DISCOVERY_RESULT" "$DEPLOYMENT_DISCOVERY_RESULT" "$CHECK_RESULT" "$DEPLOY_RESULT"; do
             if [[ "$result" == cancelled ]]; then
@@ -197,6 +199,11 @@ jobs:
             priority=low
             tags=white_check_mark
             body=$(printf 'Commit `%s` passed CI; no servers required deployment.\n> %s' "${SHA::7}" "$commit")
+          elif [[ "$ACTOR" == SebastianStork-Bot ]]; then
+            title="CI: Deployment deferred"
+            priority=low
+            tags=hourglass_flowing_sand
+            body=$(printf 'Commit `%s` passed CI; deployment is deferred to the next nightly maintenance run.\n> %s' "${SHA::7}" "$commit")
           elif [[ "$DEPLOY_RESULT" != success ]]; then
             title="CI: Deployment failed"
             priority=low
