@@ -136,6 +136,26 @@ in
                   };
                 }
                 {
+                  alert = "NixStoreLowHeadroom";
+                  expr =
+                    allHosts
+                    |> lib.attrValues
+                    |> lib.filter (host: host.config.custom.services.alloy.enable)
+                    |> lib.filter (host: host.config.fileSystems |> lib.hasAttr "/nix")
+                    |> lib.map (
+                      host:
+                      ''node_filesystem_avail_bytes{job="node", instance="${host.config.networking.hostName}", mountpoint="/nix"} < ${toString host.config.nix.settings.min-free}''
+                    )
+                    |> lib.concatStringsSep " or ";
+                  for = "10m";
+                  annotations = {
+                    summary = "Nix store headroom on {{ $labels.instance }} is low";
+                    summary_resolved = "Nix store headroom on {{ $labels.instance }} has recovered";
+                    description = "Available space on /nix has remained below the configured min-free threshold for 10 minutes. Automatic garbage collection may be unable to reclaim enough space.";
+                    description_resolved = "Available space on /nix has returned above the configured min-free threshold.";
+                  };
+                }
+                {
                   alert = "PersistVolumeNearlyFull";
                   expr = ''100 * (1 - node_filesystem_avail_bytes{job="node", mountpoint="/persist"} / node_filesystem_size_bytes{job="node", mountpoint="/persist"}) > 90'';
                   for = "10m";
