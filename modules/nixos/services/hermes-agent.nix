@@ -74,6 +74,7 @@ in
         };
       };
     forwardAuth = lib.mkEnableOption "";
+    doBackups = lib.mkEnableOption "";
   };
 
   config = lib.mkIf cfg.enable (
@@ -228,17 +229,27 @@ in
           };
 
         custom = {
-          services.caddy.virtualHosts.${cfg.domain} = {
-            forwardAuth = {
-              enable = cfg.forwardAuth;
-              bypassPaths = [ "/api/health" ];
+          services = {
+            caddy.virtualHosts.${cfg.domain} = {
+              forwardAuth = {
+                enable = cfg.forwardAuth;
+                bypassPaths = [ "/api/health" ];
+              };
+              extraConfig = ''
+                reverse_proxy localhost:${lib.toString cfg.port} {
+                  header_up Host 127.0.0.1:${lib.toString cfg.port}
+                  header_up Origin http://127.0.0.1:${lib.toString cfg.port}
+                }
+              '';
             };
-            extraConfig = ''
-              reverse_proxy localhost:${lib.toString cfg.port} {
-                header_up Host 127.0.0.1:${lib.toString cfg.port}
-                header_up Origin http://127.0.0.1:${lib.toString cfg.port}
-              }
-            '';
+
+            restic.backups.hermes-agent = lib.mkIf cfg.doBackups {
+              conflictingServices = [
+                "hermes-agent.service"
+                "hermes-backend.service"
+              ];
+              paths = [ config.services.hermes-agent.stateDir ];
+            };
           };
 
           persistence.directories = [ config.services.hermes-agent.stateDir ];

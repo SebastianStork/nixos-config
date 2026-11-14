@@ -25,6 +25,7 @@
         enable = true;
         domain = "hermes.${config.networking.domain}";
         forwardAuth = true;
+        doBackups = true;
       };
 
       syncthing = {
