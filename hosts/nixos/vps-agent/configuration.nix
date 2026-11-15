@@ -21,20 +21,6 @@
     };
 
     services = {
-      hermes-agent = {
-        enable = true;
-        domain = "hermes.${config.networking.domain}";
-        forwardAuth = true;
-        doBackups = true;
-      };
-
-      syncthing = {
-        enable = true;
-        inherit (config.services.hermes-agent) user group;
-        dataDir = config.services.hermes-agent.stateDir;
-        folders = [ "Vault" ];
-      };
-
       auto-gc.onlyCleanRoots = true;
       deploy-webhook.enable = true;
       nightly-maintenance.enable = true;
@@ -46,10 +32,25 @@
         enable = true;
         domain = "alloy.${config.networking.fqdn}";
       };
+
+      syncthing = {
+        enable = true;
+        inherit (config.services.hermes-agent) user group;
+        dataDir = config.services.hermes-agent.stateDir;
+        folders = [ "Vault" ];
+      };
+
+      hermes-agent = {
+        enable = true;
+        domain = "hermes.${config.networking.domain}";
+        forwardAuth = true;
+        doBackups = true;
+      };
     };
 
     web-services = {
       librespeed.enable = true;
+
       calibre-server = {
         enable = true;
         domain = "library.${config.networking.domain}";
