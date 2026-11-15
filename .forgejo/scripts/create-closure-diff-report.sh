@@ -53,7 +53,7 @@ while IFS= read -r closure; do
   nix build --no-link "$old_target" "$new_target"
 
   diff_file="$work_dir/$name.json"
-  dix --output json "$old_closure" "$new_closure" > "$diff_file"
+  dix diff --output=json "$old_closure" "$new_closure" > "$diff_file"
   jq . "$diff_file"
   jq --compact-output --null-input \
     --arg name "$name" --slurpfile diff "$diff_file" \
