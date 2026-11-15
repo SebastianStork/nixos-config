@@ -24,7 +24,7 @@
             };
           };
           nix = {
-            size = "20G";
+            size = "40G";
             content = {
               type = "filesystem";
               format = "xfs";
