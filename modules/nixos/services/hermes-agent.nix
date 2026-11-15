@@ -10,81 +10,89 @@
 }:
 let
   cfg = config.custom.services.hermes-agent;
-
 in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];
 
   options.custom.services.hermes-agent = {
     enable = lib.mkEnableOption "";
-    domain = lib.mkOption {
-      type = lib.types.nonEmptyStr;
-    };
-    port = lib.mkOption {
-      type = lib.types.port;
-      default = 9119;
-    };
-    homeAssistantUrl = lib.mkOption {
-      type = lib.types.nullOr lib.types.nonEmptyStr;
-      default =
-        allHosts
-        |> lib.attrValues
-        |> lib.map (host: host.config.custom.web-services.home-assistant)
-        |> lib.filter (homeAssistant: homeAssistant.enable)
-        |> lib.map (homeAssistant: "https://${homeAssistant.domain}")
-        |> self.lib.atMostOne "enabled Home Assistant instance";
-    };
-    trekUrl = lib.mkOption {
-      type = lib.types.nullOr lib.types.nonEmptyStr;
-      default =
-        allHosts
-        |> lib.attrValues
-        |> lib.map (host: host.config.custom.web-services.trek)
-        |> lib.filter (trek: trek.enable)
-        |> lib.map (trek: "https://${trek.domain}/mcp")
-        |> self.lib.atMostOne "enabled Trek instance";
-    };
-    searxngUrl = lib.mkOption {
-      type = lib.types.nullOr lib.types.nonEmptyStr;
-      default =
-        allHosts
-        |> lib.attrValues
-        |> lib.map (host: host.config.custom.web-services.searxng)
-        |> lib.filter (searxng: searxng.enable && searxng.api.allowHermes)
-        |> lib.map (searxng: "http://${searxng.domain}:${lib.toString searxng.port}")
-        |> self.lib.atMostOne "enabled SearXNG instance";
-    };
-    radicale =
-      let
-        discoveredRadicale =
+    doBackups = lib.mkEnableOption "";
+    webapp = {
+      enable = lib.mkEnableOption "";
+      domain = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+      };
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 9120;
+      };
+      oidcIssuer = lib.mkOption {
+        type = lib.types.nonEmptyStr;
+        default =
           allHosts
           |> lib.attrValues
-          |> lib.map (host: host.config.custom.web-services.radicale)
-          |> lib.filter (radicale: radicale.enable && radicale.allowHermes)
-          |> self.lib.atMostOne "enabled Radicale instance allowing Hermes access";
-      in
-      {
-        url = lib.mkOption {
-          type = lib.types.nullOr lib.types.nonEmptyStr;
-          default = if discoveredRadicale == null then null else "https://${discoveredRadicale.domain}";
-        };
-        ownerUsername = lib.mkOption {
-          type = lib.types.strMatching "[A-Za-z0-9_-]+";
-          default = discoveredRadicale.ownerUsername;
-        };
+          |> lib.map (host: (self.lib.uncheckedHostConfig host).custom.services.private-auth)
+          |> lib.filter (privateAuth: privateAuth.enable)
+          |> lib.map (privateAuth: "https://${privateAuth.domain}")
+          |> self.lib.exactlyOne "enabled private auth instance";
       };
-    forwardAuth = lib.mkEnableOption "";
-    doBackups = lib.mkEnableOption "";
+    };
+    integrations = {
+      homeAssistant.url = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default =
+          allHosts
+          |> lib.attrValues
+          |> lib.map (host: host.config.custom.web-services.home-assistant)
+          |> lib.filter (homeAssistant: homeAssistant.enable)
+          |> lib.map (homeAssistant: "https://${homeAssistant.domain}")
+          |> self.lib.atMostOne "enabled Home Assistant instance";
+      };
+      trek.url = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default =
+          allHosts
+          |> lib.attrValues
+          |> lib.map (host: host.config.custom.web-services.trek)
+          |> lib.filter (trek: trek.enable)
+          |> lib.map (trek: "https://${trek.domain}/mcp")
+          |> self.lib.atMostOne "enabled Trek instance";
+      };
+      searxng.url = lib.mkOption {
+        type = lib.types.nullOr lib.types.nonEmptyStr;
+        default =
+          allHosts
+          |> lib.attrValues
+          |> lib.map (host: host.config.custom.web-services.searxng)
+          |> lib.filter (searxng: searxng.enable && searxng.api.allowHermes)
+          |> lib.map (searxng: "http://${searxng.domain}:${lib.toString searxng.port}")
+          |> self.lib.atMostOne "enabled SearXNG instance";
+      };
+      radicale =
+        let
+          discoveredRadicale =
+            allHosts
+            |> lib.attrValues
+            |> lib.map (host: host.config.custom.web-services.radicale)
+            |> lib.filter (radicale: radicale.enable && radicale.allowHermes)
+            |> self.lib.atMostOne "enabled Radicale instance allowing Hermes access";
+        in
+        {
+          url = lib.mkOption {
+            type = lib.types.nullOr lib.types.nonEmptyStr;
+            default = if discoveredRadicale == null then null else "https://${discoveredRadicale.domain}";
+          };
+          ownerUsername = lib.mkOption {
+            type = lib.types.strMatching "[A-Za-z0-9_-]+";
+            default = discoveredRadicale.ownerUsername;
+          };
+        };
+    };
   };
 
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
       {
-        assertions = lib.singleton {
-          assertion = self.lib.isPrivateDomain cfg.domain || cfg.forwardAuth;
-          message = self.lib.mkUnprotectedMessage "Hermes Agent";
-        };
-
         sops = {
           secrets = {
             "hermes/matrix/access-token" = { };
@@ -104,10 +112,7 @@ in
                 OPENROUTER_API_KEY=${config.sops.placeholder."hermes/openrouter/api-key"}
                 AGENTMAIL_API_KEY=${config.sops.placeholder."hermes/agentmail/api-key"}
               '';
-              restartUnits = [
-                "hermes-agent.service"
-                "hermes-backend.service"
-              ];
+              restartUnits = [ "hermes-agent.service" ];
             };
           };
         };
@@ -208,59 +213,65 @@ in
               external_dirs = [ "~/.hermes/authored-skills" ];
             };
           };
-          backend = {
-            mode = "dashboard";
-            inherit (cfg) port;
-          };
         };
 
-        systemd.services =
-          let
-            hermesRestartTriggers = [
-              (lib.toJSON config.services.hermes-agent.environment)
-              (lib.toJSON config.services.hermes-agent.environmentFiles)
-              (lib.toJSON config.services.hermes-agent.mcpServers)
-              (lib.toJSON config.services.hermes-agent.settings)
-            ];
-          in
-          {
-            hermes-agent.restartTriggers = hermesRestartTriggers;
-            hermes-backend.restartTriggers = hermesRestartTriggers;
-          };
+        systemd.services.hermes-agent.restartTriggers = [
+          (lib.toJSON config.services.hermes-agent.environment)
+          (lib.toJSON config.services.hermes-agent.environmentFiles)
+          (lib.toJSON config.services.hermes-agent.mcpServers)
+          (lib.toJSON config.services.hermes-agent.settings)
+        ];
 
         custom = {
-          services = {
-            caddy.virtualHosts.${cfg.domain} = {
-              forwardAuth = {
-                enable = cfg.forwardAuth;
-                bypassPaths = [ "/api/health" ];
-              };
-              extraConfig = ''
-                reverse_proxy localhost:${lib.toString cfg.port} {
-                  header_up Host 127.0.0.1:${lib.toString cfg.port}
-                  header_up Origin http://127.0.0.1:${lib.toString cfg.port}
-                }
-              '';
-            };
-
-            restic.backups.hermes-agent = lib.mkIf cfg.doBackups {
-              conflictingServices = [
-                "hermes-agent.service"
-                "hermes-backend.service"
-              ];
-              paths = [ config.services.hermes-agent.stateDir ];
-            };
+          services.restic.backups.hermes-agent = lib.mkIf cfg.doBackups {
+            conflictingServices = [ "hermes-agent.service" ];
+            paths = [ config.services.hermes-agent.stateDir ];
           };
 
           persistence.directories = [ config.services.hermes-agent.stateDir ];
+        };
+      }
 
-          meta.sites.${cfg.domain} = {
+      (lib.mkIf cfg.webapp.enable {
+        assertions = lib.singleton {
+          assertion = self.lib.isPrivateDomain cfg.webapp.domain;
+          message = self.lib.mkUnprotectedMessage "Hermes Agent";
+        };
+
+        services.hermes-agent.settings = {
+          dashboard.oauth = {
+            provider = "self-hosted";
+            self_hosted = {
+              issuer = cfg.webapp.oidcIssuer;
+              client_id = "hermes";
+            };
+          };
+          webapp = {
+            enabled = true;
+            host = "127.0.0.1";
+            public_url = "https://${cfg.webapp.domain}";
+            inherit (cfg.webapp) port;
+          };
+        };
+
+        custom = {
+          services = {
+            caddy.virtualHosts.${cfg.webapp.domain}.port = cfg.webapp.port;
+
+            private-auth.oidcClients.hermes = {
+              clientName = "Hermes";
+              public = true;
+              redirectUris = [ "https://${cfg.webapp.domain}/auth/callback" ];
+            };
+          };
+
+          meta.sites.${cfg.webapp.domain} = {
             title = "Hermes Agent";
             icon = "hermes-agent";
             checkPath = "/api/health";
           };
         };
-      }
+      })
 
       (lib.mkIf config.custom.web-services.calibre-server.enable (
         let
@@ -409,7 +420,7 @@ in
         }
       ))
 
-      (lib.mkIf (cfg.homeAssistantUrl != null) (
+      (lib.mkIf (cfg.integrations.homeAssistant.url != null) (
         let
           catalog = "${inputs.hermes-agent}/plugin-catalog/homeassistant.yaml" |> lib.readFile;
           catalogValue =
@@ -441,32 +452,29 @@ in
 
           services.hermes-agent = {
             extraPlugins = [ plugin ];
-            environment.HASS_URL = cfg.homeAssistantUrl;
+            environment.HASS_URL = cfg.integrations.homeAssistant.url;
             settings.plugins.enabled = [ "homeassistant" ];
           };
 
-          systemd.services = {
-            hermes-agent.restartTriggers = restartTriggers;
-            hermes-backend.restartTriggers = restartTriggers;
-          };
+          systemd.services.hermes-agent.restartTriggers = restartTriggers;
         }
       ))
 
-      (lib.mkIf (cfg.trekUrl != null) {
+      (lib.mkIf (cfg.integrations.trek.url != null) {
         services.hermes-agent.mcpServers.trek = {
-          url = cfg.trekUrl;
+          url = cfg.integrations.trek.url;
           auth = "oauth";
         };
       })
 
-      (lib.mkIf (cfg.searxngUrl != null) {
+      (lib.mkIf (cfg.integrations.searxng.url != null) {
         services.hermes-agent = {
-          environment.SEARXNG_URL = cfg.searxngUrl;
+          environment.SEARXNG_URL = cfg.integrations.searxng.url;
           settings.web.search_backend = "searxng";
         };
       })
 
-      (lib.mkIf (cfg.radicale.url != null) (
+      (lib.mkIf (cfg.integrations.radicale.url != null) (
         let
           stateDir = "${config.services.hermes-agent.stateDir}/calendar";
           vdirsyncerConfig = pkgs.writeText "vdirsyncer-calendar.conf" ''
@@ -480,7 +488,7 @@ in
 
             [storage remote]
             type = "caldav"
-            url = "${cfg.radicale.url}/${cfg.radicale.ownerUsername}/"
+            url = "${cfg.integrations.radicale.url}/${cfg.integrations.radicale.ownerUsername}/"
             username = "hermes"
             password.fetch = ["command", "${lib.getExe' pkgs.coreutils "cat"}", "${
               config.sops.secrets."hermes/radicale/password".path

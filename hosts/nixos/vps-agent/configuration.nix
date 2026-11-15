@@ -42,8 +42,10 @@
 
       hermes-agent = {
         enable = true;
-        domain = "hermes.${config.networking.domain}";
-        forwardAuth = true;
+        webapp = {
+          enable = true;
+          domain = "hermes.${config.networking.domain}";
+        };
         doBackups = true;
       };
     };

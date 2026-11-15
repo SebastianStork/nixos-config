@@ -52,6 +52,7 @@ in
               clientName = lib.mkOption {
                 type = lib.types.nonEmptyStr;
               };
+              public = lib.mkEnableOption "";
               redirectUris = lib.mkOption {
                 type = lib.types.nonEmptyListOf lib.types.nonEmptyStr;
               };
@@ -177,6 +178,7 @@ in
           }
           // (
             oidcClients
+            |> lib.filter (client: !client.public)
             |> lib.map (
               client:
               lib.nameValuePair "private-auth/oidc-clients/${client.clientId}/client-secret-hash" {
@@ -194,24 +196,36 @@ in
             };
             settings.identity_providers.oidc.clients =
               oidcClients
-              |> lib.map (client: {
-                client_id = client.clientId;
-                client_name = client.clientName;
-                client_secret = ''{{ secret "${
-                  config.sops.secrets."private-auth/oidc-clients/${client.clientId}/client-secret-hash".path
-                }" }}'';
-                public = false;
-                authorization_policy = "one_factor";
-                require_pkce = true;
-                pkce_challenge_method = "S256";
-                redirect_uris = client.redirectUris;
-                scopes = [
-                  "openid"
-                  "profile"
-                  "email"
-                ];
-                token_endpoint_auth_method = "client_secret_basic";
-              });
+              |> lib.map (
+                client:
+                {
+                  client_id = client.clientId;
+                  client_name = client.clientName;
+                  inherit (client) public;
+                  authorization_policy = "one_factor";
+                  require_pkce = true;
+                  pkce_challenge_method = "S256";
+                  redirect_uris = client.redirectUris;
+                  scopes = [
+                    "openid"
+                    "profile"
+                    "email"
+                  ];
+                }
+                // (
+                  if client.public then
+                    {
+                      token_endpoint_auth_method = "none";
+                    }
+                  else
+                    {
+                      token_endpoint_auth_method = "client_secret_basic";
+                      client_secret = ''{{ secret "${
+                        config.sops.secrets."private-auth/oidc-clients/${client.clientId}/client-secret-hash".path
+                      }" }}'';
+                    }
+                )
+              );
           };
         })
       ]
