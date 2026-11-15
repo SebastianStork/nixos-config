@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  pkgs-unstable,
   lib,
   ...
 }:
@@ -42,7 +41,7 @@ let
 
   diff = pkgs.writeShellApplication {
     name = "diff-closures";
-    runtimeInputs = [ pkgs-unstable.dix ];
+    runtimeInputs = [ (pkgs.packageAtLeast "dix" "3.0.0") ];
     text = ''
       dix diff "$1" /run/current-system
     '';
