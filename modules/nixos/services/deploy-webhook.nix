@@ -68,18 +68,30 @@ in
         pkgs.nh
         pkgs.nix
         pkgs.git
+        pkgs.coreutils
       ];
       serviceConfig.Type = "oneshot";
       scriptArgs = "%i";
       script = ''
         revision=$1
+        flake="git+https://codeberg.org/SebastianStork/nixos-config?rev=$revision"
+
+        fetched=
+        for delay in 0 10 30 60; do
+          sleep "$delay"
+          if nix flake metadata --refresh "$flake" >/dev/null; then
+            fetched=1
+            break
+          fi
+        done
+        [[ -n "$fetched" ]] || exit 1
+
         nh os switch \
           --bypass-root-check \
-          --refresh \
           --diff never \
           --no-nom \
           --show-activation-logs \
-          "git+https://codeberg.org/SebastianStork/nixos-config?rev=$revision"
+          "$flake"
       '';
     };
 
