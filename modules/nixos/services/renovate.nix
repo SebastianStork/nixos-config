@@ -30,7 +30,7 @@ in
     services.renovate = {
       enable = true;
       package = pkgs.packageAtLeast "renovate" "44.181.0"; # See https://github.com/renovatebot/renovate/pull/47076
-      schedule = "hourly";
+      schedule = "*:0/10";
       credentials.RENOVATE_TOKEN = config.sops.secrets."renovate/token".path;
       runtimePackages = [ pkgs.nix ];
       settings = {
@@ -51,8 +51,7 @@ in
         ProtectSystem = "strict";
         PrivateTmp = true;
         RemoveIPC = true;
-        Restart = "on-failure";
-        RestartSec = "15min";
+        SuccessExitStatus = "1"; # Let the timer retry without blocking system activation
       };
     };
 
