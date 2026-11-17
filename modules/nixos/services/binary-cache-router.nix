@@ -64,9 +64,9 @@ in
       };
     };
 
-    nix.settings.substituters = lib.mkForce [
-      "http://127.0.0.1:${lib.toString cfg.port}?trusted=true"
-    ];
+    networking.hosts."127.0.0.1" = [ "ncro" ];
+
+    nix.settings.substituters = lib.mkForce [ "http://ncro:${lib.toString cfg.port}?trusted=true" ];
 
     custom.persistence.directories = [ "/var/lib/private/ncro" ];
   };
