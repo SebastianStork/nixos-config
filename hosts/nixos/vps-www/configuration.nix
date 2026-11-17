@@ -30,7 +30,7 @@
       forgejo-runner = {
         enable = true;
         forgejoUrl = "https://codeberg.org";
-        maxConcurrentJobs = 4;
+        maxConcurrentJobs = 2;
       };
 
       renovate = {
