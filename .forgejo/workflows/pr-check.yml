@@ -43,6 +43,12 @@ jobs:
         uses: ./.forgejo/actions/build
         with:
           flake-output: .#checks.x86_64-linux.${{ matrix.check }}
+      - name: Upload
+        if: forgejo.event.pull_request.head.repo.full_name == forgejo.repository
+        uses: ./.forgejo/actions/upload
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
 
   closure-diff-report:
     if: >-
