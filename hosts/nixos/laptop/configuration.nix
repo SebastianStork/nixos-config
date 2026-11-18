@@ -1,4 +1,4 @@
-{ self, pkgs, ... }:
+{ self, ... }:
 {
   imports = [ self.nixosModules.workstation-profile ];
 
@@ -29,6 +29,4 @@
 
     programs.docker.enable = true;
   };
-
-  environment.systemPackages = [ pkgs.openvpn ];
 }
