@@ -14,7 +14,10 @@
   ];
 
   custom = {
-    networking.overlay.role = "client";
+    networking = {
+      underlay.manager = "networkmanager";
+      overlay.role = "client";
+    };
     boot.silent = true;
     login.tuigreet = {
       enable = true;

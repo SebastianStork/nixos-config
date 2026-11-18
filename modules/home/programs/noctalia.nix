@@ -128,8 +128,8 @@ in
                 "notifications"
               ]
               ++ lib.optional osConfig.custom.services.bluetooth.enable "bluetooth"
-              ++ lib.optional osConfig.custom.networking.underlay.wireless.enable "network"
               ++ [
+                "network"
                 "volume"
                 "brightness"
                 "battery"
