@@ -82,14 +82,17 @@ in
     })
 
     (lib.mkIf (cfg.manager == "networkmanager") {
-      networking.wireless.enable = lib.mkIf (!cfg.wireless.enable) (lib.mkForce false);
+      systemd.network.wait-online.enable = false;
 
-      networking.networkmanager = {
-        enable = true;
-        wifi.backend = lib.mkIf cfg.wireless.enable "iwd";
-        dns = "systemd-resolved";
-        plugins = [ pkgs.networkmanager-openvpn ];
-        unmanaged = [ "interface-name:${config.custom.networking.overlay.interface}" ];
+      networking = {
+        wireless.enable = lib.mkIf (!cfg.wireless.enable) (lib.mkForce false);
+        networkmanager = {
+          enable = true;
+          wifi.backend = lib.mkIf cfg.wireless.enable "iwd";
+          dns = "systemd-resolved";
+          plugins = [ pkgs.networkmanager-openvpn ];
+          unmanaged = [ "interface-name:${config.custom.networking.overlay.interface}" ];
+        };
       };
 
       users.users.seb.extraGroups = [ config.users.groups.networkmanager.name ];
