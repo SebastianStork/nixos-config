@@ -16,7 +16,10 @@
     };
 
     services = {
-      bluetooth.enable = true;
+      bluetooth = {
+        enable = true;
+        powerOnBoot = true;
+      };
 
       forgejo-runner = {
         enable = true;
