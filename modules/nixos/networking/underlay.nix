@@ -1,6 +1,7 @@
 {
   config,
   self,
+  pkgs,
   lib,
   ...
 }:
@@ -9,6 +10,13 @@ let
 in
 {
   options.custom.networking.underlay = {
+    manager = lib.mkOption {
+      type = lib.types.enum [
+        "networkd"
+        "networkmanager"
+      ];
+      default = "networkd";
+    };
     interface = lib.mkOption {
       type = lib.types.nonEmptyStr;
       default = "";
@@ -41,6 +49,14 @@ in
 
   config = lib.mkMerge [
     {
+      assertions = lib.singleton {
+        assertion =
+          cfg.manager == "networkmanager" -> (cfg.useDhcp && cfg.cidr == null && cfg.gateway == null);
+        message = self.lib.mkInvalidConfigMessage "NetworkManager underlay `${config.networking.hostName}`" "only DHCP configuration is currently supported";
+      };
+    }
+
+    (lib.mkIf (cfg.manager == "networkd") {
       systemd.network = {
         enable = true;
         networks."10-${cfg.interface}" = {
@@ -55,16 +71,31 @@ in
           };
         };
       };
-    }
+    })
 
-    (lib.mkIf cfg.wireless.enable {
+    (lib.mkIf (cfg.manager == "networkd" && cfg.wireless.enable) {
       networking.wireless.iwd = {
         enable = true;
         settings.Settings.AutoConnect = true;
       };
-
       systemd.network.networks."10-${cfg.interface}".networkConfig.IgnoreCarrierLoss = "3s";
+    })
 
+    (lib.mkIf (cfg.manager == "networkmanager") {
+      networking.wireless.enable = lib.mkIf (!cfg.wireless.enable) (lib.mkForce false);
+
+      networking.networkmanager = {
+        enable = true;
+        wifi.backend = lib.mkIf cfg.wireless.enable "iwd";
+        dns = "systemd-resolved";
+        plugins = [ pkgs.networkmanager-openvpn ];
+        unmanaged = [ "interface-name:${config.custom.networking.overlay.interface}" ];
+      };
+
+      users.users.seb.extraGroups = [ config.users.groups.networkmanager.name ];
+    })
+
+    (lib.mkIf cfg.wireless.enable {
       sops.secrets =
         cfg.wireless.networks
         |> lib.map (name: "iwd/${name}")
