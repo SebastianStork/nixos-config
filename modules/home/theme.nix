@@ -96,7 +96,10 @@ in
           postPatch = ''
             substituteInPlace build.sh \
               --replace-fail "create svg" "create svg-cyan" \
-              --replace-fail inkscape rsvg-convert
+              --replace-fail inkscape rsvg-convert \
+              --replace-fail "-w 40 -w 40" "-w 40 -h 40" \
+              --replace-fail "-w 48 -w 48" "-w 48 -h 48" \
+              --replace-fail "-w 64 -w 64" "-w 64 -h 64"
           '';
           buildPhase = "bash build.sh";
           installPhase = ''
