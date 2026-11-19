@@ -1,4 +1,10 @@
-{ config, lib, ... }:
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.custom.web-services.privatebin;
 in
@@ -25,7 +31,10 @@ in
         };
       };
 
-      phpfpm.pools.privatebin.settings."listen.group" = "caddy";
+      phpfpm.pools.privatebin = {
+        phpPackage = lib.mkForce inputs.nixpkgs-php.legacyPackages.${pkgs.stdenv.hostPlatform.system}.php83;
+        settings."listen.group" = "caddy";
+      };
     };
 
     systemd.services.caddy = {
