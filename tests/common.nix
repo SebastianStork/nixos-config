@@ -9,10 +9,10 @@ testDir:
   node.specialArgs = { inherit inputs self; };
 
   defaults =
-    { config, nodes, ... }:
+    { config, containers, ... }:
     {
       imports = [ self.nixosModules.default ];
-      _module.args.allHosts = nodes |> lib.mapAttrs (_: node: { config = node; });
+      _module.args.allHosts = containers |> lib.mapAttrs (_: container: { config = container; });
 
       users = {
         mutableUsers = false;
@@ -22,7 +22,11 @@ testDir:
         };
       };
 
-      networking.extraHosts = lib.mkForce "";
+      networking = {
+        extraHosts = lib.mkForce "";
+        useHostResolvConf = false;
+      };
+
       custom.networking = {
         underlay.interface = "eth1";
         overlay.nebula = {

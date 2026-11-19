@@ -26,7 +26,12 @@
         "nix-command"
         "flakes"
         "pipe-operators"
+        "auto-allocate-uids"
+        "cgroups"
       ];
+      auto-allocate-uids = true;
+      extra-system-features = [ "uid-range" ];
+      extra-sandbox-paths = [ "/dev/net" ];
       auto-optimise-store = true;
       warn-dirty = false;
       allowed-users = [ ];

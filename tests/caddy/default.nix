@@ -15,7 +15,7 @@ in
 {
   imports = [ (import ../common.nix ./.) ];
 
-  nodes = {
+  containers = {
     caddy =
       { config, pkgs, ... }:
       {
@@ -161,9 +161,9 @@ in
   };
 
   testScript =
-    { nodes, ... }:
+    { containers, ... }:
     let
-      netCfg = nodes.caddy.custom.networking;
+      netCfg = containers.caddy.custom.networking;
 
       curl = "curl --fail --silent --show-error --insecure --max-time 10";
     in
@@ -174,11 +174,11 @@ in
         caddy.wait_for_unit("static-web-server.socket")
         caddy.wait_for_unit("caddy.service")
         overlayClient.start()
-        overlayClient.wait_for_unit("${nodes.overlayClient.custom.networking.overlay.systemdUnit}")
+        overlayClient.wait_for_unit("${containers.overlayClient.custom.networking.overlay.systemdUnit}")
         overlayServer.start()
-        overlayServer.wait_for_unit("${nodes.overlayServer.custom.networking.overlay.systemdUnit}")
+        overlayServer.wait_for_unit("${containers.overlayServer.custom.networking.overlay.systemdUnit}")
         overlayAgent.start()
-        overlayAgent.wait_for_unit("${nodes.overlayAgent.custom.networking.overlay.systemdUnit}")
+        overlayAgent.wait_for_unit("${containers.overlayAgent.custom.networking.overlay.systemdUnit}")
         externalClient.start()
         externalClient.wait_for_unit("multi-user.target")
 

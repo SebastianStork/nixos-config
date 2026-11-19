@@ -17,7 +17,7 @@
       };
     };
 
-  nodes = {
+  containers = {
     server = {
       custom = {
         networking = {
@@ -73,13 +73,13 @@
   };
 
   testScript =
-    { nodes, ... }:
+    { containers, ... }:
     let
-      serverNetCfg = nodes.server.custom.networking;
-      client1NetCfg = nodes.client1.custom.networking;
-      client2NetCfg = nodes.client2.custom.networking;
+      serverNetCfg = containers.server.custom.networking;
+      client1NetCfg = containers.client1.custom.networking;
+      client2NetCfg = containers.client2.custom.networking;
 
-      ssh = "timeout 10 ssh -i /etc/ssh-key -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
+      ssh = "timeout 10 ssh -F /dev/null -i /etc/ssh-key -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null";
     in
     ''
       with subtest("Overlay readiness"):
@@ -97,12 +97,12 @@
 
       with subtest("DNS readiness"):
         server.wait_for_unit("unbound.service")
-        server.wait_for_open_port(${lib.toString nodes.server.custom.services.recursive-nameserver.port}, "${serverNetCfg.overlay.address}")
+        server.wait_for_open_port(${lib.toString containers.server.custom.services.recursive-nameserver.port}, "${serverNetCfg.overlay.address}")
 
       with subtest("DNS resolution of FQDNs"):
-        client1.wait_until_succeeds("getent ahostsv4 ${nodes.server.networking.fqdn} | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
-        client1.wait_until_succeeds("getent ahostsv4 ${nodes.client2.networking.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
-        server.wait_until_succeeds("getent ahostsv4 ${nodes.client2.networking.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
+        client1.wait_until_succeeds("getent ahostsv4 ${containers.server.networking.fqdn} | grep -q '${serverNetCfg.overlay.address}'", timeout=30)
+        client1.wait_until_succeeds("getent ahostsv4 ${containers.client2.networking.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
+        server.wait_until_succeeds("getent ahostsv4 ${containers.client2.networking.fqdn} | grep -q '${client2NetCfg.overlay.address}'", timeout=30)
 
       with subtest("DNS resolution of unqualified hostnames"):
         client1.wait_until_succeeds("getent ahostsv4 server | grep -q '${serverNetCfg.overlay.address}'", timeout=30)

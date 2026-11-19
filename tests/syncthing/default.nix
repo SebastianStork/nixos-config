@@ -17,7 +17,7 @@
       };
     };
 
-  nodes = {
+  containers = {
     server = {
       custom = {
         networking = {
@@ -62,13 +62,13 @@
   };
 
   testScript =
-    { nodes, ... }:
+    { containers, ... }:
     let
-      serverNetCfg = nodes.server.custom.networking.overlay;
-      client1NetCfg = nodes.client1.custom.networking.overlay;
-      client2NetCfg = nodes.client2.custom.networking.overlay;
+      serverNetCfg = containers.server.custom.networking.overlay;
+      client1NetCfg = containers.client1.custom.networking.overlay;
+      client2NetCfg = containers.client2.custom.networking.overlay;
 
-      getSyncPort = hostName: lib.toString nodes.${hostName}.custom.services.syncthing.port;
+      getSyncPort = hostName: lib.toString containers.${hostName}.custom.services.syncthing.port;
     in
     ''
       with subtest("Syncthing readiness"):
@@ -92,9 +92,9 @@
         client1.wait_for_file("/home/seb/Documents")
         client2.wait_for_file("/home/seb/Documents")
 
-        server.succeed("sudo --user=syncthing touch /var/lib/syncthing/Documents/server")
-        client1.succeed("sudo --user=seb touch /home/seb/Documents/client1")
-        client2.succeed("sudo --user=seb touch /home/seb/Documents/client2")
+        server.succeed("setpriv --reuid=syncthing --regid=syncthing --init-groups touch /var/lib/syncthing/Documents/server")
+        client1.succeed("setpriv --reuid=seb --regid=users --init-groups touch /home/seb/Documents/client1")
+        client2.succeed("setpriv --reuid=seb --regid=users --init-groups touch /home/seb/Documents/client2")
 
         server.wait_for_file("/var/lib/syncthing/Documents/client1")
         server.wait_for_file("/var/lib/syncthing/Documents/client2")
@@ -107,8 +107,8 @@
         server.wait_for_file("/var/lib/syncthing/Pictures")
         client1.wait_for_file("/home/seb/Pictures")
 
-        server.succeed("sudo --user=syncthing touch /var/lib/syncthing/Pictures/server")
-        client1.succeed("sudo --user=seb touch /home/seb/Pictures/client1")
+        server.succeed("setpriv --reuid=syncthing --regid=syncthing --init-groups touch /var/lib/syncthing/Pictures/server")
+        client1.succeed("setpriv --reuid=seb --regid=users --init-groups touch /home/seb/Pictures/client1")
 
         server.wait_for_file("/var/lib/syncthing/Pictures/client1")
         client1.wait_for_file("/home/seb/Pictures/server")
