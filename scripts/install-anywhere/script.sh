@@ -1,14 +1,14 @@
 if [[ $# -ne 2 ]]; then
-  echo "Usage: $0 <host> <destination>"
-  exit 1
+	echo "Usage: $0 <host> <destination>"
+	exit 1
 fi
 
 host="$1"
 destination="$2"
 
 if [ -z "${SOPS_AGE_KEY:-}" ]; then
-  echo "Missing SOPS_AGE_KEY; enter the sops dev shell first: nix develop .#sops" >&2
-  exit 1
+	echo "Missing SOPS_AGE_KEY; enter the sops dev shell first: nix develop .#sops" >&2
+	exit 1
 fi
 
 root="$(mktemp --directory)"
@@ -16,9 +16,9 @@ trap 'rm -rf "$root"' EXIT
 
 impermanence="$(nix eval ".#nixosConfigurations.$host.config.custom.persistence.enable")"
 if [ "$impermanence" = true ]; then
-  ssh_dir="$root/persist/etc/ssh"
+	ssh_dir="$root/persist/etc/ssh"
 else
-  ssh_dir="$root/etc/ssh"
+	ssh_dir="$root/etc/ssh"
 fi
 
 echo "==> Generating new SSH host keys..."
@@ -36,6 +36,6 @@ sops updatekeys --yes "hosts/nixos/$host/secrets.json"
 
 echo "==> Installing system..."
 nix run github:nix-community/nixos-anywhere -- \
-  --extra-files "$root" \
-  --flake ".#$host" \
-  --target-host "$destination"
+	--extra-files "$root" \
+	--flake ".#$host" \
+	--target-host "$destination"
