@@ -15,6 +15,7 @@ in
     services = {
       openssh = {
         enable = true;
+        startWhenNeeded = false;
         openFirewall = false;
         ports = lib.mkForce [ ];
         listenAddresses = lib.singleton {
