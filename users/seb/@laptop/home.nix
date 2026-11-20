@@ -8,6 +8,6 @@ _: {
 
   wayland.windowManager.hyprland.settings.monitor = [
     "eDP-1,2880x1920@120,0x0,2"
-    ",preferred,auto,1,mirror,eDP-1"
+    ",preferred,auto-up,auto"
   ];
 }
