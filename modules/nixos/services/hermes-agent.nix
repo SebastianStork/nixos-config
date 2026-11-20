@@ -222,6 +222,8 @@ in
           (lib.toJSON config.services.hermes-agent.settings)
         ];
 
+        nix.settings.allowed-users = [ config.services.hermes-agent.user ];
+
         custom = {
           services.restic.backups.hermes-agent = lib.mkIf cfg.doBackups {
             conflictingServices = [ "hermes-agent.service" ];
