@@ -57,13 +57,16 @@ jobs:
             |> builtins.map (name: {
               inherit name;
               expected_closure = configs.${name}.config.system.build.toplevel.outPath;
-              current_closure_url = "https://${configs.${name}.config.networking.fqdn}/hooks/current-system";
+              deployment_state_url = "https://${configs.${name}.config.networking.fqdn}/hooks/deployment-state";
             })
           ' --json)
           closure_paths=$(bash .forgejo/scripts/collect-closure-paths.sh <<< "$server_inventory")
           servers_to_deploy=$(jq --compact-output '[
             .[]
-            | select(.current_closure != .expected_closure)
+            | select(
+                .current_closure != .expected_closure or
+                .target_closure != .expected_closure
+              )
             | .host
           ]' <<< "$closure_paths")
           if [[ "$servers_to_deploy" == '[]' ]]; then
@@ -112,17 +115,19 @@ jobs:
       - name: Deploy or defer deployment
         timeout-minutes: 30
         env:
-          REVISION: ${{ forgejo.sha }}
           SERVER: ${{ matrix.server }}
           ACTOR: ${{ forgejo.actor }}
+          CLOSURE_PATHS: ${{ needs.discover-deployments.outputs.closure_paths }}
         run: |
           hook=deploy
           if [[ "$ACTOR" == SebastianStork-Bot ]]; then
             hook=defer-deploy
           fi
           url="https://$SERVER.splitleaf.de/hooks/$hook"
+          closure=$(jq --exit-status --raw-output --arg server "$SERVER" \
+            '.[] | select(.host == $server) | .expected_closure' <<< "$CLOSURE_PATHS")
           payload=$(jq --compact-output --null-input \
-            --arg revision "$REVISION" '{ $revision }')
+            --arg closure "$closure" '{ $closure }')
 
           for attempt in $(seq 1 10); do
             http_code=$(curl --silent --show-error --output response.txt --write-out '%{http_code}' \

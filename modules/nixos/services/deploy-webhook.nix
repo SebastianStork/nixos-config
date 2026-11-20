@@ -7,26 +7,46 @@
 let
   cfg = config.custom.services.deploy-webhook;
 
-  currentSystem = pkgs.writeShellApplication {
-    name = "current-system";
-    runtimeInputs = [ pkgs.coreutils ];
+  deploymentState = pkgs.writeShellApplication {
+    name = "deployment-state";
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.jq
+    ];
     text = ''
-      readlink /run/current-system
+      current_closure=$(readlink /run/current-system)
+      target_closure=
+      if [[ -s ${cfg.deploymentTargetFile} ]]; then
+        IFS= read -r target_closure < ${cfg.deploymentTargetFile}
+      fi
+
+      jq --null-input --compact-output \
+        --arg current_closure "$current_closure" \
+        --arg target_closure "$target_closure" \
+        '{ $current_closure, $target_closure }'
     '';
   };
 
+  writeDeploymentTarget = ''
+    mkdir --parents ${lib.dirOf cfg.deploymentTargetFile}
+    printf '%s\n' "$1" > ${cfg.deploymentTargetFile}
+  '';
+
   deploy = pkgs.writeShellApplication {
     name = "deploy";
-    runtimeInputs = [ pkgs.systemd ];
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.systemd
+    ];
     text = ''
-      revision=$1
-      unit="nixos-rebuild@$revision.service"
+      closure=$1
+      unit="nixos-deploy@$(systemd-escape --path "$closure").service"
 
       rc=0
       systemctl start --wait "$unit" || rc=$?
       journalctl --invocation=0 --unit="$unit" --output=cat --no-pager
       if [[ "$rc" -eq 0 ]]; then
-        printf '%s\n' "$revision" > ${cfg.deploymentTargetFile}
+        ${writeDeploymentTarget}
       fi
       exit "$rc"
     '';
@@ -34,9 +54,8 @@ let
 
   deferDeploy = pkgs.writeShellApplication {
     name = "defer-deploy";
-    text = ''
-      printf '%s\n' "$1" > ${cfg.deploymentTargetFile}
-    '';
+    runtimeInputs = [ pkgs.coreutils ];
+    text = writeDeploymentTarget;
   };
 
   diff = pkgs.writeShellApplication {
@@ -61,37 +80,23 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.services."nixos-rebuild@" = {
-      description = "NixOS rebuild at revision %i";
+    systemd.services."nixos-deploy@" = {
+      description = "Deploy NixOS system closure %f";
       restartIfChanged = false;
       path = [
         pkgs.nh
         pkgs.nix
-        pkgs.git
-        pkgs.coreutils
       ];
       serviceConfig.Type = "oneshot";
-      scriptArgs = "%i";
+      scriptArgs = "%f";
       script = ''
-        revision=$1
-        flake="git+https://codeberg.org/SebastianStork/nixos-config?rev=$revision"
-
-        fetched=
-        for delay in 0 10 30 60; do
-          sleep "$delay"
-          if nix flake metadata --refresh "$flake" >/dev/null; then
-            fetched=1
-            break
-          fi
-        done
-        [[ -n "$fetched" ]] || exit 1
-
+        nix build --no-link "$1"
         nh os switch \
           --bypass-root-check \
           --diff never \
           --no-nom \
           --show-activation-logs \
-          "$flake"
+          "$1"
       '';
     };
 
@@ -100,8 +105,8 @@ in
       ip = "127.0.0.1";
       port = cfg.webhookPort;
       hooks = {
-        current-system = {
-          execute-command = lib.getExe currentSystem;
+        deployment-state = {
+          execute-command = lib.getExe deploymentState;
           include-command-output-in-response = true;
           include-command-output-in-response-on-error = true;
         };
@@ -114,7 +119,7 @@ in
             }
             {
               source = "payload";
-              name = "revision";
+              name = "closure";
             }
           ];
           http-methods = [ "POST" ];
@@ -130,7 +135,7 @@ in
             }
             {
               source = "payload";
-              name = "revision";
+              name = "closure";
             }
           ];
           http-methods = [ "POST" ];
@@ -166,7 +171,7 @@ in
 
     custom.services.caddy.virtualHosts.${config.networking.fqdn} = {
       extraConfig = ''
-        handle /hooks/current-system {
+        handle /hooks/deployment-state {
           header Cache-Control "no-store"
           reverse_proxy localhost:${lib.toString cfg.webhookPort}
         }
