@@ -65,7 +65,7 @@ in
 
     sops.secrets."nebula/host-key" = lib.mkIf (cfg.privateKeyFile == null) {
       owner = config.users.users.nebula-mesh.name;
-      restartUnits = [ "nebula@mesh.service" ];
+      reloadUnits = [ "nebula@mesh.service" ];
     };
 
     environment.etc = {
@@ -151,6 +151,10 @@ in
       services."nebula@mesh" = {
         wants = [ "network-online.target" ];
         after = [ "network-online.target" ];
+        reloadTriggers = [
+          cfg.caCertificateFile
+          (self.lib.isolateStorePath cfg.certificateFile)
+        ];
       };
 
       network.networks."40-nebula" = {
