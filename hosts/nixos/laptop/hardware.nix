@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 {
   imports = [ inputs.nixos-hardware.nixosModules.framework-13-7040-amd ];
 
@@ -44,4 +44,14 @@
     HibernateDelaySec = "2h";
     HibernateOnACPower = true;
   };
+
+  environment.etc."systemd/system-sleep/hibernate-memory-reclaim".source =
+    pkgs.writeShellScript "hibernate-memory-reclaim" ''
+      if [[ "$1:$2" == "pre:hibernate" || "$1:$2" == "pre:suspend-then-hibernate" ]]; then
+        ${pkgs.coreutils}/bin/sync
+        echo 0 > /sys/power/image_size
+        echo 3 > /proc/sys/vm/drop_caches
+        echo 1 > /proc/sys/vm/compact_memory
+      fi
+    '';
 }
