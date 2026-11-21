@@ -10,6 +10,15 @@
   nixpkgs.hostPlatform = "x86_64-linux";
 
   boot = {
+    bcachefs.modulePackage = config.boot.kernelPackages.bcachefs.overrideAttrs (oldAttrs: {
+      postPatch = (oldAttrs.postPatch or "") + ''
+        substituteInPlace src/fs/bcachefs/vfs/fs.h \
+          --replace-fail \
+            'KERNEL_VERSION(6,19,0)' \
+            'KERNEL_VERSION(6,18,64)'
+      '';
+    });
+
     kernelModules = [
       "kvm-intel"
       "coretemp"
