@@ -62,7 +62,7 @@ func main() {
 	now := time.Now()
 	validUntil := now.Add(*validFor)
 
-	pool, caProblems := checkCA(caPath, now, validUntil)
+	pool, caProblems := checkCA(caPath, now)
 	failIfProblems(caProblems)
 	if pool == nil {
 		fail([]string{"CA check did not return a certificate pool"})
@@ -96,40 +96,37 @@ func fail(problems []string) {
 	os.Exit(1)
 }
 
-func checkCA(path string, now, validUntil time.Time) (*cert.CAPool, []string) {
+func checkCA(path string, now time.Time) (*cert.CAPool, []string) {
 	certs, err := readCertificates(path)
 	if err != nil {
 		return nil, []string{fmt.Sprintf("CA %s: %v", path, err)}
 	}
-	if len(certs) != 1 {
-		return nil, []string{fmt.Sprintf("CA %s: expected exactly one CA certificate, found %d", path, len(certs))}
-	}
-
-	c := certs[0]
-	label := fmt.Sprintf("CA %s", path)
-	if !c.IsCA() {
-		return nil, []string{fmt.Sprintf("%s: certificate is not a CA", label)}
-	}
 
 	pool := cert.NewCAPool()
 	var problems []string
-	if !c.CheckSignature(c.PublicKey()) {
-		problems = append(problems, fmt.Sprintf("%s (%s): certificate is not self-signed", label, c.Name()))
-	}
-	if c.Expired(now) {
-		problems = append(problems, fmt.Sprintf("%s (%s): certificate is not valid now; valid from %s to %s", label, c.Name(), c.NotBefore().Format(time.RFC3339), c.NotAfter().Format(time.RFC3339)))
-	}
-	if validUntil.After(now) && c.Expired(validUntil) {
-		problems = append(problems, fmt.Sprintf("%s (%s): certificate will not be valid at %s; valid until %s", label, c.Name(), validUntil.Format(time.RFC3339), c.NotAfter().Format(time.RFC3339)))
-	}
-	if len(problems) > 0 {
-		return nil, problems
-	}
+	for i, c := range certs {
+		label := fmt.Sprintf("CA %s certificate %d", path, i+1)
+		if !c.IsCA() {
+			problems = append(problems, fmt.Sprintf("%s: certificate is not a CA", label))
+			continue
+		}
 
-	if err := pool.AddCA(c); err != nil {
-		return nil, []string{fmt.Sprintf("%s (%s): failed to add CA to pool: %v", label, c.Name(), err)}
+		problemCount := len(problems)
+		if !c.CheckSignature(c.PublicKey()) {
+			problems = append(problems, fmt.Sprintf("%s (%s): certificate is not self-signed", label, c.Name()))
+		}
+		if c.Expired(now) {
+			problems = append(problems, fmt.Sprintf("%s (%s): certificate is not valid now; valid from %s to %s", label, c.Name(), c.NotBefore().Format(time.RFC3339), c.NotAfter().Format(time.RFC3339)))
+		}
+		if len(problems) != problemCount {
+			continue
+		}
+
+		if err := pool.AddCA(c); err != nil {
+			problems = append(problems, fmt.Sprintf("%s (%s): failed to add CA to pool: %v", label, c.Name(), err))
+		}
 	}
-	return pool, nil
+	return pool, problems
 }
 
 func checkHost(h host, pool *cert.CAPool, now, validUntil time.Time) []string {

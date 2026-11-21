@@ -103,12 +103,9 @@ func readCAKey(path string) ([]byte, cert.Curve, error) {
 }
 
 func recertHost(h host, caKey []byte, caKeyCurve cert.Curve) error {
-	caCert, err := readCertificate(h.CA)
+	caCert, err := readNewestCACertificate(h.CA)
 	if err != nil {
 		return err
-	}
-	if !caCert.IsCA() {
-		return fmt.Errorf("%s is not a CA certificate", h.CA)
 	}
 	if caCert.Expired(time.Now()) {
 		return fmt.Errorf("CA certificate %s is expired", h.CA)
@@ -169,20 +166,33 @@ func recertHost(h host, caKey []byte, caKeyCurve cert.Curve) error {
 	return nil
 }
 
-func readCertificate(path string) (cert.Certificate, error) {
+func readNewestCACertificate(path string) (cert.Certificate, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read CA certificate %s: %w", path, err)
+		return nil, fmt.Errorf("failed to read CA certificate bundle %s: %w", path, err)
 	}
 
-	c, rest, err := cert.UnmarshalCertificateFromPEM(b)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse CA certificate %s: %w", path, err)
+	var newest cert.Certificate
+	remaining := b
+	for len(bytes.TrimSpace(remaining)) > 0 {
+		c, rest, err := cert.UnmarshalCertificateFromPEM(remaining)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse CA certificate bundle %s: %w", path, err)
+		}
+		if !c.IsCA() {
+			return nil, fmt.Errorf("CA certificate bundle %s contains a non-CA certificate", path)
+		}
+
+		if newest == nil || c.NotBefore().After(newest.NotBefore()) {
+			newest = c
+		}
+		remaining = rest
 	}
-	if len(bytes.TrimSpace(rest)) > 0 {
-		return nil, fmt.Errorf("CA certificate %s contains extra data", path)
+
+	if newest == nil {
+		return nil, fmt.Errorf("CA certificate bundle %s contains no certificates", path)
 	}
-	return c, nil
+	return newest, nil
 }
 
 func readPublicKey(path string) ([]byte, cert.Curve, error) {
