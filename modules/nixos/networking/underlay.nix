@@ -91,6 +91,7 @@ in
           wifi.backend = lib.mkIf cfg.wireless.enable "iwd";
           dns = "systemd-resolved";
           plugins = [ pkgs.networkmanager-openvpn ];
+          settings.connection."vpn.persistent" = true;
           unmanaged = [ "interface-name:${config.custom.networking.overlay.interface}" ];
         };
       };
