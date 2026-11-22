@@ -278,8 +278,8 @@ in
       (lib.mkIf config.custom.web-services.calibre-server.enable (
         let
           camoufoxRelease = {
-            version = "v159.0-beta.42";
-            hash = "a79ad1ef1a4575e3e0d2c1c66b13ad79ebcad15a898a7c070075e6dd849533d4";
+            version = "v159.0-beta.43";
+            hash = "9315ff337b730b697a17298b37575945036a2607b888759e900bc31f7f910cb2";
           };
           camoufoxLibraries = [
             pkgs.alsa-lib
