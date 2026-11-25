@@ -35,30 +35,24 @@ in
         script = ''
           IFS= read -r closure < ${config.custom.services.deploy-webhook.deploymentTargetFile}
           nix build --no-link "$closure"
-          nh os boot \
+
+          booted="$(readlink /run/booted-system/{initrd,kernel,kernel-modules})"
+          target="$(readlink "$closure"/{initrd,kernel,kernel-modules})"
+
+          mode=boot
+          if [[ "$booted" == "$target" ]]; then
+            mode=switch
+          fi
+
+          nh os "$mode" \
             --bypass-root-check \
             --diff never \
             --no-nom \
             --show-activation-logs \
             "$closure"
 
-          booted="$(readlink /run/booted-system/{initrd,kernel,kernel-modules})"
-          target="$(readlink "$closure"/{initrd,kernel,kernel-modules})"
-
-          if [[ "$booted" == "$target" ]]; then
-            nh os switch \
-              --bypass-root-check \
-              --diff never \
-              --no-nom \
-              --show-activation-logs \
-              "$closure"
-          else
-            current_time=$(date +%H:%M)
-            if [[ "$current_time" > "03:00" && "$current_time" < "05:00" ]]; then
-              shutdown --reboot +1
-            else
-              echo "A reboot is required, but the maintenance window has ended."
-            fi
+          if [[ "$mode" == boot ]]; then
+            shutdown --reboot +1
           fi
         '';
       };
