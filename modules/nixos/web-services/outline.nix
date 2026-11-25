@@ -67,7 +67,10 @@ in
       in
       {
         services = {
-          caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+          caddy.virtualHosts.${cfg.domain} = {
+            inherit (cfg) port;
+            allowedGroups = [ "client" ];
+          };
 
           restic.backups.outline = lib.mkIf cfg.doBackups {
             conflictingService = "outline.service";

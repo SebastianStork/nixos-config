@@ -53,7 +53,10 @@ in
 
     custom = {
       services = {
-        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+        caddy.virtualHosts.${cfg.domain} = {
+          inherit (cfg) port;
+          allowedGroups = [ "client" ];
+        };
 
         restic.backups.trek = lib.mkIf cfg.doBackups {
           conflictingService = "${config.virtualisation.oci-containers.backend}-trek.service";

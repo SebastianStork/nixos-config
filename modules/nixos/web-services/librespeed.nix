@@ -57,16 +57,19 @@ in
     security.acme.certs.${config.networking.fqdn} = { };
 
     custom = lib.mkIf cfg.frontend.enable {
-      services.caddy.virtualHosts.${cfg.frontend.domain}.extraConfig = ''
-        route {
-          root ${config.services.librespeed.settings.assets_path}
-          reverse_proxy /backend/* ${config.custom.networking.overlay.address}:${lib.toString cfg.port}
-          respond /servers.json <<JSON
-            ${lib.toJSON config.services.librespeed.frontend.servers}
-            JSON 200
-          file_server
-        }
-      '';
+      services.caddy.virtualHosts.${cfg.frontend.domain} = {
+        allowedGroups = [ "client" ];
+        extraConfig = ''
+          route {
+            root ${config.services.librespeed.settings.assets_path}
+            reverse_proxy /backend/* ${config.custom.networking.overlay.address}:${lib.toString cfg.port}
+            respond /servers.json <<JSON
+              ${lib.toJSON config.services.librespeed.frontend.servers}
+              JSON 200
+            file_server
+          }
+        '';
+      };
 
       meta.sites.${cfg.frontend.domain} = {
         title = "LibreSpeed";

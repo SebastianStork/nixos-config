@@ -194,7 +194,10 @@ in
       services = {
         caddy.virtualHosts.${cfg.domain} = {
           inherit (cfg) port;
-          extraAllowedGroups = [ "monitoring" ];
+          allowedGroups = [
+            "client"
+            "monitoring"
+          ];
         };
       };
 

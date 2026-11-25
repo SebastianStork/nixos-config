@@ -1,16 +1,16 @@
 { self, lib, ... }:
 let
-  publicDomain = "app.sprouted.cloud";
-  serverPrivateDomain = "server-app.${self.lib.privateDomain}";
-  agentPrivateDomain = "agent-app.${self.lib.privateDomain}";
+  publicDomain = "public.test";
+  lanEnabledDomain = "lan-enabled.${self.lib.privateDomain}";
+  namedPeerDomain = "named-peer.${self.lib.privateDomain}";
   privateDomains = [
-    serverPrivateDomain
-    agentPrivateDomain
+    lanEnabledDomain
+    namedPeerDomain
   ];
 
   publicBody = "public-reverse-proxy-ok";
-  serverPrivateBody = "server-private-file-server-ok";
-  agentPrivateBody = "agent-private-file-server-ok";
+  lanEnabledBody = "lan-enabled-ok";
+  namedPeerBody = "named-peer-ok";
 in
 {
   imports = [ (import ../common.nix ./.) ];
@@ -29,6 +29,7 @@ in
             underlay = {
               cidr = "192.168.0.2/16";
               isPublic = true;
+              trusted = true;
             };
           };
 
@@ -37,21 +38,26 @@ in
               port = 8080;
               extraConfig = "tls internal";
             };
-            ${serverPrivateDomain} = {
+            ${lanEnabledDomain} = {
               extraConfig = ''
                 route {
-                  respond "${serverPrivateBody}"
+                  respond "${lanEnabledBody}"
                 }
               '';
-              extraAllowedGroups = [ "server" ];
+              allowedGroups = [
+                "client"
+                "server"
+              ];
             };
-            ${agentPrivateDomain} = {
+            ${namedPeerDomain} = {
               extraConfig = ''
                 handle {
-                  respond "${agentPrivateBody}"
+                  respond "${namedPeerBody}"
                 }
               '';
+              allowedGroups = [ ];
               extraAllowedHosts = [ "overlayAgent" ];
+              allowTrustedUnderlay = false;
             };
           };
         };
@@ -149,7 +155,7 @@ in
         };
       };
 
-    externalClient =
+    lanClient =
       { pkgs, ... }:
       {
         environment.systemPackages = [ pkgs.curl ];
@@ -164,40 +170,50 @@ in
     { containers, ... }:
     let
       netCfg = containers.caddy.custom.networking;
-
-      curl = "curl --fail --silent --show-error --insecure --max-time 10";
     in
     ''
+      from shlex import join
+
+      def request(client, domain, address):
+          command = join([
+              "curl", "--silent", "--show-error", "--insecure", "--max-time", "10",
+              "--resolve", f"{domain}:443:{address}", "--write-out", r"\n%{http_code}",
+              f"https://{domain}",
+          ])
+          body, status = client.succeed(command).rsplit("\n", 1)
+          return int(status), body
+
       with subtest("Readiness"):
-        caddy.start()
-        caddy.wait_for_unit("${netCfg.overlay.systemdUnit}")
-        caddy.wait_for_unit("static-web-server.socket")
-        caddy.wait_for_unit("caddy.service")
-        overlayClient.start()
-        overlayClient.wait_for_unit("${containers.overlayClient.custom.networking.overlay.systemdUnit}")
-        overlayServer.start()
-        overlayServer.wait_for_unit("${containers.overlayServer.custom.networking.overlay.systemdUnit}")
-        overlayAgent.start()
-        overlayAgent.wait_for_unit("${containers.overlayAgent.custom.networking.overlay.systemdUnit}")
-        externalClient.start()
-        externalClient.wait_for_unit("multi-user.target")
+          caddy.start()
+          caddy.wait_for_unit("${netCfg.overlay.systemdUnit}")
+          caddy.wait_for_unit("static-web-server.socket")
+          caddy.wait_for_unit("caddy.service")
+          overlayClient.start()
+          overlayClient.wait_for_unit("${containers.overlayClient.custom.networking.overlay.systemdUnit}")
+          overlayServer.start()
+          overlayServer.wait_for_unit("${containers.overlayServer.custom.networking.overlay.systemdUnit}")
+          overlayAgent.start()
+          overlayAgent.wait_for_unit("${containers.overlayAgent.custom.networking.overlay.systemdUnit}")
+          lanClient.start()
+          lanClient.wait_for_unit("multi-user.target")
 
-      with subtest("Overlay client reaches private and public hosts"):
-        overlayClient.succeed("${curl} --resolve ${publicDomain}:443:${netCfg.underlay.address} https://${publicDomain} | grep -q '${publicBody}'")
-        overlayClient.succeed("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.overlay.address} https://${serverPrivateDomain} | grep -q '${serverPrivateBody}'")
-        overlayClient.succeed("${curl} --resolve ${agentPrivateDomain}:443:${netCfg.overlay.address} https://${agentPrivateDomain} | grep -q '${agentPrivateBody}'")
+      with subtest("Overlay client reaches the public and client-accessible hosts"):
+          assert request(overlayClient, "${publicDomain}", "${netCfg.underlay.address}") == (200, "${publicBody}")
+          assert request(overlayClient, "${lanEnabledDomain}", "${netCfg.overlay.address}") == (200, "${lanEnabledBody}")
+          assert request(overlayClient, "${namedPeerDomain}", "${netCfg.overlay.address}")[0] == 403
 
-      with subtest("Agent reaches only agent-accessible private host"):
-        overlayAgent.succeed("${curl} --resolve ${agentPrivateDomain}:443:${netCfg.overlay.address} https://${agentPrivateDomain} | grep -q '${agentPrivateBody}'")
-        overlayAgent.fail("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.overlay.address} https://${serverPrivateDomain}")
+      with subtest("Named peer reaches only the named-peer site"):
+          assert request(overlayAgent, "${namedPeerDomain}", "${netCfg.overlay.address}") == (200, "${namedPeerBody}")
+          assert request(overlayAgent, "${lanEnabledDomain}", "${netCfg.overlay.address}")[0] == 403
 
-      with subtest("Server reaches only server-accessible private host"):
-        overlayServer.fail("${curl} --resolve ${agentPrivateDomain}:443:${netCfg.overlay.address} https://${agentPrivateDomain}")
-        overlayServer.succeed("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.overlay.address} https://${serverPrivateDomain} | grep -q '${serverPrivateBody}'")
+      with subtest("Overlay server reaches the group-accessible site but not the named-peer site"):
+          assert request(overlayServer, "${lanEnabledDomain}", "${netCfg.overlay.address}") == (200, "${lanEnabledBody}")
+          assert request(overlayServer, "${namedPeerDomain}", "${netCfg.overlay.address}")[0] == 403
 
-      with subtest("External client reaches only the public host"):
-        externalClient.succeed("${curl} --resolve ${publicDomain}:443:${netCfg.underlay.address} https://${publicDomain} | grep -q '${publicBody}'")
-        externalClient.fail("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.overlay.address} https://${serverPrivateDomain} | grep -q '${serverPrivateBody}'")
-        externalClient.fail("${curl} --resolve ${serverPrivateDomain}:443:${netCfg.underlay.address} https://${serverPrivateDomain} | grep -q '${serverPrivateBody}'")
+      with subtest("Trusted LAN reaches the public and LAN-enabled hosts"):
+          assert request(lanClient, "${publicDomain}", "${netCfg.underlay.address}") == (200, "${publicBody}")
+          assert request(lanClient, "${lanEnabledDomain}", "${netCfg.underlay.address}") == (200, "${lanEnabledBody}")
+          _, body = request(lanClient, "${namedPeerDomain}", "${netCfg.underlay.address}")
+          assert "${namedPeerBody}" not in body
     '';
 }

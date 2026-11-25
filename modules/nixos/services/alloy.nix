@@ -139,7 +139,10 @@ in
       };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.port = lib.mkIf (cfg.domain != null) cfg.port;
+      services.caddy.virtualHosts.${cfg.domain} = lib.mkIf (cfg.domain != null) {
+        inherit (cfg) port;
+        allowedGroups = [ "client" ];
+      };
 
       meta.sites.${cfg.domain} = lib.mkIf (cfg.domain != null) {
         title = "Alloy";

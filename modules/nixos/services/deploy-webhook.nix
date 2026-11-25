@@ -185,7 +185,10 @@ in
           reverse_proxy localhost:${lib.toString cfg.webhookPort}
         }
       '';
-      extraAllowedGroups = [ "automation" ];
+      allowedGroups = [
+        "client"
+        "automation"
+      ];
     };
   };
 }

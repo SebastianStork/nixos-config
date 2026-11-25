@@ -220,7 +220,10 @@ in
       };
 
       custom = {
-        services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+        services.caddy.virtualHosts.${cfg.domain} = {
+          inherit (cfg) port;
+          allowedGroups = [ "client" ];
+        };
 
         meta.sites.${cfg.domain} = {
           title = "Homelab Dashboard";

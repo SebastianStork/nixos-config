@@ -77,7 +77,7 @@ in
       services = {
         caddy.virtualHosts.${cfg.domain} = {
           inherit (cfg) port;
-          extraAllowedGroups = lib.optional cfg.allowHermes "agent";
+          allowedGroups = [ "client" ] ++ lib.optional cfg.allowHermes "agent";
         };
 
         restic.backups.radicale = lib.mkIf cfg.doBackups {

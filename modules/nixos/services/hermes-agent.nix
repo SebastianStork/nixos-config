@@ -258,7 +258,10 @@ in
 
         custom = {
           services = {
-            caddy.virtualHosts.${cfg.webapp.domain}.port = cfg.webapp.port;
+            caddy.virtualHosts.${cfg.webapp.domain} = {
+              inherit (cfg.webapp) port;
+              allowedGroups = [ "client" ];
+            };
 
             private-auth.oidcClients.hermes = {
               clientName = "Hermes";

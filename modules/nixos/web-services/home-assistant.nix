@@ -134,11 +134,17 @@ in
         caddy.virtualHosts = {
           ${cfg.domain} = {
             inherit (cfg) port;
-            extraAllowedGroups = [ "agent" ];
+            allowedGroups = [
+              "client"
+              "agent"
+            ];
           };
           ${cfg.zigbee2mqtt.domain} = {
             inherit (cfg.zigbee2mqtt) port;
-            extraAllowedGroups = [ "agent" ];
+            allowedGroups = [
+              "client"
+              "agent"
+            ];
             forwardAuth = {
               enable = cfg.zigbee2mqtt.forwardAuth;
               bypassPaths = [ "/index.html" ];

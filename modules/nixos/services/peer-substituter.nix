@@ -29,7 +29,8 @@ in
       custom = {
         services.caddy.virtualHosts.${cfg.domain} = {
           inherit (cfg) port;
-          extraAllowedGroups = [
+          allowedGroups = [
+            "client"
             "server"
             "agent"
           ];

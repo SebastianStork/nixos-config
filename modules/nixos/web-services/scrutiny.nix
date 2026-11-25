@@ -60,7 +60,10 @@ in
     };
 
     custom = {
-      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      services.caddy.virtualHosts.${cfg.domain} = {
+        inherit (cfg) port;
+        allowedGroups = [ "client" ];
+      };
 
       persistence.directories = [
         "/var/lib/influxdb2"

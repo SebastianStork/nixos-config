@@ -54,7 +54,8 @@ in
       custom = {
         services.caddy.virtualHosts.${cfg.domain} = {
           port = config.custom.services.garage.web.port;
-          extraAllowedGroups = [
+          allowedGroups = [
+            "client"
             "server"
             "agent"
           ];

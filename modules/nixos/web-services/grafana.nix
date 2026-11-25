@@ -111,7 +111,10 @@ in
     custom = {
       networking.overlay.accessGroups = [ "monitoring" ];
 
-      services.caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+      services.caddy.virtualHosts.${cfg.domain} = {
+        inherit (cfg) port;
+        allowedGroups = [ "client" ];
+      };
 
       meta.sites.${cfg.domain} = {
         title = "Grafana";

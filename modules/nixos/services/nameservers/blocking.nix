@@ -119,6 +119,7 @@ in
     custom = {
       services.caddy.virtualHosts.${cfg.gui.domain} = lib.mkIf (cfg.gui.domain != null) {
         port = cfg.gui.port;
+        allowedGroups = [ "client" ];
         forwardAuth = {
           enable = cfg.gui.forwardAuth;
           bypassPaths = [

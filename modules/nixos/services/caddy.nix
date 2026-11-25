@@ -35,13 +35,14 @@ let
     };
   };
 
-  getAllowedGroups = vHost: [ "client" ] ++ vHost.extraAllowedGroups;
+  allowsUnderlay = vHost: netCfg.underlay.trusted && vHost.allowTrustedUnderlay;
 
   hostIsAllowed =
     vHost: host:
-    lib.any (
-      group: lib.elem group (getAllowedGroups vHost)
-    ) host.config.custom.networking.overlay.accessGroups
+    (
+      host.config.custom.networking.overlay.accessGroups
+      |> lib.any (group: lib.elem group vHost.allowedGroups)
+    )
     || lib.elem host.config.networking.hostName vHost.extraAllowedHosts;
 
   getAllowedAddresses =
@@ -52,9 +53,10 @@ let
       |> lib.map (host: host.config.custom.networking.overlay.address)
       |> lib.unique
     )
-    ++ lib.optional netCfg.underlay.trusted netCfg.underlay.cidr;
+    ++ lib.optional (allowsUnderlay vHost) netCfg.underlay.cidr;
 
-  allowedNebulaGroups = privateVirtualHosts |> lib.concatMap getAllowedGroups |> lib.unique;
+  allowedNebulaGroups =
+    privateVirtualHosts |> lib.concatMap (vHost: vHost.allowedGroups) |> lib.unique;
 
   allowedNebulaHosts =
     privateVirtualHosts |> lib.concatMap (vHost: vHost.extraAllowedHosts) |> lib.unique;
@@ -76,6 +78,7 @@ let
 
   publicHostsExist = virtualHosts |> lib.any (vHost: (!self.lib.isPrivateDomain vHost.domain));
   privateHostsExist = privateVirtualHosts != [ ];
+  privateHostsUseUnderlay = privateVirtualHosts |> lib.any allowsUnderlay;
 
   privateDomains = privateVirtualHosts |> lib.map (vHost: vHost.domain) |> lib.unique;
 
@@ -128,14 +131,14 @@ let
         if self.lib.isPrivateDomain domain then
           ''
             tls ${certDir}/fullchain.pem ${certDir}/key.pem
-            bind ${config.custom.networking.overlay.address} ${lib.optionalString netCfg.underlay.trusted netCfg.underlay.address}
+            bind ${config.custom.networking.overlay.address} ${lib.optionalString (allowsUnderlay vHost) netCfg.underlay.address}
             route {
               ${accessControl}
               ${requestHandlers}
             }
           ''
         else
-          requestHandlers;
+          lib.optionalString privateHostsUseUnderlay "bind ${netCfg.underlay.address}\n" + requestHandlers;
     };
 in
 {
@@ -176,9 +179,12 @@ in
                 type = lib.types.nullOr lib.types.lines;
                 default = null;
               };
-              extraAllowedGroups = lib.mkOption {
+              allowedGroups = lib.mkOption {
                 type = lib.types.listOf lib.types.nonEmptyStr;
                 default = [ ];
+              };
+              allowTrustedUnderlay = lib.mkEnableOption "" // {
+                default = true;
               };
               extraAllowedHosts = lib.mkOption {
                 type = lib.types.listOf lib.types.nonEmptyStr;
@@ -221,10 +227,7 @@ in
               message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "one of `port`, `files` or `extraConfig` must be set";
             }
             {
-              assertion =
-                (!self.lib.isPrivateDomain vHost.domain)
-                || (vHost |> getAllowedAddresses) != [ ]
-                || netCfg.underlay.trusted;
+              assertion = self.lib.isPrivateDomain vHost.domain -> (vHost |> getAllowedAddresses) != [ ];
               message = self.lib.mkInvalidConfigMessage "Caddy virtual host `${vHost.domain}`" "no hosts are allowed to access it";
             }
             {
@@ -292,7 +295,7 @@ in
           ++ (allowedNebulaHosts |> lib.concatMap (host: mkFirewallRules { inherit host; }));
 
         networking.firewall.interfaces.${netCfg.underlay.interface}.allowedTCPPorts =
-          lib.mkIf netCfg.underlay.trusted
+          lib.mkIf privateHostsUseUnderlay
             [
               80
               443

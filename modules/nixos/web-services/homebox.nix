@@ -30,7 +30,10 @@ in
 
     custom = {
       services = {
-        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+        caddy.virtualHosts.${cfg.domain} = {
+          inherit (cfg) port;
+          allowedGroups = [ "client" ];
+        };
 
         restic.backups.homebox = lib.mkIf cfg.doBackups {
           conflictingService = "homebox.service";

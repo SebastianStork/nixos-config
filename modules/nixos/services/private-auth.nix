@@ -153,7 +153,10 @@ in
 
                 reverse_proxy localhost:${lib.toString cfg.port}
               '';
-              extraAllowedGroups = [ "private-auth-client" ];
+              allowedGroups = [
+                "client"
+                "private-auth-client"
+              ];
             };
 
             persistence.directories = [ dataDir ];

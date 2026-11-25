@@ -116,7 +116,10 @@ in
     custom = {
       services.caddy.virtualHosts.${cfg.domain} = {
         inherit (cfg) port;
-        extraAllowedGroups = [ "monitoring" ];
+        allowedGroups = [
+          "client"
+          "monitoring"
+        ];
       };
 
       meta.sites.${cfg.domain} = {

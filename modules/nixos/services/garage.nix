@@ -102,9 +102,15 @@ in
       services.caddy.virtualHosts = {
         ${cfg.api.domain} = {
           port = cfg.api.port;
-          extraAllowedGroups = [ "automation" ];
+          allowedGroups = [
+            "client"
+            "automation"
+          ];
         };
-        ${cfg.admin.domain}.port = cfg.admin.port;
+        ${cfg.admin.domain} = {
+          port = cfg.admin.port;
+          allowedGroups = [ "client" ];
+        };
       };
 
       persistence.directories = [ "/var/lib/garage" ];

@@ -41,6 +41,7 @@ in
     custom = {
       services = {
         caddy.virtualHosts.${cfg.domain} = {
+          allowedGroups = [ "client" ];
           forwardAuth = {
             enable = cfg.forwardAuth;
             bypassPaths = [

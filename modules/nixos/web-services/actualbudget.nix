@@ -84,7 +84,10 @@ in
           redirectUris = [ "https://${cfg.domain}/openid/callback" ];
         };
 
-        caddy.virtualHosts.${cfg.domain}.port = cfg.port;
+        caddy.virtualHosts.${cfg.domain} = {
+          inherit (cfg) port;
+          allowedGroups = [ "client" ];
+        };
 
         restic.backups.actual = lib.mkIf cfg.doBackups {
           conflictingService = "actual.service";
