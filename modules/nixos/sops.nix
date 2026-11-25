@@ -30,9 +30,10 @@ in
 
   config = lib.mkIf cfg.enable {
     sops = {
-      age.sshKeyPaths = [
-        "${lib.optionalString config.custom.persistence.enable "/persist"}/etc/ssh/ssh_host_ed25519_key"
-      ];
+      age = {
+        keyFile = "${lib.optionalString config.custom.persistence.enable "/persist"}/var/lib/sops/age/keys.txt";
+        sshKeyPaths = [ ];
+      };
       defaultSopsFile = self.lib.isolateStorePath cfg.secretsFile;
     };
 

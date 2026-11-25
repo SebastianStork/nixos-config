@@ -2,7 +2,7 @@
   lib,
   writeShellApplication,
   sops,
-  ssh-to-age,
+  age,
   ...
 }:
 writeShellApplication {
@@ -10,7 +10,7 @@ writeShellApplication {
 
   runtimeInputs = [
     sops
-    ssh-to-age
+    age
   ];
 
   text = lib.readFile ./script.sh;
