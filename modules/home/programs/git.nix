@@ -8,11 +8,7 @@
   options.custom.programs.git.enable = lib.mkEnableOption "";
 
   config = lib.mkIf config.custom.programs.git.enable {
-    sops.secrets =
-      config.custom.sops.secretsData.ssh-key
-      |> lib.mapAttrs' (
-        name: _: lib.nameValuePair "ssh-key/${name}" { path = "${config.home.homeDirectory}/.ssh/${name}"; }
-      );
+    sops.secrets."git-ssh-key".path = "${config.home.homeDirectory}/.ssh/id_ed25519_git";
 
     programs = {
       git = {
@@ -28,18 +24,15 @@
 
         signing = {
           format = "ssh";
-          key = config.sops.secrets."ssh-key/git.sstork.dev".path;
+          key = config.sops.secrets."git-ssh-key".path;
           signByDefault = true;
         };
 
         includes = lib.singleton {
           condition = "gitdir:~/Projects/h-da/**";
-          contents = {
-            user = {
-              name = "Sebastian Stork";
-              email = "sebastian.stork@stud.h-da.de";
-              signingkey = config.sops.secrets."ssh-key/code.fbi.h-da.de".path;
-            };
+          contents.user = {
+            name = "Sebastian Stork";
+            email = "sebastian.stork@stud.h-da.de";
           };
         };
       };
@@ -48,10 +41,6 @@
 
       ssh.settings =
         let
-          sshKeySettings =
-            config.custom.sops.secretsData.ssh-key
-            |> lib.mapAttrs (name: _: { identityFile = config.sops.secrets."ssh-key/${name}".path; });
-
           forgejoSshSettings =
             allHosts
             |> lib.attrValues
@@ -63,15 +52,17 @@
                 hostName = host.config.networking.fqdn;
                 user = host.config.services.forgejo.user;
                 port = host.config.custom.web-services.forgejo.ssh.port;
-                identitiesOnly = true;
               };
             })
             |> lib.listToAttrs;
         in
-        lib.mkMerge [
-          sshKeySettings
-          forgejoSshSettings
-        ];
+        {
+          "Match user git" = {
+            identityFile = config.sops.secrets."git-ssh-key".path;
+            identitiesOnly = true;
+          };
+        }
+        // forgejoSshSettings;
     };
   };
 }
