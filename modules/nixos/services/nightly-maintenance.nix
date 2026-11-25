@@ -34,7 +34,7 @@ in
         serviceConfig.Type = "oneshot";
         script = ''
           IFS= read -r closure < ${config.custom.services.deploy-webhook.deploymentTargetFile}
-          nix build --no-link "$closure"
+          nix build --no-link --max-jobs 0 --builders "" "$closure"
 
           booted="$(readlink /run/booted-system/{initrd,kernel,kernel-modules})"
           target="$(readlink "$closure"/{initrd,kernel,kernel-modules})"

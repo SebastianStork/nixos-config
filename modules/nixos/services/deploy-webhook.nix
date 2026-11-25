@@ -1,5 +1,6 @@
 {
   config,
+  self,
   pkgs,
   lib,
   ...
@@ -27,9 +28,20 @@ let
     '';
   };
 
+  validateClosure = ''
+    validate_closure() {
+      if [[ "$1" != /nix/store/*-nixos-system-${lib.escapeShellArg config.networking.hostName}-* ]]; then
+        echo "Expected a NixOS system store path for this host." >&2
+        exit 1
+      fi
+    }
+  '';
+
   writeDeploymentTarget = ''
-    mkdir --parents ${lib.dirOf cfg.deploymentTargetFile}
-    printf '%s\n' "$1" > ${cfg.deploymentTargetFile}
+    write_deployment_target() {
+      mkdir --parents ${lib.escapeShellArg (lib.dirOf cfg.deploymentTargetFile)}
+      printf '%s\n' "$1" > ${lib.escapeShellArg cfg.deploymentTargetFile}
+    }
   '';
 
   deploy = pkgs.writeShellApplication {
@@ -38,24 +50,35 @@ let
       pkgs.coreutils
       pkgs.systemd
     ];
-    text = ''
-      closure=$1
-      unit="nixos-deploy@$(systemd-escape --path "$closure").service"
+    text =
+      validateClosure
+      + writeDeploymentTarget
+      + ''
+        closure=$1
+        validate_closure "$closure"
+        unit="nixos-deploy@$(systemd-escape --path "$closure").service"
 
-      rc=0
-      systemctl start --wait "$unit" || rc=$?
-      journalctl --invocation=0 --unit="$unit" --output=cat --no-pager
-      if [[ "$rc" -eq 0 ]]; then
-        ${writeDeploymentTarget}
-      fi
-      exit "$rc"
-    '';
+        rc=0
+        systemctl start --wait "$unit" || rc=$?
+        journalctl --invocation=0 --unit="$unit" --output=cat --no-pager
+        if [[ "$rc" -eq 0 ]]; then
+          write_deployment_target "$closure"
+        fi
+        exit "$rc"
+      '';
   };
 
   deferDeploy = pkgs.writeShellApplication {
     name = "defer-deploy";
     runtimeInputs = [ pkgs.coreutils ];
-    text = writeDeploymentTarget;
+    text =
+      validateClosure
+      + writeDeploymentTarget
+      + ''
+        closure=$1
+        validate_closure "$closure"
+        write_deployment_target "$closure"
+      '';
   };
 
   diff = pkgs.writeShellApplication {
@@ -80,6 +103,11 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = lib.singleton {
+      assertion = self.lib.isPrivateDomain config.networking.fqdn;
+      message = self.lib.mkInvalidConfigMessage "deployment webhook" "domain must be private";
+    };
+
     systemd.services."nixos-deploy@" = {
       description = "Deploy NixOS system closure %f";
       restartIfChanged = false;
@@ -89,14 +117,16 @@ in
       ];
       serviceConfig.Type = "oneshot";
       scriptArgs = "%f";
-      script = ''
-        nix build --no-link "$1"
+      script = validateClosure + ''
+        closure=$1
+        validate_closure "$closure"
+        nix build --no-link --max-jobs 0 --builders "" "$closure"
         nh os switch \
           --bypass-root-check \
           --diff never \
           --no-nom \
           --show-activation-logs \
-          "$1"
+          "$closure"
       '';
     };
 
@@ -185,10 +215,8 @@ in
           reverse_proxy localhost:${lib.toString cfg.webhookPort}
         }
       '';
-      allowedGroups = [
-        "client"
-        "automation"
-      ];
+      allowedGroups = [ "automation" ];
+      allowTrustedUnderlay = false;
     };
   };
 }
