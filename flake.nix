@@ -6,8 +6,6 @@
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    nixpkgs-php.url = "github:NixOS/nixpkgs/30a500ef1454f45b5d8d0c041ae79cfa47254bc4";
-
     multiverse.url = "github:fzakaria/nixpkgs-multiverse";
 
     nixos-hardware = {

@@ -305,22 +305,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-php": {
-      "locked": {
-        "lastModified": 1795097528,
-        "narHash": "sha256-gqBwoxDHVojCGO4zJ0MIS1a49yl+xwudW7OQfCFhE3k=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "30a500ef1454f45b5d8d0c041ae79cfa47254bc4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "30a500ef1454f45b5d8d0c041ae79cfa47254bc4",
-        "type": "github"
-      }
-    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1795234589,
@@ -419,7 +403,6 @@
         "nix-index-database": "nix-index-database",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
-        "nixpkgs-php": "nixpkgs-php",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops": "sops",
         "topology": "topology",
