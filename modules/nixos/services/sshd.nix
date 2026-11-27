@@ -9,7 +9,13 @@ let
   netCfg = config.custom.networking;
 in
 {
-  options.custom.services.sshd.enable = lib.mkEnableOption "";
+  options.custom.services.sshd = {
+    enable = lib.mkEnableOption "";
+    additionalAllowedUsers = lib.mkOption {
+      type = lib.types.listOf lib.types.nonEmptyStr;
+      default = [ ];
+    };
+  };
 
   config = lib.mkIf cfg.enable {
     services = {
@@ -29,7 +35,7 @@ in
         };
         extraConfig = ''
           Match LocalPort 22
-            AllowUsers seb
+            AllowUsers ${lib.concatStringsSep " " ([ "seb" ] ++ cfg.additionalAllowedUsers)}
         '';
       };
 
@@ -50,8 +56,8 @@ in
       |> lib.attrValues
       |> lib.filter (host: host.config.networking.hostName != config.networking.hostName)
       |> lib.filter (host: host.config |> lib.hasAttr "home-manager")
-      |> lib.map (host: host.config.home-manager.users.seb.custom.programs.ssh)
-      |> lib.filter (ssh: ssh.enable)
-      |> lib.map (ssh: ssh.publicKeyFile);
+      |> lib.map (host: host.config.home-manager.users.seb.custom.programs.ssh.login)
+      |> lib.filter (login: login.enable)
+      |> lib.map (login: login.publicKeyFile);
   };
 }

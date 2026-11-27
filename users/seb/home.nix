@@ -43,7 +43,10 @@
         direnv.enable = true;
         atuin-client.enable = true;
       };
-      ssh.enable = true;
+      ssh = {
+        login.enable = true;
+        deploy.enable = true;
+      };
       git.enable = true;
       firefox.enable = true;
       vscode.enable = true;

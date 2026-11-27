@@ -50,7 +50,7 @@ reboot:
 [group('remote')]
 deploy +hosts:
     for host in {{ hosts }}; do \
-        nh os switch . --hostname=$host --target-host=$host; \
+        nh os switch . --hostname=$host --target-host=deploy@$host --elevation-strategy=passwordless; \
     done
 
 [group('remote')]

@@ -62,9 +62,9 @@
                 |> lib.attrValues
                 |> lib.filter (host: host.config.networking.hostName != config.networking.hostName)
                 |> lib.filter (host: host.config |> lib.hasAttr "home-manager")
-                |> lib.map (host: host.config.home-manager.users.seb.custom.programs.ssh)
-                |> lib.filter (ssh: ssh.enable)
-                |> lib.map (ssh: ssh.publicKeyFile);
+                |> lib.map (host: host.config.home-manager.users.seb.custom.programs.ssh.login)
+                |> lib.filter (login: login.enable)
+                |> lib.map (login: login.publicKeyFile);
             }
           );
         }).config.system.build.images.iso-installer;

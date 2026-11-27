@@ -113,6 +113,7 @@
       auto-gc.enable = true;
       binary-cache-router.enable = true;
       sshd.enable = true;
+      nh-deployment.enable = true;
     };
   };
 }
