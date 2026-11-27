@@ -196,7 +196,7 @@ in
             };
             matrix.require_mention = false;
             model = {
-              default = "gpt-5.6-sol";
+              default = "gpt-6.2-sol";
               provider = "openai-codex";
             };
             stt = {
