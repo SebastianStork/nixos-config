@@ -158,6 +158,7 @@ in
               reasoning_effort = "medium";
               reasoning_overrides."openrouter/deepseek/deepseek-v4.1-flash-1017" = "high";
               disabled_toolsets = [ "browser" ];
+              clarify_timeout = 600;
             };
             approvals.destructive_slash_confirm = false;
             auxiliary =
