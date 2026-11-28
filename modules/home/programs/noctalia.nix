@@ -181,7 +181,7 @@ in
                 };
               };
             };
-            location.address = "Darmstadt";
+            location.auto_locate = true;
           };
         };
       }
