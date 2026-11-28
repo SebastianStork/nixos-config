@@ -31,20 +31,9 @@
 
               console.keyMap = "de-latin1-nodeadkeys";
 
-              boot = {
-                bcachefs.modulePackage = config.boot.kernelPackages.bcachefs.overrideAttrs (oldAttrs: {
-                  postPatch = (oldAttrs.postPatch or "") + ''
-                    substituteInPlace src/fs/bcachefs/vfs/fs.h \
-                      --replace-fail \
-                        'KERNEL_VERSION(6,19,0)' \
-                        'KERNEL_VERSION(6,18,64)'
-                  '';
-                });
-
-                supportedFilesystems = {
-                  zfs = false;
-                  bcachefs = true;
-                };
+              boot.supportedFilesystems = {
+                zfs = false;
+                bcachefs = true;
               };
 
               environment.systemPackages = [ inputs.disko.packages.${pkgs.stdenv.hostPlatform.system}.default ];
